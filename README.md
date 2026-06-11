@@ -42,16 +42,6 @@ For an NVIDIA desktop such as an RTX 3060 Ti, install the CUDA PyTorch wheels af
 
 ```powershell
 python -m pip install --force-reinstall -r requirements-gpu-cu128.txt
-python - <<'PY'
-import torch
-print(torch.__version__, torch.cuda.is_available())
-print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU only")
-PY
-```
-
-If PowerShell does not like the heredoc syntax, use:
-
-```powershell
 @'
 import torch
 print(torch.__version__, torch.cuda.is_available())
@@ -166,3 +156,8 @@ Each method writes:
 - model artifact: `model.pt` for the neural network, `photometric_model.joblib` for the photometric classifier.
 
 The comparison script creates a markdown report and a CSV table so you can track which method wins on the same split.
+
+## Initial CIFAKE Subset Result
+
+An initial balanced CIFAKE subset run is checked into [reports/cifake_subset_initial.md](reports/cifake_subset_initial.md).
+It used 2,000 train images and 1,000 test images per method, with a one-epoch ResNet-18 neural baseline.
