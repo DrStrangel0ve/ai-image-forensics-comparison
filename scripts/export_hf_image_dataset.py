@@ -34,6 +34,24 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--real-label", action="append", default=["0", "real", "Real"])
     parser.add_argument("--fake-label", action="append", default=["1", "fake", "AI-Generated"])
     parser.add_argument("--max-per-class-per-split", type=int, default=0)
+    parser.add_argument(
+        "--max-real-per-split",
+        type=int,
+        default=0,
+        help="Optional real-image cap per split. Defaults to --max-per-class-per-split when unset.",
+    )
+    parser.add_argument(
+        "--max-per-source-per-split",
+        type=int,
+        default=0,
+        help="Optional cap for each generated source label, such as each Defactify generator.",
+    )
+    parser.add_argument(
+        "--fake-source-label",
+        action="append",
+        default=[],
+        help="Generated source label to keep when using --max-per-source-per-split. Repeat as needed.",
+    )
     parser.add_argument("--streaming", action="store_true")
     parser.add_argument("--shuffle-buffer", type=int, default=0)
     parser.add_argument("--seed", type=int, default=7)
@@ -93,19 +111,79 @@ def _save_image(image: Image.Image, path: Path, image_format: str) -> None:
         image.save(path, format="PNG")
 
 
+def _cap(value: int) -> int | None:
+    return value if value > 0 else None
+
+
+def _split_done(
+    counts: Counter,
+    source_counts: Counter,
+    real_cap: int | None,
+    fake_cap: int | None,
+    source_cap: int | None,
+    fake_source_labels: set[str],
+) -> bool:
+    real_done = real_cap is None or counts["real"] >= real_cap
+    if source_cap is not None:
+        if fake_source_labels:
+            fake_done = all(source_counts[label] >= source_cap for label in fake_source_labels)
+        elif fake_cap is not None:
+            fake_done = counts["ai_generated"] >= fake_cap
+        else:
+            fake_done = False
+    else:
+        fake_done = fake_cap is None or counts["ai_generated"] >= fake_cap
+    return real_done and fake_done
+
+
+def _should_skip(
+    kind: str,
+    source_label: str,
+    counts: Counter,
+    source_counts: Counter,
+    real_cap: int | None,
+    fake_cap: int | None,
+    source_cap: int | None,
+    fake_source_labels: set[str],
+) -> bool:
+    if kind == "real":
+        return real_cap is not None and counts["real"] >= real_cap
+    if source_cap is not None:
+        if fake_source_labels and source_label not in fake_source_labels:
+            return True
+        if source_counts[source_label] >= source_cap:
+            return True
+    return fake_cap is not None and counts["ai_generated"] >= fake_cap
+
+
 def export_split(args: argparse.Namespace, repo_id: str, split: str, writer: csv.DictWriter) -> Counter:
     dataset = _load_split(repo_id, args.config, split, args.streaming)
     if args.shuffle_buffer > 0 and hasattr(dataset, "shuffle"):
         dataset = dataset.shuffle(seed=args.seed, buffer_size=args.shuffle_buffer)
     counts: Counter = Counter()
+    source_counts: Counter = Counter()
     real_labels = set(args.real_label)
     fake_labels = set(args.fake_label)
-    max_per_class = args.max_per_class_per_split if args.max_per_class_per_split > 0 else None
+    max_per_class = _cap(args.max_per_class_per_split)
+    real_cap = _cap(args.max_real_per_split) or max_per_class
+    fake_cap = max_per_class
+    source_cap = _cap(args.max_per_source_per_split)
+    fake_source_labels = set(args.fake_source_label)
     progress = tqdm(dataset, desc=f"export/{split}")
     for index, row in enumerate(progress):
         kind = _label_kind(row[args.label_column], real_labels, fake_labels)
-        if max_per_class is not None and counts[kind] >= max_per_class:
-            if counts["real"] >= max_per_class and counts["ai_generated"] >= max_per_class:
+        source_label = str(row.get(args.source_label_column, ""))
+        if _should_skip(
+            kind,
+            source_label,
+            counts,
+            source_counts,
+            real_cap,
+            fake_cap,
+            source_cap,
+            fake_source_labels,
+        ):
+            if _split_done(counts, source_counts, real_cap, fake_cap, source_cap, fake_source_labels):
                 break
             continue
         image = _coerce_image(row[args.image_column])
@@ -123,12 +201,14 @@ def export_split(args: argparse.Namespace, repo_id: str, split: str, writer: csv
                 "index": index,
                 "class_name": kind,
                 "label": 0 if kind == "real" else 1,
-                "source_label": row.get(args.source_label_column, ""),
+                "source_label": source_label,
                 "caption": row.get(args.caption_column, ""),
                 "path": str(out_path),
             }
         )
         counts[kind] += 1
+        if kind == "ai_generated":
+            source_counts[source_label] += 1
     return counts
 
 

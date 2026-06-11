@@ -75,6 +75,8 @@ def _reconstructed_paths(data_dir: str | Path, split: str) -> list[str]:
         folder = layout.test
     elif split == "train" and layout.train:
         folder = layout.train
+    elif layout.single:
+        folder = layout.single
     else:
         raise ValueError(f"Could not resolve split {split!r} under {data_dir}")
     return [str(path) for path, _label, _class_name in collect_labeled_images(folder)]

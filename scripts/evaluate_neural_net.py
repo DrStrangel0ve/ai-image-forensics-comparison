@@ -90,23 +90,42 @@ def _class_to_idx(dataset) -> dict[str, int]:
     return dataset.class_to_idx
 
 
+def _dataset_path(dataset, index: int) -> str:
+    if isinstance(dataset, Subset):
+        return _dataset_path(dataset.dataset, dataset.indices[index])
+    if isinstance(dataset, ConcatDataset):
+        offset = index
+        for child in dataset.datasets:
+            if offset < len(child):
+                return _dataset_path(child, offset)
+            offset -= len(child)
+        raise IndexError(index)
+    return str(dataset.samples[index][0])
+
+
 @torch.no_grad()
 def evaluate(model, loader, device, source_fake_idx: int, target_fake_idx: int):
     model.eval()
     y_true: list[int] = []
     y_score: list[float] = []
     rows: list[dict] = []
+    dataset_offset = 0
     for images, labels in tqdm(loader, desc="eval"):
         images = images.to(device)
         logits = model(images)
         probs = torch.softmax(logits, dim=1)[:, source_fake_idx].detach().cpu().numpy()
         labels_np = labels.numpy()
         fake_truth = (labels_np == target_fake_idx).astype(int)
+        paths = [
+            _dataset_path(loader.dataset, index)
+            for index in range(dataset_offset, dataset_offset + len(labels_np))
+        ]
+        dataset_offset += len(labels_np)
         y_true.extend(fake_truth.tolist())
         y_score.extend(probs.tolist())
         rows.extend(
-            {"y_true": int(truth), "fake_score": float(score)}
-            for truth, score in zip(fake_truth, probs)
+            {"path": path, "y_true": int(truth), "fake_score": float(score)}
+            for path, truth, score in zip(paths, fake_truth, probs)
         )
     return binary_metrics(y_true, y_score), rows
 
@@ -163,7 +182,7 @@ def main() -> None:
     )
     write_json(metrics, output_dir / "metrics.json")
     with (output_dir / "predictions.csv").open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["y_true", "fake_score"])
+        writer = csv.DictWriter(handle, fieldnames=["path", "y_true", "fake_score"])
         writer.writeheader()
         writer.writerows(rows)
     print(f"Wrote cross-dataset neural evaluation to {output_dir.resolve()}")

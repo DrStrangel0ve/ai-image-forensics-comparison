@@ -110,6 +110,20 @@ python scripts/export_hf_image_dataset.py `
 
 The exporter writes folders such as `train/real`, `train/ai_generated`, `validation/real`, and `validation/ai_generated`, plus `metadata.csv`.
 
+For generator-balanced Defactify/MS COCOAI validation exports, cap each generated source label independently:
+
+```powershell
+python scripts/export_hf_image_dataset.py `
+  --dataset-key ms_cocoai_2026 `
+  --out-dir data/raw/ms_cocoai_2026_validation_source_balanced_100 `
+  --splits validation `
+  --max-real-per-split 500 `
+  --max-per-source-per-split 100 `
+  --fake-source-label 1 --fake-source-label 2 --fake-source-label 3 `
+  --fake-source-label 4 --fake-source-label 5 `
+  --streaming
+```
+
 ## Run One Full Benchmark
 
 The benchmark runner can compare multiple methods on the same split:
@@ -280,3 +294,8 @@ It adds local noise-entropy and multiscale residual features inspired by newer r
 
 A Hugging Face export and benchmark run on a 2,000-image Defactify/MS COCOAI subset is checked into [reports/ms_cocoai_2026_subset_benchmark.md](reports/ms_cocoai_2026_subset_benchmark.md).
 The best conventional method was `combined_v2` at 0.7010 accuracy, while pretrained ResNet-18 reached 0.8160 accuracy. Source-label analysis showed SD3 was the hardest generator family for both methods.
+
+## Defactify / MS COCOAI Source-Balanced Validation Result
+
+A source-balanced validation rerun is checked into [reports/ms_cocoai_source_balanced_validation.md](reports/ms_cocoai_source_balanced_validation.md).
+It keeps 500 real images and exactly 100 generated images from each Defactify source label. `combined_v2` reached 0.7090 accuracy and ResNet-18 reached 0.8160 accuracy on the same 1,000-image slice.
