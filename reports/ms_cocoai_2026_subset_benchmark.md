@@ -42,6 +42,21 @@ The conventional result is still useful: `combined_v2` is the best conventional 
 
 The photometric proxy alone is close to the noise baseline, but both trail the combined feature sets. That fits the overall pattern of the project: pseudo-normal consistency is a useful signal, not a complete detector for single-image, mixed-generator datasets.
 
+## Source-Level Analysis
+
+The exported metadata includes `Label_B`, so the validation predictions can be grouped by generation source. The table below compares the strongest conventional baseline with ResNet-18.
+
+| source | validation images | combined_v2 detection/FPR | ResNet-18 detection/FPR |
+| --- | ---: | ---: | ---: |
+| real | 500 | 0.3180 FPR | 0.1940 FPR |
+| SD2.1 | 98 | 0.6939 | 0.8265 |
+| SDXL | 85 | 0.9294 | 0.8941 |
+| SD3 | 108 | 0.5741 | 0.6574 |
+| DALL-E 3 | 116 | 0.7586 | 0.9569 |
+| Midjourney 6 | 93 | 0.6774 | 0.7957 |
+
+SD3 is the hardest generator family for both detectors. ResNet-18 handles DALL-E 3 especially well on this subset, while `combined_v2` performs best on SDXL but has a high real-image false positive rate.
+
 ## Reproduce
 
 ```powershell
@@ -65,6 +80,14 @@ python scripts/run_benchmark.py `
   --neural-image-size 128 `
   --num-workers 0 `
   --device cuda
+
+python scripts/analyze_predictions_by_metadata.py `
+  --metadata data/raw/ms_cocoai_2026_subset_500/metadata.csv `
+  --data-dir data/raw/ms_cocoai_2026_subset_500 `
+  --split validation `
+  --out-dir runs/ms_cocoai_2026_subset_500/source_analysis `
+  --predictions combined_v2=runs/ms_cocoai_2026_subset_500/feature_combined_v2_logistic_regression/predictions.csv `
+  --predictions resnet18=runs/ms_cocoai_2026_subset_500/resnet18/predictions.csv
 ```
 
 ## Sources

@@ -102,6 +102,12 @@ def _fake_class_index(class_to_idx: dict[str, int]) -> int:
     raise ValueError(f"Could not identify generated/fake class in {class_to_idx}")
 
 
+def _dataset_path(dataset, index: int) -> str:
+    if isinstance(dataset, Subset):
+        return _dataset_path(dataset.dataset, dataset.indices[index])
+    return str(dataset.samples[index][0])
+
+
 def make_datasets(args: argparse.Namespace):
     train_transform = transforms.Compose(
         [
@@ -209,6 +215,7 @@ def evaluate(model, loader, device, fake_idx: int) -> tuple[dict, list[dict]]:
     y_true: list[int] = []
     y_score: list[float] = []
     rows: list[dict] = []
+    dataset_offset = 0
     for images, labels in tqdm(loader, desc="eval", leave=False):
         images = images.to(device)
         logits = model(images)
@@ -217,9 +224,14 @@ def evaluate(model, loader, device, fake_idx: int) -> tuple[dict, list[dict]]:
         fake_truth = (labels_np == fake_idx).astype(int)
         y_true.extend(fake_truth.tolist())
         y_score.extend(probs.tolist())
+        paths = [
+            _dataset_path(loader.dataset, idx)
+            for idx in range(dataset_offset, dataset_offset + len(labels_np))
+        ]
+        dataset_offset += len(labels_np)
         rows.extend(
-            {"y_true": int(truth), "fake_score": float(score)}
-            for truth, score in zip(fake_truth, probs)
+            {"path": path, "y_true": int(truth), "fake_score": float(score)}
+            for path, truth, score in zip(paths, fake_truth, probs)
         )
     return binary_metrics(y_true, y_score), rows
 
@@ -291,7 +303,7 @@ def main() -> None:
     write_json(metrics, output_dir / "metrics.json")
     write_json(history, output_dir / "history.json")
     with (output_dir / "predictions.csv").open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["y_true", "fake_score"])
+        writer = csv.DictWriter(handle, fieldnames=["path", "y_true", "fake_score"])
         writer.writeheader()
         writer.writerows(rows)
     print(f"Wrote neural-net results to {output_dir.resolve()}")
