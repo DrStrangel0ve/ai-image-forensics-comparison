@@ -10,6 +10,7 @@ from forensic_compare.conventional import (
     extract_feature_set,
     feature_names,
 )
+from scripts.make_robustness_variants import _apply_variant
 
 
 def test_extract_features_are_finite(tmp_path: Path) -> None:
@@ -46,3 +47,14 @@ def test_conventional_feature_sets_are_finite(tmp_path: Path) -> None:
     assert len(feature_names("noise_v3")) > len(feature_names("noise_v2"))
     assert len(feature_names("combined_v2")) > len(feature_names("combined"))
     assert len(feature_names("combined_v3")) > len(feature_names("combined_v2"))
+
+
+def test_robustness_variants_preserve_image_size() -> None:
+    image = Image.fromarray(
+        np.random.default_rng(2).integers(0, 255, size=(33, 41, 3), dtype=np.uint8)
+    )
+
+    for variant in ["jpeg70", "blur1", "resize_half", "crop85"]:
+        transformed = _apply_variant(image, variant)
+        assert transformed.size == image.size
+        assert transformed.mode == "RGB"

@@ -302,3 +302,8 @@ The best conventional method was `combined_v2` at 0.7010 accuracy, while pretrai
 
 A source-balanced validation rerun is checked into [reports/ms_cocoai_source_balanced_validation.md](reports/ms_cocoai_source_balanced_validation.md).
 It keeps 500 real images and exactly 100 generated images from each Defactify source label. `combined_v3` reached 0.7320 accuracy, improving over `combined_v2` at 0.7090, while ResNet-18 reached 0.8160 accuracy on the same 1,000-image slice.
+
+## Defactify / MS COCOAI Robustness Variant Result
+
+A transformation robustness run is checked into [reports/ms_cocoai_robustness_variants.md](reports/ms_cocoai_robustness_variants.md).
+JPEG recompression at quality 70 barely changed either detector, but Gaussian blur dropped `combined_v3` by 9.7 accuracy points while ResNet-18 dropped 1.7 points.
