@@ -70,5 +70,32 @@
     "updated": "2026-02-11",
     "size_mb": null,
     "notes": "2026 large-scale benchmark with state-of-the-art generated images; use project instructions if released data access is available."
+  },
+  "genimage": {
+    "title": "GenImage: A Million-Scale Benchmark for Detecting AI-Generated Images",
+    "source": "external",
+    "ref": "https://genimage-dataset.github.io/",
+    "local_dir": "data/raw/genimage",
+    "updated": "2023-06-14",
+    "size_mb": null,
+    "notes": "Million-scale real/fake image pairs across ImageNet-style classes and multiple generators; useful for cross-generator stress tests."
+  },
+  "wildfake": {
+    "title": "WildFake: Large-Scale Challenging AI-Generated Image Detection Dataset",
+    "source": "external",
+    "ref": "https://github.com/hy-zpg/AIGC-Image-Detection-Dataset",
+    "local_dir": "data/raw/wildfake",
+    "updated": "2024-02-19",
+    "size_mb": null,
+    "notes": "Large wild-collected dataset spanning GANs, diffusion models, other generators, styles, and real-world use cases; download via the linked project."
+  },
+  "chameleon_aide_2025": {
+    "title": "Chameleon / AIDE AI-Generated Image Detection Benchmark",
+    "source": "external",
+    "ref": "https://github.com/shilinyan99/AIDE",
+    "local_dir": "data/raw/chameleon_aide_2025",
+    "updated": "2025-02-15",
+    "size_mb": null,
+    "notes": "ICLR 2025 challenge benchmark designed around highly realistic AI-generated images that many off-the-shelf detectors misclassify."
   }
 }

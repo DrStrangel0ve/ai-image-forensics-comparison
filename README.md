@@ -89,6 +89,9 @@ The catalog currently includes:
 - `ai_generated_vs_real_multigen`: large multi-generator Kaggle dataset.
 - `ms_cocoai_2026`: Hugging Face research dataset with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney v6 references.
 - `realhd_2026`: external 2026 benchmark candidate.
+- `genimage`: million-scale cross-generator benchmark candidate.
+- `wildfake`: large wild-collected cross-generator benchmark candidate.
+- `chameleon_aide_2025`: challenging ICLR 2025 detector stress-test candidate.
 
 ## Run One Full Benchmark
 
@@ -153,6 +156,23 @@ python scripts/compare_methods.py `
   --neural runs/resnet18/metrics.json `
   --photometric runs/photometric/metrics.json `
   --out-dir runs/comparison
+```
+
+Evaluate a saved model on a different dataset:
+
+```powershell
+python scripts/evaluate_feature_model.py `
+  --model-dir runs/ai_vs_real_2026_full/feature_combined_logistic_regression `
+  --target-key rhythm_ai_vs_real_2026 `
+  --output-dir runs/cross_dataset/ai_to_rhythm_feature_combined `
+  --target-split all
+
+python scripts/evaluate_neural_net.py `
+  --model-dir runs/ai_vs_real_2026_full/resnet18 `
+  --target-key rhythm_ai_vs_real_2026 `
+  --output-dir runs/cross_dataset/ai_to_rhythm_resnet18 `
+  --device cuda `
+  --target-split all
 ```
 
 Results are written to:
@@ -228,3 +248,8 @@ It used CUDA on the local RTX 3060 Ti and compared photometric, noise, combined 
 
 A second run on `rhythm_ai_vs_real_2026` is checked into [reports/rhythm_ai_vs_real_2026_benchmark.md](reports/rhythm_ai_vs_real_2026_benchmark.md).
 It adds a more diverse category split across animals, city, food, nature, and people.
+
+## Cross-Dataset Generalization Result
+
+A zero-shot transfer run between the two 2026 datasets is checked into [reports/cross_dataset_2026_generalization.md](reports/cross_dataset_2026_generalization.md).
+The main result is that ResNet-18 still beats the combined conventional baseline, but both methods drop sharply outside their source dataset.
