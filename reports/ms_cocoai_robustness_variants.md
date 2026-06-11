@@ -38,6 +38,8 @@ Gaussian blur is the main weakness for the conventional baseline. `combined_v3` 
 
 This suggests the next conventional improvement should focus on blur/resize-normalized residual features, or on reporting AUC/threshold-calibrated metrics separately from the default 0.5 threshold under transformed imagery.
 
+A threshold calibration follow-up is checked into `reports/ms_cocoai_threshold_calibration.md`. It shows that clean threshold calibration improves blurred `combined_v3` accuracy from 0.6350 to 0.6740, while an oracle threshold reaches 0.7030. So blur is partly a score-calibration problem and partly a ranking-signal problem.
+
 ## Reproduce
 
 ```powershell

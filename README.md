@@ -307,3 +307,6 @@ It keeps 500 real images and exactly 100 generated images from each Defactify so
 
 A transformation robustness run is checked into [reports/ms_cocoai_robustness_variants.md](reports/ms_cocoai_robustness_variants.md).
 JPEG recompression at quality 70 barely changed either detector, but Gaussian blur dropped `combined_v3` by 9.7 accuracy points while ResNet-18 dropped 1.7 points.
+
+A threshold calibration follow-up is checked into [reports/ms_cocoai_threshold_calibration.md](reports/ms_cocoai_threshold_calibration.md).
+Clean-threshold calibration recovers part of the blurred `combined_v3` drop, improving accuracy from 0.6350 to 0.6740, while an oracle threshold reaches 0.7030.
