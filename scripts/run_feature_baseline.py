@@ -33,7 +33,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--data-dir", default="data/raw/cifake")
     parser.add_argument("--output-dir", default="runs/features")
-    parser.add_argument("--feature-set", choices=["photometric", "noise", "combined"], default="combined")
+    parser.add_argument(
+        "--feature-set",
+        choices=["photometric", "noise", "noise_v2", "combined", "combined_v2"],
+        default="combined",
+    )
     parser.add_argument(
         "--classifier",
         choices=["logistic_regression", "random_forest", "hist_gradient_boosting"],

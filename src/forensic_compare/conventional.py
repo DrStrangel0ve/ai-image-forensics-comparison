@@ -31,6 +31,22 @@ NOISE_FEATURE_NAMES = [
     "chroma_noise_corr",
 ]
 
+NOISE_V2_EXTRA_FEATURE_NAMES = [
+    "noise_laplacian_abs_mean",
+    "noise_laplacian_abs_p95",
+    "noise_laplacian_entropy",
+    "noise_multiscale_abs_mean",
+    "noise_multiscale_abs_p95",
+    "noise_multiscale_entropy",
+    "noise_tile8_entropy_mean",
+    "noise_tile8_entropy_std",
+    "noise_tile8_entropy_p90",
+    "noise_neighbor_corr_x",
+    "noise_neighbor_corr_y",
+]
+
+NOISE_V2_FEATURE_NAMES = NOISE_FEATURE_NAMES + NOISE_V2_EXTRA_FEATURE_NAMES
+
 
 def _load_rgb(path: str | Path, image_size: int) -> np.ndarray:
     with Image.open(path) as image:
@@ -133,8 +149,60 @@ def _gradient_orientation_entropy(gray: np.ndarray) -> float:
     return -float(np.sum(probs * np.log2(np.clip(probs, 1e-12, None))))
 
 
-def extract_noise_features(path: str | Path, image_size: int = 128) -> np.ndarray:
-    rgb = _load_rgb(path, image_size)
+def _laplacian(values: np.ndarray) -> np.ndarray:
+    padded = np.pad(values, 1, mode="reflect")
+    center = padded[1:-1, 1:-1]
+    return (
+        -4.0 * center
+        + padded[:-2, 1:-1]
+        + padded[2:, 1:-1]
+        + padded[1:-1, :-2]
+        + padded[1:-1, 2:]
+    )
+
+
+def _tile_entropy_stats(values: np.ndarray, tile_size: int = 8) -> dict[str, float]:
+    entropies = []
+    height, width = values.shape
+    for y in range(0, height, tile_size):
+        for x in range(0, width, tile_size):
+            tile = values[y : y + tile_size, x : x + tile_size]
+            if tile.shape[0] >= 4 and tile.shape[1] >= 4:
+                entropies.append(_entropy(tile, bins=16))
+    if not entropies:
+        return {
+            "noise_tile8_entropy_mean": 0.0,
+            "noise_tile8_entropy_std": 0.0,
+            "noise_tile8_entropy_p90": 0.0,
+        }
+    values_array = np.asarray(entropies, dtype=np.float32)
+    return {
+        "noise_tile8_entropy_mean": float(values_array.mean()),
+        "noise_tile8_entropy_std": float(values_array.std()),
+        "noise_tile8_entropy_p90": float(np.percentile(values_array, 90)),
+    }
+
+
+def _noise_v2_extra_features(gray: np.ndarray, residual: np.ndarray) -> dict[str, float]:
+    laplacian = _laplacian(gray)
+    laplacian_abs = np.abs(laplacian)
+    multiscale = gray - _box_blur(gray, radius=3)
+    multiscale_abs = np.abs(multiscale)
+    values = {
+        "noise_laplacian_abs_mean": float(laplacian_abs.mean()),
+        "noise_laplacian_abs_p95": float(np.percentile(laplacian_abs, 95)),
+        "noise_laplacian_entropy": _entropy(laplacian, bins=48),
+        "noise_multiscale_abs_mean": float(multiscale_abs.mean()),
+        "noise_multiscale_abs_p95": float(np.percentile(multiscale_abs, 95)),
+        "noise_multiscale_entropy": _entropy(multiscale, bins=48),
+        "noise_neighbor_corr_x": _safe_corr(residual[:, :-1], residual[:, 1:]),
+        "noise_neighbor_corr_y": _safe_corr(residual[:-1, :], residual[1:, :]),
+    }
+    values.update(_tile_entropy_stats(np.abs(residual), tile_size=8))
+    return values
+
+
+def _noise_feature_values(rgb: np.ndarray) -> tuple[dict[str, float], np.ndarray, np.ndarray]:
     gray = _gray(rgb)
     residual = gray - _box_blur(gray, radius=1)
     residual_abs = np.abs(residual)
@@ -160,7 +228,21 @@ def extract_noise_features(path: str | Path, image_size: int = 128) -> np.ndarra
         "chroma_noise_corr": _safe_corr(np.sqrt(chroma_u**2 + chroma_v**2), residual_abs),
     }
     values.update(_fft_features(gray))
+    return values, gray, residual
+
+
+def extract_noise_features(path: str | Path, image_size: int = 128) -> np.ndarray:
+    rgb = _load_rgb(path, image_size)
+    values, _gray_values, _residual = _noise_feature_values(rgb)
     return np.asarray([values[name] for name in NOISE_FEATURE_NAMES], dtype=np.float32)
+
+
+def extract_noise_v2_features(path: str | Path, image_size: int = 128) -> np.ndarray:
+    rgb = _load_rgb(path, image_size)
+    values, gray, residual = _noise_feature_values(rgb)
+    extra = _noise_v2_extra_features(gray, residual)
+    values.update(extra)
+    return np.asarray([values[name] for name in NOISE_V2_FEATURE_NAMES], dtype=np.float32)
 
 
 def feature_names(feature_set: str) -> list[str]:
@@ -168,8 +250,12 @@ def feature_names(feature_set: str) -> list[str]:
         return list(PHOTOMETRIC_FEATURE_NAMES)
     if feature_set == "noise":
         return list(NOISE_FEATURE_NAMES)
+    if feature_set == "noise_v2":
+        return list(NOISE_V2_FEATURE_NAMES)
     if feature_set == "combined":
         return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_FEATURE_NAMES)
+    if feature_set == "combined_v2":
+        return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_V2_FEATURE_NAMES)
     raise ValueError(f"Unsupported feature set: {feature_set}")
 
 
@@ -178,11 +264,20 @@ def extract_feature_set(path: str | Path, image_size: int, feature_set: str) -> 
         return extract_photometric_features(path, image_size=image_size)
     if feature_set == "noise":
         return extract_noise_features(path, image_size=image_size)
+    if feature_set == "noise_v2":
+        return extract_noise_v2_features(path, image_size=image_size)
     if feature_set == "combined":
         return np.concatenate(
             [
                 extract_photometric_features(path, image_size=image_size),
                 extract_noise_features(path, image_size=image_size),
+            ]
+        )
+    if feature_set == "combined_v2":
+        return np.concatenate(
+            [
+                extract_photometric_features(path, image_size=image_size),
+                extract_noise_v2_features(path, image_size=image_size),
             ]
         )
     raise ValueError(f"Unsupported feature set: {feature_set}")

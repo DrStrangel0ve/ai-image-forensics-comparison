@@ -92,6 +92,23 @@ The catalog currently includes:
 - `genimage`: million-scale cross-generator benchmark candidate.
 - `wildfake`: large wild-collected cross-generator benchmark candidate.
 - `chameleon_aide_2025`: challenging ICLR 2025 detector stress-test candidate.
+- `ntire_robust_aigen_2026`: Hugging Face training set for the NTIRE 2026 robust AI-generated image detection challenge.
+
+## Export Hugging Face Image Datasets
+
+Some newer datasets, such as Defactify/MS COCOAI, are hosted as Hugging Face datasets instead of image folders. Export a balanced subset into the repo's standard layout:
+
+```powershell
+python scripts/export_hf_image_dataset.py `
+  --dataset-key ms_cocoai_2026 `
+  --out-dir data/raw/ms_cocoai_2026_export `
+  --splits train validation `
+  --max-per-class-per-split 1000 `
+  --shuffle-buffer 1000 `
+  --streaming
+```
+
+The exporter writes folders such as `train/real`, `train/ai_generated`, `validation/real`, and `validation/ai_generated`, plus `metadata.csv`.
 
 ## Run One Full Benchmark
 
@@ -101,7 +118,7 @@ The benchmark runner can compare multiple methods on the same split:
 python scripts/run_benchmark.py `
   --dataset-key ai_vs_real_2026 `
   --out-dir runs/ai_vs_real_2026_full `
-  --methods photometric noise combined neural `
+  --methods photometric noise combined combined_v2 neural `
   --feature-classifier logistic_regression `
   --feature-image-size 128 `
   --neural-model resnet18 `
@@ -253,3 +270,8 @@ It adds a more diverse category split across animals, city, food, nature, and pe
 
 A zero-shot transfer run between the two 2026 datasets is checked into [reports/cross_dataset_2026_generalization.md](reports/cross_dataset_2026_generalization.md).
 The main result is that ResNet-18 still beats the combined conventional baseline, but both methods drop sharply outside their source dataset.
+
+## Conventional V2 Probe
+
+An experimental `combined_v2` conventional baseline is checked into [reports/conventional_v2_probe.md](reports/conventional_v2_probe.md).
+It adds local noise-entropy and multiscale residual features inspired by newer robustness work, but keeps the original `combined` feature set for backward-compatible saved models.

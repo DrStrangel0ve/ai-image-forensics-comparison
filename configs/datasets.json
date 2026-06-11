@@ -97,5 +97,14 @@
     "updated": "2025-02-15",
     "size_mb": null,
     "notes": "ICLR 2025 challenge benchmark designed around highly realistic AI-generated images that many off-the-shelf detectors misclassify."
+  },
+  "ntire_robust_aigen_2026": {
+    "title": "NTIRE 2026 Robust AI-Generated Image Detection in the Wild",
+    "source": "huggingface",
+    "ref": "deepfakesMSU/NTIRE-RobustAIGenDetection-train",
+    "local_dir": "data/raw/ntire_robust_aigen_2026",
+    "updated": "2026-04-13",
+    "size_mb": null,
+    "notes": "CVPR/NTIRE 2026 challenge training set with real and generated images plus in-the-wild transformations; useful for robustness and unseen-generator testing."
   }
 }
