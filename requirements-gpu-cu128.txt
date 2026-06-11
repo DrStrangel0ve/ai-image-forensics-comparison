@@ -1,0 +1,6 @@
+# Install these after requirements.txt on NVIDIA desktops when you want CUDA.
+# Example:
+#   python -m pip install --force-reinstall -r requirements-gpu-cu128.txt
+--index-url https://download.pytorch.org/whl/cu128
+torch
+torchvision

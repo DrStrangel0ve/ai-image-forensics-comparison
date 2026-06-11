@@ -1,0 +1,17 @@
+dataset:
+  kaggle_ref: birdy654/cifake-real-and-ai-generated-synthetic-images
+  root: data/raw/cifake
+  expected_classes:
+    real: ["REAL", "real"]
+    generated: ["FAKE", "fake"]
+
+neural_net:
+  model: resnet18
+  image_size: 96
+  batch_size: 128
+  epochs: 5
+  learning_rate: 0.0003
+
+photometric:
+  image_size: 128
+  classifier: logistic_regression

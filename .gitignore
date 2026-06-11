@@ -1,0 +1,25 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local data and experiment outputs
+data/
+runs/
+outputs/
+models/
+*.pt
+*.pth
+*.ckpt
+*.joblib
+
+# Kaggle credentials should stay in the user profile, not the repo.
+kaggle.json
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
