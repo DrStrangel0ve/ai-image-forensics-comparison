@@ -3,20 +3,20 @@ from __future__ import annotations
 import argparse
 import csv
 import sys
-from io import BytesIO
 from pathlib import Path
 
-from PIL import Image, ImageFilter
+from PIL import Image
 from tqdm import tqdm
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from forensic_compare.datasets import collect_labeled_images, discover_layout
+from forensic_compare.transforms import ROBUSTNESS_VARIANTS, apply_robustness_variant
 from forensic_compare.utils import ensure_dir
 
 
-VARIANTS = ("jpeg70", "blur1", "resize_half", "crop85")
+VARIANTS = ROBUSTNESS_VARIANTS
 
 
 def parse_args() -> argparse.Namespace:
@@ -47,41 +47,8 @@ def _split_folders(data_dir: Path) -> list[tuple[str, Path]]:
     return folders
 
 
-def _jpeg_roundtrip(image: Image.Image, quality: int) -> Image.Image:
-    buffer = BytesIO()
-    image.save(buffer, format="JPEG", quality=quality)
-    buffer.seek(0)
-    with Image.open(buffer) as jpeg:
-        return jpeg.convert("RGB")
-
-
-def _center_crop_resize(image: Image.Image, fraction: float) -> Image.Image:
-    width, height = image.size
-    crop_width = max(1, int(round(width * fraction)))
-    crop_height = max(1, int(round(height * fraction)))
-    left = (width - crop_width) // 2
-    top = (height - crop_height) // 2
-    cropped = image.crop((left, top, left + crop_width, top + crop_height))
-    return cropped.resize((width, height), Image.Resampling.BICUBIC)
-
-
-def _resize_half_roundtrip(image: Image.Image) -> Image.Image:
-    width, height = image.size
-    down = image.resize((max(1, width // 2), max(1, height // 2)), Image.Resampling.BICUBIC)
-    return down.resize((width, height), Image.Resampling.BICUBIC)
-
-
 def _apply_variant(image: Image.Image, variant: str) -> Image.Image:
-    image = image.convert("RGB")
-    if variant == "jpeg70":
-        return _jpeg_roundtrip(image, quality=70)
-    if variant == "blur1":
-        return image.filter(ImageFilter.GaussianBlur(radius=1.0))
-    if variant == "resize_half":
-        return _resize_half_roundtrip(image)
-    if variant == "crop85":
-        return _center_crop_resize(image, fraction=0.85)
-    raise ValueError(f"Unsupported variant: {variant}")
+    return apply_robustness_variant(image, variant)
 
 
 def _save_image(image: Image.Image, path: Path, output_format: str) -> None:

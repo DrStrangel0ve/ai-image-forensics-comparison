@@ -94,6 +94,11 @@ The catalog currently includes:
 - `chameleon_aide_2025`: challenging ICLR 2025 detector stress-test candidate.
 - `ntire_robust_aigen_2026`: Hugging Face training set for the NTIRE 2026 robust AI-generated image detection challenge.
 - `project1_aigen_2026`: small Hugging Face 2026 candidate with labeled train/validation splits, pending manual import validation because HF Dataset Viewer first-row loading currently fails.
+- `openfake_2026`: very large Hugging Face benchmark with core and Reddit in-the-wild splits.
+- `parvesh_ai_vs_real`: practical-size Hugging Face real-vs-AI image candidate.
+- `real_vs_ai_corpus`: very large merged Hugging Face corpus with source metadata.
+- `scam_ai_gpt_image_2_2026`: recent generated-only GPT-image-2 candidate, pending manual/gated access validation.
+- `aigi_now_2025`: 2025 Hugging Face generalization candidate, pending manual import validation.
 
 ## Export Hugging Face Image Datasets
 
@@ -143,6 +148,18 @@ python scripts/run_benchmark.py `
   --neural-image-size 128 `
   --num-workers 0 `
   --device cuda
+```
+
+Feature baselines can also train on deterministic image-sharing variants without creating a second dataset on disk:
+
+```powershell
+python scripts/run_feature_baseline.py `
+  --data-dir data/raw/ms_cocoai_2026_subset_500 `
+  --output-dir runs/ms_cocoai_2026_subset_500/feature_combined_v3_augmented_logistic_regression `
+  --feature-set combined_v3 `
+  --classifier logistic_regression `
+  --image-size 128 `
+  --train-augment-variants jpeg70 blur1 resize_half crop85
 ```
 
 ## Run CIFAKE Manually
@@ -310,3 +327,6 @@ JPEG recompression at quality 70 barely changed either detector, but Gaussian bl
 
 A threshold calibration follow-up is checked into [reports/ms_cocoai_threshold_calibration.md](reports/ms_cocoai_threshold_calibration.md).
 Clean-threshold calibration recovers part of the blurred `combined_v3` drop, improving accuracy from 0.6350 to 0.6740, while an oracle threshold reaches 0.7030.
+
+An augmented conventional follow-up is checked into [reports/ms_cocoai_augmented_conventional_robustness.md](reports/ms_cocoai_augmented_conventional_robustness.md).
+Training `combined_v3` with JPEG, blur, resize, and crop variants kept clean accuracy at 0.7320 while improving blur accuracy from 0.6350 to 0.6980 and half-resize accuracy from 0.6940 to 0.7230.

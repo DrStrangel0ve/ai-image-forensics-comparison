@@ -10,7 +10,9 @@ from forensic_compare.conventional import (
     extract_feature_set,
     feature_names,
 )
+from forensic_compare.transforms import ROBUSTNESS_VARIANTS, apply_robustness_variant
 from scripts.make_robustness_variants import _apply_variant
+from scripts.run_feature_baseline import _extract_matrix
 
 
 def test_extract_features_are_finite(tmp_path: Path) -> None:
@@ -54,7 +56,40 @@ def test_robustness_variants_preserve_image_size() -> None:
         np.random.default_rng(2).integers(0, 255, size=(33, 41, 3), dtype=np.uint8)
     )
 
-    for variant in ["jpeg70", "blur1", "resize_half", "crop85"]:
+    for variant in ROBUSTNESS_VARIANTS:
         transformed = _apply_variant(image, variant)
         assert transformed.size == image.size
         assert transformed.mode == "RGB"
+
+
+def test_shared_robustness_variants_match_script_wrapper() -> None:
+    image = Image.fromarray(
+        np.random.default_rng(3).integers(0, 255, size=(32, 32, 3), dtype=np.uint8)
+    )
+
+    for variant in ROBUSTNESS_VARIANTS:
+        shared = apply_robustness_variant(image, variant)
+        wrapped = _apply_variant(image, variant)
+        assert shared.size == wrapped.size == image.size
+        assert shared.mode == wrapped.mode == "RGB"
+
+
+def test_feature_extraction_can_augment_training_rows(tmp_path: Path) -> None:
+    image = np.random.default_rng(4).integers(0, 255, size=(32, 32, 3), dtype=np.uint8)
+    path = tmp_path / "image.png"
+    Image.fromarray(image).save(path)
+
+    features, labels, paths, skipped = _extract_matrix(
+        [(path, 1, "ai_generated")],
+        image_size=32,
+        feature_set="noise",
+        desc="test/features",
+        skip_errors=False,
+        augment_variants=["blur1", "resize_half"],
+    )
+
+    assert features.shape == (3, len(feature_names("noise")))
+    assert labels.tolist() == [1, 1, 1]
+    assert paths == [path, path, path]
+    assert skipped == []
+    assert np.isfinite(features).all()

@@ -29,6 +29,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-train-samples", type=int, default=0)
     parser.add_argument("--max-test-samples", type=int, default=0)
     parser.add_argument("--skip-errors", action="store_true")
+    parser.add_argument(
+        "--feature-train-augment-variants",
+        nargs="+",
+        default=[],
+        help="Forward deterministic train-time robustness variants to feature baselines.",
+    )
     return parser.parse_args()
 
 
@@ -83,6 +89,9 @@ def main() -> None:
             ]
             if args.skip_errors:
                 command.append("--skip-errors")
+            if args.feature_train_augment_variants:
+                command.append("--train-augment-variants")
+                command.extend(args.feature_train_augment_variants)
             _run(command)
             metrics.append((f"feature_{method}", method_out / "metrics.json"))
         elif method == "neural":

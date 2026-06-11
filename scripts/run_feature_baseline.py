@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import csv
 import sys
+from io import BytesIO
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -10,6 +11,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 import joblib
 import numpy as np
+from PIL import Image
 from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
@@ -24,6 +26,7 @@ from forensic_compare.datasets import (
     stratified_split,
 )
 from forensic_compare.metrics import binary_metrics
+from forensic_compare.transforms import ROBUSTNESS_VARIANTS, apply_robustness_variant
 from forensic_compare.utils import ensure_dir, seed_everything, write_json
 
 
@@ -57,6 +60,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-train-samples", type=int, default=0)
     parser.add_argument("--max-test-samples", type=int, default=0)
     parser.add_argument("--skip-errors", action="store_true", help="Skip unreadable/corrupt images.")
+    parser.add_argument(
+        "--train-augment-variants",
+        nargs="+",
+        choices=ROBUSTNESS_VARIANTS,
+        default=[],
+        help="Add deterministic transformed copies of each training image before fitting.",
+    )
     return parser.parse_args()
 
 
@@ -82,23 +92,47 @@ def _extract_matrix(
     feature_set: str,
     desc: str,
     skip_errors: bool,
+    augment_variants: list[str] | tuple[str, ...] | None = None,
 ):
+    augment_variants = list(augment_variants or [])
     features = []
     labels = []
     paths = []
     skipped = []
     for path, label, _class_name in tqdm(records, desc=desc):
         try:
-            features.append(extract_feature_set(path, image_size=image_size, feature_set=feature_set))
-            labels.append(label)
-            paths.append(path)
+            record_features = [
+                extract_feature_set(path, image_size=image_size, feature_set=feature_set)
+            ]
+            for variant in augment_variants:
+                record_features.append(
+                    _extract_augmented_feature(path, image_size, feature_set, variant)
+                )
         except Exception as exc:
             if not skip_errors:
                 raise
             skipped.append({"path": str(path), "error": repr(exc)})
+            continue
+        features.extend(record_features)
+        labels.extend([label] * len(record_features))
+        paths.extend([path] * len(record_features))
     if not features:
         raise ValueError(f"No usable feature rows for {desc}")
     return np.vstack(features), np.asarray(labels, dtype=int), paths, skipped
+
+
+def _extract_augmented_feature(
+    path: Path,
+    image_size: int,
+    feature_set: str,
+    variant: str,
+) -> np.ndarray:
+    with Image.open(path) as image:
+        transformed = apply_robustness_variant(image, variant)
+    buffer = BytesIO()
+    transformed.save(buffer, format="JPEG", quality=95)
+    buffer.seek(0)
+    return extract_feature_set(buffer, image_size=image_size, feature_set=feature_set)
 
 
 def _classifier(name: str, seed: int):
@@ -131,10 +165,19 @@ def main() -> None:
     output_dir = ensure_dir(args.output_dir)
     train_records, test_records, layout = _records(args)
     x_train, y_train, _, skipped_train = _extract_matrix(
-        train_records, args.image_size, args.feature_set, "features/train", args.skip_errors
+        train_records,
+        args.image_size,
+        args.feature_set,
+        "features/train",
+        args.skip_errors,
+        args.train_augment_variants,
     )
     x_test, y_test, test_paths, skipped_test = _extract_matrix(
-        test_records, args.image_size, args.feature_set, "features/test", args.skip_errors
+        test_records,
+        args.image_size,
+        args.feature_set,
+        "features/test",
+        args.skip_errors,
     )
 
     classifier = _classifier(args.classifier, args.seed)
@@ -153,6 +196,9 @@ def main() -> None:
             "classifier": args.classifier,
             "feature_names": names,
             "n_train": int(len(y_train)),
+            "n_train_original": int(len(train_records) - len(skipped_train)),
+            "train_augment_variants": list(args.train_augment_variants),
+            "n_train_augment_variants": len(args.train_augment_variants),
             "n_test": int(len(y_test)),
             "n_skipped_train": len(skipped_train),
             "n_skipped_test": len(skipped_test),

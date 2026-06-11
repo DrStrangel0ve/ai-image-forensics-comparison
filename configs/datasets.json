@@ -115,5 +115,50 @@
     "updated": null,
     "size_mb": null,
     "notes": "Small 2026 HF candidate reported as 50/50 real-vs-generated with labeled train/val and withheld test labels. Dataset Viewer first-row loading currently fails with a class-label parsing error, so validate import manually before benchmarking."
+  },
+  "openfake_2026": {
+    "title": "OpenFake",
+    "source": "huggingface",
+    "ref": "ComplexDataLab/OpenFake",
+    "local_dir": "data/raw/openfake_2026",
+    "updated": null,
+    "size_mb": 3281120,
+    "notes": "Very large HF benchmark candidate with core train/validation/test plus a Reddit in-the-wild test split. Dataset Viewer reports 2,493,222 rows with image, label, model, type, and release_date columns; sample this rather than downloading wholesale."
+  },
+  "parvesh_ai_vs_real": {
+    "title": "AI-vs-Real",
+    "source": "huggingface",
+    "ref": "Parveshiiii/AI-vs-Real",
+    "local_dir": "data/raw/parvesh_ai_vs_real",
+    "updated": null,
+    "size_mb": 2062,
+    "notes": "HF real-vs-AI candidate with one train split. Dataset Viewer reports 13,999 rows and parquet shards are available, making it a practical import target."
+  },
+  "real_vs_ai_corpus": {
+    "title": "Real vs AI Corpus",
+    "source": "huggingface",
+    "ref": "Zitacron/real-vs-ai-corpus",
+    "local_dir": "data/raw/real_vs_ai_corpus",
+    "updated": null,
+    "size_mb": 1706764,
+    "notes": "Very large HF corpus merged from multiple public sources. Dataset Viewer reports 12,336,207 rows with label_text/source_dataset/source_license metadata; use source-balanced streaming samples for evaluation."
+  },
+  "scam_ai_gpt_image_2_2026": {
+    "title": "GPT-image-2 Public Outputs",
+    "source": "huggingface",
+    "ref": "Scam-AI/gpt-image-2",
+    "local_dir": "data/raw/scam_ai_gpt_image_2_2026",
+    "updated": null,
+    "size_mb": null,
+    "notes": "Recent generated-only candidate reported as 10,217 GPT-image-2 outputs from public Twitter/X posts after the model's 2026-04-21 release. Dataset Viewer returned 401 Unauthorized on 2026-06-12, so treat it as gated/manual and pair with real images before binary scoring."
+  },
+  "aigi_now_2025": {
+    "title": "AIGI-Now",
+    "source": "huggingface",
+    "ref": "Gaffeyzz/AIGI-Now",
+    "local_dir": "data/raw/aigi_now_2025",
+    "updated": null,
+    "size_mb": null,
+    "notes": "HF repository for a 2025 AI-generated image detection generalization paper. Dataset Viewer returned 501 Not Implemented on 2026-06-12, so this remains a manual import candidate."
   }
 }
