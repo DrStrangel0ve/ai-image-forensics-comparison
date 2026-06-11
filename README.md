@@ -223,3 +223,8 @@ It used 2,000 train images and 1,000 test images per method, with a one-epoch Re
 
 A full small-dataset run on `ai_vs_real_2026` is checked into [reports/ai_vs_real_2026_benchmark.md](reports/ai_vs_real_2026_benchmark.md).
 It used CUDA on the local RTX 3060 Ti and compared photometric, noise, combined conventional features, and pretrained ResNet-18.
+
+## Second 2026 Dataset Result
+
+A second run on `rhythm_ai_vs_real_2026` is checked into [reports/rhythm_ai_vs_real_2026_benchmark.md](reports/rhythm_ai_vs_real_2026_benchmark.md).
+It adds a more diverse category split across animals, city, food, nature, and people.
