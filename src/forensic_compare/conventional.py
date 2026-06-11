@@ -47,6 +47,31 @@ NOISE_V2_EXTRA_FEATURE_NAMES = [
 
 NOISE_V2_FEATURE_NAMES = NOISE_FEATURE_NAMES + NOISE_V2_EXTRA_FEATURE_NAMES
 
+NOISE_V3_EXTRA_FEATURE_NAMES = [
+    "jpeg_q70_abs_mean",
+    "jpeg_q70_abs_p95",
+    "jpeg_q95_abs_mean",
+    "jpeg_q95_abs_p95",
+    "jpeg_q70_q95_mean_ratio",
+    "jpeg_q90_q95_mean_delta",
+    "residual_phase8_std",
+    "residual_phase8_peak_ratio",
+    "residual_phase8_contrast",
+    "ela_phase8_std",
+    "ela_phase8_peak_ratio",
+    "ela_phase8_contrast",
+    "residual_rg_corr",
+    "residual_gb_corr",
+    "residual_rb_corr",
+    "residual_rgb_abs_std_ratio",
+    "residual_chroma_luma_abs_ratio",
+    "residual_tile16_std_mean",
+    "residual_tile16_std_std",
+    "residual_tile16_std_p90",
+]
+
+NOISE_V3_FEATURE_NAMES = NOISE_V2_FEATURE_NAMES + NOISE_V3_EXTRA_FEATURE_NAMES
+
 
 def _load_rgb(path: str | Path, image_size: int) -> np.ndarray:
     with Image.open(path) as image:
@@ -89,14 +114,18 @@ def _safe_corr(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.corrcoef(a_flat, b_flat)[0, 1])
 
 
-def _ela_diff(rgb: np.ndarray) -> np.ndarray:
+def _jpeg_reencode_diff(rgb: np.ndarray, quality: int) -> np.ndarray:
     image = Image.fromarray(np.clip(rgb * 255, 0, 255).astype(np.uint8))
     buffer = BytesIO()
-    image.save(buffer, format="JPEG", quality=90)
+    image.save(buffer, format="JPEG", quality=quality)
     buffer.seek(0)
     with Image.open(buffer) as jpeg:
         jpeg_rgb = np.asarray(jpeg.convert("RGB"), dtype=np.float32) / 255.0
     return np.abs(rgb - jpeg_rgb)
+
+
+def _ela_diff(rgb: np.ndarray) -> np.ndarray:
+    return _jpeg_reencode_diff(rgb, quality=90)
 
 
 def _block_boundary_ratio(values: np.ndarray, axis: int) -> float:
@@ -202,7 +231,101 @@ def _noise_v2_extra_features(gray: np.ndarray, residual: np.ndarray) -> dict[str
     return values
 
 
-def _noise_feature_values(rgb: np.ndarray) -> tuple[dict[str, float], np.ndarray, np.ndarray]:
+def _phase8_stats(values: np.ndarray, prefix: str) -> dict[str, float]:
+    phase_means = []
+    for y in range(8):
+        for x in range(8):
+            phase = values[y::8, x::8]
+            if phase.size:
+                phase_means.append(float(phase.mean()))
+    if not phase_means:
+        return {
+            f"{prefix}_phase8_std": 0.0,
+            f"{prefix}_phase8_peak_ratio": 0.0,
+            f"{prefix}_phase8_contrast": 0.0,
+        }
+    phase_values = np.asarray(phase_means, dtype=np.float32)
+    mean_value = float(phase_values.mean())
+    return {
+        f"{prefix}_phase8_std": float(phase_values.std()),
+        f"{prefix}_phase8_peak_ratio": float(phase_values.max() / np.clip(mean_value, 1e-8, None)),
+        f"{prefix}_phase8_contrast": float(
+            (phase_values.max() - phase_values.min()) / np.clip(mean_value, 1e-8, None)
+        ),
+    }
+
+
+def _tile_std_stats(values: np.ndarray, tile_size: int, prefix: str) -> dict[str, float]:
+    stds = []
+    height, width = values.shape
+    for y in range(0, height, tile_size):
+        for x in range(0, width, tile_size):
+            tile = values[y : y + tile_size, x : x + tile_size]
+            if tile.shape[0] >= 4 and tile.shape[1] >= 4:
+                stds.append(float(tile.std()))
+    if not stds:
+        return {
+            f"{prefix}_std_mean": 0.0,
+            f"{prefix}_std_std": 0.0,
+            f"{prefix}_std_p90": 0.0,
+        }
+    values_array = np.asarray(stds, dtype=np.float32)
+    return {
+        f"{prefix}_std_mean": float(values_array.mean()),
+        f"{prefix}_std_std": float(values_array.std()),
+        f"{prefix}_std_p90": float(np.percentile(values_array, 90)),
+    }
+
+
+def _rgb_residual_features(rgb: np.ndarray, gray_residual: np.ndarray) -> dict[str, float]:
+    channel_residuals = [rgb[:, :, idx] - _box_blur(rgb[:, :, idx], radius=1) for idx in range(3)]
+    abs_means = np.asarray([np.abs(values).mean() for values in channel_residuals], dtype=np.float32)
+    chroma_residual = 0.5 * (
+        np.abs(channel_residuals[0] - channel_residuals[1])
+        + np.abs(channel_residuals[2] - channel_residuals[1])
+    )
+    luma_abs_mean = float(np.abs(gray_residual).mean())
+    return {
+        "residual_rg_corr": _safe_corr(channel_residuals[0], channel_residuals[1]),
+        "residual_gb_corr": _safe_corr(channel_residuals[1], channel_residuals[2]),
+        "residual_rb_corr": _safe_corr(channel_residuals[0], channel_residuals[2]),
+        "residual_rgb_abs_std_ratio": float(
+            abs_means.std() / np.clip(float(abs_means.mean()), 1e-8, None)
+        ),
+        "residual_chroma_luma_abs_ratio": float(
+            chroma_residual.mean() / np.clip(luma_abs_mean, 1e-8, None)
+        ),
+    }
+
+
+def _noise_v3_extra_features(
+    rgb: np.ndarray,
+    residual: np.ndarray,
+    ela_abs: np.ndarray,
+) -> dict[str, float]:
+    jpeg_q70_abs = np.mean(_jpeg_reencode_diff(rgb, quality=70), axis=2)
+    jpeg_q95_abs = np.mean(_jpeg_reencode_diff(rgb, quality=95), axis=2)
+    q70_mean = float(jpeg_q70_abs.mean())
+    q95_mean = float(jpeg_q95_abs.mean())
+    ela_mean = float(ela_abs.mean())
+    values = {
+        "jpeg_q70_abs_mean": q70_mean,
+        "jpeg_q70_abs_p95": float(np.percentile(jpeg_q70_abs, 95)),
+        "jpeg_q95_abs_mean": q95_mean,
+        "jpeg_q95_abs_p95": float(np.percentile(jpeg_q95_abs, 95)),
+        "jpeg_q70_q95_mean_ratio": float(q70_mean / np.clip(q95_mean, 1e-8, None)),
+        "jpeg_q90_q95_mean_delta": float(ela_mean - q95_mean),
+    }
+    values.update(_phase8_stats(np.abs(residual), "residual"))
+    values.update(_phase8_stats(ela_abs, "ela"))
+    values.update(_rgb_residual_features(rgb, residual))
+    values.update(_tile_std_stats(np.abs(residual), tile_size=16, prefix="residual_tile16"))
+    return values
+
+
+def _noise_feature_values(
+    rgb: np.ndarray,
+) -> tuple[dict[str, float], np.ndarray, np.ndarray, np.ndarray]:
     gray = _gray(rgb)
     residual = gray - _box_blur(gray, radius=1)
     residual_abs = np.abs(residual)
@@ -228,21 +351,29 @@ def _noise_feature_values(rgb: np.ndarray) -> tuple[dict[str, float], np.ndarray
         "chroma_noise_corr": _safe_corr(np.sqrt(chroma_u**2 + chroma_v**2), residual_abs),
     }
     values.update(_fft_features(gray))
-    return values, gray, residual
+    return values, gray, residual, ela_abs
 
 
 def extract_noise_features(path: str | Path, image_size: int = 128) -> np.ndarray:
     rgb = _load_rgb(path, image_size)
-    values, _gray_values, _residual = _noise_feature_values(rgb)
+    values, _gray_values, _residual, _ela_abs = _noise_feature_values(rgb)
     return np.asarray([values[name] for name in NOISE_FEATURE_NAMES], dtype=np.float32)
 
 
 def extract_noise_v2_features(path: str | Path, image_size: int = 128) -> np.ndarray:
     rgb = _load_rgb(path, image_size)
-    values, gray, residual = _noise_feature_values(rgb)
+    values, gray, residual, _ela_abs = _noise_feature_values(rgb)
     extra = _noise_v2_extra_features(gray, residual)
     values.update(extra)
     return np.asarray([values[name] for name in NOISE_V2_FEATURE_NAMES], dtype=np.float32)
+
+
+def extract_noise_v3_features(path: str | Path, image_size: int = 128) -> np.ndarray:
+    rgb = _load_rgb(path, image_size)
+    values, gray, residual, ela_abs = _noise_feature_values(rgb)
+    values.update(_noise_v2_extra_features(gray, residual))
+    values.update(_noise_v3_extra_features(rgb, residual, ela_abs))
+    return np.asarray([values[name] for name in NOISE_V3_FEATURE_NAMES], dtype=np.float32)
 
 
 def feature_names(feature_set: str) -> list[str]:
@@ -252,10 +383,14 @@ def feature_names(feature_set: str) -> list[str]:
         return list(NOISE_FEATURE_NAMES)
     if feature_set == "noise_v2":
         return list(NOISE_V2_FEATURE_NAMES)
+    if feature_set == "noise_v3":
+        return list(NOISE_V3_FEATURE_NAMES)
     if feature_set == "combined":
         return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_FEATURE_NAMES)
     if feature_set == "combined_v2":
         return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_V2_FEATURE_NAMES)
+    if feature_set == "combined_v3":
+        return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_V3_FEATURE_NAMES)
     raise ValueError(f"Unsupported feature set: {feature_set}")
 
 
@@ -266,6 +401,8 @@ def extract_feature_set(path: str | Path, image_size: int, feature_set: str) -> 
         return extract_noise_features(path, image_size=image_size)
     if feature_set == "noise_v2":
         return extract_noise_v2_features(path, image_size=image_size)
+    if feature_set == "noise_v3":
+        return extract_noise_v3_features(path, image_size=image_size)
     if feature_set == "combined":
         return np.concatenate(
             [
@@ -278,6 +415,13 @@ def extract_feature_set(path: str | Path, image_size: int, feature_set: str) -> 
             [
                 extract_photometric_features(path, image_size=image_size),
                 extract_noise_v2_features(path, image_size=image_size),
+            ]
+        )
+    if feature_set == "combined_v3":
+        return np.concatenate(
+            [
+                extract_photometric_features(path, image_size=image_size),
+                extract_noise_v3_features(path, image_size=image_size),
             ]
         )
     raise ValueError(f"Unsupported feature set: {feature_set}")

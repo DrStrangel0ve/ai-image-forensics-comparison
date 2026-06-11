@@ -32,13 +32,14 @@ All methods used the same fixed train/validation split. ResNet-18 used pretraine
 | noise logistic regression | 0.6700 | 0.6778 | 0.6480 | 0.6626 | 0.7313 | 1000 |
 | combined conventional v1 | 0.6890 | 0.6849 | 0.7000 | 0.6924 | 0.7579 | 1000 |
 | combined conventional v2 | 0.7010 | 0.6936 | 0.7200 | 0.7066 | 0.7603 | 1000 |
+| combined conventional v3 | 0.7290 | 0.7232 | 0.7420 | 0.7325 | 0.7959 | 1000 |
 | ResNet-18 | 0.8160 | 0.8098 | 0.8260 | 0.8178 | 0.8982 | 1000 |
 
 ## Interpretation
 
-The neural baseline remains substantially stronger on this subset, with an 11.5 point accuracy lead over the best conventional method and a much larger ROC AUC gap.
+The neural baseline remains substantially stronger on this subset, with an 8.7 point accuracy lead over the best conventional method and a meaningful ROC AUC gap.
 
-The conventional result is still useful: `combined_v2` is the best conventional baseline here, improving accuracy from 0.6890 to 0.7010 over the original combined features. That makes the local noise-entropy additions worth keeping as an experimental robustness baseline.
+The conventional result is still useful: `combined_v3` is the best conventional baseline here, improving accuracy from 0.7010 to 0.7290 over `combined_v2`. Its added JPEG recompression, residual periodicity, RGB residual-correlation, and local residual-variance features are worth keeping as the current strongest conventional stack.
 
 The photometric proxy alone is close to the noise baseline, but both trail the combined feature sets. That fits the overall pattern of the project: pseudo-normal consistency is a useful signal, not a complete detector for single-image, mixed-generator datasets.
 
@@ -46,16 +47,16 @@ The photometric proxy alone is close to the noise baseline, but both trail the c
 
 The exported metadata includes `Label_B`, so the validation predictions can be grouped by generation source. The table below compares the strongest conventional baseline with ResNet-18.
 
-| source | validation images | combined_v2 detection/FPR | ResNet-18 detection/FPR |
-| --- | ---: | ---: | ---: |
-| real | 500 | 0.3180 FPR | 0.1940 FPR |
-| SD2.1 | 98 | 0.6939 | 0.8265 |
-| SDXL | 85 | 0.9294 | 0.8941 |
-| SD3 | 108 | 0.5741 | 0.6574 |
-| DALL-E 3 | 116 | 0.7586 | 0.9569 |
-| Midjourney 6 | 93 | 0.6774 | 0.7957 |
+| source | validation images | combined_v2 detection/FPR | combined_v3 detection/FPR | ResNet-18 detection/FPR |
+| --- | ---: | ---: | ---: | ---: |
+| real | 500 | 0.3180 FPR | 0.2840 FPR | 0.1940 FPR |
+| SD2.1 | 98 | 0.6939 | 0.7143 | 0.8265 |
+| SDXL | 85 | 0.9294 | 0.8706 | 0.8941 |
+| SD3 | 108 | 0.5741 | 0.5741 | 0.6574 |
+| DALL-E 3 | 116 | 0.7586 | 0.8534 | 0.9569 |
+| Midjourney 6 | 93 | 0.6774 | 0.7097 | 0.7957 |
 
-SD3 is the hardest generator family for both detectors. ResNet-18 handles DALL-E 3 especially well on this subset, while `combined_v2` performs best on SDXL but has a high real-image false positive rate.
+SD3 is the hardest generator family for both detectors. `combined_v3` lowers the real-image false positive rate and improves DALL-E 3 and Midjourney 6 detection, but gives up some SDXL recall compared with `combined_v2`.
 
 ## Reproduce
 
@@ -70,7 +71,7 @@ python scripts/export_hf_image_dataset.py `
 python scripts/run_benchmark.py `
   --data-dir data/raw/ms_cocoai_2026_subset_500 `
   --out-dir runs/ms_cocoai_2026_subset_500 `
-  --methods photometric noise combined combined_v2 neural `
+  --methods photometric noise combined combined_v2 combined_v3 neural `
   --feature-classifier logistic_regression `
   --feature-image-size 128 `
   --neural-model resnet18 `
@@ -87,6 +88,7 @@ python scripts/analyze_predictions_by_metadata.py `
   --split validation `
   --out-dir runs/ms_cocoai_2026_subset_500/source_analysis `
   --predictions combined_v2=runs/ms_cocoai_2026_subset_500/feature_combined_v2_logistic_regression/predictions.csv `
+  --predictions combined_v3=runs/ms_cocoai_2026_subset_500/feature_combined_v3_logistic_regression/predictions.csv `
   --predictions resnet18=runs/ms_cocoai_2026_subset_500/resnet18/predictions.csv
 ```
 

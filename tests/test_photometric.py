@@ -37,10 +37,12 @@ def test_conventional_feature_sets_are_finite(tmp_path: Path) -> None:
     path = tmp_path / "image.png"
     Image.fromarray(image).save(path)
 
-    for feature_set in ["noise", "noise_v2", "combined", "combined_v2"]:
+    for feature_set in ["noise", "noise_v2", "noise_v3", "combined", "combined_v2", "combined_v3"]:
         features = extract_feature_set(path, image_size=32, feature_set=feature_set)
         assert features.shape == (len(feature_names(feature_set)),)
         assert np.isfinite(features).all()
 
     assert len(feature_names("noise_v2")) > len(feature_names("noise"))
+    assert len(feature_names("noise_v3")) > len(feature_names("noise_v2"))
     assert len(feature_names("combined_v2")) > len(feature_names("combined"))
+    assert len(feature_names("combined_v3")) > len(feature_names("combined_v2"))

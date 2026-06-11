@@ -35,7 +35,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", default="runs/features")
     parser.add_argument(
         "--feature-set",
-        choices=["photometric", "noise", "noise_v2", "combined", "combined_v2"],
+        choices=[
+            "photometric",
+            "noise",
+            "noise_v2",
+            "noise_v3",
+            "combined",
+            "combined_v2",
+            "combined_v3",
+        ],
         default="combined",
     )
     parser.add_argument(

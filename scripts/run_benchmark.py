@@ -53,7 +53,15 @@ def main() -> None:
     metrics: list[tuple[str, Path]] = []
 
     for method in args.methods:
-        if method in {"photometric", "noise", "noise_v2", "combined", "combined_v2"}:
+        if method in {
+            "photometric",
+            "noise",
+            "noise_v2",
+            "noise_v3",
+            "combined",
+            "combined_v2",
+            "combined_v3",
+        }:
             method_out = out_dir / f"feature_{method}_{args.feature_classifier}"
             command = [
                 sys.executable,

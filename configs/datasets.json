@@ -106,5 +106,14 @@
     "updated": "2026-04-13",
     "size_mb": null,
     "notes": "CVPR/NTIRE 2026 challenge training set with real and generated images plus in-the-wild transformations; useful for robustness and unseen-generator testing."
+  },
+  "project1_aigen_2026": {
+    "title": "Project1 AI-Generated Image Detection 2026",
+    "source": "huggingface",
+    "ref": "legenduck/Project1-AI-Generated-Image-Detection-2026",
+    "local_dir": "data/raw/project1_aigen_2026",
+    "updated": null,
+    "size_mb": null,
+    "notes": "Small 2026 HF candidate reported as 50/50 real-vs-generated with labeled train/val and withheld test labels. Dataset Viewer first-row loading currently fails with a class-label parsing error, so validate import manually before benchmarking."
   }
 }

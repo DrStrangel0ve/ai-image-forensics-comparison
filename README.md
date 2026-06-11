@@ -93,6 +93,7 @@ The catalog currently includes:
 - `wildfake`: large wild-collected cross-generator benchmark candidate.
 - `chameleon_aide_2025`: challenging ICLR 2025 detector stress-test candidate.
 - `ntire_robust_aigen_2026`: Hugging Face training set for the NTIRE 2026 robust AI-generated image detection challenge.
+- `project1_aigen_2026`: small Hugging Face 2026 candidate with labeled train/validation splits, pending manual import validation because HF Dataset Viewer first-row loading currently fails.
 
 ## Export Hugging Face Image Datasets
 
@@ -132,7 +133,7 @@ The benchmark runner can compare multiple methods on the same split:
 python scripts/run_benchmark.py `
   --dataset-key ai_vs_real_2026 `
   --out-dir runs/ai_vs_real_2026_full `
-  --methods photometric noise combined combined_v2 neural `
+  --methods photometric noise combined combined_v2 combined_v3 neural `
   --feature-classifier logistic_regression `
   --feature-image-size 128 `
   --neural-model resnet18 `
@@ -290,6 +291,8 @@ The main result is that ResNet-18 still beats the combined conventional baseline
 An experimental `combined_v2` conventional baseline is checked into [reports/conventional_v2_probe.md](reports/conventional_v2_probe.md).
 It adds local noise-entropy and multiscale residual features inspired by newer robustness work, but keeps the original `combined` feature set for backward-compatible saved models.
 
+`combined_v3` adds JPEG recompression sensitivity, residual 8x8 phase periodicity, RGB residual-correlation, and local residual-variance features on top of `combined_v2`.
+
 ## Defactify / MS COCOAI Subset Result
 
 A Hugging Face export and benchmark run on a 2,000-image Defactify/MS COCOAI subset is checked into [reports/ms_cocoai_2026_subset_benchmark.md](reports/ms_cocoai_2026_subset_benchmark.md).
@@ -298,4 +301,4 @@ The best conventional method was `combined_v2` at 0.7010 accuracy, while pretrai
 ## Defactify / MS COCOAI Source-Balanced Validation Result
 
 A source-balanced validation rerun is checked into [reports/ms_cocoai_source_balanced_validation.md](reports/ms_cocoai_source_balanced_validation.md).
-It keeps 500 real images and exactly 100 generated images from each Defactify source label. `combined_v2` reached 0.7090 accuracy and ResNet-18 reached 0.8160 accuracy on the same 1,000-image slice.
+It keeps 500 real images and exactly 100 generated images from each Defactify source label. `combined_v3` reached 0.7320 accuracy, improving over `combined_v2` at 0.7090, while ResNet-18 reached 0.8160 accuracy on the same 1,000-image slice.
