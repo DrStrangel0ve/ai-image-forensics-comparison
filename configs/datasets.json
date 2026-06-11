@@ -1,0 +1,74 @@
+{
+  "cifake": {
+    "title": "CIFAKE: Real and AI-Generated Synthetic Images",
+    "source": "kaggle",
+    "ref": "birdy654/cifake-real-and-ai-generated-synthetic-images",
+    "local_dir": "data/raw/cifake",
+    "updated": "2023-03-28",
+    "size_mb": 105,
+    "notes": "120k CIFAR-style images: 60k real CIFAR-10 and 60k Stable Diffusion generated."
+  },
+  "ai_vs_real_2026": {
+    "title": "AI Generated vs Real Images Dataset",
+    "source": "kaggle",
+    "ref": "muqaddasejaz/ai-generated-vs-real-images-dataset",
+    "local_dir": "data/raw/ai_vs_real_2026",
+    "updated": "2026-05-23",
+    "size_mb": 476,
+    "notes": "Recent, practical-size real-vs-AI image dataset found through Kaggle search."
+  },
+  "rhythm_ai_vs_real_2026": {
+    "title": "AI vs Real Images Dataset",
+    "source": "kaggle",
+    "ref": "rhythmghai/ai-vs-real-images-dataset",
+    "local_dir": "data/raw/rhythm_ai_vs_real_2026",
+    "updated": "2026-03-21",
+    "size_mb": 237,
+    "notes": "Recent Kaggle real-vs-AI image dataset with high usability rating."
+  },
+  "deepfake_faces_2026": {
+    "title": "Deepfake Detection Dataset 2026",
+    "source": "kaggle",
+    "ref": "chuneeb/deepfake-detection-dataset-2026",
+    "local_dir": "data/raw/deepfake_faces_2026",
+    "updated": "2026-05-06",
+    "size_mb": 1,
+    "notes": "Small recent face-focused Kaggle package; current download is a CSV, not an image-folder benchmark."
+  },
+  "stylegan3_faces_2026": {
+    "title": "10000 Real vs Fake Faces (StyleGAN3)",
+    "source": "kaggle",
+    "ref": "troykueh/real-vs-fake-faces-stylegan3",
+    "local_dir": "data/raw/stylegan3_faces_2026",
+    "updated": "2026-04-16",
+    "size_mb": 2013,
+    "notes": "Recent StyleGAN3 face dataset; larger but useful for generator-specific face evaluation."
+  },
+  "ai_generated_vs_real_multigen": {
+    "title": "ai-generated-images-vs-real-images",
+    "source": "kaggle",
+    "ref": "tristanzhang32/ai-generated-images-vs-real-images",
+    "local_dir": "data/raw/ai_generated_vs_real_multigen",
+    "updated": "2024-05-23",
+    "size_mb": 49593,
+    "notes": "Large multi-generator dataset reported to include Stable Diffusion, MidJourney, and DALL-E images."
+  },
+  "ms_cocoai_2026": {
+    "title": "MS COCOAI / Defactify Image Dataset",
+    "source": "huggingface",
+    "ref": "Rajarshi-Roy-research/Defactify_Image_Dataset",
+    "local_dir": "data/raw/ms_cocoai_2026",
+    "updated": "2026-01-02",
+    "size_mb": null,
+    "notes": "2026 research dataset with real/synthetic COCO-aligned images from SD3, SD2.1, SDXL, DALL-E 3, and MidJourney v6."
+  },
+  "realhd_2026": {
+    "title": "RealHD",
+    "source": "external",
+    "ref": "https://real-hd.github.io",
+    "local_dir": "data/raw/realhd_2026",
+    "updated": "2026-02-11",
+    "size_mb": null,
+    "notes": "2026 large-scale benchmark with state-of-the-art generated images; use project instructions if released data access is available."
+  }
+}

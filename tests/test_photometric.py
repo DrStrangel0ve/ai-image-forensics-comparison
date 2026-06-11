@@ -6,6 +6,10 @@ import numpy as np
 from PIL import Image
 
 from forensic_compare.photometric import FEATURE_NAMES, estimate_pseudo_normals, extract_features
+from forensic_compare.conventional import (
+    extract_feature_set,
+    feature_names,
+)
 
 
 def test_extract_features_are_finite(tmp_path: Path) -> None:
@@ -26,3 +30,14 @@ def test_pseudo_normals_are_unit_length() -> None:
     lengths = np.linalg.norm(normals, axis=-1)
 
     assert np.allclose(lengths, 1.0, atol=1e-5)
+
+
+def test_conventional_feature_sets_are_finite(tmp_path: Path) -> None:
+    image = np.random.default_rng(1).integers(0, 255, size=(32, 32, 3), dtype=np.uint8)
+    path = tmp_path / "image.png"
+    Image.fromarray(image).save(path)
+
+    for feature_set in ["noise", "combined"]:
+        features = extract_feature_set(path, image_size=32, feature_set=feature_set)
+        assert features.shape == (len(feature_names(feature_set)),)
+        assert np.isfinite(features).all()

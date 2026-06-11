@@ -4,6 +4,7 @@ This project compares two ways to detect generated images:
 
 1. A standard neural network classifier, defaulting to ResNet-18.
 2. A photometric normal-consistency baseline that estimates pseudo normals from each image and checks whether lighting and surface gradients look physically coherent.
+3. Conventional single-image forensic baselines that measure noise residuals, JPEG/block artifacts, ELA differences, FFT frequency balance, and chroma/noise consistency.
 
 The default dataset target is Kaggle's **CIFAKE: Real and AI-Generated Synthetic Images**:
 
@@ -65,7 +66,51 @@ python scripts/download_kaggle.py `
   --out data/raw/cifake
 ```
 
-## Run The Experiment
+## Dataset Catalog
+
+List known dataset candidates:
+
+```powershell
+python scripts/list_datasets.py
+```
+
+Download one by key:
+
+```powershell
+python scripts/download_dataset.py ai_vs_real_2026
+```
+
+The catalog currently includes:
+
+- `cifake`: CIFAKE real vs Stable Diffusion images.
+- `ai_vs_real_2026`: practical-size 2026 Kaggle real-vs-AI image dataset.
+- `rhythm_ai_vs_real_2026`: another practical-size 2026 Kaggle real-vs-AI dataset.
+- `stylegan3_faces_2026`: recent StyleGAN3 real-vs-fake face dataset.
+- `ai_generated_vs_real_multigen`: large multi-generator Kaggle dataset.
+- `ms_cocoai_2026`: Hugging Face research dataset with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney v6 references.
+- `realhd_2026`: external 2026 benchmark candidate.
+
+## Run One Full Benchmark
+
+The benchmark runner can compare multiple methods on the same split:
+
+```powershell
+python scripts/run_benchmark.py `
+  --dataset-key ai_vs_real_2026 `
+  --out-dir runs/ai_vs_real_2026_full `
+  --methods photometric noise combined neural `
+  --feature-classifier logistic_regression `
+  --feature-image-size 128 `
+  --neural-model resnet18 `
+  --pretrained `
+  --epochs 5 `
+  --batch-size 64 `
+  --neural-image-size 128 `
+  --num-workers 0 `
+  --device cuda
+```
+
+## Run CIFAKE Manually
 
 Train the neural network:
 
@@ -83,9 +128,21 @@ python scripts/train_neural_net.py `
 Train the photometric normal-consistency baseline:
 
 ```powershell
-python scripts/run_photometric_baseline.py `
+python scripts/run_feature_baseline.py `
   --data-dir data/raw/cifake `
   --output-dir runs/photometric `
+  --feature-set photometric `
+  --image-size 128
+```
+
+Train the combined conventional baseline:
+
+```powershell
+python scripts/run_feature_baseline.py `
+  --data-dir data/raw/cifake `
+  --output-dir runs/combined_features `
+  --feature-set combined `
+  --classifier logistic_regression `
   --image-size 128
 ```
 
@@ -161,3 +218,8 @@ The comparison script creates a markdown report and a CSV table so you can track
 
 An initial balanced CIFAKE subset run is checked into [reports/cifake_subset_initial.md](reports/cifake_subset_initial.md).
 It used 2,000 train images and 1,000 test images per method, with a one-epoch ResNet-18 neural baseline.
+
+## Initial 2026 Dataset Result
+
+A full small-dataset run on `ai_vs_real_2026` is checked into [reports/ai_vs_real_2026_benchmark.md](reports/ai_vs_real_2026_benchmark.md).
+It used CUDA on the local RTX 3060 Ti and compared photometric, noise, combined conventional features, and pretrained ResNet-18.

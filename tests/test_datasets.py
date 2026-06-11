@@ -35,4 +35,6 @@ def test_collect_labeled_images_uses_fake_as_one(tmp_path: Path) -> None:
 
     assert labels == [0, 1]
     assert class_kind("AI_generated") == "fake"
+    assert class_kind("human-generated") == "real"
+    assert class_kind("machine-generated") == "fake"
     assert class_kind("real") == "real"

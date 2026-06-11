@@ -1,21 +1,32 @@
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 from pathlib import Path
-from random import Random
 from typing import Iterable
 
-IMAGE_EXTENSIONS = {".bmp", ".gif", ".jpeg", ".jpg", ".png", ".tif", ".tiff", ".webp"}
+IMAGE_EXTENSIONS = {".bmp", ".jpeg", ".jpg", ".png", ".tif", ".tiff", ".webp"}
 FAKE_TOKENS = {
     "ai",
+    "ai_generated",
     "artificial",
     "diffusion",
     "fake",
     "gan",
     "generated",
+    "machine",
+    "machine_generated",
     "synthetic",
 }
-REAL_TOKENS = {"authentic", "natural", "photo", "photograph", "real"}
+REAL_TOKENS = {
+    "authentic",
+    "human",
+    "human_generated",
+    "natural",
+    "photo",
+    "photograph",
+    "real",
+}
 
 
 @dataclass(frozen=True)
@@ -39,9 +50,23 @@ def image_files(root: Path) -> list[Path]:
     return [path for path in root.rglob("*") if is_image(path)]
 
 
+def stable_path_score(path: str | Path, seed: int) -> int:
+    normalized = str(Path(path)).replace("\\", "/").lower()
+    digest = hashlib.sha256(f"{seed}:{normalized}".encode("utf-8")).hexdigest()
+    return int(digest[:16], 16)
+
+
 def class_kind(class_name: str) -> str | None:
     normalized = class_name.lower().replace("-", "_").replace(" ", "_")
     tokens = set(normalized.split("_")) | {normalized}
+    if tokens & {"human", "human_generated"} and not tokens & {
+        "ai",
+        "artificial",
+        "fake",
+        "machine",
+        "synthetic",
+    }:
+        return "real"
     if tokens & FAKE_TOKENS:
         return "fake"
     if tokens & REAL_TOKENS:
@@ -134,7 +159,6 @@ def stratified_split(
 ) -> tuple[list[tuple[Path, int, str]], list[tuple[Path, int, str]]]:
     if not 0 < test_fraction < 1:
         raise ValueError("test_fraction must be between 0 and 1")
-    rng = Random(seed)
     by_label: dict[int, list[tuple[Path, int, str]]] = {}
     for record in records:
         by_label.setdefault(record[1], []).append(record)
@@ -142,11 +166,10 @@ def stratified_split(
     train: list[tuple[Path, int, str]] = []
     test: list[tuple[Path, int, str]] = []
     for label_records in by_label.values():
-        shuffled = label_records[:]
-        rng.shuffle(shuffled)
-        n_test = max(1, int(round(len(shuffled) * test_fraction)))
-        test.extend(shuffled[:n_test])
-        train.extend(shuffled[n_test:])
+        ordered = sorted(label_records, key=lambda record: stable_path_score(record[0], seed))
+        n_test = max(1, int(round(len(ordered) * test_fraction)))
+        test.extend(ordered[:n_test])
+        train.extend(ordered[n_test:])
     return train, test
 
 
@@ -157,7 +180,6 @@ def limit_records(
 ) -> list[tuple[Path, int, str]]:
     if max_samples is None or max_samples <= 0 or max_samples >= len(records):
         return records
-    rng = Random(seed)
     by_label: dict[int, list[tuple[Path, int, str]]] = {}
     for record in records:
         by_label.setdefault(record[1], []).append(record)
@@ -165,12 +187,11 @@ def limit_records(
     per_label = max(1, max_samples // max(1, len(by_label)))
     selected: list[tuple[Path, int, str]] = []
     for label_records in by_label.values():
-        shuffled = label_records[:]
-        rng.shuffle(shuffled)
-        selected.extend(shuffled[:per_label])
+        ordered = sorted(label_records, key=lambda record: stable_path_score(record[0], seed))
+        selected.extend(ordered[:per_label])
 
     if len(selected) < max_samples:
         remaining = [record for record in records if record not in selected]
-        rng.shuffle(remaining)
+        remaining = sorted(remaining, key=lambda record: stable_path_score(record[0], seed + 17))
         selected.extend(remaining[: max_samples - len(selected)])
     return selected[:max_samples]

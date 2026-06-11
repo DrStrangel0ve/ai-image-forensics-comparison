@@ -17,6 +17,12 @@ METRIC_COLUMNS = ["accuracy", "precision", "recall", "f1", "roc_auc", "n_samples
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Compare neural and photometric method metrics.")
+    parser.add_argument(
+        "--metrics",
+        action="append",
+        default=[],
+        help="Method metric in NAME=PATH form. Repeat for multiple methods.",
+    )
     parser.add_argument("--neural", default="runs/resnet18/metrics.json")
     parser.add_argument("--photometric", default="runs/photometric/metrics.json")
     parser.add_argument("--out-dir", default="runs/comparison")
@@ -29,6 +35,16 @@ def _row(name: str, metrics_path: str | Path) -> dict:
     for column in METRIC_COLUMNS:
         row[column] = metrics.get(column)
     return row
+
+
+def _parse_metric_arg(value: str) -> tuple[str, str]:
+    if "=" not in value:
+        path = Path(value)
+        return path.parent.name or path.stem, value
+    name, path = value.split("=", 1)
+    if not name or not path:
+        raise ValueError(f"Metric arguments must be NAME=PATH, got: {value}")
+    return name, path
 
 
 def _markdown_table(frame: pd.DataFrame) -> str:
@@ -52,10 +68,13 @@ def _markdown_table(frame: pd.DataFrame) -> str:
 def main() -> None:
     args = parse_args()
     out_dir = ensure_dir(args.out_dir)
-    rows = [
-        _row("neural_net", args.neural),
-        _row("photometric_normal_consistency", args.photometric),
-    ]
+    if args.metrics:
+        rows = [_row(name, path) for name, path in map(_parse_metric_arg, args.metrics)]
+    else:
+        rows = [
+            _row("neural_net", args.neural),
+            _row("photometric_normal_consistency", args.photometric),
+        ]
     frame = pd.DataFrame(rows)
     frame.to_csv(out_dir / "comparison.csv", index=False)
 
@@ -67,9 +86,9 @@ def main() -> None:
         "",
         f"Best accuracy: **{best['method']}** at **{best['accuracy']:.4f}**.",
         "",
-        "The photometric baseline is a single-image normal-consistency proxy. "
-        "It is useful as a physics-inspired check, but it is not a substitute "
-        "for calibrated multi-light photometric stereo data.",
+        "The conventional feature baselines are single-image forensic proxies. "
+        "The photometric feature set is useful as a physics-inspired check, "
+        "but it is not a substitute for calibrated multi-light photometric stereo data.",
         "",
     ]
     (out_dir / "report.md").write_text("\n".join(report), encoding="utf-8")

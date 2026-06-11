@@ -16,6 +16,7 @@ from torchvision import datasets, transforms
 from tqdm import tqdm
 
 from forensic_compare.datasets import class_kind, discover_layout
+from forensic_compare.datasets import stable_path_score
 from forensic_compare.metrics import binary_metrics
 from forensic_compare.nn_model import build_model
 from forensic_compare.utils import ensure_dir, resolve_device, seed_everything, write_json
@@ -45,34 +46,52 @@ def _targets(dataset: datasets.ImageFolder) -> list[int]:
     return [sample[1] for sample in dataset.samples]
 
 
-def _balanced_subset_indices(targets: list[int], max_samples: int, seed: int) -> list[int]:
+def _balanced_subset_indices(
+    targets: list[int],
+    max_samples: int,
+    seed: int,
+    paths: list[str] | None = None,
+) -> list[int]:
     if max_samples <= 0 or max_samples >= len(targets):
         return list(range(len(targets)))
-    rng = np.random.default_rng(seed)
     labels = sorted(set(targets))
     per_label = max(1, max_samples // max(1, len(labels)))
     selected: list[int] = []
     for label in labels:
-        label_indices = np.asarray([idx for idx, target in enumerate(targets) if target == label])
-        rng.shuffle(label_indices)
-        selected.extend(label_indices[:per_label].tolist())
+        label_indices = [idx for idx, target in enumerate(targets) if target == label]
+        label_indices = sorted(
+            label_indices,
+            key=lambda idx: stable_path_score(paths[idx] if paths else str(idx), seed),
+        )
+        selected.extend(label_indices[:per_label])
     if len(selected) < max_samples:
-        remaining = np.asarray([idx for idx in range(len(targets)) if idx not in set(selected)])
-        rng.shuffle(remaining)
-        selected.extend(remaining[: max_samples - len(selected)].tolist())
+        selected_set = set(selected)
+        remaining = [idx for idx in range(len(targets)) if idx not in selected_set]
+        remaining = sorted(
+            remaining,
+            key=lambda idx: stable_path_score(paths[idx] if paths else str(idx), seed + 17),
+        )
+        selected.extend(remaining[: max_samples - len(selected)])
     return selected[:max_samples]
 
 
-def _stratified_indices(targets: list[int], test_fraction: float, seed: int) -> tuple[list[int], list[int]]:
-    rng = np.random.default_rng(seed)
+def _stratified_indices(
+    targets: list[int],
+    test_fraction: float,
+    seed: int,
+    paths: list[str] | None = None,
+) -> tuple[list[int], list[int]]:
     train_indices: list[int] = []
     test_indices: list[int] = []
     for label in sorted(set(targets)):
-        label_indices = np.asarray([idx for idx, target in enumerate(targets) if target == label])
-        rng.shuffle(label_indices)
+        label_indices = [idx for idx, target in enumerate(targets) if target == label]
+        label_indices = sorted(
+            label_indices,
+            key=lambda idx: stable_path_score(paths[idx] if paths else str(idx), seed),
+        )
         n_test = max(1, int(round(len(label_indices) * test_fraction)))
-        test_indices.extend(label_indices[:n_test].tolist())
-        train_indices.extend(label_indices[n_test:].tolist())
+        test_indices.extend(label_indices[:n_test])
+        train_indices.extend(label_indices[n_test:])
     return train_indices, test_indices
 
 
@@ -107,7 +126,10 @@ def make_datasets(args: argparse.Namespace):
         train_base = datasets.ImageFolder(layout.single, transform=train_transform)
         test_base = datasets.ImageFolder(layout.single, transform=eval_transform)
         train_indices, test_indices = _stratified_indices(
-            _targets(train_base), args.val_fraction, args.seed
+            _targets(train_base),
+            args.val_fraction,
+            args.seed,
+            [path for path, _label in train_base.samples],
         )
         train_dataset = Subset(train_base, train_indices)
         test_dataset = Subset(test_base, test_indices)
@@ -117,30 +139,46 @@ def make_datasets(args: argparse.Namespace):
     train_targets = _targets(train_dataset.dataset) if isinstance(train_dataset, Subset) else _targets(train_dataset)
     test_targets = _targets(test_dataset.dataset) if isinstance(test_dataset, Subset) else _targets(test_dataset)
     if isinstance(train_dataset, Subset):
+        train_paths = [train_dataset.dataset.samples[i][0] for i in train_dataset.indices]
         train_dataset = Subset(
             train_dataset.dataset,
             [train_dataset.indices[idx] for idx in _balanced_subset_indices(
                 [train_targets[i] for i in train_dataset.indices],
                 args.max_train_samples,
                 args.seed,
+                train_paths,
             )],
         )
     else:
         train_dataset = Subset(
-            train_dataset, _balanced_subset_indices(train_targets, args.max_train_samples, args.seed)
+            train_dataset,
+            _balanced_subset_indices(
+                train_targets,
+                args.max_train_samples,
+                args.seed,
+                [path for path, _label in train_dataset.samples],
+            ),
         )
     if isinstance(test_dataset, Subset):
+        test_paths = [test_dataset.dataset.samples[i][0] for i in test_dataset.indices]
         test_dataset = Subset(
             test_dataset.dataset,
             [test_dataset.indices[idx] for idx in _balanced_subset_indices(
                 [test_targets[i] for i in test_dataset.indices],
                 args.max_test_samples,
                 args.seed + 1,
+                test_paths,
             )],
         )
     else:
         test_dataset = Subset(
-            test_dataset, _balanced_subset_indices(test_targets, args.max_test_samples, args.seed + 1)
+            test_dataset,
+            _balanced_subset_indices(
+                test_targets,
+                args.max_test_samples,
+                args.seed + 1,
+                [path for path, _label in test_dataset.samples],
+            ),
         )
 
     base_dataset = train_dataset.dataset if isinstance(train_dataset, Subset) else train_dataset
@@ -215,6 +253,8 @@ def main() -> None:
 
     history = []
     best_accuracy = -1.0
+    best_epoch = 0
+    best_model_path = output_dir / "model.pt"
     for epoch in range(1, args.epochs + 1):
         loss = train_one_epoch(model, train_loader, criterion, optimizer, device, scaler)
         metrics, _ = evaluate(model, test_loader, device, fake_idx)
@@ -224,8 +264,11 @@ def main() -> None:
         print(f"epoch={epoch} loss={loss:.4f} accuracy={metrics['accuracy']:.4f} f1={metrics['f1']:.4f}")
         if metrics["accuracy"] > best_accuracy:
             best_accuracy = metrics["accuracy"]
-            torch.save(model.state_dict(), output_dir / "model.pt")
+            best_epoch = epoch
+            torch.save(model.state_dict(), best_model_path)
 
+    if best_model_path.exists():
+        model.load_state_dict(torch.load(best_model_path, map_location=device, weights_only=True))
     metrics, rows = evaluate(model, test_loader, device, fake_idx)
     metrics.update(
         {
@@ -241,6 +284,8 @@ def main() -> None:
             },
             "n_train": len(train_dataset),
             "n_test": len(test_dataset),
+            "selected_epoch": best_epoch,
+            "best_accuracy": best_accuracy,
         }
     )
     write_json(metrics, output_dir / "metrics.json")
