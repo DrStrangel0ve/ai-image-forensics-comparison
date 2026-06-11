@@ -275,3 +275,8 @@ The main result is that ResNet-18 still beats the combined conventional baseline
 
 An experimental `combined_v2` conventional baseline is checked into [reports/conventional_v2_probe.md](reports/conventional_v2_probe.md).
 It adds local noise-entropy and multiscale residual features inspired by newer robustness work, but keeps the original `combined` feature set for backward-compatible saved models.
+
+## Defactify / MS COCOAI Subset Result
+
+A Hugging Face export and benchmark run on a 2,000-image Defactify/MS COCOAI subset is checked into [reports/ms_cocoai_2026_subset_benchmark.md](reports/ms_cocoai_2026_subset_benchmark.md).
+The best conventional method was `combined_v2` at 0.7010 accuracy, while pretrained ResNet-18 reached 0.8160 accuracy.
