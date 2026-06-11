@@ -17,6 +17,24 @@
     "size_mb": 476,
     "notes": "Recent, practical-size real-vs-AI image dataset found through Kaggle search."
   },
+  "chatgpt_gemini_deepfake_2026": {
+    "title": "Chatgpt/Gemini Realistic images for DeepfakeDetect",
+    "source": "kaggle",
+    "ref": "shivaligupta17/finetunedataset",
+    "local_dir": "data/raw/chatgpt_gemini_deepfake_2026",
+    "updated": "2026-05-31",
+    "size_mb": 398,
+    "notes": "Very recent Kaggle candidate. File listing shows image-folder style paths such as new dataset/train/fake/*.png; validate the real class folder and any duplicate generated images before benchmarking."
+  },
+  "ishu_ai_vs_real_2026": {
+    "title": "ai-vs-real-images",
+    "source": "kaggle",
+    "ref": "ishu15m/ai-vs-real-images",
+    "local_dir": "data/raw/ishu_ai_vs_real_2026",
+    "updated": "2026-05-28",
+    "size_mb": 603,
+    "notes": "Recent Kaggle real-vs-AI candidate. File listing shows AI category folders such as AI-images/AI-images/ai_animals; verify the real-image folder mapping before direct ImageFolder training."
+  },
   "rhythm_ai_vs_real_2026": {
     "title": "AI vs Real Images Dataset",
     "source": "kaggle",
@@ -25,6 +43,24 @@
     "updated": "2026-03-21",
     "size_mb": 237,
     "notes": "Recent Kaggle real-vs-AI image dataset with high usability rating."
+  },
+  "itszubi_ai_vs_real_2026": {
+    "title": "AI vs Real Images Classification Dataset",
+    "source": "kaggle",
+    "ref": "itszubi/ai-vs-real-images-classification-dataset",
+    "local_dir": "data/raw/itszubi_ai_vs_real_2026",
+    "updated": "2026-04-27",
+    "size_mb": 84,
+    "notes": "Small, practical Kaggle candidate with good usability. File listing begins with topic folders such as animals/*.png, so inspect labels before using it as a binary real-vs-generated benchmark."
+  },
+  "safemedia_ai_image_eval_2026": {
+    "title": "SafeMedia AI Image Evaluation Sample",
+    "source": "kaggle",
+    "ref": "josiahsafley/safemedia-ai-image-evaluation-sample",
+    "local_dir": "data/raw/safemedia_ai_image_eval_2026",
+    "updated": "2026-05-09",
+    "size_mb": 73,
+    "notes": "Recent prompt/target image evaluation sample with per-image metadata. It appears useful for generated-image qualitative probes, but it is not a ready binary real-vs-fake image-folder benchmark."
   },
   "deepfake_faces_2026": {
     "title": "Deepfake Detection Dataset 2026",

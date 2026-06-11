@@ -11,7 +11,7 @@ sys.path.insert(0, str(ROOT / "src"))
 import numpy as np
 import torch
 from torch import nn
-from torch.utils.data import DataLoader, Subset
+from torch.utils.data import DataLoader, Dataset, Subset
 from torchvision import datasets, transforms
 from tqdm import tqdm
 
@@ -19,6 +19,7 @@ from forensic_compare.datasets import class_kind, discover_layout
 from forensic_compare.datasets import stable_path_score
 from forensic_compare.metrics import binary_metrics
 from forensic_compare.nn_model import build_model
+from forensic_compare.transforms import ROBUSTNESS_VARIANTS, apply_robustness_variant
 from forensic_compare.utils import ensure_dir, resolve_device, seed_everything, write_json
 
 
@@ -39,6 +40,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--val-fraction", type=float, default=0.2)
     parser.add_argument("--max-train-samples", type=int, default=0)
     parser.add_argument("--max-test-samples", type=int, default=0)
+    parser.add_argument(
+        "--train-augment-variants",
+        nargs="+",
+        choices=ROBUSTNESS_VARIANTS,
+        default=[],
+        help="Add deterministic transformed copies of each training image before fitting.",
+    )
     return parser.parse_args()
 
 
@@ -106,6 +114,36 @@ def _dataset_path(dataset, index: int) -> str:
     if isinstance(dataset, Subset):
         return _dataset_path(dataset.dataset, dataset.indices[index])
     return str(dataset.samples[index][0])
+
+
+def _raw_image_label_transform(dataset, index: int):
+    if isinstance(dataset, Subset):
+        return _raw_image_label_transform(dataset.dataset, dataset.indices[index])
+    path, label = dataset.samples[index]
+    return dataset.loader(path), label, dataset.transform
+
+
+class DeterministicAugmentedDataset(Dataset):
+    def __init__(self, dataset, variants: list[str] | tuple[str, ...]) -> None:
+        self.dataset = dataset
+        self.variants = list(variants)
+
+    def __len__(self) -> int:
+        return len(self.dataset) * (1 + len(self.variants))
+
+    def __getitem__(self, index: int):
+        base_len = len(self.dataset)
+        variant_group = index // base_len
+        base_index = index % base_len
+        if variant_group == 0:
+            return self.dataset[base_index]
+
+        variant = self.variants[variant_group - 1]
+        image, label, transform = _raw_image_label_transform(self.dataset, base_index)
+        image = apply_robustness_variant(image, variant)
+        if transform is not None:
+            image = transform(image)
+        return image, label
 
 
 def make_datasets(args: argparse.Namespace):
@@ -241,6 +279,9 @@ def main() -> None:
     seed_everything(args.seed)
     output_dir = ensure_dir(args.output_dir)
     train_dataset, test_dataset, class_to_idx, fake_idx, layout = make_datasets(args)
+    n_train_original = len(train_dataset)
+    if args.train_augment_variants:
+        train_dataset = DeterministicAugmentedDataset(train_dataset, args.train_augment_variants)
     device = resolve_device(args.device)
 
     pin_memory = device.type == "cuda"
@@ -295,6 +336,9 @@ def main() -> None:
                 "single": str(layout.single) if layout.single else None,
             },
             "n_train": len(train_dataset),
+            "n_train_original": n_train_original,
+            "train_augment_variants": list(args.train_augment_variants),
+            "n_train_augment_variants": len(args.train_augment_variants),
             "n_test": len(test_dataset),
             "selected_epoch": best_epoch,
             "best_accuracy": best_accuracy,

@@ -35,6 +35,12 @@ def parse_args() -> argparse.Namespace:
         default=[],
         help="Forward deterministic train-time robustness variants to feature baselines.",
     )
+    parser.add_argument(
+        "--neural-train-augment-variants",
+        nargs="+",
+        default=[],
+        help="Forward deterministic train-time robustness variants to neural baselines.",
+    )
     return parser.parse_args()
 
 
@@ -122,6 +128,9 @@ def main() -> None:
             ]
             if args.pretrained:
                 command.append("--pretrained")
+            if args.neural_train_augment_variants:
+                command.append("--train-augment-variants")
+                command.extend(args.neural_train_augment_variants)
             _run(command)
             metrics.append((f"neural_{args.neural_model}", method_out / "metrics.json"))
         else:

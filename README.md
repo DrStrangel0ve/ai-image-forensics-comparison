@@ -84,7 +84,11 @@ The catalog currently includes:
 
 - `cifake`: CIFAKE real vs Stable Diffusion images.
 - `ai_vs_real_2026`: practical-size 2026 Kaggle real-vs-AI image dataset.
+- `chatgpt_gemini_deepfake_2026`: very recent Kaggle image-folder candidate with ChatGPT/Gemini realistic images, pending real-folder validation.
+- `ishu_ai_vs_real_2026`: May 2026 Kaggle real-vs-AI candidate, pending label-folder mapping validation.
 - `rhythm_ai_vs_real_2026`: another practical-size 2026 Kaggle real-vs-AI dataset.
+- `itszubi_ai_vs_real_2026`: compact April 2026 Kaggle candidate, pending binary-label validation.
+- `safemedia_ai_image_eval_2026`: recent Kaggle prompt/target sample for generated-image qualitative probes, not a ready binary benchmark.
 - `stylegan3_faces_2026`: recent StyleGAN3 real-vs-fake face dataset.
 - `ai_generated_vs_real_multigen`: large multi-generator Kaggle dataset.
 - `ms_cocoai_2026`: Hugging Face research dataset with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney v6 references.
@@ -160,6 +164,30 @@ python scripts/run_feature_baseline.py `
   --classifier logistic_regression `
   --image-size 128 `
   --train-augment-variants jpeg70 blur1 resize_half crop85
+```
+
+Neural baselines can use the same deterministic variants:
+
+```powershell
+python scripts/train_neural_net.py `
+  --data-dir data/raw/ms_cocoai_2026_subset_500 `
+  --output-dir runs/ms_cocoai_2026_subset_500/resnet18_augmented `
+  --model resnet18 `
+  --pretrained `
+  --epochs 4 `
+  --batch-size 64 `
+  --image-size 128 `
+  --device cuda `
+  --train-augment-variants jpeg70 blur1 resize_half crop85
+```
+
+When running the full benchmark wrapper, pass neural variants with:
+
+```powershell
+python scripts/run_benchmark.py `
+  --dataset-key ms_cocoai_2026 `
+  --methods neural `
+  --neural-train-augment-variants jpeg70 blur1 resize_half crop85
 ```
 
 ## Run CIFAKE Manually
@@ -330,3 +358,6 @@ Clean-threshold calibration recovers part of the blurred `combined_v3` drop, imp
 
 An augmented conventional follow-up is checked into [reports/ms_cocoai_augmented_conventional_robustness.md](reports/ms_cocoai_augmented_conventional_robustness.md).
 Training `combined_v3` with JPEG, blur, resize, and crop variants kept clean accuracy at 0.7320 while improving blur accuracy from 0.6350 to 0.6980 and half-resize accuracy from 0.6940 to 0.7230.
+
+An augmented neural follow-up is checked into [reports/ms_cocoai_augmented_neural_robustness.md](reports/ms_cocoai_augmented_neural_robustness.md).
+Training ResNet-18 with the same deterministic variants improved its own blur and resize robustness deltas, but the unaugmented ResNet-18 still had better clean accuracy and AUC on this 4-epoch run.
