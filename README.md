@@ -509,6 +509,8 @@ A branch-dropout SCP-Fusion probe is checked into [reports/score_fusion_branch_d
 
 A source-calibrated SCP-Fusion probe is checked into [reports/score_fusion_source_calibration_probe_2026_06_13.md](reports/score_fusion_source_calibration_probe_2026_06_13.md). It adds reusable temperature/Platt/isotonic calibration utilities plus an optional held-out source calibration split for score fusion. On Ishu-to-MS-COCOAI, class-balanced temperature scaling improves default accuracy to 0.6073 and Brier/ECE to 0.3123 / 0.2947, while AUC dips slightly to 0.7242.
 
+A source-heldout calibration stress test for the score-fusion variants is checked into [reports/score_fusion_source_holdout_probe_2026_06_13.md](reports/score_fusion_source_holdout_probe_2026_06_13.md). Source-calibrated fusion has the best source-heldout Brier/ECE and fake detection, but SCP-Fusion v0 remains stronger for the 10% two-threshold triage operating point.
+
 A calibration diagnostics follow-up is checked into [reports/calibration_diagnostics_2026_06_12.md](reports/calibration_diagnostics_2026_06_12.md). It adds Brier score, expected calibration error, maximum calibration error, reliability-bin CSVs, and a reliability-curve figure. SCP-Fusion v0 has the best Ishu-to-MS-COCOAI Brier score and AUC, but all strong ranking models remain under-confident on the target domain.
 
 A source-heldout post-hoc calibration follow-up is checked into [reports/source_holdout_calibration_2026_06_12.md](reports/source_holdout_calibration_2026_06_12.md). Balanced temperature scaling improves Brier/ECE for the strongest models without changing their default decisions, while flexible Platt/isotonic calibrators often overfit non-heldout generator priors and inflate real-image false positives.
