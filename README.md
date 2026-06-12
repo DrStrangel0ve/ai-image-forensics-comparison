@@ -5,6 +5,7 @@ This project compares two ways to detect generated images:
 1. A standard neural network classifier, defaulting to ResNet-18.
 2. A photometric normal-consistency baseline that estimates pseudo normals from each image and checks whether lighting and surface gradients look physically coherent.
 3. Conventional single-image forensic baselines that measure noise residuals, JPEG/block artifacts, ELA differences, FFT frequency balance, and chroma/noise consistency.
+4. A physics-guided neural fusion model that gives ResNet-18 both pixels and standardized `combined_v3` forensic features.
 
 The default dataset target is Kaggle's **CIFAKE: Real and AI-Generated Synthetic Images**:
 
@@ -27,6 +28,8 @@ So this repo implements a **single-image photometric proxy**:
 - train a small logistic-regression classifier from those physical features.
 
 That gives a fair, runnable physics-inspired baseline against the neural network. If you later add a calibrated multi-light dataset, the photometric module is the place to extend it into full photometric stereo.
+
+The repo also includes a physics-guided neural model. It is not a classic PDE-style PINN; instead, it fuses a ResNet image embedding with a small MLP over photometric, residual, JPEG, frequency, and chroma features. This is the practical physics-informed route for the current single-image datasets.
 
 ## Setup
 
@@ -193,7 +196,7 @@ python scripts/run_repeated_benchmark.py `
   --out-dir runs/ai_vs_real_2026_repeated `
   --seeds 7 17 29 `
   -- `
-  --methods combined_v3 neural `
+  --methods combined_v3 neural physics_guided `
   --feature-classifier logistic_regression `
   --feature-image-size 128 `
   --neural-model resnet18 `
@@ -417,7 +420,7 @@ A small ChatGPT/Gemini May 2026 Kaggle probe is checked into [reports/chatgpt_ge
 It validates the dataset layout, adds exact/perceptual duplicate auditing, and shows that in-dataset results are easy while MS COCOAI-to-ChatGPT/Gemini zero-shot transfer remains weak.
 
 An Ishu AI-vs-real May 2026 benchmark is checked into [reports/ishu_ai_vs_real_2026_benchmark.md](reports/ishu_ai_vs_real_2026_benchmark.md).
-Across seed-7, seed-17, and seed-29 deterministic splits, `combined_v3` and six-epoch ResNet-18 tied on mean accuracy to four decimals and were nearly tied on mean AUC; ResNet-18 still transfers better from MS COCOAI with 0.7003 AUC.
+Across seed-7, seed-17, and seed-29 deterministic splits, `combined_v3` and six-epoch ResNet-18 tied on mean accuracy to four decimals and were nearly tied on mean AUC. A follow-up physics-guided ResNet-18 fused with `combined_v3` features improved to 0.8450 mean accuracy and 0.9177 mean AUC, though MS COCOAI-to-Ishu transfer has only been measured for the unfused models so far.
 
 A dataset triage follow-up is checked into [reports/dataset_triage_2026_06_12.md](reports/dataset_triage_2026_06_12.md).
 It adds ARPAN V3 and SynCred-Bench to the catalog, fixes Hugging Face label override handling, and rejects ARPAN V3's upstream split for fair scoring because exact duplicate groups cross train/test.

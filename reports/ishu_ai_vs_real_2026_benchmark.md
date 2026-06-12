@@ -99,6 +99,34 @@ Three-run summary:
 
 This overturns the original single-split conclusion. Across three seeds, `combined_v3` and ResNet-18 have identical mean accuracy to four decimals and nearly identical mean AUC. ResNet-18 wins accuracy on two splits and AUC on seed 29, while `combined_v3` has lower variance and wins AUC on two splits. More repeated seeds or k-fold validation are needed before claiming either family is the stable in-dataset winner.
 
+## Physics-Guided Neural Fusion
+
+Because the repeated split check made the conventional `combined_v3` stack and ResNet-18 look nearly tied, this follow-up adds a physics-guided neural fusion baseline. This is not a calibrated multi-light photometric-stereo PINN; the available datasets are single-image real-vs-generated corpora. Instead, the model fuses a pretrained ResNet-18 image embedding with a small MLP over standardized `combined_v3` forensic features: photometric normal-consistency, noise residuals, JPEG recompression response, 8x8 residual periodicity, residual RGB correlation, local residual variance, and chroma statistics.
+
+Per-seed comparison:
+
+| seed | method | accuracy | precision | recall | f1 | roc_auc |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 7 | combined_v3 | 0.8158 | 0.8070 | 0.8214 | 0.8142 | 0.8938 |
+| 7 | resnet18 | 0.7719 | 0.7679 | 0.7679 | 0.7679 | 0.8608 |
+| 7 | physics_guided_resnet18_combined_v3 | 0.7982 | 0.7705 | 0.8393 | 0.8034 | 0.8808 |
+| 17 | combined_v3 | 0.8246 | 0.8000 | 0.8571 | 0.8276 | 0.9089 |
+| 17 | resnet18 | 0.8509 | 0.8679 | 0.8214 | 0.8440 | 0.8981 |
+| 17 | physics_guided_resnet18_combined_v3 | 0.8596 | 0.8704 | 0.8393 | 0.8545 | 0.9372 |
+| 29 | combined_v3 | 0.8333 | 0.8136 | 0.8571 | 0.8348 | 0.8799 |
+| 29 | resnet18 | 0.8509 | 0.8305 | 0.8750 | 0.8522 | 0.9190 |
+| 29 | physics_guided_resnet18_combined_v3 | 0.8772 | 0.8500 | 0.9107 | 0.8793 | 0.9350 |
+
+Three-run summary:
+
+| method | n_runs | accuracy_mean | accuracy_std | roc_auc_mean | roc_auc_std | accuracy_wins | auc_wins |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| combined_v3 | 3 | 0.8246 | 0.0072 | 0.8942 | 0.0118 | 1 | 1 |
+| resnet18 | 3 | 0.8246 | 0.0372 | 0.8927 | 0.0241 | 0 | 0 |
+| physics_guided_resnet18_combined_v3 | 3 | 0.8450 | 0.0338 | 0.9177 | 0.0261 | 2 | 2 |
+
+The fusion model is the first in-dataset method here to clearly beat both the conventional stack and vanilla ResNet-18 on the three-seed mean. It still underperforms `combined_v3` on seed 7, so the result should be treated as promising rather than settled. The next check should be cross-domain transfer and robustness transforms for the fused model.
+
 ## Category Breakdown
 
 Accuracy by nested category on the deterministic test split:
@@ -130,9 +158,9 @@ The transfer ranking is clearer than the in-dataset repeated-split result. The M
 
 This dataset is now a validated, practical-size May 2026 benchmark with more image variety than the tiny ChatGPT/Gemini probe. It is still small enough that three deterministic splits should not be treated as final; a future pass should broaden the repeated-seed sweep or add k-fold cross-validation.
 
-The photometric normal-consistency baseline is meaningfully above chance at 0.7509 AUC, and the full `combined_v3` conventional stack remains competitive with the six-epoch pretrained ResNet-18 in the repeated split check. The result supports keeping conventional signal features in the comparison rather than treating them as weak baselines.
+The photometric normal-consistency baseline is meaningfully above chance at 0.7509 AUC, and the full `combined_v3` conventional stack remains competitive with the six-epoch pretrained ResNet-18 in the repeated split check. The physics-guided fusion model is currently strongest in-dataset, which supports keeping conventional signal features in the comparison and feeding them into neural models rather than treating them as weak standalone baselines.
 
-The zero-shot transfer result points in the opposite direction: training-domain coverage still matters more than raw in-dataset accuracy. The next best robustness step is to broaden the repeated-seed sweep and then test transform robustness on this Ishu dataset, especially for the weak `nature` category.
+The zero-shot transfer result points in the opposite direction: training-domain coverage still matters more than raw in-dataset accuracy. The fused model has not yet been tested in transfer. The next best robustness step is to broaden the repeated-seed sweep and then test transform robustness on this Ishu dataset, especially for the weak `nature` category.
 
 ## Reproduce
 
@@ -189,10 +217,10 @@ The seed sweep can now be automated:
 ```powershell
 python scripts/run_repeated_benchmark.py `
   --data-dir data/raw/ishu_ai_vs_real_2026 `
-  --out-dir runs/ishu_ai_vs_real_2026_repeated_splits_auto `
+  --out-dir runs/ishu_ai_vs_real_2026_physics_guided_repeated_auto `
   --seeds 7 17 29 `
   -- `
-  --methods combined_v3 neural `
+  --methods combined_v3 neural physics_guided `
   --feature-classifier logistic_regression `
   --feature-image-size 128 `
   --neural-model resnet18 `
@@ -203,6 +231,31 @@ python scripts/run_repeated_benchmark.py `
   --num-workers 0 `
   --device cuda `
   --val-fraction 0.2 `
+  --physics-feature-set combined_v3 `
+  --physics-feature-image-size 128 `
+  --skip-errors
+```
+
+Single physics-guided run:
+
+```powershell
+python scripts/run_benchmark.py `
+  --data-dir data/raw/ishu_ai_vs_real_2026 `
+  --out-dir runs/ishu_ai_vs_real_2026_physics_guided_seed29 `
+  --methods physics_guided `
+  --feature-classifier logistic_regression `
+  --feature-image-size 128 `
+  --neural-model resnet18 `
+  --pretrained `
+  --epochs 6 `
+  --batch-size 64 `
+  --neural-image-size 128 `
+  --num-workers 0 `
+  --device cuda `
+  --seed 29 `
+  --val-fraction 0.2 `
+  --physics-feature-set combined_v3 `
+  --physics-feature-image-size 128 `
   --skip-errors
 ```
 

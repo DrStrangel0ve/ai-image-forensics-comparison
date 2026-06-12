@@ -22,6 +22,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--neural-model", default="resnet18")
     parser.add_argument("--pretrained", action="store_true", help="Use pretrained neural weights when available.")
     parser.add_argument("--neural-image-size", type=int, default=96)
+    parser.add_argument("--physics-feature-set", default="combined_v3")
+    parser.add_argument("--physics-feature-image-size", type=int, default=128)
+    parser.add_argument("--physics-feature-hidden-dim", type=int, default=128)
+    parser.add_argument("--physics-fusion-dropout", type=float, default=0.2)
     parser.add_argument("--epochs", type=int, default=3)
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--num-workers", type=int, default=2)
@@ -143,6 +147,55 @@ def main() -> None:
                 command.extend(args.neural_train_augment_variants)
             _run(command)
             metrics.append((f"neural_{args.neural_model}", method_out / "metrics.json"))
+        elif method == "physics_guided":
+            method_out = out_dir / f"physics_guided_{args.neural_model}_{args.physics_feature_set}"
+            command = [
+                sys.executable,
+                "scripts/train_physics_guided_net.py",
+                "--data-dir",
+                str(data_dir),
+                "--output-dir",
+                str(method_out),
+                "--model",
+                args.neural_model,
+                "--epochs",
+                str(args.epochs),
+                "--batch-size",
+                str(args.batch_size),
+                "--image-size",
+                str(args.neural_image_size),
+                "--num-workers",
+                str(args.num_workers),
+                "--device",
+                args.device,
+                "--max-train-samples",
+                str(args.max_train_samples),
+                "--max-test-samples",
+                str(args.max_test_samples),
+                "--seed",
+                str(args.seed),
+                "--val-fraction",
+                str(args.val_fraction),
+                "--physics-feature-set",
+                args.physics_feature_set,
+                "--feature-image-size",
+                str(args.physics_feature_image_size),
+                "--feature-hidden-dim",
+                str(args.physics_feature_hidden_dim),
+                "--fusion-dropout",
+                str(args.physics_fusion_dropout),
+            ]
+            if args.pretrained:
+                command.append("--pretrained")
+            if args.skip_errors:
+                command.append("--skip-errors")
+            _run(command)
+            metrics.append(
+                (
+                    f"physics_guided_{args.neural_model}_{args.physics_feature_set}",
+                    method_out / "metrics.json",
+                )
+            )
         else:
             raise ValueError(f"Unsupported method: {method}")
 
