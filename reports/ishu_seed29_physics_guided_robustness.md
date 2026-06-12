@@ -35,7 +35,7 @@ The fused model stays strongest on every transformed seed-29 split. It is especi
 
 The standalone `combined_v3` model is still the most transform-sensitive branch here, dropping 4.4 accuracy points under both blur and half-resolution resize. ResNet-18 is stable, but the fusion model keeps a small lead over it on every variant.
 
-This is still only one split. The next robustness step is to repeat the same export-and-transform workflow for seeds 7 and 17, then summarize the mean deltas.
+This was the first robustness split. A three-seed follow-up is now checked into `reports/ishu_physics_guided_robustness_3seed.md`.
 
 ## Reproduce
 
