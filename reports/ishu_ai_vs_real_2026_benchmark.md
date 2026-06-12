@@ -75,7 +75,27 @@ The exact and perceptual duplicate candidates are all within `AI-images/ai_food`
 | combined_v3 | 0.8158 | 0.8070 | 0.8214 | 0.8142 | 0.8938 | 114 |
 | resnet18 | 0.7719 | 0.7679 | 0.7679 | 0.7679 | 0.8608 | 114 |
 
-This is a useful counterexample to the Defactify/MS COCOAI pattern: the strongest conventional feature stack beats the six-epoch pretrained ResNet-18 on both accuracy and AUC.
+On this seed-7 split, the strongest conventional feature stack beats the six-epoch pretrained ResNet-18 on both accuracy and AUC. Because the dataset is still modest in size, the result is best treated as a single-split finding rather than a stable ranking by itself.
+
+## Repeated Split Check
+
+An alternate deterministic split with `--seed 17` reran the two strongest in-dataset methods using the same 80/20 validation fraction and model settings.
+
+| seed | method | accuracy | precision | recall | f1 | roc_auc |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 7 | combined_v3 | 0.8158 | 0.8070 | 0.8214 | 0.8142 | 0.8938 |
+| 7 | resnet18 | 0.7719 | 0.7679 | 0.7679 | 0.7679 | 0.8608 |
+| 17 | combined_v3 | 0.8246 | 0.8000 | 0.8571 | 0.8276 | 0.9089 |
+| 17 | resnet18 | 0.8509 | 0.8679 | 0.8214 | 0.8440 | 0.8981 |
+
+Two-run summary:
+
+| method | n_runs | accuracy_mean | accuracy_std | roc_auc_mean | roc_auc_std | accuracy_wins | auc_wins |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| combined_v3 | 2 | 0.8202 | 0.0044 | 0.9013 | 0.0075 | 1 | 2 |
+| resnet18 | 2 | 0.8114 | 0.0395 | 0.8795 | 0.0186 | 1 | 0 |
+
+This softens the original single-split conclusion. `combined_v3` has stronger AUC on both splits and slightly higher mean accuracy, but ResNet-18 wins accuracy on seed 17. More repeated seeds or k-fold validation are needed before claiming a stable accuracy winner.
 
 ## Category Breakdown
 
@@ -102,15 +122,15 @@ The same two model families trained on Defactify/MS COCOAI were also evaluated a
 | combined_v3 | 0.5608 | 0.5443 | 0.6403 | 0.5884 | 0.5734 | 567 |
 | resnet18 | 0.6243 | 0.5905 | 0.7626 | 0.6656 | 0.7003 | 567 |
 
-The transfer ranking reverses the in-dataset result. `combined_v3` wins after fitting directly on the Ishu split, but the MS COCOAI ResNet-18 transfers better than the MS COCOAI `combined_v3` model. That is a useful warning: the conventional cues are strong but dataset-specific, and the neural model still has the better cross-domain representation here.
+The transfer ranking reverses the in-dataset AUC result. `combined_v3` is stronger after fitting directly on the Ishu splits, but the MS COCOAI ResNet-18 transfers better than the MS COCOAI `combined_v3` model. That is a useful warning: the conventional cues are strong but dataset-specific, and the neural model still has the better cross-domain representation here.
 
 ## Interpretation
 
-This dataset is now a validated, practical-size May 2026 benchmark with more image variety than the tiny ChatGPT/Gemini probe. It is still small enough that one deterministic split should not be treated as final; a future pass should add repeated split evaluation or k-fold cross-validation.
+This dataset is now a validated, practical-size May 2026 benchmark with more image variety than the tiny ChatGPT/Gemini probe. It is still small enough that two deterministic splits should not be treated as final; a future pass should broaden the repeated-seed sweep or add k-fold cross-validation.
 
-The photometric normal-consistency baseline is meaningfully above chance at 0.7509 AUC, and the full `combined_v3` conventional stack is the best in-dataset model. The result supports keeping conventional signal features in the comparison rather than treating them as weak baselines.
+The photometric normal-consistency baseline is meaningfully above chance at 0.7509 AUC, and the full `combined_v3` conventional stack is the best in-dataset AUC model in the repeated split check. The result supports keeping conventional signal features in the comparison rather than treating them as weak baselines.
 
-The zero-shot transfer result points in the opposite direction: training-domain coverage still matters more than raw in-dataset accuracy. The next best robustness step is to run repeated splits and then test transform robustness on this Ishu dataset, especially for the weak `nature` category.
+The zero-shot transfer result points in the opposite direction: training-domain coverage still matters more than raw in-dataset accuracy. The next best robustness step is to broaden the repeated-seed sweep and then test transform robustness on this Ishu dataset, especially for the weak `nature` category.
 
 ## Reproduce
 
@@ -138,7 +158,42 @@ python scripts/run_benchmark.py `
   --neural-image-size 128 `
   --num-workers 0 `
   --device cuda `
+  --seed 7 `
+  --val-fraction 0.2 `
   --skip-errors
+```
+
+```powershell
+python scripts/run_benchmark.py `
+  --data-dir data/raw/ishu_ai_vs_real_2026 `
+  --out-dir runs/ishu_ai_vs_real_2026_seed17 `
+  --methods combined_v3 neural `
+  --feature-classifier logistic_regression `
+  --feature-image-size 128 `
+  --neural-model resnet18 `
+  --pretrained `
+  --epochs 6 `
+  --batch-size 64 `
+  --neural-image-size 128 `
+  --num-workers 0 `
+  --device cuda `
+  --seed 17 `
+  --val-fraction 0.2 `
+  --skip-errors
+```
+
+```powershell
+python scripts/compare_methods.py `
+  --out-dir runs/ishu_ai_vs_real_2026_repeated_splits/seed7_comparison `
+  --metrics feature_combined_v3=runs/ishu_ai_vs_real_2026_initial/feature_combined_v3_logistic_regression/metrics.json `
+  --metrics neural_resnet18=runs/ishu_ai_vs_real_2026_initial/resnet18/metrics.json
+```
+
+```powershell
+python scripts\summarize_repeated_benchmarks.py `
+  --comparison seed7=runs/ishu_ai_vs_real_2026_repeated_splits/seed7_comparison/comparison.csv `
+  --comparison seed17=runs/ishu_ai_vs_real_2026_seed17/comparison/comparison.csv `
+  --out-dir runs/ishu_ai_vs_real_2026_repeated_splits/summary
 ```
 
 ```powershell

@@ -26,6 +26,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--num-workers", type=int, default=2)
     parser.add_argument("--device", default="auto")
+    parser.add_argument("--seed", type=int, default=7)
+    parser.add_argument("--val-fraction", type=float, default=0.2)
     parser.add_argument("--max-train-samples", type=int, default=0)
     parser.add_argument("--max-test-samples", type=int, default=0)
     parser.add_argument("--skip-errors", action="store_true")
@@ -92,6 +94,10 @@ def main() -> None:
                 str(args.max_train_samples),
                 "--max-test-samples",
                 str(args.max_test_samples),
+                "--seed",
+                str(args.seed),
+                "--val-fraction",
+                str(args.val_fraction),
             ]
             if args.skip_errors:
                 command.append("--skip-errors")
@@ -125,6 +131,10 @@ def main() -> None:
                 str(args.max_train_samples),
                 "--max-test-samples",
                 str(args.max_test_samples),
+                "--seed",
+                str(args.seed),
+                "--val-fraction",
+                str(args.val_fraction),
             ]
             if args.pretrained:
                 command.append("--pretrained")
