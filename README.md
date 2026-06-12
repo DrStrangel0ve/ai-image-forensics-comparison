@@ -521,7 +521,7 @@ A source-heldout triage-mode follow-up is checked into [reports/source_holdout_t
 
 The source-heldout calibration and triage summary assets now include 95% deterministic bootstrap confidence intervals over held-out source/seed rows, making the tables more publication-ready without changing the saved prediction scores.
 
-A publication-assets pass is checked into [reports/publication_assets_2026_06_12.md](reports/publication_assets_2026_06_12.md). It adds a reproducible figure builder, three poster/paper-ready PNGs, captions, a pipeline diagram, and a DFRWS-style abstract draft.
+A publication-assets pass is checked into [reports/publication_assets_2026_06_12.md](reports/publication_assets_2026_06_12.md). It adds a reproducible figure builder, four poster/paper-ready diagnostic PNGs, captions, a pipeline diagram, and a DFRWS-style abstract draft, including a utility-tuned score-fusion triage figure.
 
 A public reproducibility pass is checked into [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It adds a reviewer-facing map of included reports/assets, intentionally excluded raw data/model artifacts, core reproduction commands, and known limitations.
 

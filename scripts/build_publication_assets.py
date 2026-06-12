@@ -38,6 +38,17 @@ METHOD_COLORS = {
     "convnext_tiny_frozen": "#B279A2",
     "scp_fusion_v0": "#E45756",
 }
+SCORE_FUSION_ORDER = ["scp_fusion_v0", "branch_dropout", "source_calibrated"]
+SCORE_FUSION_LABELS = {
+    "scp_fusion_v0": "SCP-Fusion v0",
+    "branch_dropout": "Branch dropout",
+    "source_calibrated": "Source-calibrated",
+}
+SCORE_FUSION_COLORS = {
+    "scp_fusion_v0": "#E45756",
+    "branch_dropout": "#72B7B2",
+    "source_calibrated": "#B279A2",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -59,6 +70,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--triage-10pct",
         default="reports/assets/source_holdout_triage_summary_ishu_ms_cocoai_all4_10pct.csv",
+    )
+    parser.add_argument(
+        "--score-fusion-tuned-triage",
+        default="reports/assets/score_fusion_source_holdout_triage_tuned_summary.csv",
     )
     parser.add_argument("--out-dir", default="reports/assets")
     parser.add_argument("--dpi", type=int, default=180)
@@ -208,6 +223,77 @@ def build_triage_operating_points(triage_5pct: Path, triage_10pct: Path, out_dir
     return out_path
 
 
+def _score_fusion_ordered(frame: pd.DataFrame) -> pd.DataFrame:
+    ordered_methods = [method for method in SCORE_FUSION_ORDER if method in set(frame["method"])]
+    return frame.set_index("method").loc[ordered_methods].reset_index()
+
+
+def build_score_fusion_tuned_triage(tuned_summary: Path, out_dir: Path, dpi: int) -> Path:
+    frame = _score_fusion_ordered(pd.read_csv(tuned_summary))
+    labels = [
+        f"{SCORE_FUSION_LABELS.get(row.method, row.method)}\n{row.selected_score_modes}"
+        for row in frame.itertuples(index=False)
+    ]
+    colors = [SCORE_FUSION_COLORS.get(method, "#777777") for method in frame["method"]]
+    fig, axes = plt.subplots(1, 2, figsize=(11.0, 4.6), dpi=dpi)
+
+    utility = frame["mean_test_utility"].astype(float)
+    lower = utility - frame["mean_test_utility_ci_low"].astype(float)
+    upper = frame["mean_test_utility_ci_high"].astype(float) - utility
+    axes[0].bar(np.arange(len(frame)), utility, color=colors, edgecolor="#222222", linewidth=0.4)
+    axes[0].errorbar(
+        np.arange(len(frame)),
+        utility,
+        yerr=[lower, upper],
+        fmt="none",
+        ecolor="#222222",
+        elinewidth=0.8,
+        capsize=3,
+    )
+    axes[0].axhline(0.0, color="#333333", linewidth=0.8)
+    axes[0].set_title("Selected Triage Utility", fontsize=10, pad=8)
+    axes[0].set_ylabel("source-heldout utility")
+    axes[0].set_xticks(np.arange(len(frame)))
+    axes[0].set_xticklabels(labels, rotation=25, ha="right")
+    axes[0].grid(axis="y", alpha=0.25)
+    _annotate_bars(axes[0], utility, offset=0.006)
+
+    component_columns = [
+        ("mean_test_fake_detection", "fake\ndetect"),
+        ("mean_test_real_clearance", "real\nclear"),
+        ("mean_test_real_fpr", "real\nFPR"),
+        ("mean_test_fake_false_clearance", "fake false\nclear"),
+    ]
+    x = np.arange(len(component_columns))
+    width = 0.22
+    offsets = np.linspace(-width, width, len(frame))
+    for offset, row, color in zip(offsets, frame.itertuples(index=False), colors, strict=True):
+        values = [float(getattr(row, column)) for column, _label in component_columns]
+        axes[1].bar(
+            x + offset,
+            values,
+            width,
+            label=SCORE_FUSION_LABELS.get(row.method, row.method),
+            color=color,
+            edgecolor="#222222",
+            linewidth=0.4,
+        )
+    axes[1].set_title("Utility Components", fontsize=10, pad=8)
+    axes[1].set_ylabel("fraction of target images")
+    axes[1].set_xticks(x)
+    axes[1].set_xticklabels([label for _column, label in component_columns])
+    axes[1].set_ylim(0.0, 0.55)
+    axes[1].grid(axis="y", alpha=0.25)
+    axes[1].legend(fontsize=8)
+
+    fig.suptitle("Source-heldout score-fusion triage tuning", fontsize=13)
+    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.94))
+    out_path = out_dir / "publication_score_fusion_tuned_triage.png"
+    fig.savefig(out_path)
+    plt.close(fig)
+    return out_path
+
+
 def main() -> None:
     args = parse_args()
     out_dir = ensure_dir(args.out_dir)
@@ -215,6 +301,7 @@ def main() -> None:
         build_cross_domain_calibration(Path(args.calibration_summary), out_dir, args.dpi),
         build_source_heldout_calibration(Path(args.source_heldout_calibration), out_dir, args.dpi),
         build_triage_operating_points(Path(args.triage_5pct), Path(args.triage_10pct), out_dir, args.dpi),
+        build_score_fusion_tuned_triage(Path(args.score_fusion_tuned_triage), out_dir, args.dpi),
     ]
     for output in outputs:
         print(output.resolve())

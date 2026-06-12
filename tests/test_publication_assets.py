@@ -22,6 +22,7 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     source_calibration = tmp_path / "source_calibration.csv"
     triage_5 = tmp_path / "triage_5.csv"
     triage_10 = tmp_path / "triage_10.csv"
+    tuned_triage = tmp_path / "tuned_triage.csv"
     out_dir = tmp_path / "assets"
 
     pd.DataFrame(
@@ -59,6 +60,20 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     triage_10_frame["mean_test_triage_accuracy"] = triage_10_frame["mean_test_triage_accuracy"] - 0.05
     triage_10_frame.to_csv(triage_10, index=False)
 
+    pd.DataFrame(
+        {
+            "method": ["scp_fusion_v0", "branch_dropout", "source_calibrated"],
+            "selected_score_modes": ["raw:15", "raw:15", "raw:15"],
+            "mean_test_utility": [0.11, 0.09, 0.08],
+            "mean_test_utility_ci_low": [0.04, 0.02, 0.01],
+            "mean_test_utility_ci_high": [0.18, 0.16, 0.15],
+            "mean_test_fake_detection": [0.40, 0.38, 0.37],
+            "mean_test_real_clearance": [0.36, 0.34, 0.35],
+            "mean_test_real_fpr": [0.12, 0.12, 0.12],
+            "mean_test_fake_false_clearance": [0.15, 0.15, 0.15],
+        }
+    ).to_csv(tuned_triage, index=False)
+
     subprocess.run(
         [
             sys.executable,
@@ -71,6 +86,8 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
             str(triage_5),
             "--triage-10pct",
             str(triage_10),
+            "--score-fusion-tuned-triage",
+            str(tuned_triage),
             "--out-dir",
             str(out_dir),
             "--dpi",
@@ -83,3 +100,4 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     assert (out_dir / "publication_cross_domain_calibration.png").exists()
     assert (out_dir / "publication_source_heldout_calibration.png").exists()
     assert (out_dir / "publication_triage_operating_points.png").exists()
+    assert (out_dir / "publication_score_fusion_tuned_triage.png").exists()
