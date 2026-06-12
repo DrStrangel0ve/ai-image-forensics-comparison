@@ -27,6 +27,7 @@ Current evidence:
 - Publication assets now include three generated figures, captions, a pipeline diagram, and a DFRWS-style abstract draft.
 - Qualitative failure grids now show seed-17 false positives, false negatives, and branch disagreements for SCP-Fusion on Ishu -> MS COCOAI.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
+- A focused physics-guided-vs-ResNet note now sharpens the claim: physics-guided ResNet is stronger on Ishu, robustness, and several transfer diagnostics, but vanilla ResNet still wins MS COCOAI in-domain validation.
 - `combined_v4` now implements the planned reconstruction, multiscale frequency, chroma, and JPEG feature expansion; the first bounded smoke probe is usable but trails `combined_v3`, so the next claim needs full repeated-seed ablation rather than a single split.
 - A bounded three-seed feature-selection probe makes `combined_v4` promising again: select-k60 v4 reaches 0.7389 mean accuracy / 0.8219 mean AUC versus 0.7278 / 0.8033 for `combined_v3`; select-k80 has the best bounded accuracy at 0.7611 but lower AUC.
 - A medium three-seed probe with 240 training images per seed makes raw `combined_v4` the best ranking/accuracy candidate at 0.7544 mean accuracy / 0.8315 mean AUC, while select-k60 has the best Brier/ECE.

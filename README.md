@@ -516,5 +516,7 @@ A qualitative failure-case export is checked into [reports/qualitative_failure_c
 An Ishu three-seed robustness follow-up is checked into [reports/ishu_physics_guided_robustness_3seed.md](reports/ishu_physics_guided_robustness_3seed.md).
 Across 12 seed-plus-transform checks, physics-guided fusion won 10 by accuracy and 10 by AUC. Its mean transformed score was 0.8443 accuracy and 0.9189 AUC, ahead of ResNet-18 at 0.8231 / 0.8904 and `combined_v3` at 0.7924 / 0.8751.
 
+A focused physics-guided comparison is checked into [reports/physics_guided_vs_resnet_2026_06_12.md](reports/physics_guided_vs_resnet_2026_06_12.md). It frames the result conservatively: physics-guided ResNet-18 is stronger on Ishu, robustness, and several transfer diagnostics, while vanilla ResNet-18 still wins MS COCOAI in-domain validation.
+
 A dataset triage follow-up is checked into [reports/dataset_triage_2026_06_12.md](reports/dataset_triage_2026_06_12.md).
 It adds ARPAN V3 and SynCred-Bench to the catalog, fixes Hugging Face label override handling, and rejects ARPAN V3's upstream split for fair scoring because exact duplicate groups cross train/test.
