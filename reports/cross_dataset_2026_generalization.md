@@ -66,6 +66,32 @@ Ishu seed-29 -> MS COCOAI:
 
 The calibration result changes the reverse-transfer interpretation. MS COCOAI-trained fusion was not just producing a slightly better AUC; after source-domain calibration it also becomes the best thresholded detector on Ishu, beating source-calibrated ResNet-18 by 2.8 accuracy points. In the Ishu-to-MS COCOAI direction, calibration barely changes fusion because its source-optimal threshold is already 0.5, and it remains ahead of both unfused branches.
 
+## Ishu Three-Seed Transfer Check
+
+The seed-29 Ishu-to-MS COCOAI result was rerun for seed 7 and seed 17 using the already trained Ishu models. This keeps the target fixed as the same 1,000-image source-balanced MS COCOAI validation slice and checks whether the fusion transfer win survives source split variance.
+
+| seed | method | default accuracy | source-calibrated accuracy | oracle accuracy | roc_auc |
+| ---: | --- | ---: | ---: | ---: | ---: |
+| 7 | `combined_v3` | 0.5430 | 0.5400 | 0.5690 | 0.5750 |
+| 7 | ResNet-18 | 0.5820 | 0.5440 | 0.6330 | 0.6593 |
+| 7 | physics-guided ResNet-18 + `combined_v3` | 0.6450 | 0.6480 | 0.6480 | 0.6681 |
+| 17 | `combined_v3` | 0.5540 | 0.5550 | 0.5760 | 0.5818 |
+| 17 | ResNet-18 | 0.5880 | 0.6030 | 0.6390 | 0.6854 |
+| 17 | physics-guided ResNet-18 + `combined_v3` | 0.5400 | 0.5400 | 0.6070 | 0.6306 |
+| 29 | `combined_v3` | 0.5430 | 0.5440 | 0.5780 | 0.5840 |
+| 29 | ResNet-18 | 0.5700 | 0.5600 | 0.5900 | 0.6016 |
+| 29 | physics-guided ResNet-18 + `combined_v3` | 0.6330 | 0.6330 | 0.6520 | 0.6923 |
+
+Three-seed summary:
+
+| method | default accuracy mean | source-calibrated accuracy mean | oracle accuracy mean | roc_auc mean | default accuracy wins | calibrated accuracy wins | auc wins |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `combined_v3` | 0.5467 | 0.5463 | 0.5743 | 0.5803 | 0 | 0 | 0 |
+| ResNet-18 | 0.5800 | 0.5690 | 0.6207 | 0.6488 | 1 | 1 | 1 |
+| physics-guided ResNet-18 + `combined_v3` | 0.6060 | 0.6070 | 0.6357 | 0.6637 | 2 | 2 | 2 |
+
+This repeats the main fusion story, but with a caveat. Fusion has the best three-seed mean and wins two of three seeds, yet seed 17 is a real failure case where ResNet-18 is stronger by both accuracy and AUC. Source-threshold calibration does not fix seed 17, so this is ranking instability rather than just threshold drift.
+
 ## Interpretation
 
 Same-dataset scores were much higher: ResNet-18 reached 0.8205 accuracy on `ai_vs_real_2026` and 0.9698 on `rhythm_ai_vs_real_2026`; the best combined conventional baselines reached 0.6821 and 0.8693 respectively.
@@ -74,7 +100,7 @@ The cross-dataset drop is the key finding. ResNet-18 still beats the combined co
 
 The conventional baseline remains valuable because it fails differently from the neural net. Its photometric, noise, compression, FFT, and chroma proxies are not enough for strong zero-shot detection, but they provide a cheap sanity check for whether the neural model is mostly exploiting dataset shortcuts.
 
-The two Ishu/MS COCOAI fusion directions now show why both AUC and thresholded accuracy need to be reported. Ishu-trained fusion wins both accuracy and AUC on MS COCOAI with the default threshold. MS COCOAI-trained fusion initially loses default-threshold accuracy on Ishu, but source-domain threshold calibration raises it to the best transfer accuracy in that direction. The next fair check is to repeat this across more seeds and reserve a separate source calibration split when possible.
+The two Ishu/MS COCOAI fusion directions now show why both AUC and thresholded accuracy need to be reported. Ishu-trained fusion wins the three-seed mean on MS COCOAI, but not every seed. MS COCOAI-trained fusion initially loses default-threshold accuracy on Ishu, but source-domain threshold calibration raises it to the best transfer accuracy in that direction. The next fair check is to reserve a separate source calibration split and diagnose the seed-17 fusion miss by category/source label rather than only by aggregate metrics.
 
 ## New Dataset Leads Checked
 
@@ -210,4 +236,62 @@ python scripts/summarize_threshold_calibration.py `
   --variant ms_cocoai:combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed29/combined_v3/predictions.csv `
   --variant ms_cocoai:resnet18=runs/ishu_to_ms_cocoai_source_balanced_seed29/resnet18/predictions.csv `
   --variant ms_cocoai:physics_guided_resnet18_combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed29/physics_guided_resnet18_combined_v3/predictions.csv
+```
+
+Ishu three-seed transfer extension:
+
+The first three commands show the seed-7 evaluation paths; repeat them with `runs/ishu_ai_vs_real_2026_seed17/...` and `runs/ishu_ai_vs_real_2026_physics_guided_seed17/...` for seed 17 before running the summary command.
+
+```powershell
+python scripts/evaluate_feature_model.py `
+  --model-dir runs/ishu_ai_vs_real_2026_initial/feature_combined_v3_logistic_regression `
+  --target-dir data/raw/ms_cocoai_2026_validation_source_balanced_100 `
+  --output-dir runs/ishu_to_ms_cocoai_source_balanced_seed7/combined_v3 `
+  --image-size 128 `
+  --target-split all `
+  --skip-errors
+
+python scripts/evaluate_neural_net.py `
+  --model-dir runs/ishu_ai_vs_real_2026_initial/resnet18 `
+  --target-dir data/raw/ms_cocoai_2026_validation_source_balanced_100 `
+  --output-dir runs/ishu_to_ms_cocoai_source_balanced_seed7/resnet18 `
+  --image-size 128 `
+  --batch-size 64 `
+  --num-workers 0 `
+  --device cuda `
+  --target-split all
+
+python scripts/evaluate_physics_guided_net.py `
+  --model-dir runs/ishu_ai_vs_real_2026_physics_guided_seed7/physics_guided_resnet18_combined_v3 `
+  --target-dir data/raw/ms_cocoai_2026_validation_source_balanced_100 `
+  --output-dir runs/ishu_to_ms_cocoai_source_balanced_seed7/physics_guided_resnet18_combined_v3 `
+  --image-size 128 `
+  --feature-image-size 128 `
+  --batch-size 64 `
+  --num-workers 0 `
+  --device cuda `
+  --target-split all `
+  --skip-errors
+
+python scripts/summarize_threshold_calibration.py `
+  --out-dir runs/cross_domain_threshold_calibration/ishu_3seed_to_ms_cocoai `
+  --objective accuracy `
+  --clean seed7_combined_v3=runs/ishu_ai_vs_real_2026_initial/feature_combined_v3_logistic_regression/predictions.csv `
+  --clean seed7_resnet18=runs/ishu_ai_vs_real_2026_initial/resnet18/predictions.csv `
+  --clean seed7_physics_guided_resnet18_combined_v3=runs/ishu_ai_vs_real_2026_physics_guided_seed7/physics_guided_resnet18_combined_v3/predictions.csv `
+  --clean seed17_combined_v3=runs/ishu_ai_vs_real_2026_seed17/feature_combined_v3_logistic_regression/predictions.csv `
+  --clean seed17_resnet18=runs/ishu_ai_vs_real_2026_seed17/resnet18/predictions.csv `
+  --clean seed17_physics_guided_resnet18_combined_v3=runs/ishu_ai_vs_real_2026_physics_guided_seed17/physics_guided_resnet18_combined_v3/predictions.csv `
+  --clean seed29_combined_v3=runs/ishu_ai_vs_real_2026_repeated_splits_auto/seed29/feature_combined_v3_logistic_regression/predictions.csv `
+  --clean seed29_resnet18=runs/ishu_ai_vs_real_2026_repeated_splits_auto/seed29/resnet18/predictions.csv `
+  --clean seed29_physics_guided_resnet18_combined_v3=runs/ishu_ai_vs_real_2026_physics_guided_seed29/physics_guided_resnet18_combined_v3/predictions.csv `
+  --variant ms_cocoai:seed7_combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed7/combined_v3/predictions.csv `
+  --variant ms_cocoai:seed7_resnet18=runs/ishu_to_ms_cocoai_source_balanced_seed7/resnet18/predictions.csv `
+  --variant ms_cocoai:seed7_physics_guided_resnet18_combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed7/physics_guided_resnet18_combined_v3/predictions.csv `
+  --variant ms_cocoai:seed17_combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed17/combined_v3/predictions.csv `
+  --variant ms_cocoai:seed17_resnet18=runs/ishu_to_ms_cocoai_source_balanced_seed17/resnet18/predictions.csv `
+  --variant ms_cocoai:seed17_physics_guided_resnet18_combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed17/physics_guided_resnet18_combined_v3/predictions.csv `
+  --variant ms_cocoai:seed29_combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed29/combined_v3/predictions.csv `
+  --variant ms_cocoai:seed29_resnet18=runs/ishu_to_ms_cocoai_source_balanced_seed29/resnet18/predictions.csv `
+  --variant ms_cocoai:seed29_physics_guided_resnet18_combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed29/physics_guided_resnet18_combined_v3/predictions.csv
 ```
