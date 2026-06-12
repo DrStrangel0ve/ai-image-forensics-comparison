@@ -84,7 +84,7 @@ The catalog currently includes:
 
 - `cifake`: CIFAKE real vs Stable Diffusion images.
 - `ai_vs_real_2026`: practical-size 2026 Kaggle real-vs-AI image dataset.
-- `chatgpt_gemini_deepfake_2026`: very recent Kaggle image-folder candidate with ChatGPT/Gemini realistic images, pending real-folder validation.
+- `chatgpt_gemini_deepfake_2026`: validated May 2026 Kaggle image-folder probe with ChatGPT/Gemini realistic images.
 - `ishu_ai_vs_real_2026`: May 2026 Kaggle real-vs-AI candidate, pending label-folder mapping validation.
 - `rhythm_ai_vs_real_2026`: another practical-size 2026 Kaggle real-vs-AI dataset.
 - `itszubi_ai_vs_real_2026`: compact April 2026 Kaggle candidate, pending binary-label validation.
@@ -119,6 +119,18 @@ python scripts/export_hf_image_dataset.py `
 ```
 
 The exporter writes folders such as `train/real`, `train/ai_generated`, `validation/real`, and `validation/ai_generated`, plus `metadata.csv`.
+
+## Audit Image-Folder Datasets
+
+Before treating a new dataset as evidence, audit its layout, class counts, dimensions, and exact duplicate leakage:
+
+```powershell
+python scripts/audit_image_dataset.py `
+  --data-dir data/raw/chatgpt_gemini_deepfake_2026 `
+  --out-dir runs/chatgpt_gemini_deepfake_2026_initial/audit
+```
+
+The audit writes `audit.json` and `report.md`.
 
 For generator-balanced Defactify/MS COCOAI validation exports, cap each generated source label independently:
 
@@ -361,3 +373,6 @@ Training `combined_v3` with JPEG, blur, resize, and crop variants kept clean acc
 
 An augmented neural follow-up is checked into [reports/ms_cocoai_augmented_neural_robustness.md](reports/ms_cocoai_augmented_neural_robustness.md).
 Training ResNet-18 with the same deterministic variants improved its own blur and resize robustness deltas, but the unaugmented ResNet-18 still had better clean accuracy and AUC on this 4-epoch run.
+
+A small ChatGPT/Gemini May 2026 Kaggle probe is checked into [reports/chatgpt_gemini_deepfake_2026_probe.md](reports/chatgpt_gemini_deepfake_2026_probe.md).
+It validates the dataset layout, adds exact-duplicate auditing, and shows that in-dataset results are easy while MS COCOAI-to-ChatGPT/Gemini zero-shot transfer remains weak.

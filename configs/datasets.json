@@ -24,7 +24,7 @@
     "local_dir": "data/raw/chatgpt_gemini_deepfake_2026",
     "updated": "2026-05-31",
     "size_mb": 398,
-    "notes": "Very recent Kaggle candidate. File listing shows image-folder style paths such as new dataset/train/fake/*.png; validate the real class folder and any duplicate generated images before benchmarking."
+    "notes": "Very recent Kaggle candidate validated on 2026-06-12. Download exposes new dataset/train/{fake,real} and new dataset/valid/{fake,real}; audit found 243 images, five exact duplicate groups within train/fake, and no exact train/valid leakage."
   },
   "ishu_ai_vs_real_2026": {
     "title": "ai-vs-real-images",
