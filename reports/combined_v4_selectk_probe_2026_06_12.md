@@ -40,14 +40,36 @@ Across the three select-k runs, 40 of the 180 selected feature slots were new `c
 
 This is the first evidence that the new reconstruction and spectral features are not just dead weight. Raw `combined_v4` still underperforms slightly, but selected `combined_v4` has the best mean AUC and Brier score in this bounded probe.
 
+## Expanded K and Tree Sweep
+
+A follow-up sweep adds `k=40`, `k=80`, and histogram-gradient-boosting variants. The generated CSVs and selected-feature frequencies are checked into `reports/assets/combined_v4_selectk_probe/`.
+
+| method | mean accuracy | mean ROC AUC | mean Brier | mean ECE |
+| --- | ---: | ---: | ---: | ---: |
+| `combined_v4` logistic select-k60 | 0.7389 | 0.8219 | 0.1744 | 0.1448 |
+| `combined_v4` logistic select-k80 | 0.7611 | 0.8041 | 0.1872 | 0.1560 |
+| `combined_v3` logistic | 0.7278 | 0.8033 | 0.1876 | 0.1451 |
+| raw `combined_v4` logistic | 0.7167 | 0.8007 | 0.1881 | 0.1554 |
+| `combined_v4` logistic select-k40 | 0.7222 | 0.7737 | 0.1960 | 0.1247 |
+| `combined_v4` HGB select-k60 | 0.6833 | 0.7556 | 0.2289 | 0.2135 |
+| `combined_v3` HGB | 0.6667 | 0.7389 | 0.2383 | 0.2105 |
+| raw `combined_v4` HGB | 0.6500 | 0.7141 | 0.2481 | 0.2140 |
+
+The expanded sweep keeps the same story but makes it sharper:
+
+- `k=60` is the best ranking setting by AUC and Brier score.
+- `k=80` is the best default-threshold accuracy setting, but has worse AUC/calibration.
+- histogram gradient boosting underperforms logistic regression on this small, high-dimensional split, so the next larger run should prioritize selected logistic regression before spending GPU/CPU time on tree models.
+- the same v4-only signals recur across selected runs: `recon_half_luma_chroma_ratio`, `recon_quarter_luma_chroma_ratio`, and low/mid FFT ring ratios.
+
 ## Interpretation
 
 For SCP-Fusion, `combined_v4` should move forward as a tuned branch, not as a raw feature dump. The next full ablation should compare:
 
 - `combined_v3` logistic regression;
 - raw `combined_v4` logistic regression;
-- selected `combined_v4` logistic regression with `k` in `{40, 60, 80}`;
-- `combined_v4` histogram gradient boosting.
+- selected `combined_v4` logistic regression with `k=60` and `k=80`;
+- tree models only if a larger split changes the bounded result.
 
 Run that on full or larger repeated Ishu splits first, then repeat the winner on MS COCOAI and source-heldout transfer.
 
@@ -74,4 +96,13 @@ foreach ($seed in @(7,17,29)) {
       --skip-errors
   }
 }
+```
+
+Summarize the sweep:
+
+```powershell
+.\.venv\Scripts\python scripts\summarize_feature_ablation.py `
+  --run-root runs\combined_v4_selectk_probe `
+  --out-dir reports\assets\combined_v4_selectk_probe `
+  --extra-feature-base combined_v3
 ```
