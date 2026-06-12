@@ -1,0 +1,9 @@
+split,seed,encoder,n_train,n_eval,accuracy,roc_auc,brier_score,expected_calibration_error,precision,recall,f1,device
+ishu,7,dinov2_vits14,453,114,0.7719,0.8458,0.1826,0.1893,0.7885,0.7321,0.7593,cuda
+ishu,17,dinov2_vits14,453,114,0.8070,0.9036,0.1435,0.1487,0.8036,0.8036,0.8036,cuda
+ishu,29,dinov2_vits14,453,114,0.7632,0.8350,0.1895,0.1713,0.7377,0.8036,0.7692,cuda
+ishu_mean,all,dinov2_vits14,453,114,0.7807,0.8615,0.1719,0.1698,0.7766,0.7798,0.7774,cuda
+ms_cocoai,7,dinov2_vits14,453,1000,0.6170,0.7001,0.3348,0.3147,0.7208,0.3820,0.4993,cuda
+ms_cocoai,17,dinov2_vits14,453,1000,0.6080,0.7023,0.3376,0.3133,0.7143,0.3600,0.4787,cuda
+ms_cocoai,29,dinov2_vits14,453,1000,0.6150,0.7167,0.3279,0.3082,0.7366,0.3580,0.4818,cuda
+ms_cocoai_mean,all,dinov2_vits14,453,1000,0.6133,0.7063,0.3334,0.3121,0.7239,0.3667,0.4866,cuda

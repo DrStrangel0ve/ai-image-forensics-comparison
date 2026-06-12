@@ -1,0 +1,7 @@
+source_label,source_name,n_per_seed,mean_accuracy,mean_fake_score,mean_false_positive_rate,mean_detection_rate,mean_miss_rate
+0,real,500,0.8600,0.1547,0.1400,,
+1,sd21,100,0.3100,0.2980,,0.3100,0.6900
+2,sdxl,100,0.4400,0.4342,,0.4400,0.5600
+3,sd3,100,0.3267,0.3420,,0.3267,0.6733
+4,dalle3,100,0.4300,0.4470,,0.4300,0.5700
+5,midjourney6,100,0.3267,0.3289,,0.3267,0.6733
