@@ -24,6 +24,7 @@ Current evidence:
 - Calibration diagnostics show SCP-Fusion v0 has the best cross-domain Brier score, 0.3190, while all strong ranking models under-call generated MS COCOAI images at the default threshold.
 - Source-heldout post-hoc calibration shows class-balanced temperature scaling improves Brier/ECE without changing decisions, while Platt/isotonic calibration can overfit non-heldout source priors and inflate real-image false positives.
 - Source-heldout triage mode shows frozen ConvNeXt and SCP-Fusion can make high-confidence decisions on about 21-24% of target images with roughly 75% triage accuracy at a strict 5% calibration error budget.
+- Publication assets now include three generated figures, captions, a pipeline diagram, and a DFRWS-style abstract draft.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
 
 ## Target 1: DFRWS-USA 2026 Poster
@@ -52,7 +53,7 @@ Recommended title:
 
 Status:
 
-Feasible now. The current repo is already enough for a poster, especially with the ConvNeXt and source-heldout diagnostics.
+Feasible now. The current repo is already enough for a poster, especially with the ConvNeXt and source-heldout diagnostics. A first abstract and figure set are in `reports/publication_assets_2026_06_12.md`.
 
 ## Target 2: IEEE WIFS 2026
 
@@ -131,10 +132,10 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - source labels when available.
 
 5. Draft paper assets:
-   - one shared results table;
-   - one pipeline figure;
-   - one source-heldout calibration or triage diagnostic figure;
-   - one qualitative failure grid.
+   - one shared results figure is generated;
+   - one pipeline figure draft is written;
+   - source-heldout calibration and triage figures are generated;
+   - next missing asset is a qualitative failure grid.
 
 ## Recommended Order
 

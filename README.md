@@ -503,6 +503,8 @@ A source-heldout post-hoc calibration follow-up is checked into [reports/source_
 
 A source-heldout triage-mode follow-up is checked into [reports/source_holdout_triage_2026_06_12.md](reports/source_holdout_triage_2026_06_12.md). It evaluates `likely real` / `uncertain` / `likely fake` thresholds selected on non-heldout generators. At a 5% calibration error budget, frozen ConvNeXt and SCP-Fusion decide on about 21-24% of target images with roughly 75% triage accuracy.
 
+A publication-assets pass is checked into [reports/publication_assets_2026_06_12.md](reports/publication_assets_2026_06_12.md). It adds a reproducible figure builder, three poster/paper-ready PNGs, captions, a pipeline diagram, and a DFRWS-style abstract draft.
+
 An Ishu three-seed robustness follow-up is checked into [reports/ishu_physics_guided_robustness_3seed.md](reports/ishu_physics_guided_robustness_3seed.md).
 Across 12 seed-plus-transform checks, physics-guided fusion won 10 by accuracy and 10 by AUC. Its mean transformed score was 0.8443 accuracy and 0.9189 AUC, ahead of ResNet-18 at 0.8231 / 0.8904 and `combined_v3` at 0.7924 / 0.8751.
 
