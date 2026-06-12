@@ -467,6 +467,8 @@ It adds local noise-entropy and multiscale residual features inspired by newer r
 
 A feature-selection follow-up is checked into [reports/combined_v4_selectk_probe_2026_06_12.md](reports/combined_v4_selectk_probe_2026_06_12.md), with summary CSVs in [reports/assets/combined_v4_selectk_probe](reports/assets/combined_v4_selectk_probe). On three bounded Ishu seeds, selected `combined_v4` improves mean AUC to 0.8219 versus 0.8033 for `combined_v3`; `k=80` has the best bounded accuracy at 0.7611, while histogram-gradient boosting underperforms on the small split.
 
+A medium-size grid rerun is checked into [reports/combined_v4_medium_selectk_probe_2026_06_12.md](reports/combined_v4_medium_selectk_probe_2026_06_12.md), with assets in [reports/assets/combined_v4_medium_selectk_probe](reports/assets/combined_v4_medium_selectk_probe). At 240 train / 114 validation images per seed, raw `combined_v4` has the best mean accuracy/AUC at 0.7544 / 0.8315, while select-k60 has the best Brier/ECE.
+
 ## Defactify / MS COCOAI Subset Result
 
 A Hugging Face export and benchmark run on a 2,000-image Defactify/MS COCOAI subset is checked into [reports/ms_cocoai_2026_subset_benchmark.md](reports/ms_cocoai_2026_subset_benchmark.md).
