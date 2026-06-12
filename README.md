@@ -31,6 +31,10 @@ That gives a fair, runnable physics-inspired baseline against the neural network
 
 The repo also includes a physics-guided neural model. It is not a classic PDE-style PINN; instead, it fuses a ResNet image embedding with a small MLP over photometric, residual, JPEG, frequency, and chroma features. This is the practical physics-informed route for the current single-image datasets.
 
+## Research Direction
+
+The current research plan is documented in [reports/research_deep_dive_2026_06_12.md](reports/research_deep_dive_2026_06_12.md). The proposed next model is **SCP-Fusion**: source-calibrated physical-spectral foundation fusion. It keeps the photometric/physics branch, adds CLIP/DINO-style foundation embeddings, expands `combined_v3` into multiscale spectral/noise/photometric `combined_v4`, and adds AEROBLADE-style reconstruction-error features for NTIRE/ImageCLEF-style robustness.
+
 ## Setup
 
 From this repo root:
