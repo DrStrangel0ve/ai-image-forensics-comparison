@@ -1,0 +1,5 @@
+"method","mean_standardized_coefficient","mean_raw_score_coefficient"
+"convnext_tiny_frozen","1.53614709050429","3.78171464559306"
+"physics_guided","0.839236609803284","2.16646773732591"
+"combined_v3","0.713671663308221","2.18429881478118"
+"resnet18","0.604928067490548","1.56600742793736"

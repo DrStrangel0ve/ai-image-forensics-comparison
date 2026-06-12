@@ -46,14 +46,29 @@ def test_score_fusion_writes_train_and_variant_outputs(tmp_path: Path) -> None:
             f"target:b={tmp_path / 'target_b.csv'}",
             "--seed",
             "3",
+            "--fusion-c",
+            "0.5",
+            "--branch-dropout-rate",
+            "0.4",
+            "--branch-dropout-repeats",
+            "2",
         ],
         cwd=ROOT,
         check=True,
     )
 
     metrics = json.loads((out_dir / "metrics.json").read_text(encoding="utf-8"))
+    summary = pd.read_csv(out_dir / "summary.csv")
     assert metrics["base_methods"] == ["a", "b"]
+    assert metrics["n_fit"] == 18
+    assert metrics["fusion_c"] == 0.5
+    assert metrics["branch_dropout_rate"] == 0.4
     assert [row["variant"] for row in metrics["metrics"]] == ["train", "target"]
+    assert {row["method"] for row in metrics["coefficients"]} == {"a", "b", "__intercept__"}
+    assert "brier_score" in summary.columns
+    assert "expected_calibration_error" in summary.columns
+    assert "predicted_positive_rate" in summary.columns
     assert (out_dir / "train" / "predictions.csv").exists()
     assert (out_dir / "target" / "predictions.csv").exists()
+    assert (out_dir / "score_fusion_coefficients.csv").exists()
     assert (out_dir / "score_fusion_model.joblib").exists()

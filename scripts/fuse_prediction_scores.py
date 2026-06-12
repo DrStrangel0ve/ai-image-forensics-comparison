@@ -38,6 +38,30 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--threshold", type=float, default=0.5)
+    parser.add_argument(
+        "--fusion-c",
+        type=float,
+        default=1.0,
+        help="Inverse regularization strength for the logistic-regression fusion head.",
+    )
+    parser.add_argument(
+        "--branch-dropout-rate",
+        type=float,
+        default=0.0,
+        help="Probability of replacing a branch score with a neutral value in augmented training rows.",
+    )
+    parser.add_argument(
+        "--branch-dropout-repeats",
+        type=int,
+        default=0,
+        help="Number of branch-dropout augmented copies to add per original training row.",
+    )
+    parser.add_argument(
+        "--branch-dropout-fill",
+        choices=["neutral", "mean"],
+        default="neutral",
+        help="Value used for dropped branch scores: 0.5 neutral probability or the branch train mean.",
+    )
     return parser.parse_args()
 
 
@@ -114,16 +138,85 @@ def _variant_groups(values: list[str]) -> dict[str, list[tuple[str, Path]]]:
     return grouped
 
 
-def _classifier(seed: int):
+def _classifier(seed: int, fusion_c: float):
+    if fusion_c <= 0.0:
+        raise ValueError("--fusion-c must be positive")
     return Pipeline(
         steps=[
             ("scale", StandardScaler()),
             (
                 "logreg",
-                LogisticRegression(max_iter=3000, class_weight="balanced", random_state=seed),
+                LogisticRegression(
+                    C=fusion_c,
+                    max_iter=3000,
+                    class_weight="balanced",
+                    random_state=seed,
+                ),
             ),
         ]
     )
+
+
+def _augment_branch_dropout(
+    x_train: np.ndarray,
+    y_train: np.ndarray,
+    rate: float,
+    repeats: int,
+    seed: int,
+    fill: str,
+) -> tuple[np.ndarray, np.ndarray]:
+    if not 0.0 <= rate < 1.0:
+        raise ValueError("--branch-dropout-rate must be in [0, 1)")
+    if repeats < 0:
+        raise ValueError("--branch-dropout-repeats must be non-negative")
+    if rate == 0.0 or repeats == 0:
+        return x_train, y_train
+    rng = np.random.default_rng(seed)
+    if fill == "neutral":
+        fill_values = np.full(x_train.shape[1], 0.5, dtype=float)
+    elif fill == "mean":
+        fill_values = x_train.mean(axis=0)
+    else:
+        raise ValueError(f"Unsupported branch dropout fill: {fill}")
+    augmented = [x_train]
+    labels = [y_train]
+    for _repeat in range(repeats):
+        masked = x_train.copy()
+        mask = rng.random(masked.shape) < rate
+        all_dropped = np.flatnonzero(mask.all(axis=1))
+        if len(all_dropped):
+            keep_columns = rng.integers(0, masked.shape[1], size=len(all_dropped))
+            mask[all_dropped, keep_columns] = False
+        masked[mask] = np.broadcast_to(fill_values, masked.shape)[mask]
+        augmented.append(masked)
+        labels.append(y_train)
+    return np.vstack(augmented), np.concatenate(labels)
+
+
+def _coefficient_rows(methods: list[str], classifier) -> list[dict]:
+    scaler = classifier.named_steps["scale"]
+    model = classifier.named_steps["logreg"]
+    standardized = model.coef_[0].astype(float)
+    scale = np.where(scaler.scale_.astype(float) < 1e-12, 1.0, scaler.scale_.astype(float))
+    mean = scaler.mean_.astype(float)
+    raw = standardized / scale
+    raw_intercept = float(model.intercept_[0] - np.sum(standardized * mean / scale))
+    rows = [
+        {
+            "method": method,
+            "standardized_coefficient": float(std_coef),
+            "raw_score_coefficient": float(raw_coef),
+        }
+        for method, std_coef, raw_coef in zip(methods, standardized, raw, strict=True)
+    ]
+    rows.append(
+        {
+            "method": "__intercept__",
+            "standardized_coefficient": float(model.intercept_[0]),
+            "raw_score_coefficient": raw_intercept,
+        }
+    )
+    return rows
 
 
 def _metrics_row(
@@ -144,6 +237,10 @@ def _metrics_row(
             "base_methods": methods,
             "n_samples": int(len(y_true)),
             "threshold": float(threshold),
+            "positive_rate": float(y_true.mean()) if len(y_true) else 0.0,
+            "predicted_positive_rate": float((scores >= threshold).mean()) if len(scores) else 0.0,
+            "score_mean": float(scores.mean()) if len(scores) else 0.0,
+            "score_std": float(scores.std(ddof=0)) if len(scores) else 0.0,
         }
     )
     rows = [
@@ -159,8 +256,16 @@ def main() -> None:
     train_frame, methods = _aligned_matrix(list(map(_parse_train, args.train)))
     x_train = train_frame[methods].to_numpy(dtype=float)
     y_train = train_frame["y_true"].to_numpy(dtype=int)
-    classifier = _classifier(args.seed)
-    classifier.fit(x_train, y_train)
+    x_fit, y_fit = _augment_branch_dropout(
+        x_train,
+        y_train,
+        args.branch_dropout_rate,
+        args.branch_dropout_repeats,
+        args.seed,
+        args.branch_dropout_fill,
+    )
+    classifier = _classifier(args.seed, args.fusion_c)
+    classifier.fit(x_fit, y_fit)
 
     all_metrics = []
     train_metrics, train_rows = _metrics_row(
@@ -195,11 +300,21 @@ def main() -> None:
             "seed": int(args.seed),
             "threshold": float(args.threshold),
             "n_train": int(len(y_train)),
+            "n_fit": int(len(y_fit)),
+            "fusion_c": float(args.fusion_c),
+            "branch_dropout_rate": float(args.branch_dropout_rate),
+            "branch_dropout_repeats": int(args.branch_dropout_repeats),
+            "branch_dropout_fill": args.branch_dropout_fill,
+            "coefficients": _coefficient_rows(methods, classifier),
             "metrics": all_metrics,
         },
         out_dir / "metrics.json",
     )
     joblib.dump(classifier, out_dir / "score_fusion_model.joblib")
+    pd.DataFrame(_coefficient_rows(methods, classifier)).to_csv(
+        out_dir / "score_fusion_coefficients.csv",
+        index=False,
+    )
     summary_rows = [
         {
             "variant": metrics["variant"],
@@ -208,6 +323,11 @@ def main() -> None:
             "recall": metrics["recall"],
             "f1": metrics["f1"],
             "roc_auc": metrics["roc_auc"],
+            "brier_score": metrics["brier_score"],
+            "expected_calibration_error": metrics["expected_calibration_error"],
+            "maximum_calibration_error": metrics["maximum_calibration_error"],
+            "predicted_positive_rate": metrics["predicted_positive_rate"],
+            "score_mean": metrics["score_mean"],
             "n_samples": metrics["n_samples"],
         }
         for metrics in all_metrics
