@@ -12,7 +12,7 @@ from forensic_compare.conventional import (
 )
 from forensic_compare.transforms import ROBUSTNESS_VARIANTS, apply_robustness_variant
 from scripts.make_robustness_variants import _apply_variant
-from scripts.run_feature_baseline import _extract_matrix
+from scripts.run_feature_baseline import _classifier, _extract_matrix, _selected_feature_names
 
 
 def test_extract_features_are_finite(tmp_path: Path) -> None:
@@ -104,3 +104,22 @@ def test_feature_extraction_can_augment_training_rows(tmp_path: Path) -> None:
     assert paths == [path, path, path]
     assert skipped == []
     assert np.isfinite(features).all()
+
+
+def test_feature_classifier_can_select_top_k_features() -> None:
+    rng = np.random.default_rng(5)
+    x_train = rng.normal(size=(18, 6))
+    y_train = np.array([0, 1] * 9)
+    names = [f"feature_{index}" for index in range(x_train.shape[1])]
+
+    classifier = _classifier(
+        "logistic_regression",
+        seed=5,
+        select_k=3,
+        n_features=x_train.shape[1],
+    )
+    classifier.fit(x_train, y_train)
+
+    selected = _selected_feature_names(classifier, names)
+    assert len(selected) == 3
+    assert set(selected).issubset(names)

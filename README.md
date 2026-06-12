@@ -465,6 +465,8 @@ It adds local noise-entropy and multiscale residual features inspired by newer r
 
 `combined_v4` is checked into [reports/combined_v4_probe_2026_06_12.md](reports/combined_v4_probe_2026_06_12.md). It adds AEROBLADE-lite reconstruction residuals, multiring FFT statistics, chroma boundary/edge features, and stronger JPEG recompression probes. A tiny 80/40 Ishu smoke test confirms the feature set is finite and trainable, but it trails `combined_v3` on that limited split, so it is currently an ablation candidate rather than a claimed improvement.
 
+A feature-selection follow-up is checked into [reports/combined_v4_selectk_probe_2026_06_12.md](reports/combined_v4_selectk_probe_2026_06_12.md). On three bounded Ishu seeds, selected `combined_v4` improves mean AUC to 0.8219 versus 0.8033 for `combined_v3`, suggesting v4 should be tuned with feature selection rather than used raw.
+
 ## Defactify / MS COCOAI Subset Result
 
 A Hugging Face export and benchmark run on a 2,000-image Defactify/MS COCOAI subset is checked into [reports/ms_cocoai_2026_subset_benchmark.md](reports/ms_cocoai_2026_subset_benchmark.md).

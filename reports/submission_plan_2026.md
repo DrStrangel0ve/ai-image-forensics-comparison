@@ -28,6 +28,7 @@ Current evidence:
 - Qualitative failure grids now show seed-17 false positives, false negatives, and branch disagreements for SCP-Fusion on Ishu -> MS COCOAI.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
 - `combined_v4` now implements the planned reconstruction, multiscale frequency, chroma, and JPEG feature expansion; the first bounded smoke probe is usable but trails `combined_v3`, so the next claim needs full repeated-seed ablation rather than a single split.
+- A bounded three-seed feature-selection probe makes `combined_v4` promising again: select-k v4 reaches 0.7389 mean accuracy / 0.8219 mean AUC versus 0.7278 / 0.8033 for `combined_v3`.
 
 ## Target 1: DFRWS-USA 2026 Poster
 
@@ -69,7 +70,7 @@ A compact, serious benchmark paper. WIFS will expect tighter experimental method
 
 Minimum additions before submission:
 
-- Run a full repeated-seed `combined_v4` ablation against `combined_v3`, including at least one stronger classifier or feature-selection variant.
+- Run a full repeated-seed `combined_v4` ablation against `combined_v3`, using the new `--select-k` path and at least one stronger classifier.
 - Add frozen encoder cross-domain results for at least one more dataset direction, ideally MS COCOAI -> Ishu or Ishu -> another recent Kaggle dataset.
 - Expand the new source-heldout calibration split with confidence intervals and a calibration-aware model/training ablation.
 - Add source-heldout tables with confidence intervals or seed variability.
@@ -119,7 +120,8 @@ Best target for a full workshop paper. It gives room for the repo's practical en
 
 2. Validate `combined_v4`:
    - implementation is checked in with reconstruction, multiring FFT, chroma, and JPEG features;
-   - the bounded 80/40 Ishu smoke probe trails `combined_v3`, so the next step is repeated-seed ablation with stronger regularization, feature selection, and tree-based classifiers.
+   - raw v4 trails `combined_v3` in the first 80/40 smoke probe, but select-k v4 leads the bounded three-seed 120/60 probe by mean AUC;
+   - the next step is a larger repeated-seed ablation with `k` in `{40, 60, 80}` and a tree-based classifier.
 
 3. Improve calibration:
    - Brier score, expected calibration error, reliability curves, and source-heldout post-hoc calibration are now implemented;

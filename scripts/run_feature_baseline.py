@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import csv
 import sys
+from functools import partial
 from io import BytesIO
 from pathlib import Path
 
@@ -13,6 +14,7 @@ import joblib
 import numpy as np
 from PIL import Image
 from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
+from sklearn.feature_selection import SelectKBest, f_classif, mutual_info_classif
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -55,6 +57,18 @@ def parse_args() -> argparse.Namespace:
         "--classifier",
         choices=["logistic_regression", "random_forest", "hist_gradient_boosting"],
         default="logistic_regression",
+    )
+    parser.add_argument(
+        "--select-k",
+        type=int,
+        default=0,
+        help="Optionally keep the top K handcrafted features before fitting.",
+    )
+    parser.add_argument(
+        "--selection-score-func",
+        choices=["f_classif", "mutual_info"],
+        default="f_classif",
+        help="Feature-selection scoring function used when --select-k is positive.",
     )
     parser.add_argument("--image-size", type=int, default=128)
     parser.add_argument("--seed", type=int, default=7)
@@ -137,17 +151,17 @@ def _extract_augmented_feature(
     return extract_feature_set(buffer, image_size=image_size, feature_set=feature_set)
 
 
-def _classifier(name: str, seed: int):
+def _selection_score_func(name: str, seed: int):
+    if name == "f_classif":
+        return f_classif
+    if name == "mutual_info":
+        return partial(mutual_info_classif, random_state=seed)
+    raise ValueError(f"Unsupported selection score function: {name}")
+
+
+def _base_classifier(name: str, seed: int):
     if name == "logistic_regression":
-        return Pipeline(
-            steps=[
-                ("scale", StandardScaler()),
-                (
-                    "logreg",
-                    LogisticRegression(max_iter=3000, class_weight="balanced", random_state=seed),
-                ),
-            ]
-        )
+        return LogisticRegression(max_iter=3000, class_weight="balanced", random_state=seed)
     if name == "random_forest":
         return RandomForestClassifier(
             n_estimators=300,
@@ -159,6 +173,46 @@ def _classifier(name: str, seed: int):
     if name == "hist_gradient_boosting":
         return HistGradientBoostingClassifier(max_iter=300, learning_rate=0.05, random_state=seed)
     raise ValueError(f"Unsupported classifier: {name}")
+
+
+def _classifier(
+    name: str,
+    seed: int,
+    select_k: int = 0,
+    n_features: int | None = None,
+    selection_score_func: str = "f_classif",
+):
+    if select_k < 0:
+        raise ValueError("--select-k must be non-negative")
+    base = _base_classifier(name, seed)
+    needs_scaling = name == "logistic_regression"
+    steps = []
+    if needs_scaling:
+        steps.append(("scale", StandardScaler()))
+    if select_k:
+        if n_features is None:
+            raise ValueError("n_features is required when --select-k is positive")
+        steps.append(
+            (
+                "select",
+                SelectKBest(
+                    score_func=_selection_score_func(selection_score_func, seed),
+                    k=min(select_k, n_features),
+                ),
+            )
+        )
+    if steps:
+        steps.append(("model", base))
+        return Pipeline(steps=steps)
+    return base
+
+
+def _selected_feature_names(classifier, names: list[str]) -> list[str]:
+    selector = classifier.named_steps.get("select") if isinstance(classifier, Pipeline) else None
+    if selector is None:
+        return []
+    mask = selector.get_support()
+    return [name for name, keep in zip(names, mask) if keep]
 
 
 def main() -> None:
@@ -182,7 +236,13 @@ def main() -> None:
         args.skip_errors,
     )
 
-    classifier = _classifier(args.classifier, args.seed)
+    classifier = _classifier(
+        args.classifier,
+        args.seed,
+        select_k=args.select_k,
+        n_features=x_train.shape[1],
+        selection_score_func=args.selection_score_func,
+    )
     classifier.fit(x_train, y_train)
     if hasattr(classifier, "predict_proba"):
         scores = classifier.predict_proba(x_test)[:, 1]
@@ -193,10 +253,17 @@ def main() -> None:
     names = feature_names(args.feature_set)
     metrics.update(
         {
-            "method": f"feature_{args.feature_set}_{args.classifier}",
+            "method": (
+                f"feature_{args.feature_set}_{args.classifier}"
+                + (f"_selectk{min(args.select_k, x_train.shape[1])}" if args.select_k else "")
+            ),
             "feature_set": args.feature_set,
             "classifier": args.classifier,
             "feature_names": names,
+            "select_k": int(args.select_k),
+            "effective_select_k": int(min(args.select_k, x_train.shape[1])) if args.select_k else 0,
+            "selection_score_func": args.selection_score_func if args.select_k else None,
+            "selected_feature_names": _selected_feature_names(classifier, names),
             "n_train": int(len(y_train)),
             "n_train_original": int(len(train_records) - len(skipped_train)),
             "train_augment_variants": list(args.train_augment_variants),

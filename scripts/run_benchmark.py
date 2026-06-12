@@ -18,6 +18,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out-dir", default=None, help="Output run directory.")
     parser.add_argument("--methods", nargs="+", default=["photometric", "noise", "combined", "neural"])
     parser.add_argument("--feature-classifier", default="logistic_regression")
+    parser.add_argument("--feature-select-k", type=int, default=0)
+    parser.add_argument(
+        "--feature-selection-score-func",
+        choices=["f_classif", "mutual_info"],
+        default="f_classif",
+    )
     parser.add_argument("--feature-image-size", type=int, default=128)
     parser.add_argument("--neural-model", default="resnet18")
     parser.add_argument("--pretrained", action="store_true", help="Use pretrained neural weights when available.")
@@ -82,7 +88,8 @@ def main() -> None:
             "combined_v3",
             "combined_v4",
         }:
-            method_out = out_dir / f"feature_{method}_{args.feature_classifier}"
+            selector_suffix = f"_selectk{args.feature_select_k}" if args.feature_select_k else ""
+            method_out = out_dir / f"feature_{method}_{args.feature_classifier}{selector_suffix}"
             command = [
                 sys.executable,
                 "scripts/run_feature_baseline.py",
@@ -94,6 +101,10 @@ def main() -> None:
                 method,
                 "--classifier",
                 args.feature_classifier,
+                "--select-k",
+                str(args.feature_select_k),
+                "--selection-score-func",
+                args.feature_selection_score_func,
                 "--image-size",
                 str(args.feature_image_size),
                 "--max-train-samples",
