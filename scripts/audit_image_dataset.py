@@ -17,11 +17,21 @@ from forensic_compare.utils import ensure_dir, write_json
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Audit an image-folder dataset for class counts, dimensions, and exact duplicates."
+        description="Audit an image-folder dataset for class counts, dimensions, and duplicate leakage."
     )
     parser.add_argument("--data-dir", required=True)
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--max-duplicate-examples", type=int, default=20)
+    parser.add_argument("--phash-size", type=int, default=8)
+    parser.add_argument("--near-duplicate-distance", type=int, default=4)
+    parser.add_argument("--near-duplicate-dhash-distance", type=int, default=4)
+    parser.add_argument(
+        "--max-phash-images",
+        type=int,
+        default=5000,
+        help="Skip near-duplicate pairwise scanning above this many images.",
+    )
+    parser.add_argument("--max-near-duplicate-examples", type=int, default=20)
     return parser.parse_args()
 
 
@@ -38,6 +48,29 @@ def _image_size(path: Path) -> tuple[int, int]:
         return image.size
 
 
+def _average_hash(path: Path, size: int) -> int:
+    with Image.open(path) as image:
+        grayscale = image.convert("L").resize((size, size), Image.Resampling.LANCZOS)
+    pixels = list(grayscale.tobytes())
+    mean = sum(pixels) / len(pixels)
+    value = 0
+    for pixel in pixels:
+        value = (value << 1) | int(pixel >= mean)
+    return value
+
+
+def _difference_hash(path: Path, size: int) -> int:
+    with Image.open(path) as image:
+        grayscale = image.convert("L").resize((size + 1, size), Image.Resampling.LANCZOS)
+    pixels = list(grayscale.tobytes())
+    value = 0
+    for y in range(size):
+        row = pixels[y * (size + 1) : (y + 1) * (size + 1)]
+        for x in range(size):
+            value = (value << 1) | int(row[x] > row[x + 1])
+    return value
+
+
 def _layout_folders(layout) -> list[tuple[str, Path]]:
     if layout.train and layout.test:
         return [("train", layout.train), ("test", layout.test)]
@@ -46,7 +79,69 @@ def _layout_folders(layout) -> list[tuple[str, Path]]:
     raise ValueError(f"Unsupported dataset layout: {layout}")
 
 
-def audit_dataset(data_dir: str | Path, max_duplicate_examples: int = 20) -> dict:
+def _near_duplicate_pairs(
+    rows: list[dict],
+    max_average_distance: int,
+    max_difference_distance: int,
+    max_examples: int,
+) -> tuple[list[dict], dict]:
+    pairs = []
+    counts = Counter()
+    for left_index, left in enumerate(rows):
+        left_average_hash = int(left["average_hash"], 16)
+        left_difference_hash = int(left["difference_hash"], 16)
+        for right in rows[left_index + 1 :]:
+            if left["sha256"] == right["sha256"]:
+                continue
+            average_distance = (
+                left_average_hash ^ int(right["average_hash"], 16)
+            ).bit_count()
+            if average_distance > max_average_distance:
+                continue
+            difference_distance = (
+                left_difference_hash ^ int(right["difference_hash"], 16)
+            ).bit_count()
+            if difference_distance > max_difference_distance:
+                continue
+            cross_split = left["split"] != right["split"]
+            cross_class = left["class_name"] != right["class_name"]
+            counts["total"] += 1
+            counts["cross_split"] += int(cross_split)
+            counts["cross_class"] += int(cross_class)
+            if len(pairs) < max_examples:
+                pairs.append(
+                    {
+                        "average_distance": int(average_distance),
+                        "difference_distance": int(difference_distance),
+                        "cross_split": cross_split,
+                        "cross_class": cross_class,
+                        "left": left["path"],
+                        "right": right["path"],
+                        "left_split": left["split"],
+                        "right_split": right["split"],
+                        "left_class": left["class_name"],
+                        "right_class": right["class_name"],
+                    }
+                )
+    return sorted(
+        pairs,
+        key=lambda row: (
+            not row["cross_split"],
+            row["average_distance"],
+            row["difference_distance"],
+        ),
+    ), counts
+
+
+def audit_dataset(
+    data_dir: str | Path,
+    max_duplicate_examples: int = 20,
+    phash_size: int = 8,
+    near_duplicate_distance: int = 4,
+    near_duplicate_dhash_distance: int = 4,
+    max_phash_images: int = 5000,
+    max_near_duplicate_examples: int = 20,
+) -> dict:
     root = Path(data_dir).expanduser().resolve()
     layout = discover_layout(root)
     rows = []
@@ -67,6 +162,12 @@ def audit_dataset(data_dir: str | Path, max_duplicate_examples: int = 20) -> dic
                 "class_name": class_name,
                 "label": int(label),
                 "sha256": digest,
+                "average_hash": (
+                    f"{_average_hash(path, phash_size):0{phash_size * phash_size // 4}x}"
+                ),
+                "difference_hash": (
+                    f"{_difference_hash(path, phash_size):0{phash_size * phash_size // 4}x}"
+                ),
                 "width": int(width),
                 "height": int(height),
                 "bytes": int(path.stat().st_size),
@@ -107,6 +208,19 @@ def audit_dataset(data_dir: str | Path, max_duplicate_examples: int = 20) -> dic
         {"width": width, "height": height, "n_images": count}
         for (width, height), count in dimension_counts.most_common(10)
     ]
+    if len(rows) <= max_phash_images:
+        near_duplicates, near_counts = _near_duplicate_pairs(
+            rows,
+            max_average_distance=near_duplicate_distance,
+            max_difference_distance=near_duplicate_dhash_distance,
+            max_examples=max_near_duplicate_examples,
+        )
+        near_scan_skipped = False
+    else:
+        near_duplicates = []
+        near_counts = Counter()
+        near_scan_skipped = True
+
     summary = {
         "data_dir": str(root),
         "layout": {
@@ -124,6 +238,13 @@ def audit_dataset(data_dir: str | Path, max_duplicate_examples: int = 20) -> dic
         "n_cross_class_duplicate_groups": sum(
             1 for group in duplicate_summaries if group["cross_class"]
         ),
+        "phash_size": phash_size,
+        "near_duplicate_distance": near_duplicate_distance,
+        "near_duplicate_dhash_distance": near_duplicate_dhash_distance,
+        "near_duplicate_scan_skipped": near_scan_skipped,
+        "n_near_duplicate_pairs": int(near_counts["total"]),
+        "n_cross_split_near_duplicate_pairs": int(near_counts["cross_split"]),
+        "n_cross_class_near_duplicate_pairs": int(near_counts["cross_class"]),
         "width_min": min(widths) if widths else None,
         "width_max": max(widths) if widths else None,
         "height_min": min(heights) if heights else None,
@@ -131,6 +252,7 @@ def audit_dataset(data_dir: str | Path, max_duplicate_examples: int = 20) -> dic
         "class_counts": class_count_rows,
         "top_dimensions": top_dimensions,
         "duplicates": duplicate_summaries[:max_duplicate_examples],
+        "near_duplicates": near_duplicates,
     }
     return summary
 
@@ -158,6 +280,17 @@ def write_audit_report(summary: dict, out_dir: str | Path) -> None:
         }
         for row in summary["duplicates"]
     ]
+    near_duplicate_rows = [
+        {
+            "avg_dist": row["average_distance"],
+            "diff_dist": row["difference_distance"],
+            "cross_split": row["cross_split"],
+            "cross_class": row["cross_class"],
+            "left": row["left"],
+            "right": row["right"],
+        }
+        for row in summary["near_duplicates"]
+    ]
     report = [
         "# Image Dataset Audit",
         "",
@@ -168,6 +301,9 @@ def write_audit_report(summary: dict, out_dir: str | Path) -> None:
         f"Duplicate groups: **{summary['n_duplicate_groups']}**",
         f"Cross-split duplicate groups: **{summary['n_cross_split_duplicate_groups']}**",
         f"Cross-class duplicate groups: **{summary['n_cross_class_duplicate_groups']}**",
+        f"Near-duplicate pairs: **{summary['n_near_duplicate_pairs']}**",
+        f"Cross-split near-duplicate pairs: **{summary['n_cross_split_near_duplicate_pairs']}**",
+        f"Cross-class near-duplicate pairs: **{summary['n_cross_class_near_duplicate_pairs']}**",
         f"Width range: **{summary['width_min']}..{summary['width_max']}**",
         f"Height range: **{summary['height_min']}..{summary['height_max']}**",
         "",
@@ -188,13 +324,37 @@ def write_audit_report(summary: dict, out_dir: str | Path) -> None:
         if duplicate_rows
         else "No exact duplicate groups found.",
         "",
+        "## Near-Duplicate Examples",
+        "",
+        "Near duplicates use average-hash Hamming distance "
+        f"<= {summary['near_duplicate_distance']} over {summary['phash_size']}x"
+        f"{summary['phash_size']} grayscale thumbnails, plus difference-hash Hamming distance "
+        f"<= {summary['near_duplicate_dhash_distance']}.",
+        "",
+        "Near-duplicate scanning was skipped because the dataset exceeds the configured image cap."
+        if summary["near_duplicate_scan_skipped"]
+        else _markdown_table(
+            near_duplicate_rows,
+            ["avg_dist", "diff_dist", "cross_split", "cross_class", "left", "right"],
+        )
+        if near_duplicate_rows
+        else "No near-duplicate pairs found.",
+        "",
     ]
     (out_path / "report.md").write_text("\n".join(report), encoding="utf-8")
 
 
 def main() -> None:
     args = parse_args()
-    summary = audit_dataset(args.data_dir, max_duplicate_examples=args.max_duplicate_examples)
+    summary = audit_dataset(
+        args.data_dir,
+        max_duplicate_examples=args.max_duplicate_examples,
+        phash_size=args.phash_size,
+        near_duplicate_distance=args.near_duplicate_distance,
+        near_duplicate_dhash_distance=args.near_duplicate_dhash_distance,
+        max_phash_images=args.max_phash_images,
+        max_near_duplicate_examples=args.max_near_duplicate_examples,
+    )
     write_audit_report(summary, args.out_dir)
     print(
         "images={n_images} duplicate_groups={n_duplicate_groups} "

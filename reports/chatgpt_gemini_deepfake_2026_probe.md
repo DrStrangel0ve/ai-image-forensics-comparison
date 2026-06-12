@@ -20,7 +20,7 @@ new dataset/
     real/
 ```
 
-The new `scripts/audit_image_dataset.py` command checks class counts, image dimensions, and exact SHA-256 duplicates.
+The `scripts/audit_image_dataset.py` command now checks class counts, image dimensions, exact SHA-256 duplicates, and stricter near-duplicate candidates that must pass both average-hash and difference-hash thresholds.
 
 | split | fake | real |
 | --- | ---: | ---: |
@@ -36,10 +36,13 @@ Audit summary:
 | exact duplicate groups | 5 |
 | cross-split duplicate groups | 0 |
 | cross-class duplicate groups | 0 |
+| near-duplicate pairs | 1 |
+| cross-split near-duplicate pairs | 0 |
+| cross-class near-duplicate pairs | 0 |
 | width range | 928..1537 |
 | height range | 768..1448 |
 
-The exact duplicate pairs are all within `train/fake`, mostly duplicate filenames with `(1)` suffixes. There is no exact train/validation leakage.
+The exact duplicate pairs are all within `train/fake`, mostly duplicate filenames with `(1)` suffixes. The stricter perceptual hash audit finds one additional duplicate pair inside `valid/fake`: `Gemini_Generated_Image_8vzewk8vzewk8vze (1).png` and `Gemini_Generated_Image_8vzewk8vzewk8vze.png`. There is no exact or perceptual train/validation leakage under the default audit thresholds.
 
 ## In-Dataset Benchmark
 
@@ -84,7 +87,7 @@ python scripts/download_dataset.py chatgpt_gemini_deepfake_2026
 ```powershell
 python scripts/audit_image_dataset.py `
   --data-dir data/raw/chatgpt_gemini_deepfake_2026 `
-  --out-dir runs/chatgpt_gemini_deepfake_2026_initial/audit
+  --out-dir runs/chatgpt_gemini_deepfake_2026_initial/audit_phash2
 ```
 
 ```powershell

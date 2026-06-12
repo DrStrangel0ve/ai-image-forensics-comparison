@@ -122,7 +122,7 @@ The exporter writes folders such as `train/real`, `train/ai_generated`, `validat
 
 ## Audit Image-Folder Datasets
 
-Before treating a new dataset as evidence, audit its layout, class counts, dimensions, and exact duplicate leakage:
+Before treating a new dataset as evidence, audit its layout, class counts, dimensions, exact duplicate leakage, and stricter perceptual near-duplicate candidates:
 
 ```powershell
 python scripts/audit_image_dataset.py `
@@ -130,7 +130,7 @@ python scripts/audit_image_dataset.py `
   --out-dir runs/chatgpt_gemini_deepfake_2026_initial/audit
 ```
 
-The audit writes `audit.json` and `report.md`.
+The audit writes `audit.json` and `report.md`. Near-duplicate scanning requires both average-hash and difference-hash distances to fall under the configured thresholds.
 
 For generator-balanced Defactify/MS COCOAI validation exports, cap each generated source label independently:
 
@@ -375,4 +375,4 @@ An augmented neural follow-up is checked into [reports/ms_cocoai_augmented_neura
 Training ResNet-18 with the same deterministic variants improved its own blur and resize robustness deltas, but the unaugmented ResNet-18 still had better clean accuracy and AUC on this 4-epoch run.
 
 A small ChatGPT/Gemini May 2026 Kaggle probe is checked into [reports/chatgpt_gemini_deepfake_2026_probe.md](reports/chatgpt_gemini_deepfake_2026_probe.md).
-It validates the dataset layout, adds exact-duplicate auditing, and shows that in-dataset results are easy while MS COCOAI-to-ChatGPT/Gemini zero-shot transfer remains weak.
+It validates the dataset layout, adds exact/perceptual duplicate auditing, and shows that in-dataset results are easy while MS COCOAI-to-ChatGPT/Gemini zero-shot transfer remains weak.
