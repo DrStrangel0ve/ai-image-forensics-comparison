@@ -456,12 +456,14 @@ The main result is that all methods drop sharply outside their source dataset, b
 
 A stricter source-heldout threshold diagnostic is checked into [reports/source_holdout_diagnostics_2026_06_12.md](reports/source_holdout_diagnostics_2026_06_12.md). It holds out each generated MS COCOAI source in turn and shows that naive source-threshold transfer often drives thresholds too low, creating high real-image false-positive rates. Physics-guided fusion still has the best three-seed mean, but SCP-Fusion needs better source-aware training rather than only better thresholding.
 
-## Conventional V2 Probe
+## Conventional V2/V3/V4 Probes
 
 An experimental `combined_v2` conventional baseline is checked into [reports/conventional_v2_probe.md](reports/conventional_v2_probe.md).
 It adds local noise-entropy and multiscale residual features inspired by newer robustness work, but keeps the original `combined` feature set for backward-compatible saved models.
 
 `combined_v3` adds JPEG recompression sensitivity, residual 8x8 phase periodicity, RGB residual-correlation, and local residual-variance features on top of `combined_v2`.
+
+`combined_v4` is checked into [reports/combined_v4_probe_2026_06_12.md](reports/combined_v4_probe_2026_06_12.md). It adds AEROBLADE-lite reconstruction residuals, multiring FFT statistics, chroma boundary/edge features, and stronger JPEG recompression probes. A tiny 80/40 Ishu smoke test confirms the feature set is finite and trainable, but it trails `combined_v3` on that limited split, so it is currently an ablation candidate rather than a claimed improvement.
 
 ## Defactify / MS COCOAI Subset Result
 

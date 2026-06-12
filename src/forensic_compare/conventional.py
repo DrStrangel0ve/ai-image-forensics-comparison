@@ -72,6 +72,38 @@ NOISE_V3_EXTRA_FEATURE_NAMES = [
 
 NOISE_V3_FEATURE_NAMES = NOISE_V2_FEATURE_NAMES + NOISE_V3_EXTRA_FEATURE_NAMES
 
+NOISE_V4_EXTRA_FEATURE_NAMES = [
+    "recon_half_abs_mean",
+    "recon_half_abs_p95",
+    "recon_half_luma_chroma_ratio",
+    "recon_half_laplacian_abs_mean",
+    "recon_half_tile16_std_mean",
+    "recon_half_tile16_std_p90",
+    "recon_quarter_abs_mean",
+    "recon_quarter_abs_p95",
+    "recon_quarter_luma_chroma_ratio",
+    "recon_quarter_laplacian_abs_mean",
+    "fft_ring_00_10_ratio",
+    "fft_ring_10_20_ratio",
+    "fft_ring_20_35_ratio",
+    "fft_ring_35_55_ratio",
+    "fft_ring_55_100_ratio",
+    "fft_spectral_flatness",
+    "fft_radial_slope",
+    "fft_high_low_ratio",
+    "chroma_edge_corr",
+    "chroma_laplacian_abs_mean",
+    "chroma_laplacian_entropy",
+    "chroma_boundary_col_ratio",
+    "chroma_boundary_row_ratio",
+    "jpeg_q50_abs_mean",
+    "jpeg_q50_abs_p95",
+    "jpeg_q50_q95_mean_ratio",
+    "jpeg_q70_phase8_contrast_delta",
+]
+
+NOISE_V4_FEATURE_NAMES = NOISE_V3_FEATURE_NAMES + NOISE_V4_EXTRA_FEATURE_NAMES
+
 
 def _load_rgb(path: str | Path, image_size: int) -> np.ndarray:
     with Image.open(path) as image:
@@ -124,6 +156,19 @@ def _jpeg_reencode_diff(rgb: np.ndarray, quality: int) -> np.ndarray:
     return np.abs(rgb - jpeg_rgb)
 
 
+def _resize_reconstruction_diff(rgb: np.ndarray, scale: float) -> np.ndarray:
+    image = Image.fromarray(np.clip(rgb * 255, 0, 255).astype(np.uint8))
+    width, height = image.size
+    small_size = (
+        max(8, int(round(width * scale))),
+        max(8, int(round(height * scale))),
+    )
+    small = image.resize(small_size, Image.Resampling.BICUBIC)
+    reconstructed = small.resize((width, height), Image.Resampling.BICUBIC)
+    reconstructed_rgb = np.asarray(reconstructed.convert("RGB"), dtype=np.float32) / 255.0
+    return np.abs(rgb - reconstructed_rgb)
+
+
 def _ela_diff(rgb: np.ndarray) -> np.ndarray:
     return _jpeg_reencode_diff(rgb, quality=90)
 
@@ -167,6 +212,52 @@ def _fft_features(gray: np.ndarray) -> dict[str, float]:
         "fft_centroid": float((spectrum * radius_norm).sum() / total),
         "fft_axis_anisotropy": anisotropy,
     }
+
+
+def _fft_v4_features(gray: np.ndarray) -> dict[str, float]:
+    centered = gray - gray.mean()
+    spectrum = np.abs(np.fft.fftshift(np.fft.fft2(centered))) ** 2
+    height, width = gray.shape
+    yy, xx = np.mgrid[:height, :width]
+    cy = (height - 1) / 2.0
+    cx = (width - 1) / 2.0
+    radius = np.sqrt((yy - cy) ** 2 + (xx - cx) ** 2)
+    radius_norm = radius / np.clip(radius.max(), 1e-8, None)
+    total = float(spectrum.sum()) + 1e-8
+    rings = [
+        ("fft_ring_00_10_ratio", 0.00, 0.10),
+        ("fft_ring_10_20_ratio", 0.10, 0.20),
+        ("fft_ring_20_35_ratio", 0.20, 0.35),
+        ("fft_ring_35_55_ratio", 0.35, 0.55),
+        ("fft_ring_55_100_ratio", 0.55, 1.01),
+    ]
+    values = {
+        name: float(spectrum[(radius_norm >= low) & (radius_norm < high)].sum() / total)
+        for name, low, high in rings
+    }
+    positive = spectrum + 1e-12
+    radial_centers = []
+    radial_energy = []
+    for low, high in [(0.08, 0.16), (0.16, 0.28), (0.28, 0.42), (0.42, 0.60), (0.60, 0.85)]:
+        mask = (radius_norm >= low) & (radius_norm < high)
+        if mask.any():
+            radial_centers.append((low + high) / 2.0)
+            radial_energy.append(float(positive[mask].mean()))
+    if len(radial_centers) >= 2:
+        slope = float(np.polyfit(np.log(radial_centers), np.log(radial_energy), deg=1)[0])
+    else:
+        slope = 0.0
+    values.update(
+        {
+            "fft_spectral_flatness": float(np.exp(np.mean(np.log(positive))) / np.mean(positive)),
+            "fft_radial_slope": slope,
+            "fft_high_low_ratio": float(
+                values["fft_ring_55_100_ratio"]
+                / np.clip(values["fft_ring_00_10_ratio"], 1e-8, None)
+            ),
+        }
+    )
+    return values
 
 
 def _gradient_orientation_entropy(gray: np.ndarray) -> float:
@@ -323,6 +414,80 @@ def _noise_v3_extra_features(
     return values
 
 
+def _reconstruction_stats(rgb: np.ndarray, scale: float, prefix: str) -> dict[str, float]:
+    diff = _resize_reconstruction_diff(rgb, scale=scale)
+    diff_abs = np.mean(diff, axis=2)
+    gray_diff = _gray(diff)
+    chroma_diff = 0.5 * (np.abs(diff[:, :, 0] - diff[:, :, 1]) + np.abs(diff[:, :, 2] - diff[:, :, 1]))
+    values = {
+        f"{prefix}_abs_mean": float(diff_abs.mean()),
+        f"{prefix}_abs_p95": float(np.percentile(diff_abs, 95)),
+        f"{prefix}_luma_chroma_ratio": float(
+            gray_diff.mean() / np.clip(float(chroma_diff.mean()), 1e-8, None)
+        ),
+        f"{prefix}_laplacian_abs_mean": float(np.abs(_laplacian(diff_abs)).mean()),
+    }
+    if prefix == "recon_half":
+        values.update(_tile_std_stats(diff_abs, tile_size=16, prefix=f"{prefix}_tile16"))
+        return {
+            "recon_half_abs_mean": values["recon_half_abs_mean"],
+            "recon_half_abs_p95": values["recon_half_abs_p95"],
+            "recon_half_luma_chroma_ratio": values["recon_half_luma_chroma_ratio"],
+            "recon_half_laplacian_abs_mean": values["recon_half_laplacian_abs_mean"],
+            "recon_half_tile16_std_mean": values["recon_half_tile16_std_mean"],
+            "recon_half_tile16_std_p90": values["recon_half_tile16_std_p90"],
+        }
+    return {
+        f"{prefix}_abs_mean": values[f"{prefix}_abs_mean"],
+        f"{prefix}_abs_p95": values[f"{prefix}_abs_p95"],
+        f"{prefix}_luma_chroma_ratio": values[f"{prefix}_luma_chroma_ratio"],
+        f"{prefix}_laplacian_abs_mean": values[f"{prefix}_laplacian_abs_mean"],
+    }
+
+
+def _chroma_v4_features(rgb: np.ndarray, gray: np.ndarray) -> dict[str, float]:
+    chroma_u = rgb[:, :, 0] - gray
+    chroma_v = rgb[:, :, 2] - gray
+    chroma_mag = np.sqrt(chroma_u**2 + chroma_v**2)
+    gy, gx = np.gradient(gray)
+    edge = np.sqrt(gx**2 + gy**2)
+    chroma_laplacian = _laplacian(chroma_mag)
+    return {
+        "chroma_edge_corr": _safe_corr(chroma_mag, edge),
+        "chroma_laplacian_abs_mean": float(np.abs(chroma_laplacian).mean()),
+        "chroma_laplacian_entropy": _entropy(chroma_laplacian, bins=48),
+        "chroma_boundary_col_ratio": _block_boundary_ratio(chroma_mag, axis=1),
+        "chroma_boundary_row_ratio": _block_boundary_ratio(chroma_mag, axis=0),
+    }
+
+
+def _noise_v4_extra_features(
+    rgb: np.ndarray,
+    gray: np.ndarray,
+    jpeg_q95_abs: np.ndarray,
+    jpeg_q70_abs: np.ndarray,
+) -> dict[str, float]:
+    q50_abs = np.mean(_jpeg_reencode_diff(rgb, quality=50), axis=2)
+    q95_mean = float(jpeg_q95_abs.mean())
+    values = {}
+    values.update(_reconstruction_stats(rgb, scale=0.5, prefix="recon_half"))
+    values.update(_reconstruction_stats(rgb, scale=0.25, prefix="recon_quarter"))
+    values.update(_fft_v4_features(gray))
+    values.update(_chroma_v4_features(rgb, gray))
+    values.update(
+        {
+            "jpeg_q50_abs_mean": float(q50_abs.mean()),
+            "jpeg_q50_abs_p95": float(np.percentile(q50_abs, 95)),
+            "jpeg_q50_q95_mean_ratio": float(q50_abs.mean() / np.clip(q95_mean, 1e-8, None)),
+            "jpeg_q70_phase8_contrast_delta": float(
+                _phase8_stats(jpeg_q70_abs, "jpeg_q70")["jpeg_q70_phase8_contrast"]
+                - _phase8_stats(jpeg_q95_abs, "jpeg_q95")["jpeg_q95_phase8_contrast"]
+            ),
+        }
+    )
+    return values
+
+
 def _noise_feature_values(
     rgb: np.ndarray,
 ) -> tuple[dict[str, float], np.ndarray, np.ndarray, np.ndarray]:
@@ -376,6 +541,17 @@ def extract_noise_v3_features(path: str | Path, image_size: int = 128) -> np.nda
     return np.asarray([values[name] for name in NOISE_V3_FEATURE_NAMES], dtype=np.float32)
 
 
+def extract_noise_v4_features(path: str | Path, image_size: int = 128) -> np.ndarray:
+    rgb = _load_rgb(path, image_size)
+    values, gray, residual, ela_abs = _noise_feature_values(rgb)
+    values.update(_noise_v2_extra_features(gray, residual))
+    values.update(_noise_v3_extra_features(rgb, residual, ela_abs))
+    jpeg_q70_abs = np.mean(_jpeg_reencode_diff(rgb, quality=70), axis=2)
+    jpeg_q95_abs = np.mean(_jpeg_reencode_diff(rgb, quality=95), axis=2)
+    values.update(_noise_v4_extra_features(rgb, gray, jpeg_q95_abs, jpeg_q70_abs))
+    return np.asarray([values[name] for name in NOISE_V4_FEATURE_NAMES], dtype=np.float32)
+
+
 def feature_names(feature_set: str) -> list[str]:
     if feature_set == "photometric":
         return list(PHOTOMETRIC_FEATURE_NAMES)
@@ -385,12 +561,16 @@ def feature_names(feature_set: str) -> list[str]:
         return list(NOISE_V2_FEATURE_NAMES)
     if feature_set == "noise_v3":
         return list(NOISE_V3_FEATURE_NAMES)
+    if feature_set == "noise_v4":
+        return list(NOISE_V4_FEATURE_NAMES)
     if feature_set == "combined":
         return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_FEATURE_NAMES)
     if feature_set == "combined_v2":
         return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_V2_FEATURE_NAMES)
     if feature_set == "combined_v3":
         return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_V3_FEATURE_NAMES)
+    if feature_set == "combined_v4":
+        return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_V4_FEATURE_NAMES)
     raise ValueError(f"Unsupported feature set: {feature_set}")
 
 
@@ -403,6 +583,8 @@ def extract_feature_set(path: str | Path, image_size: int, feature_set: str) -> 
         return extract_noise_v2_features(path, image_size=image_size)
     if feature_set == "noise_v3":
         return extract_noise_v3_features(path, image_size=image_size)
+    if feature_set == "noise_v4":
+        return extract_noise_v4_features(path, image_size=image_size)
     if feature_set == "combined":
         return np.concatenate(
             [
@@ -422,6 +604,13 @@ def extract_feature_set(path: str | Path, image_size: int, feature_set: str) -> 
             [
                 extract_photometric_features(path, image_size=image_size),
                 extract_noise_v3_features(path, image_size=image_size),
+            ]
+        )
+    if feature_set == "combined_v4":
+        return np.concatenate(
+            [
+                extract_photometric_features(path, image_size=image_size),
+                extract_noise_v4_features(path, image_size=image_size),
             ]
         )
     raise ValueError(f"Unsupported feature set: {feature_set}")

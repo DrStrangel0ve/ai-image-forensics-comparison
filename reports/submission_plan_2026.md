@@ -27,6 +27,7 @@ Current evidence:
 - Publication assets now include three generated figures, captions, a pipeline diagram, and a DFRWS-style abstract draft.
 - Qualitative failure grids now show seed-17 false positives, false negatives, and branch disagreements for SCP-Fusion on Ishu -> MS COCOAI.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
+- `combined_v4` now implements the planned reconstruction, multiscale frequency, chroma, and JPEG feature expansion; the first bounded smoke probe is usable but trails `combined_v3`, so the next claim needs full repeated-seed ablation rather than a single split.
 
 ## Target 1: DFRWS-USA 2026 Poster
 
@@ -68,7 +69,7 @@ A compact, serious benchmark paper. WIFS will expect tighter experimental method
 
 Minimum additions before submission:
 
-- Add a real `combined_v4` ablation or a reconstruction-feature ablation.
+- Run a full repeated-seed `combined_v4` ablation against `combined_v3`, including at least one stronger classifier or feature-selection variant.
 - Add frozen encoder cross-domain results for at least one more dataset direction, ideally MS COCOAI -> Ishu or Ishu -> another recent Kaggle dataset.
 - Expand the new source-heldout calibration split with confidence intervals and a calibration-aware model/training ablation.
 - Add source-heldout tables with confidence intervals or seed variability.
@@ -95,7 +96,7 @@ This is the cleanest full-paper target for the current project. DFF explicitly a
 Minimum additions before submission:
 
 - Upgrade SCP-Fusion v0 into v1:
-  - add `combined_v4` or reconstruction features;
+  - test whether `combined_v4` helps as a direct branch, after feature selection, or only as a source-diagnostic ablation;
   - add a source-heldout or temperature-scaled calibration head;
   - compare against the current saved-score logistic fusion.
 - Expand the first qualitative grids into a short explainability section using feature coefficients and source-level score distributions.
@@ -116,11 +117,9 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - current saved-score logistic fusion reaches 0.7282 mean AUC on Ishu -> MS COCOAI;
    - next step is source-aware calibration, not merely adding more branches.
 
-2. Add `combined_v4`:
-   - multiscale FFT/DCT bands;
-   - residual entropy and NLM-like denoising residual summaries;
-   - stronger JPEG periodicity;
-   - multiscale photometric normal/integrability features.
+2. Validate `combined_v4`:
+   - implementation is checked in with reconstruction, multiring FFT, chroma, and JPEG features;
+   - the bounded 80/40 Ishu smoke probe trails `combined_v3`, so the next step is repeated-seed ablation with stronger regularization, feature selection, and tree-based classifiers.
 
 3. Improve calibration:
    - Brier score, expected calibration error, reliability curves, and source-heldout post-hoc calibration are now implemented;

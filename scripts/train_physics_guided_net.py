@@ -27,9 +27,11 @@ FEATURE_SETS = [
     "noise",
     "noise_v2",
     "noise_v3",
+    "noise_v4",
     "combined",
     "combined_v2",
     "combined_v3",
+    "combined_v4",
 ]
 
 
