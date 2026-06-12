@@ -34,6 +34,7 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | SCP-Fusion branch-dropout probe | `reports/score_fusion_branch_dropout_probe_2026_06_12.md` |
 | SCP-Fusion source-calibration probe | `reports/score_fusion_source_calibration_probe_2026_06_13.md` |
 | SCP-Fusion source-heldout calibration probe | `reports/score_fusion_source_holdout_probe_2026_06_13.md` |
+| SCP-Fusion source-heldout utility-tuned triage probe | `reports/score_fusion_triage_tuning_2026_06_13.md` |
 | Calibration diagnostics | `reports/calibration_diagnostics_2026_06_12.md` |
 | Source-heldout calibration with bootstrap CIs | `reports/source_holdout_calibration_2026_06_12.md` |
 | Source-heldout triage with bootstrap CIs | `reports/source_holdout_triage_2026_06_12.md` |

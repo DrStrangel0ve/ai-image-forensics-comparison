@@ -128,6 +128,7 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - branch-dropout score fusion is implemented, but it slightly hurts AUC/Brier/ECE in the first three-seed probe;
    - held-out source-domain temperature scaling improves default accuracy and Brier/ECE, so next step is source-heldout calibration rather than merely adding more branches.
    - source-heldout stress testing shows calibration and triage prefer different score geometry, so next step is joint calibration/triage tuning.
+   - utility-tuned source-heldout triage is now implemented; it selects raw SCP-Fusion v0 scores in all 15 folds and beats the calibrated variants on target utility, so the paper should report calibration quality and triage utility as separate objectives.
 
 2. Validate `combined_v4`:
    - implementation is checked in with reconstruction, multiring FFT, chroma, and JPEG features;
@@ -139,6 +140,7 @@ Best target for a full workshop paper. It gives room for the repo's practical en
 
 3. Improve calibration:
    - Brier score, expected calibration error, reliability curves, and source-heldout post-hoc calibration are now implemented;
+   - utility-tuned triage shows post-hoc temperature scaling is not enough for the high-confidence operating mode;
    - next step is a calibration-aware training objective that improves held-out fake recall without inflating real false positives.
 
 4. Add failure-case export:
