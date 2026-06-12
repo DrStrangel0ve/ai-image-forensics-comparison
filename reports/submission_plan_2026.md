@@ -23,6 +23,7 @@ Current evidence:
 - SCP-Fusion v0 score fusion over `combined_v3`, ResNet-18, physics-guided fusion, and frozen ConvNeXt-Tiny improves Ishu -> MS COCOAI mean AUC to 0.7282, with oracle accuracy 0.6793 but default accuracy only 0.5910.
 - Calibration diagnostics show SCP-Fusion v0 has the best cross-domain Brier score, 0.3190, while all strong ranking models under-call generated MS COCOAI images at the default threshold.
 - Source-heldout post-hoc calibration shows class-balanced temperature scaling improves Brier/ECE without changing decisions, while Platt/isotonic calibration can overfit non-heldout source priors and inflate real-image false positives.
+- Source-heldout triage mode shows frozen ConvNeXt and SCP-Fusion can make high-confidence decisions on about 21-24% of target images with roughly 75% triage accuracy at a strict 5% calibration error budget.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
 
 ## Target 1: DFRWS-USA 2026 Poster
@@ -42,7 +43,7 @@ Deliverables:
 - Three figures:
   - pipeline diagram;
   - same-domain vs cross-domain result table;
-  - source-heldout false-positive/fake-detection diagnostic.
+  - source-heldout triage or false-positive/fake-detection diagnostic.
 - Public GitHub link and reproducibility checklist.
 
 Recommended title:
@@ -132,7 +133,7 @@ Best target for a full workshop paper. It gives room for the repo's practical en
 5. Draft paper assets:
    - one shared results table;
    - one pipeline figure;
-   - one source-heldout diagnostic figure;
+   - one source-heldout calibration or triage diagnostic figure;
    - one qualitative failure grid.
 
 ## Recommended Order
