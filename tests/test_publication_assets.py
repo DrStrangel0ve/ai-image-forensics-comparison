@@ -23,6 +23,9 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     triage_5 = tmp_path / "triage_5.csv"
     triage_10 = tmp_path / "triage_10.csv"
     tuned_triage = tmp_path / "tuned_triage.csv"
+    dino_calibration = tmp_path / "dino_calibration.csv"
+    dino_triage_5 = tmp_path / "dino_triage_5.csv"
+    dino_triage_10 = tmp_path / "dino_triage_10.csv"
     out_dir = tmp_path / "assets"
 
     pd.DataFrame(
@@ -74,6 +77,41 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
         }
     ).to_csv(tuned_triage, index=False)
 
+    dino_methods = [
+        "scp_fusion_v0",
+        "source_calibrated",
+        "scp_fusion_dinov2",
+        "dinov2_source_calibrated",
+    ]
+    pd.DataFrame(
+        {
+            "method": dino_methods,
+            "mean_accuracy": [0.59, 0.61, 0.60, 0.62],
+            "mean_roc_auc": [0.73, 0.72, 0.75, 0.75],
+            "mean_brier_score": [0.32, 0.31, 0.31, 0.30],
+        }
+    ).to_csv(dino_calibration, index=False)
+    for path, coverage_base, accuracy_base in [
+        (dino_triage_5, 0.20, 0.75),
+        (dino_triage_10, 0.43, 0.71),
+    ]:
+        pd.DataFrame(
+            {
+                "method": dino_methods * 2,
+                "score_mode": ["raw"] * len(dino_methods)
+                + ["temperature_balanced"] * len(dino_methods),
+                "mean_test_coverage": [coverage_base, coverage_base, coverage_base + 0.05, coverage_base + 0.04]
+                * 2,
+                "mean_test_triage_accuracy": [
+                    accuracy_base,
+                    accuracy_base - 0.02,
+                    accuracy_base + 0.05,
+                    accuracy_base + 0.06,
+                ]
+                * 2,
+            }
+        ).to_csv(path, index=False)
+
     subprocess.run(
         [
             sys.executable,
@@ -88,6 +126,12 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
             str(triage_10),
             "--score-fusion-tuned-triage",
             str(tuned_triage),
+            "--score-fusion-dinov2-calibration",
+            str(dino_calibration),
+            "--score-fusion-dinov2-triage-5pct",
+            str(dino_triage_5),
+            "--score-fusion-dinov2-triage-10pct",
+            str(dino_triage_10),
             "--out-dir",
             str(out_dir),
             "--dpi",
@@ -101,3 +145,4 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     assert (out_dir / "publication_source_heldout_calibration.png").exists()
     assert (out_dir / "publication_triage_operating_points.png").exists()
     assert (out_dir / "publication_score_fusion_tuned_triage.png").exists()
+    assert (out_dir / "publication_score_fusion_dinov2_gain.png").exists()

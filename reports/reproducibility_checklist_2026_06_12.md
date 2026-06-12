@@ -109,10 +109,11 @@ python scripts\build_publication_assets.py --out-dir reports\assets
 - Across 12 Ishu robustness checks, physics-guided fusion wins 10 by accuracy and 10 by AUC.
 - Vanilla ResNet-18 still wins MS COCOAI in-domain validation: 0.8160 accuracy / 0.8967 AUC versus physics-guided fusion at 0.7800 / 0.8790.
 - Frozen ConvNeXt-Tiny is the strongest current same-domain ranking baseline on Ishu: 0.8947 mean accuracy / 0.9589 mean AUC.
-- SCP-Fusion v0 improves Ishu-to-MS-COCOAI mean AUC to 0.7282, but default-threshold accuracy remains weak because target-domain fake scores are under-confident.
+- SCP-Fusion v0 improves Ishu-to-MS-COCOAI mean AUC to 0.7282, and adding frozen DINOv2-small as a fifth branch raises mean AUC to 0.7503.
 - SCP-Fusion branch dropout is implemented with coefficient export, but the first probe is negative/mixed: default accuracy is essentially flat while AUC/Brier/ECE worsen.
 - Source-calibrated SCP-Fusion improves default accuracy to 0.6073 and Brier/ECE to 0.3123 / 0.2947, with a small AUC tradeoff.
-- Under source-heldout stress testing, source-calibrated fusion has the best Brier/ECE and fake detection, while SCP-Fusion v0 remains stronger for the 10% triage operating point.
+- Source-calibrated DINOv2 fusion is now the best current fusion operating-point result: 0.6127 target accuracy / 0.3062 Brier / 0.2938 ECE.
+- Under source-heldout triage, DINOv2-enhanced SCP-Fusion improves the strict 5% operating point to about 26% coverage with about 80% decided-case accuracy.
 - Source-heldout calibration and triage assets include 95% deterministic bootstrap confidence intervals over held-out source/seed rows.
 - Medium `combined_v4` ablation suggests raw `combined_v4` is the best ranking/accuracy candidate at 240 train images per seed, while select-k60 is the best calibrated variant; regenerated ablation assets include 95% bootstrap confidence intervals.
 

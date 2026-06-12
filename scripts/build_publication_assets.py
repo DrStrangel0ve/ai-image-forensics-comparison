@@ -49,6 +49,24 @@ SCORE_FUSION_COLORS = {
     "branch_dropout": "#72B7B2",
     "source_calibrated": "#B279A2",
 }
+DINO_FUSION_ORDER = [
+    "scp_fusion_v0",
+    "source_calibrated",
+    "scp_fusion_dinov2",
+    "dinov2_source_calibrated",
+]
+DINO_FUSION_LABELS = {
+    "scp_fusion_v0": "SCP-Fusion v0",
+    "source_calibrated": "Source-calibrated",
+    "scp_fusion_dinov2": "+ DINOv2",
+    "dinov2_source_calibrated": "+ DINOv2 calibrated",
+}
+DINO_FUSION_COLORS = {
+    "scp_fusion_v0": "#E45756",
+    "source_calibrated": "#B279A2",
+    "scp_fusion_dinov2": "#72B7B2",
+    "dinov2_source_calibrated": "#4C78A8",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -74,6 +92,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--score-fusion-tuned-triage",
         default="reports/assets/score_fusion_source_holdout_triage_tuned_summary.csv",
+    )
+    parser.add_argument(
+        "--score-fusion-dinov2-calibration",
+        default="reports/assets/score_fusion_dinov2_calibration_summary.csv",
+    )
+    parser.add_argument(
+        "--score-fusion-dinov2-triage-5pct",
+        default="reports/assets/score_fusion_dinov2_source_holdout_triage_5pct.csv",
+    )
+    parser.add_argument(
+        "--score-fusion-dinov2-triage-10pct",
+        default="reports/assets/score_fusion_dinov2_source_holdout_triage_10pct.csv",
     )
     parser.add_argument("--out-dir", default="reports/assets")
     parser.add_argument("--dpi", type=int, default=180)
@@ -294,6 +324,99 @@ def build_score_fusion_tuned_triage(tuned_summary: Path, out_dir: Path, dpi: int
     return out_path
 
 
+def _dino_fusion_ordered(frame: pd.DataFrame) -> pd.DataFrame:
+    ordered_methods = [method for method in DINO_FUSION_ORDER if method in set(frame["method"])]
+    return frame.set_index("method").loc[ordered_methods].reset_index()
+
+
+def _dino_fusion_labels(frame: pd.DataFrame) -> list[str]:
+    return [DINO_FUSION_LABELS.get(method, method) for method in frame["method"]]
+
+
+def _dino_fusion_colors(frame: pd.DataFrame) -> list[str]:
+    return [DINO_FUSION_COLORS.get(method, "#777777") for method in frame["method"]]
+
+
+def _dino_triage_frame(path: Path, label: str) -> pd.DataFrame:
+    frame = pd.read_csv(path)
+    frame = frame[frame["score_mode"] == "raw"].copy()
+    frame["operating_point"] = label
+    return _dino_fusion_ordered(frame)
+
+
+def build_score_fusion_dinov2_gain(
+    calibration_summary: Path,
+    triage_5pct: Path,
+    triage_10pct: Path,
+    out_dir: Path,
+    dpi: int,
+) -> Path:
+    calibration = _dino_fusion_ordered(pd.read_csv(calibration_summary))
+    triage = pd.concat(
+        [
+            _dino_triage_frame(triage_5pct, "5% budget"),
+            _dino_triage_frame(triage_10pct, "10% budget"),
+        ],
+        ignore_index=True,
+    )
+    labels = _dino_fusion_labels(calibration)
+    colors = _dino_fusion_colors(calibration)
+    x = np.arange(len(calibration))
+
+    fig, axes = plt.subplots(2, 2, figsize=(11.0, 7.4), dpi=dpi)
+    for ax, column, title, ylabel, ylim in [
+        (axes[0, 0], "mean_roc_auc", "Transfer Ranking", "AUC", (0.68, 0.77)),
+        (axes[0, 1], "mean_brier_score", "Probability Error", "Brier score", (0.28, 0.34)),
+    ]:
+        values = calibration[column].astype(float)
+        ax.bar(x, values, color=colors, edgecolor="#222222", linewidth=0.4)
+        ax.set_title(title, fontsize=10, pad=8)
+        ax.set_ylabel(ylabel)
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=25, ha="right")
+        ax.set_ylim(*ylim)
+        ax.grid(axis="y", alpha=0.25)
+        _annotate_bars(ax, values, offset=(ylim[1] - ylim[0]) * 0.02)
+
+    for ax, operating_point in [(axes[1, 0], "5% budget"), (axes[1, 1], "10% budget")]:
+        frame = triage[triage["operating_point"] == operating_point].copy()
+        frame = _dino_fusion_ordered(frame)
+        x = np.arange(len(frame))
+        width = 0.34
+        ax.bar(
+            x - width / 2,
+            frame["mean_test_coverage"],
+            width,
+            label="coverage",
+            color="#72B7B2",
+            edgecolor="#222222",
+            linewidth=0.4,
+        )
+        ax.bar(
+            x + width / 2,
+            frame["mean_test_triage_accuracy"],
+            width,
+            label="triage accuracy",
+            color="#4C78A8",
+            edgecolor="#222222",
+            linewidth=0.4,
+        )
+        ax.set_title(f"Source-Heldout Triage ({operating_point})", fontsize=10, pad=8)
+        ax.set_ylabel("fraction")
+        ax.set_xticks(x)
+        ax.set_xticklabels(_dino_fusion_labels(frame), rotation=25, ha="right")
+        ax.set_ylim(0.0, 0.9)
+        ax.grid(axis="y", alpha=0.25)
+        ax.legend(fontsize=8)
+
+    fig.suptitle("DINOv2 strengthens SCP-Fusion under generator shift", fontsize=13)
+    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.95))
+    out_path = out_dir / "publication_score_fusion_dinov2_gain.png"
+    fig.savefig(out_path)
+    plt.close(fig)
+    return out_path
+
+
 def main() -> None:
     args = parse_args()
     out_dir = ensure_dir(args.out_dir)
@@ -302,6 +425,13 @@ def main() -> None:
         build_source_heldout_calibration(Path(args.source_heldout_calibration), out_dir, args.dpi),
         build_triage_operating_points(Path(args.triage_5pct), Path(args.triage_10pct), out_dir, args.dpi),
         build_score_fusion_tuned_triage(Path(args.score_fusion_tuned_triage), out_dir, args.dpi),
+        build_score_fusion_dinov2_gain(
+            Path(args.score_fusion_dinov2_calibration),
+            Path(args.score_fusion_dinov2_triage_5pct),
+            Path(args.score_fusion_dinov2_triage_10pct),
+            out_dir,
+            args.dpi,
+        ),
     ]
     for output in outputs:
         print(output.resolve())
