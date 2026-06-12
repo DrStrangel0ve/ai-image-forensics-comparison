@@ -13,6 +13,11 @@ sys.path.insert(0, str(ROOT / "src"))
 import numpy as np
 import pandas as pd
 
+from forensic_compare.calibration import (
+    CALIBRATORS,
+    fit_calibrator,
+    predict_calibrated,
+)
 from forensic_compare.metrics import bootstrap_mean_ci
 from forensic_compare.utils import ensure_dir
 from scripts.summarize_source_holdout import (
@@ -20,11 +25,6 @@ from scripts.summarize_source_holdout import (
     _prediction_frame,
     _real_split_keys,
     _source_key,
-)
-from scripts.summarize_source_holdout_calibration import (
-    CALIBRATORS,
-    _fit_calibrator,
-    _predict_calibrated,
 )
 
 
@@ -142,10 +142,10 @@ def _transform_scores(
 ) -> tuple[np.ndarray, np.ndarray, float | None]:
     if score_mode == "raw":
         return calibration_scores, test_scores, None
-    calibrator = _fit_calibrator(score_mode, calibration_y, calibration_scores)
+    calibrator = fit_calibrator(score_mode, calibration_y, calibration_scores)
     return (
-        _predict_calibrated(calibrator, calibration_scores),
-        _predict_calibrated(calibrator, test_scores),
+        predict_calibrated(calibrator, calibration_scores),
+        predict_calibrated(calibrator, test_scores),
         calibrator.temperature,
     )
 

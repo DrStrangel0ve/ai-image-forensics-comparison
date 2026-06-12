@@ -32,6 +32,7 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | Ishu transform robustness | `reports/ishu_physics_guided_robustness_3seed.md` |
 | MS COCOAI source-balanced validation | `reports/ms_cocoai_source_balanced_validation.md` |
 | SCP-Fusion branch-dropout probe | `reports/score_fusion_branch_dropout_probe_2026_06_12.md` |
+| SCP-Fusion source-calibration probe | `reports/score_fusion_source_calibration_probe_2026_06_13.md` |
 | Calibration diagnostics | `reports/calibration_diagnostics_2026_06_12.md` |
 | Source-heldout calibration with bootstrap CIs | `reports/source_holdout_calibration_2026_06_12.md` |
 | Source-heldout triage with bootstrap CIs | `reports/source_holdout_triage_2026_06_12.md` |
@@ -104,6 +105,7 @@ python scripts\build_publication_assets.py --out-dir reports\assets
 - Frozen ConvNeXt-Tiny is the strongest current same-domain ranking baseline on Ishu: 0.8947 mean accuracy / 0.9589 mean AUC.
 - SCP-Fusion v0 improves Ishu-to-MS-COCOAI mean AUC to 0.7282, but default-threshold accuracy remains weak because target-domain fake scores are under-confident.
 - SCP-Fusion branch dropout is implemented with coefficient export, but the first probe is negative/mixed: default accuracy is essentially flat while AUC/Brier/ECE worsen.
+- Source-calibrated SCP-Fusion improves default accuracy to 0.6073 and Brier/ECE to 0.3123 / 0.2947, with a small AUC tradeoff.
 - Source-heldout calibration and triage assets include 95% deterministic bootstrap confidence intervals over held-out source/seed rows.
 - Medium `combined_v4` ablation suggests raw `combined_v4` is the best ranking/accuracy candidate at 240 train images per seed, while select-k60 is the best calibrated variant; regenerated ablation assets include 95% bootstrap confidence intervals.
 

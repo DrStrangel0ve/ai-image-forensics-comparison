@@ -15,6 +15,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
+from forensic_compare.calibration import CALIBRATORS, fit_calibrator, predict_calibrated
+from forensic_compare.datasets import stable_path_score
 from forensic_compare.metrics import binary_metrics
 from forensic_compare.utils import ensure_dir, write_json
 
@@ -61,6 +63,18 @@ def parse_args() -> argparse.Namespace:
         choices=["neutral", "mean"],
         default="neutral",
         help="Value used for dropped branch scores: 0.5 neutral probability or the branch train mean.",
+    )
+    parser.add_argument(
+        "--score-calibrator",
+        choices=["none", *sorted(CALIBRATORS)],
+        default="none",
+        help="Optional post-hoc calibrator fitted on source-domain fused scores.",
+    )
+    parser.add_argument(
+        "--calibration-fraction",
+        type=float,
+        default=0.0,
+        help="Deterministic class-balanced fraction of source rows reserved for score calibration.",
     )
     return parser.parse_args()
 
@@ -193,6 +207,36 @@ def _augment_branch_dropout(
     return np.vstack(augmented), np.concatenate(labels)
 
 
+def _split_calibration_frame(
+    frame: pd.DataFrame,
+    fraction: float,
+    seed: int,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    if not 0.0 <= fraction < 1.0:
+        raise ValueError("--calibration-fraction must be in [0, 1)")
+    if fraction == 0.0:
+        return frame, frame
+    if frame["y_true"].nunique() != 2:
+        raise ValueError("Calibration split requires both classes")
+    fit_indices = []
+    calibration_indices = []
+    for _label, group in frame.groupby("y_true", sort=True):
+        if len(group) < 2:
+            raise ValueError("Each class needs at least two rows for held-out calibration")
+        ordered = group.assign(
+            split_score=group["path_key"].map(lambda path: stable_path_score(path, seed))
+        ).sort_values("split_score")
+        n_calibration = int(round(len(ordered) * fraction))
+        n_calibration = min(max(n_calibration, 1), len(ordered) - 1)
+        calibration_indices.extend(ordered.index[:n_calibration])
+        fit_indices.extend(ordered.index[n_calibration:])
+    fit_frame = frame.loc[fit_indices].sort_index().reset_index(drop=True)
+    calibration_frame = frame.loc[calibration_indices].sort_index().reset_index(drop=True)
+    if fit_frame["y_true"].nunique() != 2 or calibration_frame["y_true"].nunique() != 2:
+        raise ValueError("Model-fit and calibration splits must both contain both classes")
+    return fit_frame, calibration_frame
+
+
 def _coefficient_rows(methods: list[str], classifier) -> list[dict]:
     scaler = classifier.named_steps["scale"]
     model = classifier.named_steps["logreg"]
@@ -225,27 +269,36 @@ def _metrics_row(
     frame: pd.DataFrame,
     classifier,
     threshold: float,
+    calibrator=None,
 ) -> tuple[dict, list[dict]]:
     x = frame[methods].to_numpy(dtype=float)
     y_true = frame["y_true"].to_numpy(dtype=int)
-    scores = classifier.predict_proba(x)[:, 1]
+    raw_scores = classifier.predict_proba(x)[:, 1]
+    scores = predict_calibrated(calibrator, raw_scores) if calibrator is not None else raw_scores
     metrics = binary_metrics(y_true, scores, threshold=threshold)
     metrics.update(
         {
             "variant": variant,
             "method": "score_fusion",
             "base_methods": methods,
+            "score_calibrator": calibrator.name if calibrator is not None else "none",
             "n_samples": int(len(y_true)),
             "threshold": float(threshold),
             "positive_rate": float(y_true.mean()) if len(y_true) else 0.0,
             "predicted_positive_rate": float((scores >= threshold).mean()) if len(scores) else 0.0,
             "score_mean": float(scores.mean()) if len(scores) else 0.0,
             "score_std": float(scores.std(ddof=0)) if len(scores) else 0.0,
+            "raw_score_mean": float(raw_scores.mean()) if len(raw_scores) else 0.0,
         }
     )
     rows = [
-        {"path": path, "y_true": int(truth), "fake_score": float(score)}
-        for path, truth, score in zip(frame["path"], y_true, scores)
+        {
+            "path": path,
+            "y_true": int(truth),
+            "fake_score": float(score),
+            "raw_fake_score": float(raw_score),
+        }
+        for path, truth, score, raw_score in zip(frame["path"], y_true, scores, raw_scores)
     ]
     return metrics, rows
 
@@ -253,9 +306,16 @@ def _metrics_row(
 def main() -> None:
     args = parse_args()
     out_dir = ensure_dir(args.out_dir)
+    if args.score_calibrator == "none" and args.calibration_fraction != 0.0:
+        raise ValueError("--calibration-fraction requires --score-calibrator")
     train_frame, methods = _aligned_matrix(list(map(_parse_train, args.train)))
-    x_train = train_frame[methods].to_numpy(dtype=float)
-    y_train = train_frame["y_true"].to_numpy(dtype=int)
+    fit_frame, calibration_frame = _split_calibration_frame(
+        train_frame,
+        args.calibration_fraction,
+        args.seed + 101,
+    )
+    x_train = fit_frame[methods].to_numpy(dtype=float)
+    y_train = fit_frame["y_true"].to_numpy(dtype=int)
     x_fit, y_fit = _augment_branch_dropout(
         x_train,
         y_train,
@@ -266,15 +326,22 @@ def main() -> None:
     )
     classifier = _classifier(args.seed, args.fusion_c)
     classifier.fit(x_fit, y_fit)
+    calibrator = None
+    if args.score_calibrator != "none":
+        calibration_scores = classifier.predict_proba(
+            calibration_frame[methods].to_numpy(dtype=float)
+        )[:, 1]
+        calibration_y = calibration_frame["y_true"].to_numpy(dtype=int)
+        calibrator = fit_calibrator(args.score_calibrator, calibration_y, calibration_scores)
 
     all_metrics = []
     train_metrics, train_rows = _metrics_row(
-        "train", methods, train_frame, classifier, args.threshold
+        "train", methods, train_frame, classifier, args.threshold, calibrator=calibrator
     )
     all_metrics.append(train_metrics)
     train_dir = ensure_dir(out_dir / "train")
     with (train_dir / "predictions.csv").open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["path", "y_true", "fake_score"])
+        writer = csv.DictWriter(handle, fieldnames=["path", "y_true", "fake_score", "raw_fake_score"])
         writer.writeheader()
         writer.writerows(train_rows)
 
@@ -285,11 +352,18 @@ def main() -> None:
             raise ValueError(
                 f"Variant {variant!r} has methods {variant_methods}, expected {methods}"
             )
-        metrics, rows = _metrics_row(variant, methods, variant_frame, classifier, args.threshold)
+        metrics, rows = _metrics_row(
+            variant,
+            methods,
+            variant_frame,
+            classifier,
+            args.threshold,
+            calibrator=calibrator,
+        )
         all_metrics.append(metrics)
         variant_dir = ensure_dir(out_dir / variant)
         with (variant_dir / "predictions.csv").open("w", newline="", encoding="utf-8") as handle:
-            writer = csv.DictWriter(handle, fieldnames=["path", "y_true", "fake_score"])
+            writer = csv.DictWriter(handle, fieldnames=["path", "y_true", "fake_score", "raw_fake_score"])
             writer.writeheader()
             writer.writerows(rows)
 
@@ -299,12 +373,19 @@ def main() -> None:
             "base_methods": methods,
             "seed": int(args.seed),
             "threshold": float(args.threshold),
-            "n_train": int(len(y_train)),
+            "n_train": int(len(train_frame)),
+            "n_fusion_train": int(len(y_train)),
+            "n_calibration": int(len(calibration_frame)),
             "n_fit": int(len(y_fit)),
             "fusion_c": float(args.fusion_c),
             "branch_dropout_rate": float(args.branch_dropout_rate),
             "branch_dropout_repeats": int(args.branch_dropout_repeats),
             "branch_dropout_fill": args.branch_dropout_fill,
+            "score_calibrator": args.score_calibrator,
+            "calibration_fraction": float(args.calibration_fraction),
+            "calibrator_temperature": None
+            if calibrator is None
+            else calibrator.temperature,
             "coefficients": _coefficient_rows(methods, classifier),
             "metrics": all_metrics,
         },
@@ -315,9 +396,12 @@ def main() -> None:
         out_dir / "score_fusion_coefficients.csv",
         index=False,
     )
+    if calibrator is not None:
+        joblib.dump(calibrator, out_dir / "score_calibrator.joblib")
     summary_rows = [
         {
             "variant": metrics["variant"],
+            "score_calibrator": metrics["score_calibrator"],
             "accuracy": metrics["accuracy"],
             "precision": metrics["precision"],
             "recall": metrics["recall"],
@@ -328,6 +412,7 @@ def main() -> None:
             "maximum_calibration_error": metrics["maximum_calibration_error"],
             "predicted_positive_rate": metrics["predicted_positive_rate"],
             "score_mean": metrics["score_mean"],
+            "raw_score_mean": metrics["raw_score_mean"],
             "n_samples": metrics["n_samples"],
         }
         for metrics in all_metrics

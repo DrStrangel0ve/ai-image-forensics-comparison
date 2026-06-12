@@ -1,0 +1,4 @@
+"seed","score_calibrator","calibration_fraction","n_train","n_fusion_train","n_calibration","calibrator_temperature"
+"7","temperature_balanced","0.5","114","57","57","0.7619122174958181"
+"17","temperature_balanced","0.5","114","57","57","0.954751744018828"
+"29","temperature_balanced","0.5","114","57","57","0.7246534715227406"

@@ -22,6 +22,7 @@ Current evidence:
 - On Ishu -> source-balanced MS COCOAI, frozen ConvNeXt-Tiny has the best three-seed AUC at 0.7139, while physics-guided fusion has the best source-threshold accuracy at 0.6070.
 - SCP-Fusion v0 score fusion over `combined_v3`, ResNet-18, physics-guided fusion, and frozen ConvNeXt-Tiny improves Ishu -> MS COCOAI mean AUC to 0.7282, with oracle accuracy 0.6793 but default accuracy only 0.5910.
 - SCP-Fusion branch-dropout score fusion is implemented and exported with branch coefficients, but the first three-seed probe is negative/mixed: default accuracy 0.5923 versus 0.5910 for v0, with worse AUC, Brier, and ECE.
+- Source-calibrated SCP-Fusion now reserves a held-out source calibration split and applies class-balanced temperature scaling; the first probe improves default accuracy to 0.6073 and Brier/ECE to 0.3123 / 0.2947, while AUC dips from 0.7282 to 0.7242.
 - Calibration diagnostics show SCP-Fusion v0 has the best cross-domain Brier score, 0.3190, while all strong ranking models under-call generated MS COCOAI images at the default threshold.
 - Source-heldout post-hoc calibration shows class-balanced temperature scaling improves Brier/ECE without changing decisions, while Platt/isotonic calibration can overfit non-heldout source priors and inflate real-image false positives.
 - Source-heldout triage mode shows frozen ConvNeXt and SCP-Fusion can make high-confidence decisions on about 21-24% of target images with roughly 75% triage accuracy at a strict 5% calibration error budget.
@@ -104,7 +105,7 @@ Minimum additions before submission:
 
 - Upgrade SCP-Fusion v0 into v1:
   - test whether `combined_v4` helps as a direct branch, after feature selection, or only as a source-diagnostic ablation;
-  - add a source-heldout or temperature-scaled calibration head;
+  - extend the new temperature-scaled source calibration head into source-heldout calibration;
   - compare against the current saved-score logistic fusion.
   - branch dropout is now implemented and tested as a negative/mixed result, so prioritize source-aware calibration before adding more score-stack regularization.
 - Expand the first qualitative grids into a short explainability section using feature coefficients and source-level score distributions.
@@ -124,7 +125,7 @@ Best target for a full workshop paper. It gives room for the repo's practical en
 1. Improve logit-level fusion:
    - current saved-score logistic fusion reaches 0.7282 mean AUC on Ishu -> MS COCOAI;
    - branch-dropout score fusion is implemented, but it slightly hurts AUC/Brier/ECE in the first three-seed probe;
-   - next step is source-aware calibration, not merely adding more branches.
+   - held-out source-domain temperature scaling improves default accuracy and Brier/ECE, so next step is source-heldout calibration rather than merely adding more branches.
 
 2. Validate `combined_v4`:
    - implementation is checked in with reconstruction, multiring FFT, chroma, and JPEG features;
