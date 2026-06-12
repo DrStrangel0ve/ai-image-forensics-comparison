@@ -39,6 +39,7 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | CLIP ViT-B/32 foundation and fusion probe | `reports/clip_vit_b32_foundation_and_fusion_2026_06_13.md` |
 | MS COCOAI to Ishu reverse foundation transfer | `reports/ms_cocoai_to_ishu_foundation_reverse_2026_06_13.md` |
 | MS COCOAI to Ishu reverse neural and fusion baselines | `reports/ms_cocoai_to_ishu_reverse_neural_fusion_2026_06_13.md` |
+| MS COCOAI to Ishu reverse fusion regularization | `reports/ms_cocoai_to_ishu_reverse_fusion_regularization_2026_06_13.md` |
 | SCP-Fusion branch-dropout probe | `reports/score_fusion_branch_dropout_probe_2026_06_12.md` |
 | SCP-Fusion source-calibration probe | `reports/score_fusion_source_calibration_probe_2026_06_13.md` |
 | SCP-Fusion source-heldout calibration probe | `reports/score_fusion_source_holdout_probe_2026_06_13.md` |
@@ -117,6 +118,7 @@ python scripts\build_publication_assets.py --out-dir reports\assets
 - Frozen CLIP ViT-B/32 is now the strongest standalone cross-domain ranker: 0.6363 accuracy / 0.8641 AUC on Ishu-to-MS-COCOAI, with source-heldout triage reaching about 47% coverage at about 92.6% decided-case accuracy under the strict 5% budget.
 - In the reverse MS-COCOAI-to-Ishu foundation check, CLIP still has the best mean AUC at 0.8243, while ConvNeXt has the best default/source-threshold accuracy at 0.6579 / 0.6784.
 - In the reverse all-method check, all-branch fusion has the best mean AUC at 0.8285, while physics-guided ResNet-18 has the best default/source-threshold accuracy at 0.6871 / 0.6813 and the best Brier/ECE.
+- Reverse fusion regularization raises the AUC frontier to 0.8406 with branch dropout and improves fusion Brier/ECE to 0.2213 / 0.2091 with strong regularization.
 - All-foundation SCP-Fusion with CLIP and DINOv2 reaches 0.7995 transfer AUC, improving the fusion family while still trailing standalone CLIP.
 - SCP-Fusion branch dropout is implemented with coefficient export, but the first probe is negative/mixed: default accuracy is essentially flat while AUC/Brier/ECE worsen.
 - Source-calibrated SCP-Fusion improves default accuracy to 0.6073 and Brier/ECE to 0.3123 / 0.2947, with a small AUC tradeoff.

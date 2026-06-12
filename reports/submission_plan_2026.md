@@ -26,6 +26,7 @@ Current evidence:
 - The full three-seed CLIP ViT-B/32 run changes the foundation-baseline story: standalone CLIP reaches 0.9152 / 0.9701 on Ishu and 0.6363 / 0.8641 on Ishu -> source-balanced MS COCOAI, making it the strongest cross-domain ranker and source-heldout triage model so far.
 - The reverse foundation run keeps CLIP's ranking lead but exposes a deployment split: on MS COCOAI -> Ishu, CLIP reaches the best AUC at 0.8243, while ConvNeXt has the best default/source-threshold accuracy at 0.6579 / 0.6784.
 - The reverse neural/fusion run adds the missing baselines: all-branch score fusion reaches the best reverse AUC at 0.8285, while physics-guided ResNet-18 has the best default/source-threshold accuracy at 0.6871 / 0.6813 and the best Brier/ECE.
+- A reverse fusion-regularization probe improves the AUC frontier to 0.8406 with branch dropout and improves fusion Brier/ECE to 0.2213 / 0.2091 with strong regularization, making utility-aware fusion the next method-development target.
 - Adding CLIP to saved-score fusion improves the fusion family, with all-foundation SCP-Fusion reaching 0.7995 transfer AUC, but it still trails standalone CLIP; this motivates calibration-aware or source-heldout fusion training rather than only adding more branches.
 - On Ishu -> source-balanced MS COCOAI, frozen ConvNeXt-Tiny has the best three-seed AUC at 0.7139, while physics-guided fusion has the best source-threshold accuracy at 0.6070.
 - SCP-Fusion v0 score fusion over `combined_v3`, ResNet-18, physics-guided fusion, and frozen ConvNeXt-Tiny improves Ishu -> MS COCOAI mean AUC to 0.7282, with oracle accuracy 0.6793 but default accuracy only 0.5910.
@@ -37,7 +38,7 @@ Current evidence:
 - Source-heldout triage mode shows frozen ConvNeXt and SCP-Fusion can make high-confidence decisions on about 21-24% of target images with roughly 75% triage accuracy at a strict 5% calibration error budget.
 - Source-heldout calibration and triage summary assets now include 95% deterministic bootstrap confidence intervals over held-out source/seed rows, so poster/paper tables can report uncertainty without recomputing predictions.
 - Publication assets now include six generated diagnostic figures, captions, a pipeline diagram, and a DFRWS-style abstract draft.
-- A submission-readiness snapshot now maps the current assets and gaps to DFRWS, WIFS, and DFF; reverse-direction foundation, neural, physics-guided, and score-fusion baselines are now checked in, and the next paper-critical gap is calibration-aware fusion training.
+- A submission-readiness snapshot now maps the current assets and gaps to DFRWS, WIFS, and DFF; reverse-direction foundation, neural, physics-guided, score-fusion, and regularization baselines are now checked in, and the next paper-critical gap is utility-aware fusion training.
 - Public sharing assets now include `CITATION.cff` and a reproducibility checklist that separates checked-in code/reports from external datasets and ignored model artifacts.
 - Qualitative failure grids now show seed-17 false positives, false negatives, and branch disagreements for SCP-Fusion on Ishu -> MS COCOAI.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
@@ -88,7 +89,7 @@ A compact, serious benchmark paper. WIFS will expect tighter experimental method
 Minimum additions before submission:
 
 - Run a full repeated-seed `combined_v4` ablation against `combined_v3`, using the new `--select-k` path and at least one stronger classifier.
-- Regenerate publication figures with the new CLIP/DINOv2 foundation/fusion and reverse-transfer results, then add either calibration-aware reverse fusion or Ishu -> another recent Kaggle dataset.
+- Regenerate publication figures with the new CLIP/DINOv2 foundation/fusion and reverse-transfer regularization results, then add either utility-aware reverse fusion or Ishu -> another recent Kaggle dataset.
 - Expand the new source-heldout calibration split with a calibration-aware model/training ablation.
 - Use the new source-heldout confidence intervals in poster/paper tables and add seed-variability plots where space permits.
 - Keep claims conservative and avoid implying classic multi-light photometric stereo on single-image datasets.
