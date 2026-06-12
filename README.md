@@ -185,7 +185,25 @@ python scripts/run_benchmark.py `
   --val-fraction 0.2
 ```
 
-Use `--seed` and `--val-fraction` on the wrapper when you want repeated deterministic splits with the same feature and neural settings.
+Use `--seed` and `--val-fraction` on the wrapper when you want one deterministic split with the same feature and neural settings. For repeated split sweeps, use:
+
+```powershell
+python scripts/run_repeated_benchmark.py `
+  --dataset-key ai_vs_real_2026 `
+  --out-dir runs/ai_vs_real_2026_repeated `
+  --seeds 7 17 29 `
+  -- `
+  --methods combined_v3 neural `
+  --feature-classifier logistic_regression `
+  --feature-image-size 128 `
+  --neural-model resnet18 `
+  --pretrained `
+  --epochs 5 `
+  --batch-size 64 `
+  --neural-image-size 128 `
+  --num-workers 0 `
+  --device cuda
+```
 
 Feature baselines can also train on deterministic image-sharing variants without creating a second dataset on disk:
 
@@ -399,7 +417,7 @@ A small ChatGPT/Gemini May 2026 Kaggle probe is checked into [reports/chatgpt_ge
 It validates the dataset layout, adds exact/perceptual duplicate auditing, and shows that in-dataset results are easy while MS COCOAI-to-ChatGPT/Gemini zero-shot transfer remains weak.
 
 An Ishu AI-vs-real May 2026 benchmark is checked into [reports/ishu_ai_vs_real_2026_benchmark.md](reports/ishu_ai_vs_real_2026_benchmark.md).
-Across seed-7 and seed-17 deterministic splits, `combined_v3` had stronger AUC on both runs and slightly higher mean accuracy, while accuracy wins were split one each with six-epoch ResNet-18; in MS COCOAI zero-shot transfer, ResNet-18 reversed the ranking with 0.7003 AUC.
+Across seed-7, seed-17, and seed-29 deterministic splits, `combined_v3` and six-epoch ResNet-18 tied on mean accuracy to four decimals and were nearly tied on mean AUC; ResNet-18 still transfers better from MS COCOAI with 0.7003 AUC.
 
 A dataset triage follow-up is checked into [reports/dataset_triage_2026_06_12.md](reports/dataset_triage_2026_06_12.md).
 It adds ARPAN V3 and SynCred-Bench to the catalog, fixes Hugging Face label override handling, and rejects ARPAN V3's upstream split for fair scoring because exact duplicate groups cross train/test.
