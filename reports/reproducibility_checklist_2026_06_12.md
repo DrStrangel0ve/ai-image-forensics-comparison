@@ -35,6 +35,7 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | DINOv2 frozen encoder smoke probe | `reports/dinov2_frozen_encoder_smoke_2026_06_13.md` |
 | DINOv2 three-seed frozen encoder baseline | `reports/dinov2_three_seed_foundation_baseline_2026_06_13.md` |
 | SCP-Fusion + DINOv2 probe | `reports/score_fusion_dinov2_probe_2026_06_13.md` |
+| CLIP ViT-B/32 foundation and fusion probe | `reports/clip_vit_b32_foundation_and_fusion_2026_06_13.md` |
 | SCP-Fusion branch-dropout probe | `reports/score_fusion_branch_dropout_probe_2026_06_12.md` |
 | SCP-Fusion source-calibration probe | `reports/score_fusion_source_calibration_probe_2026_06_13.md` |
 | SCP-Fusion source-heldout calibration probe | `reports/score_fusion_source_holdout_probe_2026_06_13.md` |
@@ -108,8 +109,10 @@ python scripts\build_publication_assets.py --out-dir reports\assets
 - Physics-guided ResNet-18 + `combined_v3` beats vanilla ResNet-18 on Ishu same-domain three-seed means: 0.8450 accuracy / 0.9177 AUC versus 0.8246 / 0.8927.
 - Across 12 Ishu robustness checks, physics-guided fusion wins 10 by accuracy and 10 by AUC.
 - Vanilla ResNet-18 still wins MS COCOAI in-domain validation: 0.8160 accuracy / 0.8967 AUC versus physics-guided fusion at 0.7800 / 0.8790.
-- Frozen ConvNeXt-Tiny is the strongest current same-domain ranking baseline on Ishu: 0.8947 mean accuracy / 0.9589 mean AUC.
+- Frozen ConvNeXt-Tiny was the first strong frozen-encoder baseline on Ishu: 0.8947 mean accuracy / 0.9589 mean AUC.
 - SCP-Fusion v0 improves Ishu-to-MS-COCOAI mean AUC to 0.7282, and adding frozen DINOv2-small as a fifth branch raises mean AUC to 0.7503.
+- Frozen CLIP ViT-B/32 is now the strongest standalone cross-domain ranker: 0.6363 accuracy / 0.8641 AUC on Ishu-to-MS-COCOAI, with source-heldout triage reaching about 47% coverage at about 92.6% decided-case accuracy under the strict 5% budget.
+- All-foundation SCP-Fusion with CLIP and DINOv2 reaches 0.7995 transfer AUC, improving the fusion family while still trailing standalone CLIP.
 - SCP-Fusion branch dropout is implemented with coefficient export, but the first probe is negative/mixed: default accuracy is essentially flat while AUC/Brier/ECE worsen.
 - Source-calibrated SCP-Fusion improves default accuracy to 0.6073 and Brier/ECE to 0.3123 / 0.2947, with a small AUC tradeoff.
 - Source-calibrated DINOv2 fusion is now the best current fusion operating-point result: 0.6127 target accuracy / 0.3062 Brier / 0.2938 ECE.
