@@ -35,6 +35,8 @@ The repo also includes a physics-guided neural model. It is not a classic PDE-st
 
 The current research plan is documented in [reports/research_deep_dive_2026_06_12.md](reports/research_deep_dive_2026_06_12.md). The proposed next model is **SCP-Fusion**: source-calibrated physical-spectral foundation fusion. It keeps the photometric/physics branch, adds CLIP/DINO-style foundation embeddings, expands `combined_v3` into multiscale spectral/noise/photometric `combined_v4`, and adds AEROBLADE-style reconstruction-error features for NTIRE/ImageCLEF-style robustness.
 
+The active publication roadmap is documented in [reports/submission_plan_2026.md](reports/submission_plan_2026.md). The current targets are DFRWS-USA 2026 posters, IEEE WIFS 2026, and DFF-2026 at ACM Multimedia.
+
 ## Setup
 
 From this repo root:
@@ -222,6 +224,51 @@ python scripts/run_feature_baseline.py `
   --classifier logistic_regression `
   --image-size 128 `
   --train-augment-variants jpeg70 blur1 resize_half crop85
+```
+
+Frozen pretrained-image encoders are available as a stronger neural-feature baseline:
+
+```powershell
+python scripts/run_frozen_encoder_baseline.py `
+  --data-dir data\raw\ishu_ai_vs_real_2026 `
+  --output-dir runs\ishu_ai_vs_real_2026_frozen_encoder\convnext_tiny_seed7 `
+  --encoder convnext_tiny `
+  --pretrained `
+  --classifier logistic_regression `
+  --batch-size 32 `
+  --num-workers 0 `
+  --device cuda `
+  --seed 7 `
+  --val-fraction 0.2
+```
+
+Evaluate a saved frozen-encoder classifier on a new dataset:
+
+```powershell
+python scripts/evaluate_frozen_encoder_model.py `
+  --model-dir runs\ishu_ai_vs_real_2026_frozen_encoder\convnext_tiny_seed7 `
+  --target-dir data\raw\ms_cocoai_2026_validation_source_balanced_100 `
+  --output-dir runs\ishu_to_ms_cocoai_source_balanced_seed7\convnext_tiny_frozen `
+  --target-split all `
+  --batch-size 32 `
+  --num-workers 0 `
+  --device cuda
+```
+
+Fuse saved prediction scores from multiple branches:
+
+```powershell
+python scripts/fuse_prediction_scores.py `
+  --out-dir runs\score_fusion\ishu_seed7_to_ms_cocoai_all4 `
+  --seed 7 `
+  --train combined_v3=runs\ishu_ai_vs_real_2026_initial\feature_combined_v3_logistic_regression\predictions.csv `
+  --train resnet18=runs\ishu_ai_vs_real_2026_initial\resnet18\predictions.csv `
+  --train physics_guided=runs\ishu_ai_vs_real_2026_physics_guided_seed7\physics_guided_resnet18_combined_v3\predictions.csv `
+  --train convnext_tiny_frozen=runs\ishu_ai_vs_real_2026_frozen_encoder\convnext_tiny_seed7\predictions.csv `
+  --variant ms_cocoai:combined_v3=runs\ishu_to_ms_cocoai_source_balanced_seed7\combined_v3\predictions.csv `
+  --variant ms_cocoai:resnet18=runs\ishu_to_ms_cocoai_source_balanced_seed7\resnet18\predictions.csv `
+  --variant ms_cocoai:physics_guided=runs\ishu_to_ms_cocoai_source_balanced_seed7\physics_guided_resnet18_combined_v3\predictions.csv `
+  --variant ms_cocoai:convnext_tiny_frozen=runs\ishu_to_ms_cocoai_source_balanced_seed7\convnext_tiny_frozen\predictions.csv
 ```
 
 Neural baselines can use the same deterministic variants:
@@ -446,6 +493,9 @@ It validates the dataset layout, adds exact/perceptual duplicate auditing, and s
 
 An Ishu AI-vs-real May 2026 benchmark is checked into [reports/ishu_ai_vs_real_2026_benchmark.md](reports/ishu_ai_vs_real_2026_benchmark.md).
 Across seed-7, seed-17, and seed-29 deterministic splits, `combined_v3` and six-epoch ResNet-18 tied on mean accuracy to four decimals and were nearly tied on mean AUC. A follow-up physics-guided ResNet-18 fused with `combined_v3` features improved to 0.8450 mean accuracy and 0.9177 mean AUC. On three-seed Ishu to source-balanced MS COCOAI transfer, the fusion model averaged 0.6060 accuracy and 0.6637 AUC, ahead of ResNet-18 at 0.5800 / 0.6488, but seed 17 remained a ResNet win because fusion under-detected most generated MS COCOAI sources. A stronger-regularization seed-17 probe improved default transfer accuracy but lowered AUC and still trailed ResNet. In the reverse MS COCOAI-to-Ishu direction, fusion had the best AUC at 0.7089 and improved from 0.5873 to 0.6596 accuracy when thresholded from source-domain validation predictions.
+
+A frozen ConvNeXt-Tiny encoder follow-up is checked into [reports/foundation_encoder_baseline_2026_06_12.md](reports/foundation_encoder_baseline_2026_06_12.md). It reached 0.8947 mean accuracy / 0.9589 mean AUC on Ishu and 0.6163 mean accuracy / 0.7139 mean AUC on Ishu to source-balanced MS COCOAI transfer, making it the strongest current ranking baseline. Its source-threshold accuracy trails the physics-guided fusion model, so the next SCP-Fusion step is to combine foundation ranking strength with physics-guided calibration behavior.
+The first saved-score SCP-Fusion v0 probe improves the Ishu-to-MS-COCOAI mean AUC again to 0.7282, but default accuracy remains lower than ConvNeXt alone because the fused scores are conservative on generated MS COCOAI images.
 
 An Ishu three-seed robustness follow-up is checked into [reports/ishu_physics_guided_robustness_3seed.md](reports/ishu_physics_guided_robustness_3seed.md).
 Across 12 seed-plus-transform checks, physics-guided fusion won 10 by accuracy and 10 by AUC. Its mean transformed score was 0.8443 accuracy and 0.9189 AUC, ahead of ResNet-18 at 0.8231 / 0.8904 and `combined_v3` at 0.7924 / 0.8751.
