@@ -1,0 +1,15 @@
+fusion,branch,n_seeds,standardized_coefficient_mean,raw_score_coefficient_mean
+score_fusion_all6,__intercept__,3,-0.1563778266571022,-5.731573943482187
+score_fusion_all6,clip_vit_b_32,3,2.70242220886419,5.6704767496961495
+score_fusion_all6,combined_v3,3,0.4199820777279875,1.4477562984146448
+score_fusion_all6,convnext_tiny,3,0.7300264887460722,1.599046343053196
+score_fusion_all6,dinov2_vits14,3,0.29376371409105045,0.6513676094989912
+score_fusion_all6,physics_guided,3,0.2657058202875141,0.6272271250057753
+score_fusion_all6,resnet18,3,0.4768956027842031,1.1179264283464567
+score_fusion_all6_temp_balanced,__intercept__,3,-0.1181421949591114,-4.998558817162037
+score_fusion_all6_temp_balanced,clip_vit_b_32,3,2.2923572395496783,4.78372673662853
+score_fusion_all6_temp_balanced,combined_v3,3,0.35174398910462545,1.1770353667996194
+score_fusion_all6_temp_balanced,convnext_tiny,3,0.7459236741600461,1.6234187606046586
+score_fusion_all6_temp_balanced,dinov2_vits14,3,0.37455075786573067,0.8310931356978289
+score_fusion_all6_temp_balanced,physics_guided,3,0.11918123561603737,0.27803251848798205
+score_fusion_all6_temp_balanced,resnet18,3,0.4826199209212742,1.1161465291067552
