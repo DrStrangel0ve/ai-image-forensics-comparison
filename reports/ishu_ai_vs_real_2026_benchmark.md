@@ -259,6 +259,24 @@ python scripts/run_benchmark.py `
   --skip-errors
 ```
 
+Evaluate the saved physics-guided model on the same deterministic seed-29 test split:
+
+```powershell
+python scripts/evaluate_physics_guided_net.py `
+  --model-dir runs/ishu_ai_vs_real_2026_physics_guided_seed29/physics_guided_resnet18_combined_v3 `
+  --target-dir data/raw/ishu_ai_vs_real_2026 `
+  --output-dir runs/ishu_ai_vs_real_2026_physics_guided_seed29/eval_repro_test `
+  --image-size 128 `
+  --feature-image-size 128 `
+  --batch-size 64 `
+  --num-workers 0 `
+  --device cuda `
+  --target-split test `
+  --seed 29 `
+  --val-fraction 0.2 `
+  --skip-errors
+```
+
 ```powershell
 python scripts/compare_methods.py `
   --out-dir runs/ishu_ai_vs_real_2026_repeated_splits/seed7_comparison `

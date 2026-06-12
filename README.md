@@ -244,6 +244,24 @@ python scripts/run_benchmark.py `
   --neural-train-augment-variants jpeg70 blur1 resize_half crop85
 ```
 
+Saved physics-guided fusion models can be evaluated on a held-out split or another dataset with the same feature normalization learned during training:
+
+```powershell
+python scripts/evaluate_physics_guided_net.py `
+  --model-dir runs/ishu_ai_vs_real_2026_physics_guided_seed29/physics_guided_resnet18_combined_v3 `
+  --target-dir data/raw/ishu_ai_vs_real_2026 `
+  --output-dir runs/ishu_ai_vs_real_2026_physics_guided_seed29/eval_repro_test `
+  --image-size 128 `
+  --feature-image-size 128 `
+  --batch-size 64 `
+  --num-workers 0 `
+  --device cuda `
+  --target-split test `
+  --seed 29 `
+  --val-fraction 0.2 `
+  --skip-errors
+```
+
 ## Run CIFAKE Manually
 
 Train the neural network:

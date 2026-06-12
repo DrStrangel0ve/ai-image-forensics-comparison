@@ -1,6 +1,8 @@
 import numpy as np
+import pytest
 import torch
 
+from scripts import evaluate_physics_guided_net as physics_guided_eval
 from forensic_compare.nn_model import build_feature_fusion_model
 from scripts import train_physics_guided_net as physics_guided
 from scripts.train_physics_guided_net import _standardize_features
@@ -62,3 +64,14 @@ def test_extract_feature_matrix_can_skip_bad_rows(monkeypatch) -> None:
     assert paths == ["image-0.jpg", "image-2.jpg"]
     assert kept_indices == [0, 2]
     assert skipped == [{"path": "image-1.jpg", "error": "OSError('bad image')"}]
+
+
+def test_standardize_target_features_rejects_dimension_mismatch() -> None:
+    target = np.asarray([[1.0, 2.0]], dtype=np.float32)
+
+    with pytest.raises(ValueError, match="Feature dimension mismatch"):
+        physics_guided_eval._standardize_target_features(
+            target,
+            feature_mean=[1.0],
+            feature_std=[1.0],
+        )
