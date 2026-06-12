@@ -26,6 +26,9 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     dino_calibration = tmp_path / "dino_calibration.csv"
     dino_triage_5 = tmp_path / "dino_triage_5.csv"
     dino_triage_10 = tmp_path / "dino_triage_10.csv"
+    clip_calibration = tmp_path / "clip_calibration.csv"
+    clip_triage_5 = tmp_path / "clip_triage_5.csv"
+    clip_triage_10 = tmp_path / "clip_triage_10.csv"
     out_dir = tmp_path / "assets"
 
     pd.DataFrame(
@@ -112,6 +115,48 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
             }
         ).to_csv(path, index=False)
 
+    clip_methods = [
+        "scp_fusion_v0",
+        "scp_fusion_dinov2",
+        "scp_fusion_clip",
+        "scp_fusion_all_foundation",
+        "clip_standalone",
+    ]
+    pd.DataFrame(
+        {
+            "method": clip_methods,
+            "mean_accuracy": [0.59, 0.60, 0.62, 0.62, 0.64],
+            "mean_roc_auc": [0.73, 0.75, 0.79, 0.80, 0.86],
+        }
+    ).to_csv(clip_calibration, index=False)
+    for path, coverage_base, accuracy_base in [
+        (clip_triage_5, 0.21, 0.75),
+        (clip_triage_10, 0.44, 0.72),
+    ]:
+        pd.DataFrame(
+            {
+                "method": clip_methods * 2,
+                "score_mode": ["raw"] * len(clip_methods)
+                + ["temperature_balanced"] * len(clip_methods),
+                "mean_test_coverage": [
+                    coverage_base,
+                    coverage_base + 0.04,
+                    coverage_base + 0.08,
+                    coverage_base + 0.10,
+                    coverage_base + 0.26,
+                ]
+                * 2,
+                "mean_test_triage_accuracy": [
+                    accuracy_base,
+                    accuracy_base + 0.05,
+                    accuracy_base + 0.10,
+                    accuracy_base + 0.12,
+                    accuracy_base + 0.18,
+                ]
+                * 2,
+            }
+        ).to_csv(path, index=False)
+
     subprocess.run(
         [
             sys.executable,
@@ -132,6 +177,12 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
             str(dino_triage_5),
             "--score-fusion-dinov2-triage-10pct",
             str(dino_triage_10),
+            "--score-fusion-clip-calibration",
+            str(clip_calibration),
+            "--score-fusion-clip-triage-5pct",
+            str(clip_triage_5),
+            "--score-fusion-clip-triage-10pct",
+            str(clip_triage_10),
             "--out-dir",
             str(out_dir),
             "--dpi",
@@ -146,3 +197,4 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     assert (out_dir / "publication_triage_operating_points.png").exists()
     assert (out_dir / "publication_score_fusion_tuned_triage.png").exists()
     assert (out_dir / "publication_score_fusion_dinov2_gain.png").exists()
+    assert (out_dir / "publication_score_fusion_clip_frontier.png").exists()

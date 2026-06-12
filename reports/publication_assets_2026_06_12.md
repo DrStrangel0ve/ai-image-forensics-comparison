@@ -11,7 +11,7 @@ flowchart LR
   A["Real and generated images"] --> B["Dataset audit and source labels"]
   B --> C["Conventional physical/signal features"]
   B --> D["Fine-tuned ResNet-18"]
-  B --> E["Frozen ConvNeXt and DINOv2 encoders"]
+  B --> E["Frozen ConvNeXt, DINOv2, and CLIP encoders"]
   C --> F["Physics-guided fusion"]
   D --> G["Saved score fusion"]
   E --> G
@@ -61,7 +61,15 @@ Caption draft:
 
 Source-heldout triage tuning separates probability calibration from high-confidence forensic utility. SCP-Fusion v0 has the best mean utility after selecting score mode and asymmetric triage budgets on non-heldout generators, while raw scores are selected for every held-out fold. The bootstrap intervals remain wide, so this should be framed as operating-point evidence rather than a decisive model ranking.
 
-## Figure 6: Qualitative Failure Cases
+## Figure 6: CLIP Transfer Frontier
+
+![CLIP transfer and triage frontier](assets/publication_score_fusion_clip_frontier.png)
+
+Caption draft:
+
+Frozen CLIP ViT-B/32 is currently the strongest standalone transfer and source-heldout triage model in the benchmark. Adding CLIP improves the saved-score fusion family, with all-foundation SCP-Fusion reaching 0.7995 mean transfer AUC, but score-level fusion still trails standalone CLIP ranking and decided-case triage. This suggests the next SCP-Fusion step should improve calibration-aware fusion training rather than only adding more frozen branches.
+
+## Figure 7: Qualitative Failure Cases
 
 ![SCP-Fusion seed-17 false negatives](assets/qualitative_seed17_scp_fusion_false_negatives.png)
 
@@ -71,9 +79,9 @@ Generated MS COCOAI images missed by SCP-Fusion v0 in the seed-17 transfer run. 
 
 ## DFRWS Poster Abstract Draft
 
-AI-generated image detectors often look strong when trained and tested on the same dataset, but their reliability drops when the generator family, image source, or post-processing pipeline changes. This project evaluates real-vs-generated image detection as a source-heldout forensic problem rather than a closed-set classification task. We compare handcrafted physical/signal features, fine-tuned ResNet-18, a physics-guided neural fusion model, frozen ConvNeXt and DINOv2 encoders, and a lightweight saved-score fusion model named SCP-Fusion. The benchmark includes same-domain repeated-seed runs, cross-dataset transfer from Ishu AI-vs-real images to a source-balanced Defactify/MS COCOAI split, robustness transforms, source-heldout calibration diagnostics, and two-threshold forensic triage.
+AI-generated image detectors often look strong when trained and tested on the same dataset, but their reliability drops when the generator family, image source, or post-processing pipeline changes. This project evaluates real-vs-generated image detection as a source-heldout forensic problem rather than a closed-set classification task. We compare handcrafted physical/signal features, fine-tuned ResNet-18, a physics-guided neural fusion model, frozen ConvNeXt, DINOv2, and CLIP encoders, and a lightweight saved-score fusion model named SCP-Fusion. The benchmark includes same-domain repeated-seed runs, cross-dataset transfer from Ishu AI-vs-real images to a source-balanced Defactify/MS COCOAI split, robustness transforms, source-heldout calibration diagnostics, and two-threshold forensic triage.
 
-The results show a consistent gap between ranking, calibration, and binary decision quality. Four-branch SCP-Fusion improves cross-domain AUC to 0.7282, and adding frozen DINOv2-small raises the mean AUC to 0.7503. Source-calibrated five-branch fusion gives the best target-domain Brier score and expected calibration error among the current fusion variants. However, all strong ranking models still under-call generated images at a fixed 0.5 threshold. Source-heldout calibration shows that class-balanced temperature scaling improves probability quality without fully solving held-out fake recall. A practical triage mode gives investigators a more conservative workflow: with a strict 5% calibration error budget, DINOv2-enhanced SCP-Fusion makes high-confidence decisions on about one quarter of target images with roughly 80% accuracy on decided cases. These findings support source-aware evaluation and calibrated triage as practical requirements for AI-image forensics.
+The results show a consistent gap between ranking, calibration, and binary decision quality. Four-branch SCP-Fusion improves cross-domain AUC to 0.7282, adding frozen DINOv2-small raises mean AUC to 0.7503, and adding CLIP lifts all-foundation SCP-Fusion to 0.7995. Frozen CLIP ViT-B/32 is the strongest standalone cross-domain branch, reaching 0.8641 mean AUC and the best source-heldout triage result. However, all strong ranking models still under-call generated images at a fixed 0.5 threshold, and score-level fusion can suppress the best branch under generator shift. Source-heldout calibration shows that class-balanced temperature scaling improves probability quality without fully solving held-out fake recall. These findings support source-aware evaluation, frozen foundation baselines, and calibrated triage as practical requirements for AI-image forensics.
 
 ## Rebuild Command
 
@@ -88,4 +96,5 @@ Generated files:
 - `reports\assets\publication_triage_operating_points.png`
 - `reports\assets\publication_score_fusion_dinov2_gain.png`
 - `reports\assets\publication_score_fusion_tuned_triage.png`
+- `reports\assets\publication_score_fusion_clip_frontier.png`
 - `reports\assets\qualitative_seed17_scp_fusion_false_negatives.png`

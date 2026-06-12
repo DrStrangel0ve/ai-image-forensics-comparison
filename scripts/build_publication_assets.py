@@ -67,6 +67,27 @@ DINO_FUSION_COLORS = {
     "scp_fusion_dinov2": "#72B7B2",
     "dinov2_source_calibrated": "#4C78A8",
 }
+CLIP_FRONTIER_ORDER = [
+    "scp_fusion_v0",
+    "scp_fusion_dinov2",
+    "scp_fusion_clip",
+    "scp_fusion_all_foundation",
+    "clip_standalone",
+]
+CLIP_FRONTIER_LABELS = {
+    "scp_fusion_v0": "SCP-Fusion v0",
+    "scp_fusion_dinov2": "+ DINOv2",
+    "scp_fusion_clip": "+ CLIP",
+    "scp_fusion_all_foundation": "+ CLIP + DINOv2",
+    "clip_standalone": "CLIP alone",
+}
+CLIP_FRONTIER_COLORS = {
+    "scp_fusion_v0": "#E45756",
+    "scp_fusion_dinov2": "#72B7B2",
+    "scp_fusion_clip": "#54A24B",
+    "scp_fusion_all_foundation": "#B279A2",
+    "clip_standalone": "#4C78A8",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -104,6 +125,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--score-fusion-dinov2-triage-10pct",
         default="reports/assets/score_fusion_dinov2_source_holdout_triage_10pct.csv",
+    )
+    parser.add_argument(
+        "--score-fusion-clip-calibration",
+        default="reports/assets/score_fusion_clip_calibration_summary.csv",
+    )
+    parser.add_argument(
+        "--score-fusion-clip-triage-5pct",
+        default="reports/assets/score_fusion_clip_source_holdout_triage_5pct.csv",
+    )
+    parser.add_argument(
+        "--score-fusion-clip-triage-10pct",
+        default="reports/assets/score_fusion_clip_source_holdout_triage_10pct.csv",
     )
     parser.add_argument("--out-dir", default="reports/assets")
     parser.add_argument("--dpi", type=int, default=180)
@@ -417,6 +450,98 @@ def build_score_fusion_dinov2_gain(
     return out_path
 
 
+def _clip_frontier_ordered(frame: pd.DataFrame) -> pd.DataFrame:
+    ordered_methods = [method for method in CLIP_FRONTIER_ORDER if method in set(frame["method"])]
+    return frame.set_index("method").loc[ordered_methods].reset_index()
+
+
+def _clip_frontier_labels(frame: pd.DataFrame) -> list[str]:
+    return [CLIP_FRONTIER_LABELS.get(method, method) for method in frame["method"]]
+
+
+def _clip_frontier_colors(frame: pd.DataFrame) -> list[str]:
+    return [CLIP_FRONTIER_COLORS.get(method, "#777777") for method in frame["method"]]
+
+
+def _clip_triage_frame(path: Path, label: str) -> pd.DataFrame:
+    frame = pd.read_csv(path)
+    frame = frame[frame["score_mode"] == "raw"].copy()
+    frame["operating_point"] = label
+    return _clip_frontier_ordered(frame)
+
+
+def build_score_fusion_clip_frontier(
+    calibration_summary: Path,
+    triage_5pct: Path,
+    triage_10pct: Path,
+    out_dir: Path,
+    dpi: int,
+) -> Path:
+    calibration = _clip_frontier_ordered(pd.read_csv(calibration_summary))
+    triage = pd.concat(
+        [
+            _clip_triage_frame(triage_5pct, "5% budget"),
+            _clip_triage_frame(triage_10pct, "10% budget"),
+        ],
+        ignore_index=True,
+    )
+    labels = _clip_frontier_labels(calibration)
+    colors = _clip_frontier_colors(calibration)
+    x = np.arange(len(calibration))
+
+    fig, axes = plt.subplots(2, 2, figsize=(11.4, 7.4), dpi=dpi)
+    for ax, column, title, ylabel, ylim in [
+        (axes[0, 0], "mean_roc_auc", "Transfer Ranking", "AUC", (0.68, 0.90)),
+        (axes[0, 1], "mean_accuracy", "Default Decision Accuracy", "accuracy", (0.54, 0.66)),
+    ]:
+        values = calibration[column].astype(float)
+        ax.bar(x, values, color=colors, edgecolor="#222222", linewidth=0.4)
+        ax.set_title(title, fontsize=10, pad=8)
+        ax.set_ylabel(ylabel)
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=25, ha="right")
+        ax.set_ylim(*ylim)
+        ax.grid(axis="y", alpha=0.25)
+        _annotate_bars(ax, values, offset=(ylim[1] - ylim[0]) * 0.025)
+
+    for ax, operating_point in [(axes[1, 0], "5% budget"), (axes[1, 1], "10% budget")]:
+        frame = _clip_frontier_ordered(triage[triage["operating_point"] == operating_point].copy())
+        x = np.arange(len(frame))
+        width = 0.34
+        ax.bar(
+            x - width / 2,
+            frame["mean_test_coverage"],
+            width,
+            label="coverage",
+            color="#72B7B2",
+            edgecolor="#222222",
+            linewidth=0.4,
+        )
+        ax.bar(
+            x + width / 2,
+            frame["mean_test_triage_accuracy"],
+            width,
+            label="triage accuracy",
+            color="#4C78A8",
+            edgecolor="#222222",
+            linewidth=0.4,
+        )
+        ax.set_title(f"Source-Heldout Triage ({operating_point})", fontsize=10, pad=8)
+        ax.set_ylabel("fraction")
+        ax.set_xticks(x)
+        ax.set_xticklabels(_clip_frontier_labels(frame), rotation=25, ha="right")
+        ax.set_ylim(0.0, 1.0)
+        ax.grid(axis="y", alpha=0.25)
+        ax.legend(fontsize=8)
+
+    fig.suptitle("CLIP sets the current transfer and triage frontier", fontsize=13)
+    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.95))
+    out_path = out_dir / "publication_score_fusion_clip_frontier.png"
+    fig.savefig(out_path)
+    plt.close(fig)
+    return out_path
+
+
 def main() -> None:
     args = parse_args()
     out_dir = ensure_dir(args.out_dir)
@@ -429,6 +554,13 @@ def main() -> None:
             Path(args.score_fusion_dinov2_calibration),
             Path(args.score_fusion_dinov2_triage_5pct),
             Path(args.score_fusion_dinov2_triage_10pct),
+            out_dir,
+            args.dpi,
+        ),
+        build_score_fusion_clip_frontier(
+            Path(args.score_fusion_clip_calibration),
+            Path(args.score_fusion_clip_triage_5pct),
+            Path(args.score_fusion_clip_triage_10pct),
             out_dir,
             args.dpi,
         ),
