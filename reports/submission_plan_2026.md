@@ -25,6 +25,7 @@ Current evidence:
 - Source-heldout post-hoc calibration shows class-balanced temperature scaling improves Brier/ECE without changing decisions, while Platt/isotonic calibration can overfit non-heldout source priors and inflate real-image false positives.
 - Source-heldout triage mode shows frozen ConvNeXt and SCP-Fusion can make high-confidence decisions on about 21-24% of target images with roughly 75% triage accuracy at a strict 5% calibration error budget.
 - Publication assets now include three generated figures, captions, a pipeline diagram, and a DFRWS-style abstract draft.
+- Public sharing assets now include `CITATION.cff` and a reproducibility checklist that separates checked-in code/reports from external datasets and ignored model artifacts.
 - Qualitative failure grids now show seed-17 false positives, false negatives, and branch disagreements for SCP-Fusion on Ishu -> MS COCOAI.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
 - A focused physics-guided-vs-ResNet note now sharpens the claim: physics-guided ResNet is stronger on Ishu, robustness, and several transfer diagnostics, but vanilla ResNet still wins MS COCOAI in-domain validation.

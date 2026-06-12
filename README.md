@@ -37,6 +37,8 @@ The current research plan is documented in [reports/research_deep_dive_2026_06_1
 
 The active publication roadmap is documented in [reports/submission_plan_2026.md](reports/submission_plan_2026.md). The current targets are DFRWS-USA 2026 posters, IEEE WIFS 2026, and DFF-2026 at ACM Multimedia.
 
+The public reproducibility checklist is documented in [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It lists what is included in the public repo, what must be downloaded externally, and the shortest commands for tests, ablations, and publication figure generation.
+
 ## Setup
 
 From this repo root:
@@ -510,6 +512,8 @@ A source-heldout post-hoc calibration follow-up is checked into [reports/source_
 A source-heldout triage-mode follow-up is checked into [reports/source_holdout_triage_2026_06_12.md](reports/source_holdout_triage_2026_06_12.md). It evaluates `likely real` / `uncertain` / `likely fake` thresholds selected on non-heldout generators. At a 5% calibration error budget, frozen ConvNeXt and SCP-Fusion decide on about 21-24% of target images with roughly 75% triage accuracy.
 
 A publication-assets pass is checked into [reports/publication_assets_2026_06_12.md](reports/publication_assets_2026_06_12.md). It adds a reproducible figure builder, three poster/paper-ready PNGs, captions, a pipeline diagram, and a DFRWS-style abstract draft.
+
+A public reproducibility pass is checked into [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It adds a reviewer-facing map of included reports/assets, intentionally excluded raw data/model artifacts, core reproduction commands, and known limitations.
 
 A qualitative failure-case export is checked into [reports/qualitative_failure_cases_2026_06_12.md](reports/qualitative_failure_cases_2026_06_12.md). It adds reproducible false-positive, false-negative, and model-disagreement grids for the seed-17 Ishu-to-MS-COCOAI transfer run, with per-method score manifests.
 

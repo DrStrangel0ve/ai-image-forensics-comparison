@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it using the metadata below."
+title: "AI Image Forensics Comparison"
+authors:
+  - family-names: "Arnav"
+version: 0.1.0
+date-released: 2026-06-12
+url: "https://github.com/DrStrangel0ve/ai-image-forensics-comparison"
+repository-code: "https://github.com/DrStrangel0ve/ai-image-forensics-comparison"
+abstract: >-
+  A public benchmark and research scaffold for comparing conventional
+  physical/signal features, ResNet-18, physics-guided fusion, frozen visual
+  encoders, calibration diagnostics, and source-heldout triage for
+  AI-generated image forensics.
+keywords:
+  - ai-generated images
+  - image forensics
+  - deepfake detection
+  - calibration
+  - source-heldout evaluation
+  - photometric consistency
+license: MIT
