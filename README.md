@@ -92,6 +92,8 @@ The catalog currently includes:
 - `stylegan3_faces_2026`: recent StyleGAN3 real-vs-fake face dataset.
 - `ai_generated_vs_real_multigen`: large multi-generator Kaggle dataset.
 - `ms_cocoai_2026`: Hugging Face research dataset with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney v6 references.
+- `arpan_deepfake_detection_v3_2026`: compact 2026 HF face-forensics dataset with reversed class ids (`fake=0`, `real=1`); export audit found severe exact duplicate leakage across its upstream train/test split.
+- `syncred_bench_2026`: June 2026 HF document/credential forensics candidate with synthetic and false-positive subsets; validate label semantics before generic real/fake scoring.
 - `realhd_2026`: external 2026 benchmark candidate.
 - `genimage`: million-scale cross-generator benchmark candidate.
 - `wildfake`: large wild-collected cross-generator benchmark candidate.
@@ -120,6 +122,20 @@ python scripts/export_hf_image_dataset.py `
 
 The exporter writes folders such as `train/real`, `train/ai_generated`, `validation/real`, and `validation/ai_generated`, plus `metadata.csv`.
 
+For datasets whose class ids use `fake=0` and `real=1`, override the label mapping explicitly:
+
+```powershell
+python scripts/export_hf_image_dataset.py `
+  --dataset-key arpan_deepfake_detection_v3_2026 `
+  --config default `
+  --splits train test `
+  --out-dir data/raw/arpan_deepfake_detection_v3_2026 `
+  --image-column image `
+  --label-column label `
+  --real-label 1 `
+  --fake-label 0
+```
+
 ## Audit Image-Folder Datasets
 
 Before treating a new dataset as evidence, audit its layout, class counts, dimensions, exact duplicate leakage, and stricter perceptual near-duplicate candidates:
@@ -127,7 +143,8 @@ Before treating a new dataset as evidence, audit its layout, class counts, dimen
 ```powershell
 python scripts/audit_image_dataset.py `
   --data-dir data/raw/chatgpt_gemini_deepfake_2026 `
-  --out-dir runs/chatgpt_gemini_deepfake_2026_initial/audit
+  --out-dir runs/chatgpt_gemini_deepfake_2026_initial/audit `
+  --fail-on-leakage
 ```
 
 The audit writes `audit.json` and `report.md`. Near-duplicate scanning requires both average-hash and difference-hash distances to fall under the configured thresholds.
@@ -383,3 +400,6 @@ It validates the dataset layout, adds exact/perceptual duplicate auditing, and s
 
 An Ishu AI-vs-real May 2026 benchmark is checked into [reports/ishu_ai_vs_real_2026_benchmark.md](reports/ishu_ai_vs_real_2026_benchmark.md).
 Across seed-7 and seed-17 deterministic splits, `combined_v3` had stronger AUC on both runs and slightly higher mean accuracy, while accuracy wins were split one each with six-epoch ResNet-18; in MS COCOAI zero-shot transfer, ResNet-18 reversed the ranking with 0.7003 AUC.
+
+A dataset triage follow-up is checked into [reports/dataset_triage_2026_06_12.md](reports/dataset_triage_2026_06_12.md).
+It adds ARPAN V3 and SynCred-Bench to the catalog, fixes Hugging Face label override handling, and rejects ARPAN V3's upstream split for fair scoring because exact duplicate groups cross train/test.

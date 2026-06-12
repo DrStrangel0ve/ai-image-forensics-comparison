@@ -1,6 +1,8 @@
 from collections import Counter
 
-from scripts.export_hf_image_dataset import _should_skip, _split_done
+import pytest
+
+from scripts.export_hf_image_dataset import _label_kind, _label_sets, _should_skip, _split_done
 
 
 def test_source_cap_keeps_only_requested_fake_sources() -> None:
@@ -30,3 +32,15 @@ def test_legacy_binary_class_caps_still_finish_each_class() -> None:
 
     counts["ai_generated"] = 10
     assert _split_done(counts, source_counts, 10, 10, None, set())
+
+
+def test_custom_label_sets_replace_defaults() -> None:
+    real_labels, fake_labels = _label_sets(["1"], ["0"])
+
+    assert _label_kind(1, real_labels, fake_labels) == "real"
+    assert _label_kind(0, real_labels, fake_labels) == "ai_generated"
+
+
+def test_overlapping_label_sets_are_rejected() -> None:
+    with pytest.raises(ValueError, match="both real and fake"):
+        _label_sets(["real", "1"], ["fake", "1"])

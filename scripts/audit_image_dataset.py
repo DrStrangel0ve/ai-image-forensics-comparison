@@ -32,6 +32,31 @@ def parse_args() -> argparse.Namespace:
         help="Skip near-duplicate pairwise scanning above this many images.",
     )
     parser.add_argument("--max-near-duplicate-examples", type=int, default=20)
+    parser.add_argument(
+        "--fail-on-leakage",
+        action="store_true",
+        help="Exit nonzero after writing the report if any cross-split or cross-class duplicate leakage is found.",
+    )
+    parser.add_argument(
+        "--fail-on-cross-split-duplicates",
+        action="store_true",
+        help="Exit nonzero if exact duplicates cross train/test splits.",
+    )
+    parser.add_argument(
+        "--fail-on-cross-split-near-duplicates",
+        action="store_true",
+        help="Exit nonzero if perceptual near-duplicates cross train/test splits.",
+    )
+    parser.add_argument(
+        "--fail-on-cross-class-duplicates",
+        action="store_true",
+        help="Exit nonzero if exact duplicates cross class labels.",
+    )
+    parser.add_argument(
+        "--fail-on-cross-class-near-duplicates",
+        action="store_true",
+        help="Exit nonzero if perceptual near-duplicates cross class labels.",
+    )
     return parser.parse_args()
 
 
@@ -344,6 +369,49 @@ def write_audit_report(summary: dict, out_dir: str | Path) -> None:
     (out_path / "report.md").write_text("\n".join(report), encoding="utf-8")
 
 
+def leakage_failure_reasons(
+    summary: dict,
+    fail_on_leakage: bool = False,
+    fail_on_cross_split_duplicates: bool = False,
+    fail_on_cross_split_near_duplicates: bool = False,
+    fail_on_cross_class_duplicates: bool = False,
+    fail_on_cross_class_near_duplicates: bool = False,
+) -> list[str]:
+    if fail_on_leakage:
+        fail_on_cross_split_duplicates = True
+        fail_on_cross_split_near_duplicates = True
+        fail_on_cross_class_duplicates = True
+        fail_on_cross_class_near_duplicates = True
+    checks = [
+        (
+            fail_on_cross_split_duplicates,
+            "n_cross_split_duplicate_groups",
+            "cross-split exact duplicate groups",
+        ),
+        (
+            fail_on_cross_split_near_duplicates,
+            "n_cross_split_near_duplicate_pairs",
+            "cross-split near-duplicate pairs",
+        ),
+        (
+            fail_on_cross_class_duplicates,
+            "n_cross_class_duplicate_groups",
+            "cross-class exact duplicate groups",
+        ),
+        (
+            fail_on_cross_class_near_duplicates,
+            "n_cross_class_near_duplicate_pairs",
+            "cross-class near-duplicate pairs",
+        ),
+    ]
+    reasons = []
+    for enabled, key, label in checks:
+        count = int(summary.get(key, 0))
+        if enabled and count:
+            reasons.append(f"{count} {label}")
+    return reasons
+
+
 def main() -> None:
     args = parse_args()
     summary = audit_dataset(
@@ -361,6 +429,16 @@ def main() -> None:
         "cross_split_duplicate_groups={n_cross_split_duplicate_groups}".format(**summary)
     )
     print(f"Wrote audit to {Path(args.out_dir).resolve()}")
+    reasons = leakage_failure_reasons(
+        summary,
+        fail_on_leakage=args.fail_on_leakage,
+        fail_on_cross_split_duplicates=args.fail_on_cross_split_duplicates,
+        fail_on_cross_split_near_duplicates=args.fail_on_cross_split_near_duplicates,
+        fail_on_cross_class_duplicates=args.fail_on_cross_class_duplicates,
+        fail_on_cross_class_near_duplicates=args.fail_on_cross_class_near_duplicates,
+    )
+    if reasons:
+        raise SystemExit("Audit failed leakage checks: " + "; ".join(reasons))
 
 
 if __name__ == "__main__":

@@ -18,6 +18,10 @@ from forensic_compare.catalog import load_catalog
 from forensic_compare.utils import ensure_dir
 
 
+DEFAULT_REAL_LABELS = ("0", "real", "Real")
+DEFAULT_FAKE_LABELS = ("1", "fake", "AI-Generated")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Export a Hugging Face image dataset to real/fake image-folder layout."
@@ -31,8 +35,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--label-column", default="Label_A")
     parser.add_argument("--caption-column", default="Caption")
     parser.add_argument("--source-label-column", default="Label_B")
-    parser.add_argument("--real-label", action="append", default=["0", "real", "Real"])
-    parser.add_argument("--fake-label", action="append", default=["1", "fake", "AI-Generated"])
+    parser.add_argument("--real-label", action="append", default=None)
+    parser.add_argument("--fake-label", action="append", default=None)
     parser.add_argument("--max-per-class-per-split", type=int, default=0)
     parser.add_argument(
         "--max-real-per-split",
@@ -77,6 +81,15 @@ def _label_kind(value: Any, real_labels: set[str], fake_labels: set[str]) -> str
     if normalized in fake_labels:
         return "ai_generated"
     raise ValueError(f"Unsupported label value {value!r}; update --real-label/--fake-label")
+
+
+def _label_sets(real_values: list[str] | None, fake_values: list[str] | None) -> tuple[set[str], set[str]]:
+    real_labels = set(real_values or DEFAULT_REAL_LABELS)
+    fake_labels = set(fake_values or DEFAULT_FAKE_LABELS)
+    overlap = real_labels & fake_labels
+    if overlap:
+        raise ValueError(f"Labels cannot be both real and fake: {sorted(overlap)}")
+    return real_labels, fake_labels
 
 
 def _coerce_image(value: Any) -> Image.Image:
@@ -162,8 +175,7 @@ def export_split(args: argparse.Namespace, repo_id: str, split: str, writer: csv
         dataset = dataset.shuffle(seed=args.seed, buffer_size=args.shuffle_buffer)
     counts: Counter = Counter()
     source_counts: Counter = Counter()
-    real_labels = set(args.real_label)
-    fake_labels = set(args.fake_label)
+    real_labels, fake_labels = _label_sets(args.real_label, args.fake_label)
     max_per_class = _cap(args.max_per_class_per_split)
     real_cap = _cap(args.max_real_per_split) or max_per_class
     fake_cap = max_per_class

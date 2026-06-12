@@ -98,6 +98,24 @@
     "size_mb": null,
     "notes": "2026 research dataset with real/synthetic COCO-aligned images from SD3, SD2.1, SDXL, DALL-E 3, and MidJourney v6."
   },
+  "arpan_deepfake_detection_v3_2026": {
+    "title": "Deepfake Detection Dataset V3",
+    "source": "huggingface",
+    "ref": "ARPAN2026/deepfake-detection-dataset-v3",
+    "local_dir": "data/raw/arpan_deepfake_detection_v3_2026",
+    "updated": "2026-03-26",
+    "size_mb": 31,
+    "notes": "Validated through Hugging Face Dataset Viewer on 2026-06-12. Parquet-backed image classification dataset with train/test splits, image plus CAM/explanation fields, and ClassLabel fake=0, real=1. Viewer reports 474 train images (378 fake, 96 real) and 53 test images (41 fake, 12 real). Export audit found only 9 unique SHA-256 image hashes across 527 exported files, with all duplicate groups crossing train/test, so do not use the upstream split for fair benchmark accuracy."
+  },
+  "syncred_bench_2026": {
+    "title": "SynCred-Bench",
+    "source": "huggingface",
+    "ref": "thu-coai/Syncred-Bench",
+    "local_dir": "data/raw/syncred_bench_2026",
+    "updated": "2026-06-07",
+    "size_mb": 2787,
+    "notes": "Very recent HF benchmark candidate validated through Dataset Viewer on 2026-06-12. It exposes fp_450 and syncred_600 configs with 1,050 image rows each and subset/style metadata covering native, captured, circulated, and reproduced images. Useful for document/credential-style forensics, but confirm label semantics before treating it as a generic real-vs-generated natural-image benchmark."
+  },
   "realhd_2026": {
     "title": "RealHD",
     "source": "external",

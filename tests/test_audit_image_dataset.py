@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from scripts.audit_image_dataset import audit_dataset
+from scripts.audit_image_dataset import audit_dataset, leakage_failure_reasons
 
 
 def _write_image(path: Path, seed: int) -> None:
@@ -61,3 +61,22 @@ def test_audit_dataset_reports_near_duplicate_resized_images(tmp_path: Path) -> 
     assert summary["n_near_duplicate_pairs"] >= 1
     assert summary["n_cross_split_near_duplicate_pairs"] >= 1
     assert any(row["cross_split"] for row in summary["near_duplicates"])
+
+
+def test_leakage_failure_reasons_respects_enabled_checks() -> None:
+    summary = {
+        "n_cross_split_duplicate_groups": 2,
+        "n_cross_split_near_duplicate_pairs": 3,
+        "n_cross_class_duplicate_groups": 0,
+        "n_cross_class_near_duplicate_pairs": 1,
+    }
+
+    assert leakage_failure_reasons(summary, fail_on_cross_class_duplicates=True) == []
+    assert leakage_failure_reasons(summary, fail_on_cross_split_duplicates=True) == [
+        "2 cross-split exact duplicate groups"
+    ]
+    assert leakage_failure_reasons(summary, fail_on_leakage=True) == [
+        "2 cross-split exact duplicate groups",
+        "3 cross-split near-duplicate pairs",
+        "1 cross-class near-duplicate pairs",
+    ]
