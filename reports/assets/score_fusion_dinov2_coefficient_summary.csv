@@ -1,0 +1,11 @@
+method,branch,mean_standardized_coefficient,mean_raw_score_coefficient
+scp_fusion_dinov2,combined_v3,0.3909,1.0594
+scp_fusion_dinov2,resnet18,0.4542,1.0399
+scp_fusion_dinov2,physics_guided,0.6136,1.4043
+scp_fusion_dinov2,convnext_tiny_frozen,1.4687,3.1851
+scp_fusion_dinov2,dinov2_vits14_frozen,0.4353,0.9944
+dinov2_source_calibrated,combined_v3,0.3566,0.9888
+dinov2_source_calibrated,resnet18,0.4244,0.9694
+dinov2_source_calibrated,physics_guided,0.5216,1.2001
+dinov2_source_calibrated,convnext_tiny_frozen,1.2250,2.6708
+dinov2_source_calibrated,dinov2_vits14_frozen,0.5316,1.2211
