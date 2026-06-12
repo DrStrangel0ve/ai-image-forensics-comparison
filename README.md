@@ -499,6 +499,8 @@ The first saved-score SCP-Fusion v0 probe improves the Ishu-to-MS-COCOAI mean AU
 
 A calibration diagnostics follow-up is checked into [reports/calibration_diagnostics_2026_06_12.md](reports/calibration_diagnostics_2026_06_12.md). It adds Brier score, expected calibration error, maximum calibration error, reliability-bin CSVs, and a reliability-curve figure. SCP-Fusion v0 has the best Ishu-to-MS-COCOAI Brier score and AUC, but all strong ranking models remain under-confident on the target domain.
 
+A source-heldout post-hoc calibration follow-up is checked into [reports/source_holdout_calibration_2026_06_12.md](reports/source_holdout_calibration_2026_06_12.md). Balanced temperature scaling improves Brier/ECE for the strongest models without changing their default decisions, while flexible Platt/isotonic calibrators often overfit non-heldout generator priors and inflate real-image false positives.
+
 An Ishu three-seed robustness follow-up is checked into [reports/ishu_physics_guided_robustness_3seed.md](reports/ishu_physics_guided_robustness_3seed.md).
 Across 12 seed-plus-transform checks, physics-guided fusion won 10 by accuracy and 10 by AUC. Its mean transformed score was 0.8443 accuracy and 0.9189 AUC, ahead of ResNet-18 at 0.8231 / 0.8904 and `combined_v3` at 0.7924 / 0.8751.
 

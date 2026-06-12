@@ -22,6 +22,7 @@ Current evidence:
 - On Ishu -> source-balanced MS COCOAI, frozen ConvNeXt-Tiny has the best three-seed AUC at 0.7139, while physics-guided fusion has the best source-threshold accuracy at 0.6070.
 - SCP-Fusion v0 score fusion over `combined_v3`, ResNet-18, physics-guided fusion, and frozen ConvNeXt-Tiny improves Ishu -> MS COCOAI mean AUC to 0.7282, with oracle accuracy 0.6793 but default accuracy only 0.5910.
 - Calibration diagnostics show SCP-Fusion v0 has the best cross-domain Brier score, 0.3190, while all strong ranking models under-call generated MS COCOAI images at the default threshold.
+- Source-heldout post-hoc calibration shows class-balanced temperature scaling improves Brier/ECE without changing decisions, while Platt/isotonic calibration can overfit non-heldout source priors and inflate real-image false positives.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
 
 ## Target 1: DFRWS-USA 2026 Poster
@@ -66,7 +67,7 @@ Minimum additions before submission:
 
 - Add a real `combined_v4` ablation or a reconstruction-feature ablation.
 - Add frozen encoder cross-domain results for at least one more dataset direction, ideally MS COCOAI -> Ishu or Ishu -> another recent Kaggle dataset.
-- Expand calibration metrics beyond the current Brier/ECE report with confidence intervals or a source-heldout calibration split.
+- Expand the new source-heldout calibration split with confidence intervals and a calibration-aware model/training ablation.
 - Add source-heldout tables with confidence intervals or seed variability.
 - Keep claims conservative and avoid implying classic multi-light photometric stereo on single-image datasets.
 
@@ -119,8 +120,8 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - multiscale photometric normal/integrability features.
 
 3. Improve calibration:
-   - Brier score, expected calibration error, and reliability curves are now implemented;
-   - next step is source-heldout or temperature-scaled calibration that improves ECE without sacrificing AUC.
+   - Brier score, expected calibration error, reliability curves, and source-heldout post-hoc calibration are now implemented;
+   - next step is a calibration-aware training objective that improves held-out fake recall without inflating real false positives.
 
 4. Add failure-case export:
    - false positives;
