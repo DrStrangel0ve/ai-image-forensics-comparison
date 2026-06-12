@@ -413,7 +413,7 @@ It adds local noise-entropy and multiscale residual features inspired by newer r
 ## Defactify / MS COCOAI Subset Result
 
 A Hugging Face export and benchmark run on a 2,000-image Defactify/MS COCOAI subset is checked into [reports/ms_cocoai_2026_subset_benchmark.md](reports/ms_cocoai_2026_subset_benchmark.md).
-The best conventional method was `combined_v2` at 0.7010 accuracy, while pretrained ResNet-18 reached 0.8160 accuracy. Source-label analysis showed SD3 was the hardest generator family for both methods.
+The best standalone conventional method was `combined_v3` at 0.7290 accuracy, physics-guided ResNet-18 + `combined_v3` reached 0.7810 accuracy / 0.8812 AUC, and pretrained ResNet-18 remained strongest at 0.8160 accuracy / 0.8982 AUC. Source-label analysis showed SD3 was the hardest generator family for both methods.
 
 ## Defactify / MS COCOAI Source-Balanced Validation Result
 
@@ -424,6 +424,7 @@ It keeps 500 real images and exactly 100 generated images from each Defactify so
 
 A transformation robustness run is checked into [reports/ms_cocoai_robustness_variants.md](reports/ms_cocoai_robustness_variants.md).
 JPEG recompression at quality 70 barely changed either detector, but Gaussian blur dropped `combined_v3` by 9.7 accuracy points while ResNet-18 dropped 1.7 points.
+The MS COCOAI-trained fusion model was more robust than standalone `combined_v3` under blur and resize, dropping 1.9 and 1.2 accuracy points respectively, but still stayed below vanilla ResNet-18 on clean and transformed accuracy.
 
 A threshold calibration follow-up is checked into [reports/ms_cocoai_threshold_calibration.md](reports/ms_cocoai_threshold_calibration.md).
 Clean-threshold calibration recovers part of the blurred `combined_v3` drop, improving accuracy from 0.6350 to 0.6740, while an oracle threshold reaches 0.7030.
@@ -438,7 +439,7 @@ A small ChatGPT/Gemini May 2026 Kaggle probe is checked into [reports/chatgpt_ge
 It validates the dataset layout, adds exact/perceptual duplicate auditing, and shows that in-dataset results are easy while MS COCOAI-to-ChatGPT/Gemini zero-shot transfer remains weak.
 
 An Ishu AI-vs-real May 2026 benchmark is checked into [reports/ishu_ai_vs_real_2026_benchmark.md](reports/ishu_ai_vs_real_2026_benchmark.md).
-Across seed-7, seed-17, and seed-29 deterministic splits, `combined_v3` and six-epoch ResNet-18 tied on mean accuracy to four decimals and were nearly tied on mean AUC. A follow-up physics-guided ResNet-18 fused with `combined_v3` features improved to 0.8450 mean accuracy and 0.9177 mean AUC. On Ishu seed-29 to source-balanced MS COCOAI transfer, the fusion model reached 0.6330 accuracy and 0.6923 AUC, ahead of both unfused branches but still far below same-dataset performance.
+Across seed-7, seed-17, and seed-29 deterministic splits, `combined_v3` and six-epoch ResNet-18 tied on mean accuracy to four decimals and were nearly tied on mean AUC. A follow-up physics-guided ResNet-18 fused with `combined_v3` features improved to 0.8450 mean accuracy and 0.9177 mean AUC. On Ishu seed-29 to source-balanced MS COCOAI transfer, the fusion model reached 0.6330 accuracy and 0.6923 AUC, ahead of both unfused branches but still far below same-dataset performance. In the reverse MS COCOAI-to-Ishu direction, fusion had the best AUC at 0.7089 but trailed ResNet-18 accuracy because the default threshold over-flagged real Ishu images.
 
 An Ishu three-seed robustness follow-up is checked into [reports/ishu_physics_guided_robustness_3seed.md](reports/ishu_physics_guided_robustness_3seed.md).
 Across 12 seed-plus-transform checks, physics-guided fusion won 10 by accuracy and 10 by AUC. Its mean transformed score was 0.8443 accuracy and 0.9189 AUC, ahead of ResNet-18 at 0.8231 / 0.8904 and `combined_v3` at 0.7924 / 0.8751.

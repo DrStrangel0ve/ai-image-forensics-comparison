@@ -145,14 +145,15 @@ Accuracy by nested category on the deterministic test split:
 
 ## MS COCOAI Zero-Shot Transfer
 
-The same two model families trained on Defactify/MS COCOAI were also evaluated against all 567 Ishu images.
+The same three model families trained on Defactify/MS COCOAI were also evaluated against all 567 Ishu images.
 
 | source model | accuracy | precision | recall | f1 | roc_auc | n_samples |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | combined_v3 | 0.5608 | 0.5443 | 0.6403 | 0.5884 | 0.5734 | 567 |
 | resnet18 | 0.6243 | 0.5905 | 0.7626 | 0.6656 | 0.7003 | 567 |
+| physics_guided_resnet18_combined_v3 | 0.5873 | 0.5531 | 0.8237 | 0.6618 | 0.7089 | 567 |
 
-The transfer ranking is clearer than the in-dataset repeated-split result. The MS COCOAI ResNet-18 transfers better than the MS COCOAI `combined_v3` model, even though the two model families are closely matched after fitting directly on Ishu. That is a useful warning: the conventional cues are strong but dataset-specific, and the neural model still has the better cross-domain representation here.
+The reverse transfer ranking is more nuanced than the in-dataset repeated-split result. The MS COCOAI ResNet-18 still has the best fixed-threshold accuracy, but the MS COCOAI-trained fusion model has the best AUC. Fusion gains +0.0086 AUC over ResNet-18 and +0.1355 AUC over `combined_v3`, but loses 3.7 accuracy points to ResNet-18 because it over-flags real Ishu images as generated at the default 0.5 threshold.
 
 ## Interpretation
 
@@ -160,7 +161,7 @@ This dataset is now a validated, practical-size May 2026 benchmark with more ima
 
 The photometric normal-consistency baseline is meaningfully above chance at 0.7509 AUC, and the full `combined_v3` conventional stack remains competitive with the six-epoch pretrained ResNet-18 in the repeated split check. The physics-guided fusion model is currently strongest in-dataset, which supports keeping conventional signal features in the comparison and feeding them into neural models rather than treating them as weak standalone baselines.
 
-The zero-shot transfer result points in the opposite direction: training-domain coverage still matters more than raw in-dataset accuracy. A later Ishu seed-29 to MS COCOAI check found the fused model ahead of both unfused branches, but still at only 0.6923 AUC. The next best robustness step is to repeat the Ishu transform sweep across seeds 7 and 17, especially for the weak `nature` category.
+The zero-shot transfer result points in the opposite direction from the Ishu in-dataset result: training-domain coverage and score calibration still matter more than raw same-dataset accuracy. Ishu seed-29 to MS COCOAI found the fused model ahead of both unfused branches at 0.6330 accuracy / 0.6923 AUC. MS COCOAI back to Ishu found fusion ahead by AUC, but below ResNet-18 by accuracy. The next best robustness step is to repeat cross-domain transfer across more seeds and add clean-target threshold calibration, especially for the weak `nature` category.
 
 ## Reproduce
 
@@ -312,4 +313,16 @@ python scripts/evaluate_neural_net.py `
   --num-workers 0 `
   --device cuda `
   --target-split all
+
+python scripts/evaluate_physics_guided_net.py `
+  --model-dir runs/ms_cocoai_2026_subset_500/physics_guided_resnet18_combined_v3 `
+  --target-dir data/raw/ishu_ai_vs_real_2026 `
+  --output-dir runs/ishu_ai_vs_real_2026_cross_ms_cocoai/physics_guided_resnet18_combined_v3 `
+  --image-size 128 `
+  --feature-image-size 128 `
+  --batch-size 64 `
+  --num-workers 0 `
+  --device cuda `
+  --target-split all `
+  --skip-errors
 ```

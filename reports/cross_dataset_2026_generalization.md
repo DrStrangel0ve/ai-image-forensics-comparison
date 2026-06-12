@@ -32,6 +32,18 @@ This follow-up evaluates the seed-29 Ishu models against the 1,000-image source-
 
 The fused model keeps its lead in this direction: +6.3 accuracy points and +0.0907 AUC over vanilla ResNet-18, and +9.0 accuracy points and +0.1083 AUC over standalone `combined_v3`. The absolute AUC is still only 0.6923, so the result does not solve cross-domain generalization; it shows that physics/signal features can help the neural representation transfer better than either branch alone.
 
+## MS COCOAI to Ishu Fusion Transfer
+
+The reverse-direction check trains on the 1,000-image Defactify/MS COCOAI subset and evaluates against all 567 Ishu images. This is stricter for threshold calibration because the target class prior is slightly uneven and the real images come from a different collection process than MS COCO.
+
+| transfer | method | accuracy | precision | recall | f1 | roc_auc | target images |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `ms_cocoai_2026_subset_500` -> `ishu_ai_vs_real_2026` | `combined_v3` | 0.5608 | 0.5443 | 0.6403 | 0.5884 | 0.5734 | 567 |
+| `ms_cocoai_2026_subset_500` -> `ishu_ai_vs_real_2026` | ResNet-18 | 0.6243 | 0.5905 | 0.7626 | 0.6656 | 0.7003 | 567 |
+| `ms_cocoai_2026_subset_500` -> `ishu_ai_vs_real_2026` | physics-guided ResNet-18 + `combined_v3` | 0.5873 | 0.5531 | 0.8237 | 0.6618 | 0.7089 | 567 |
+
+In this direction, fusion improves ranking quality but not fixed-threshold accuracy. It gains +0.0086 AUC over vanilla ResNet-18 and +0.1355 AUC over standalone `combined_v3`, but trails ResNet-18 by 3.7 accuracy points because it flags many real Ishu images as generated at the default 0.5 threshold. The practical takeaway is that fusion is promising for transferable signal, but it needs cross-domain calibration before being used as a binary decision rule.
+
 ## Interpretation
 
 Same-dataset scores were much higher: ResNet-18 reached 0.8205 accuracy on `ai_vs_real_2026` and 0.9698 on `rhythm_ai_vs_real_2026`; the best combined conventional baselines reached 0.6821 and 0.8693 respectively.
@@ -40,7 +52,7 @@ The cross-dataset drop is the key finding. ResNet-18 still beats the combined co
 
 The conventional baseline remains valuable because it fails differently from the neural net. Its photometric, noise, compression, FFT, and chroma proxies are not enough for strong zero-shot detection, but they provide a cheap sanity check for whether the neural model is mostly exploiting dataset shortcuts.
 
-The Ishu-to-MS COCOAI fusion result is the first cross-domain check where the physics-guided model is included. It is promising, but it is still only one source seed and one transfer direction. The next fair check is to train the same fusion model on MS COCOAI and evaluate it back on Ishu, then repeat transfer across all three Ishu seeds.
+The two Ishu/MS COCOAI fusion directions now show a useful asymmetry. Ishu-trained fusion wins both accuracy and AUC on MS COCOAI; MS COCOAI-trained fusion only wins AUC on Ishu and loses accuracy to vanilla ResNet-18. The next fair check is to repeat the transfer across more seeds and add threshold calibration, not just more same-domain accuracy.
 
 ## New Dataset Leads Checked
 
@@ -113,6 +125,38 @@ python scripts/evaluate_physics_guided_net.py `
   --model-dir runs/ishu_ai_vs_real_2026_physics_guided_seed29/physics_guided_resnet18_combined_v3 `
   --target-dir data/raw/ms_cocoai_2026_validation_source_balanced_100 `
   --output-dir runs/ishu_to_ms_cocoai_source_balanced_seed29/physics_guided_resnet18_combined_v3 `
+  --image-size 128 `
+  --feature-image-size 128 `
+  --batch-size 64 `
+  --num-workers 0 `
+  --device cuda `
+  --target-split all `
+  --skip-errors
+```
+
+MS COCOAI to Ishu:
+
+```powershell
+python scripts/train_physics_guided_net.py `
+  --data-dir data/raw/ms_cocoai_2026_subset_500 `
+  --output-dir runs/ms_cocoai_2026_subset_500/physics_guided_resnet18_combined_v3 `
+  --model resnet18 `
+  --pretrained `
+  --epochs 4 `
+  --batch-size 64 `
+  --image-size 128 `
+  --feature-image-size 128 `
+  --num-workers 0 `
+  --device cuda `
+  --seed 7 `
+  --val-fraction 0.2 `
+  --physics-feature-set combined_v3 `
+  --skip-errors
+
+python scripts/evaluate_physics_guided_net.py `
+  --model-dir runs/ms_cocoai_2026_subset_500/physics_guided_resnet18_combined_v3 `
+  --target-dir data/raw/ishu_ai_vs_real_2026 `
+  --output-dir runs/ishu_ai_vs_real_2026_cross_ms_cocoai/physics_guided_resnet18_combined_v3 `
   --image-size 128 `
   --feature-image-size 128 `
   --batch-size 64 `

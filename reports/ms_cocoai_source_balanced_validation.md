@@ -26,9 +26,10 @@ The `combined_v3` baseline extends `combined_v2` with JPEG recompression sensiti
 | combined | 0.6960 | 0.6892 | 0.7140 | 0.7014 | 0.7661 | 1000 |
 | combined_v2 | 0.7090 | 0.6983 | 0.7360 | 0.7167 | 0.7689 | 1000 |
 | combined_v3 | 0.7320 | 0.7248 | 0.7480 | 0.7362 | 0.8027 | 1000 |
+| physics_guided_resnet18_combined_v3 | 0.7800 | 0.7288 | 0.8920 | 0.8022 | 0.8790 | 1000 |
 | resnet18 | 0.8160 | 0.8098 | 0.8260 | 0.8178 | 0.8967 | 1000 |
 
-The strongest conventional baseline is now `combined_v3`, improving over `combined_v2` by 2.3 accuracy points and over the photometric-only proxy by 5.0 points. ResNet-18 remains ahead by 8.4 points over `combined_v3`.
+The strongest conventional baseline is now `combined_v3`, improving over `combined_v2` by 2.3 accuracy points and over the photometric-only proxy by 5.0 points. The physics-guided fusion model improves over `combined_v3` by 4.8 accuracy points and 0.0763 AUC, but ResNet-18 remains ahead by 3.6 accuracy points and 0.0178 AUC.
 
 ## Generator-Level Detection Rate
 
@@ -71,6 +72,18 @@ python scripts/evaluate_feature_model.py `
   --output-dir runs/ms_cocoai_2026_source_balanced_eval/combined_v3 `
   --image-size 128 `
   --target-split all
+
+python scripts/evaluate_physics_guided_net.py `
+  --model-dir runs/ms_cocoai_2026_subset_500/physics_guided_resnet18_combined_v3 `
+  --target-dir data/raw/ms_cocoai_2026_validation_source_balanced_100 `
+  --output-dir runs/ms_cocoai_2026_source_balanced_eval/physics_guided_resnet18_combined_v3 `
+  --image-size 128 `
+  --feature-image-size 128 `
+  --batch-size 64 `
+  --num-workers 0 `
+  --device cuda `
+  --target-split all `
+  --skip-errors
 ```
 
 Comparison outputs are under `runs/ms_cocoai_2026_source_balanced_eval`.
