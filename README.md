@@ -407,6 +407,8 @@ It adds a more diverse category split across animals, city, food, nature, and pe
 A zero-shot transfer run between the 2026 datasets is checked into [reports/cross_dataset_2026_generalization.md](reports/cross_dataset_2026_generalization.md).
 The main result is that all methods drop sharply outside their source dataset, but physics-guided fusion now has the strongest Ishu/MS COCOAI transfer after source-domain threshold calibration.
 
+A stricter source-heldout threshold diagnostic is checked into [reports/source_holdout_diagnostics_2026_06_12.md](reports/source_holdout_diagnostics_2026_06_12.md). It holds out each generated MS COCOAI source in turn and shows that naive source-threshold transfer often drives thresholds too low, creating high real-image false-positive rates. Physics-guided fusion still has the best three-seed mean, but SCP-Fusion needs better source-aware training rather than only better thresholding.
+
 ## Conventional V2 Probe
 
 An experimental `combined_v2` conventional baseline is checked into [reports/conventional_v2_probe.md](reports/conventional_v2_probe.md).
