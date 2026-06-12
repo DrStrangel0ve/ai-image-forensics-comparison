@@ -34,7 +34,8 @@ Current evidence:
 - Source-heldout post-hoc calibration shows class-balanced temperature scaling improves Brier/ECE without changing decisions, while Platt/isotonic calibration can overfit non-heldout source priors and inflate real-image false positives.
 - Source-heldout triage mode shows frozen ConvNeXt and SCP-Fusion can make high-confidence decisions on about 21-24% of target images with roughly 75% triage accuracy at a strict 5% calibration error budget.
 - Source-heldout calibration and triage summary assets now include 95% deterministic bootstrap confidence intervals over held-out source/seed rows, so poster/paper tables can report uncertainty without recomputing predictions.
-- Publication assets now include five generated diagnostic figures, captions, a pipeline diagram, and a DFRWS-style abstract draft.
+- Publication assets now include six generated diagnostic figures, captions, a pipeline diagram, and a DFRWS-style abstract draft.
+- A submission-readiness snapshot now maps the current assets and gaps to DFRWS, WIFS, and DFF, with reverse-direction foundation transfer as the next paper-critical experiment.
 - Public sharing assets now include `CITATION.cff` and a reproducibility checklist that separates checked-in code/reports from external datasets and ignored model artifacts.
 - Qualitative failure grids now show seed-17 false positives, false negatives, and branch disagreements for SCP-Fusion on Ishu -> MS COCOAI.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
@@ -70,7 +71,7 @@ Recommended title:
 
 Status:
 
-Feasible now. The current repo is already enough for a poster, especially with the ConvNeXt and source-heldout diagnostics. A first abstract and figure set are in `reports/publication_assets_2026_06_12.md`.
+Feasible now. The current repo is already enough for a poster, especially with the CLIP frontier and source-heldout diagnostics. A first abstract and figure set are in `reports/publication_assets_2026_06_12.md`, and the submission package is organized in `reports/submission_readiness_2026_06_13.md`.
 
 ## Target 2: IEEE WIFS 2026
 
@@ -158,6 +159,7 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - one pipeline figure draft is written;
    - source-heldout calibration and triage figures are generated;
    - the DINOv2 SCP-Fusion gain figure is generated;
+   - the CLIP transfer frontier figure is generated;
    - utility-tuned score-fusion triage now has a generated figure;
    - one qualitative failure grid set is generated.
 

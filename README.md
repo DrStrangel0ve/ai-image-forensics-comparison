@@ -526,7 +526,9 @@ A source-heldout triage-mode follow-up is checked into [reports/source_holdout_t
 
 The source-heldout calibration and triage summary assets now include 95% deterministic bootstrap confidence intervals over held-out source/seed rows, making the tables more publication-ready without changing the saved prediction scores.
 
-A publication-assets pass is checked into [reports/publication_assets_2026_06_12.md](reports/publication_assets_2026_06_12.md). It adds a reproducible figure builder, five poster/paper-ready diagnostic PNGs, captions, a pipeline diagram, and a DFRWS-style abstract draft, including the DINOv2 SCP-Fusion gain figure and utility-tuned score-fusion triage figure.
+A publication-assets pass is checked into [reports/publication_assets_2026_06_12.md](reports/publication_assets_2026_06_12.md). It adds a reproducible figure builder, six poster/paper-ready diagnostic PNGs, captions, a pipeline diagram, and a DFRWS-style abstract draft, including the DINOv2 SCP-Fusion gain figure, CLIP frontier figure, and utility-tuned score-fusion triage figure.
+
+A submission-readiness snapshot is checked into [reports/submission_readiness_2026_06_13.md](reports/submission_readiness_2026_06_13.md). It verifies the DFRWS, WIFS, and DFF deadlines, maps the checked-in figure package to each target, drafts the DFRWS poster structure, and names reverse-direction foundation transfer as the next paper-critical experiment.
 
 A public reproducibility pass is checked into [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It adds a reviewer-facing map of included reports/assets, intentionally excluded raw data/model artifacts, core reproduction commands, and known limitations.
 
