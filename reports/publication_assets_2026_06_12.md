@@ -45,6 +45,14 @@ Caption draft:
 
 Two-threshold triage trades coverage for reliability under generator shift. With a strict 5% calibration error budget, frozen ConvNeXt and SCP-Fusion make high-confidence decisions on about 21-24% of target images with roughly 75% triage accuracy. Relaxing the budget to 10% increases coverage but also increases held-out error.
 
+## Figure 4: Qualitative Failure Cases
+
+![SCP-Fusion seed-17 false negatives](assets/qualitative_seed17_scp_fusion_false_negatives.png)
+
+Caption draft:
+
+Generated MS COCOAI images missed by SCP-Fusion v0 in the seed-17 transfer run. Several examples receive near-zero fake scores from all compared branches, showing that cross-source failure is not merely a threshold-calibration problem. Additional false-positive and disagreement grids are in `reports/qualitative_failure_cases_2026_06_12.md`.
+
 ## DFRWS Poster Abstract Draft
 
 AI-generated image detectors often look strong when trained and tested on the same dataset, but their reliability drops when the generator family, image source, or post-processing pipeline changes. This project evaluates real-vs-generated image detection as a source-heldout forensic problem rather than a closed-set classification task. We compare handcrafted physical/signal features, fine-tuned ResNet-18, a physics-guided neural fusion model, a frozen ConvNeXt encoder, and a lightweight saved-score fusion model named SCP-Fusion v0. The benchmark includes same-domain repeated-seed runs, cross-dataset transfer from Ishu AI-vs-real images to a source-balanced Defactify/MS COCOAI split, robustness transforms, source-heldout calibration diagnostics, and two-threshold forensic triage.
@@ -62,3 +70,4 @@ Generated files:
 - `reports\assets\publication_cross_domain_calibration.png`
 - `reports\assets\publication_source_heldout_calibration.png`
 - `reports\assets\publication_triage_operating_points.png`
+- `reports\assets\qualitative_seed17_scp_fusion_false_negatives.png`

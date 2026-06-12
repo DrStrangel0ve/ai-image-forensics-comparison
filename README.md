@@ -505,6 +505,8 @@ A source-heldout triage-mode follow-up is checked into [reports/source_holdout_t
 
 A publication-assets pass is checked into [reports/publication_assets_2026_06_12.md](reports/publication_assets_2026_06_12.md). It adds a reproducible figure builder, three poster/paper-ready PNGs, captions, a pipeline diagram, and a DFRWS-style abstract draft.
 
+A qualitative failure-case export is checked into [reports/qualitative_failure_cases_2026_06_12.md](reports/qualitative_failure_cases_2026_06_12.md). It adds reproducible false-positive, false-negative, and model-disagreement grids for the seed-17 Ishu-to-MS-COCOAI transfer run, with per-method score manifests.
+
 An Ishu three-seed robustness follow-up is checked into [reports/ishu_physics_guided_robustness_3seed.md](reports/ishu_physics_guided_robustness_3seed.md).
 Across 12 seed-plus-transform checks, physics-guided fusion won 10 by accuracy and 10 by AUC. Its mean transformed score was 0.8443 accuracy and 0.9189 AUC, ahead of ResNet-18 at 0.8231 / 0.8904 and `combined_v3` at 0.7924 / 0.8751.
 

@@ -25,6 +25,7 @@ Current evidence:
 - Source-heldout post-hoc calibration shows class-balanced temperature scaling improves Brier/ECE without changing decisions, while Platt/isotonic calibration can overfit non-heldout source priors and inflate real-image false positives.
 - Source-heldout triage mode shows frozen ConvNeXt and SCP-Fusion can make high-confidence decisions on about 21-24% of target images with roughly 75% triage accuracy at a strict 5% calibration error budget.
 - Publication assets now include three generated figures, captions, a pipeline diagram, and a DFRWS-style abstract draft.
+- Qualitative failure grids now show seed-17 false positives, false negatives, and branch disagreements for SCP-Fusion on Ishu -> MS COCOAI.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
 
 ## Target 1: DFRWS-USA 2026 Poster
@@ -97,8 +98,8 @@ Minimum additions before submission:
   - add `combined_v4` or reconstruction features;
   - add a source-heldout or temperature-scaled calibration head;
   - compare against the current saved-score logistic fusion.
-- Add a short explainability section using feature coefficients, source-level score distributions, and failure-case image grids.
-- Add DFF-ready qualitative examples: real false positives, missed Midjourney/SD3 examples, and images where ConvNeXt and physics disagree.
+- Expand the first qualitative grids into a short explainability section using feature coefficients and source-level score distributions.
+- Add one more qualitative grid from a second seed or dataset direction.
 - Add a reproducibility appendix with exact commands and dataset audit notes.
 
 Recommended title:
@@ -126,16 +127,14 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - next step is a calibration-aware training objective that improves held-out fake recall without inflating real false positives.
 
 4. Add failure-case export:
-   - false positives;
-   - false negatives;
-   - high disagreement between ConvNeXt and physics-guided fusion;
-   - source labels when available.
+   - false positives, false negatives, and high-disagreement grids are now implemented for seed 17;
+   - next step is repeating the export for another seed or reverse transfer.
 
 5. Draft paper assets:
    - one shared results figure is generated;
    - one pipeline figure draft is written;
    - source-heldout calibration and triage figures are generated;
-   - next missing asset is a qualitative failure grid.
+   - one qualitative failure grid set is generated.
 
 ## Recommended Order
 
