@@ -497,6 +497,8 @@ Across seed-7, seed-17, and seed-29 deterministic splits, `combined_v3` and six-
 A frozen ConvNeXt-Tiny encoder follow-up is checked into [reports/foundation_encoder_baseline_2026_06_12.md](reports/foundation_encoder_baseline_2026_06_12.md). It reached 0.8947 mean accuracy / 0.9589 mean AUC on Ishu and 0.6163 mean accuracy / 0.7139 mean AUC on Ishu to source-balanced MS COCOAI transfer, making it the strongest current ranking baseline. Its source-threshold accuracy trails the physics-guided fusion model, so the next SCP-Fusion step is to combine foundation ranking strength with physics-guided calibration behavior.
 The first saved-score SCP-Fusion v0 probe improves the Ishu-to-MS-COCOAI mean AUC again to 0.7282, but default accuracy remains lower than ConvNeXt alone because the fused scores are conservative on generated MS COCOAI images.
 
+A calibration diagnostics follow-up is checked into [reports/calibration_diagnostics_2026_06_12.md](reports/calibration_diagnostics_2026_06_12.md). It adds Brier score, expected calibration error, maximum calibration error, reliability-bin CSVs, and a reliability-curve figure. SCP-Fusion v0 has the best Ishu-to-MS-COCOAI Brier score and AUC, but all strong ranking models remain under-confident on the target domain.
+
 An Ishu three-seed robustness follow-up is checked into [reports/ishu_physics_guided_robustness_3seed.md](reports/ishu_physics_guided_robustness_3seed.md).
 Across 12 seed-plus-transform checks, physics-guided fusion won 10 by accuracy and 10 by AUC. Its mean transformed score was 0.8443 accuracy and 0.9189 AUC, ahead of ResNet-18 at 0.8231 / 0.8904 and `combined_v3` at 0.7924 / 0.8751.
 

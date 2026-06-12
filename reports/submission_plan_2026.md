@@ -21,6 +21,7 @@ Current evidence:
 - Frozen ConvNeXt-Tiny improves Ishu same-domain mean accuracy to 0.8947 and AUC to 0.9589.
 - On Ishu -> source-balanced MS COCOAI, frozen ConvNeXt-Tiny has the best three-seed AUC at 0.7139, while physics-guided fusion has the best source-threshold accuracy at 0.6070.
 - SCP-Fusion v0 score fusion over `combined_v3`, ResNet-18, physics-guided fusion, and frozen ConvNeXt-Tiny improves Ishu -> MS COCOAI mean AUC to 0.7282, with oracle accuracy 0.6793 but default accuracy only 0.5910.
+- Calibration diagnostics show SCP-Fusion v0 has the best cross-domain Brier score, 0.3190, while all strong ranking models under-call generated MS COCOAI images at the default threshold.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
 
 ## Target 1: DFRWS-USA 2026 Poster
@@ -65,7 +66,7 @@ Minimum additions before submission:
 
 - Add a real `combined_v4` ablation or a reconstruction-feature ablation.
 - Add frozen encoder cross-domain results for at least one more dataset direction, ideally MS COCOAI -> Ishu or Ishu -> another recent Kaggle dataset.
-- Add calibration metrics beyond thresholded accuracy: Brier score and expected calibration error.
+- Expand calibration metrics beyond the current Brier/ECE report with confidence intervals or a source-heldout calibration split.
 - Add source-heldout tables with confidence intervals or seed variability.
 - Keep claims conservative and avoid implying classic multi-light photometric stereo on single-image datasets.
 
@@ -117,10 +118,9 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - stronger JPEG periodicity;
    - multiscale photometric normal/integrability features.
 
-3. Add calibration metrics:
-   - Brier score;
-   - expected calibration error;
-   - reliability curves.
+3. Improve calibration:
+   - Brier score, expected calibration error, and reliability curves are now implemented;
+   - next step is source-heldout or temperature-scaled calibration that improves ECE without sacrificing AUC.
 
 4. Add failure-case export:
    - false positives;

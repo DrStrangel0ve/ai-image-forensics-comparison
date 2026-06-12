@@ -13,10 +13,107 @@ from sklearn.metrics import (
 )
 
 
+def _binary_arrays(
+    y_true: np.ndarray | list[int],
+    y_score: np.ndarray | list[float],
+) -> tuple[np.ndarray, np.ndarray]:
+    y_true_arr = np.asarray(y_true, dtype=int)
+    y_score_arr = np.asarray(y_score, dtype=float)
+    if y_true_arr.shape[0] != y_score_arr.shape[0]:
+        message = (
+            "y_true and y_score must have the same length, "
+            f"got {len(y_true_arr)} and {len(y_score_arr)}"
+        )
+        raise ValueError(message)
+    if len(y_true_arr) == 0:
+        raise ValueError("Calibration metrics require at least one sample")
+    if not np.isin(y_true_arr, [0, 1]).all():
+        raise ValueError("Calibration metrics require binary labels encoded as 0/1")
+    if not np.isfinite(y_score_arr).all():
+        raise ValueError("Calibration metrics require finite scores")
+    return y_true_arr, np.clip(y_score_arr, 0.0, 1.0)
+
+
+def brier_score(
+    y_true: np.ndarray | list[int],
+    y_score: np.ndarray | list[float],
+) -> float:
+    """Return the Brier score for fake-class probabilities."""
+
+    y_true_arr, y_score_arr = _binary_arrays(y_true, y_score)
+    return float(np.mean((y_score_arr - y_true_arr) ** 2))
+
+
+def calibration_bins(
+    y_true: np.ndarray | list[int],
+    y_score: np.ndarray | list[float],
+    n_bins: int = 10,
+) -> list[dict[str, float | int]]:
+    """Summarize reliability bins for fake-class probabilities."""
+
+    if n_bins < 1:
+        raise ValueError("n_bins must be at least 1")
+    y_true_arr, y_score_arr = _binary_arrays(y_true, y_score)
+    edges = np.linspace(0.0, 1.0, n_bins + 1)
+    bin_ids = np.digitize(y_score_arr, edges[1:-1], right=False)
+    rows: list[dict[str, float | int]] = []
+    for bin_id in range(n_bins):
+        mask = bin_ids == bin_id
+        count = int(mask.sum())
+        if count == 0:
+            confidence = 0.0
+            accuracy = 0.0
+            gap = 0.0
+        else:
+            confidence = float(y_score_arr[mask].mean())
+            accuracy = float(y_true_arr[mask].mean())
+            gap = abs(confidence - accuracy)
+        rows.append(
+            {
+                "bin": bin_id,
+                "bin_lower": float(edges[bin_id]),
+                "bin_upper": float(edges[bin_id + 1]),
+                "count": count,
+                "weight": float(count / len(y_true_arr)),
+                "confidence": confidence,
+                "accuracy": accuracy,
+                "abs_gap": gap,
+            }
+        )
+    return rows
+
+
+def expected_calibration_error(
+    y_true: np.ndarray | list[int],
+    y_score: np.ndarray | list[float],
+    n_bins: int = 10,
+) -> float:
+    """Return equal-width expected calibration error."""
+
+    rows = calibration_bins(y_true, y_score, n_bins=n_bins)
+    return float(sum(row["weight"] * row["abs_gap"] for row in rows))
+
+
+def maximum_calibration_error(
+    y_true: np.ndarray | list[int],
+    y_score: np.ndarray | list[float],
+    n_bins: int = 10,
+) -> float:
+    """Return the largest non-empty-bin calibration gap."""
+
+    nonempty_gaps = [
+        float(row["abs_gap"])
+        for row in calibration_bins(y_true, y_score, n_bins=n_bins)
+        if int(row["count"]) > 0
+    ]
+    return max(nonempty_gaps, default=0.0)
+
+
 def binary_metrics(
     y_true: np.ndarray | list[int],
     y_score: np.ndarray | list[float],
     threshold: float = 0.5,
+    n_bins: int = 10,
 ) -> dict[str, Any]:
     """Compute binary metrics with y=1 as generated/fake."""
 
@@ -31,6 +128,9 @@ def binary_metrics(
         "threshold": float(threshold),
         "confusion_matrix": confusion_matrix(y_true_arr, y_pred).tolist(),
         "n_samples": int(len(y_true_arr)),
+        "brier_score": brier_score(y_true_arr, y_score_arr),
+        "expected_calibration_error": expected_calibration_error(y_true_arr, y_score_arr, n_bins=n_bins),
+        "maximum_calibration_error": maximum_calibration_error(y_true_arr, y_score_arr, n_bins=n_bins),
     }
     try:
         metrics["roc_auc"] = float(roc_auc_score(y_true_arr, y_score_arr))
