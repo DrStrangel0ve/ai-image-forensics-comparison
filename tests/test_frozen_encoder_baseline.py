@@ -6,7 +6,10 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import pytest
 from PIL import Image
+
+from forensic_compare.foundation import build_frozen_encoder, supported_frozen_encoders
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -86,3 +89,12 @@ def test_frozen_encoder_baseline_writes_standard_outputs(tmp_path: Path) -> None
     assert eval_metrics["method"] == "cross_frozen_encoder"
     assert eval_metrics["n_target"] == 12
     assert (eval_dir / "predictions.csv").exists()
+
+
+def test_foundation_encoder_registry_exposes_clip_and_dino_aliases() -> None:
+    encoders = set(supported_frozen_encoders())
+    assert "clip_vit_b_32" in encoders
+    assert "dinov2_vits14" in encoders
+    assert "dinov2_vitb14" in encoders
+    with pytest.raises(ValueError, match="requires --pretrained"):
+        build_frozen_encoder("clip_vit_b_32", pretrained=False)

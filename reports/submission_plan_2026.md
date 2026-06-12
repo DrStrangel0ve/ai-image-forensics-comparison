@@ -19,6 +19,7 @@ Current evidence:
 - `combined_v3` and ResNet-18 are tied on Ishu same-domain three-seed accuracy: 0.8246 mean accuracy.
 - Physics-guided ResNet-18 + `combined_v3` improves Ishu same-domain mean accuracy to 0.8450 and AUC to 0.9177.
 - Frozen ConvNeXt-Tiny improves Ishu same-domain mean accuracy to 0.8947 and AUC to 0.9589.
+- CLIP/DINO frozen-encoder aliases are implemented, so the next foundation-baseline table can compare ConvNeXt against CLIP ViT-B/32 and DINOv2 under the same linear-probe protocol.
 - On Ishu -> source-balanced MS COCOAI, frozen ConvNeXt-Tiny has the best three-seed AUC at 0.7139, while physics-guided fusion has the best source-threshold accuracy at 0.6070.
 - SCP-Fusion v0 score fusion over `combined_v3`, ResNet-18, physics-guided fusion, and frozen ConvNeXt-Tiny improves Ishu -> MS COCOAI mean AUC to 0.7282, with oracle accuracy 0.6793 but default accuracy only 0.5910.
 - SCP-Fusion branch-dropout score fusion is implemented and exported with branch coefficients, but the first three-seed probe is negative/mixed: default accuracy 0.5923 versus 0.5910 for v0, with worse AUC, Brier, and ECE.
@@ -79,7 +80,7 @@ A compact, serious benchmark paper. WIFS will expect tighter experimental method
 Minimum additions before submission:
 
 - Run a full repeated-seed `combined_v4` ablation against `combined_v3`, using the new `--select-k` path and at least one stronger classifier.
-- Add frozen encoder cross-domain results for at least one more dataset direction, ideally MS COCOAI -> Ishu or Ishu -> another recent Kaggle dataset.
+- Run CLIP ViT-B/32 and DINOv2-small frozen-encoder baselines on the existing Ishu -> MS COCOAI protocol, then add at least one more dataset direction such as MS COCOAI -> Ishu or Ishu -> another recent Kaggle dataset.
 - Expand the new source-heldout calibration split with a calibration-aware model/training ablation.
 - Use the new source-heldout confidence intervals in poster/paper tables and add seed-variability plots where space permits.
 - Keep claims conservative and avoid implying classic multi-light photometric stereo on single-image datasets.

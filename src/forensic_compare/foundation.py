@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 import torch
 from torch import nn
@@ -19,8 +20,107 @@ class FrozenEncoderSpec:
     weights: str | None
 
 
+HF_ENCODER_CONFIGS: dict[str, dict[str, Any]] = {
+    "clip_vit_b_32": {
+        "model_id": "openai/clip-vit-base-patch32",
+        "loader": "clip_vision",
+        "image_size": 224,
+        "mean": (0.48145466, 0.4578275, 0.40821073),
+        "std": (0.26862954, 0.26130258, 0.27577711),
+    },
+    "dinov2_vits14": {
+        "model_id": "facebook/dinov2-small",
+        "loader": "auto",
+        "image_size": 224,
+        "mean": (0.485, 0.456, 0.406),
+        "std": (0.229, 0.224, 0.225),
+        "interpolate_pos_encoding": True,
+    },
+    "dinov2_vitb14": {
+        "model_id": "facebook/dinov2-base",
+        "loader": "auto",
+        "image_size": 224,
+        "mean": (0.485, 0.456, 0.406),
+        "std": (0.229, 0.224, 0.225),
+        "interpolate_pos_encoding": True,
+    },
+}
+
+
+class HFVisionEncoder(nn.Module):
+    def __init__(self, model: nn.Module, interpolate_pos_encoding: bool = False) -> None:
+        super().__init__()
+        self.model = model
+        self.interpolate_pos_encoding = interpolate_pos_encoding
+
+    def forward(self, images: torch.Tensor) -> torch.Tensor:
+        kwargs = {"pixel_values": images}
+        if self.interpolate_pos_encoding:
+            kwargs["interpolate_pos_encoding"] = True
+        outputs = self.model(**kwargs)
+        pooler_output = getattr(outputs, "pooler_output", None)
+        if pooler_output is not None:
+            return pooler_output
+        last_hidden_state = getattr(outputs, "last_hidden_state", None)
+        if last_hidden_state is None:
+            raise RuntimeError("Hugging Face vision model did not return hidden states")
+        return last_hidden_state[:, 0]
+
+
 def _imagenet_norm() -> tuple[tuple[float, float, float], tuple[float, float, float]]:
     return (0.485, 0.456, 0.406), (0.229, 0.224, 0.225)
+
+
+def supported_frozen_encoders() -> tuple[str, ...]:
+    return (
+        "tiny_cnn",
+        "resnet18",
+        "resnet50",
+        "convnext_tiny",
+        "efficientnet_b0",
+        "vit_b_16",
+        "swin_t",
+        *HF_ENCODER_CONFIGS.keys(),
+    )
+
+
+def _build_hf_encoder(normalized: str, pretrained: bool) -> FrozenEncoderSpec:
+    if not pretrained:
+        raise ValueError(
+            f"{normalized} is a foundation encoder and requires --pretrained to load public weights"
+        )
+    try:
+        from transformers import AutoModel, CLIPVisionModel
+    except ImportError as exc:
+        raise ImportError(
+            "CLIP/DINO frozen encoders require the optional 'transformers' dependency. "
+            "Install the project requirements again or run `python -m pip install transformers`."
+        ) from exc
+
+    config = HF_ENCODER_CONFIGS[normalized]
+    model_id = str(config["model_id"])
+    if config["loader"] == "clip_vision":
+        model = CLIPVisionModel.from_pretrained(model_id)
+    else:
+        model = AutoModel.from_pretrained(model_id)
+    hidden_size = getattr(model.config, "hidden_size", None)
+    if hidden_size is None:
+        raise ValueError(f"Could not infer embedding dimension for {model_id}")
+    encoder = HFVisionEncoder(
+        model,
+        interpolate_pos_encoding=bool(config.get("interpolate_pos_encoding", False)),
+    )
+    for parameter in encoder.parameters():
+        parameter.requires_grad = False
+    encoder.eval()
+    return FrozenEncoderSpec(
+        model=encoder,
+        embedding_dim=int(hidden_size),
+        image_size=int(config["image_size"]),
+        mean=tuple(config["mean"]),
+        std=tuple(config["std"]),
+        weights=model_id,
+    )
 
 
 def build_frozen_encoder(name: str, pretrained: bool = True) -> FrozenEncoderSpec:
@@ -97,6 +197,8 @@ def build_frozen_encoder(name: str, pretrained: bool = True) -> FrozenEncoderSpe
         model.head = nn.Identity()
         weights_name = str(weights) if weights else None
         image_size = 224
+    elif normalized in HF_ENCODER_CONFIGS:
+        return _build_hf_encoder(normalized, pretrained=pretrained)
     else:
         raise ValueError(f"Unsupported frozen encoder: {name}")
 

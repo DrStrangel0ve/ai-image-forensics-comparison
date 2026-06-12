@@ -24,20 +24,13 @@ from forensic_compare.foundation import (
     build_frozen_encoder,
     encode_batch,
     frozen_encoder_transform,
+    supported_frozen_encoders,
 )
 from forensic_compare.metrics import binary_metrics
 from forensic_compare.utils import ensure_dir, resolve_device, seed_everything, write_json
 
 
-ENCODERS = [
-    "tiny_cnn",
-    "resnet18",
-    "resnet50",
-    "convnext_tiny",
-    "efficientnet_b0",
-    "vit_b_16",
-    "swin_t",
-]
+ENCODERS = list(supported_frozen_encoders())
 
 
 def parse_args() -> argparse.Namespace:
