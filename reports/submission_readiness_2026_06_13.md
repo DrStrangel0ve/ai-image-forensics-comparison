@@ -26,6 +26,8 @@ Core numbers to lead with:
 | physics-guided ResNet + `combined_v3` on Ishu | 0.8450 accuracy / 0.9177 AUC | physics-informed fusion helps same-domain and robustness |
 | frozen CLIP on Ishu -> MS COCOAI | 0.6363 accuracy / 0.8641 AUC | strongest standalone transfer ranking |
 | all-foundation SCP-Fusion on Ishu -> MS COCOAI | 0.6163 accuracy / 0.7995 AUC | CLIP improves fusion, but fusion still trails CLIP ranking |
+| frozen CLIP on MS COCOAI -> Ishu | 0.6228 accuracy / 0.8243 AUC | reverse direction keeps CLIP's ranking lead but shows threshold shift |
+| frozen ConvNeXt on MS COCOAI -> Ishu | 0.6579 default accuracy / 0.6784 source-threshold accuracy | best reverse-direction operating point among foundation branches |
 | CLIP source-heldout triage, strict 5% budget | 0.4747 coverage / 0.9261 decided-case accuracy | best current forensic triage operating point |
 | DINOv2-enhanced source-calibrated fusion | 0.6127 accuracy / 0.3062 Brier / 0.2938 ECE | best calibrated fusion-family operating point before CLIP |
 
@@ -60,9 +62,9 @@ Poster layout:
 
 Abstract draft:
 
-AI-generated image detectors often look reliable when trained and tested on the same benchmark, but their decisions can change sharply when generator family, dataset source, or image processing changes. We evaluate real-vs-generated image detection as a source-heldout forensic problem rather than a closed-set classification task. The project compares handcrafted physical/signal features, fine-tuned ResNet-18, a physics-guided neural fusion model, frozen ConvNeXt, DINOv2, and CLIP encoders, and a lightweight saved-score fusion model named SCP-Fusion. Experiments include repeated-seed same-domain runs, cross-dataset transfer from Ishu AI-vs-real images to a source-balanced Defactify/MS COCOAI split, calibration diagnostics, and two-threshold forensic triage.
+AI-generated image detectors often look reliable when trained and tested on the same benchmark, but their decisions can change sharply when generator family, dataset source, or image processing changes. We evaluate real-vs-generated image detection as a source-heldout forensic problem rather than a closed-set classification task. The project compares handcrafted physical/signal features, fine-tuned ResNet-18, a physics-guided neural fusion model, frozen ConvNeXt, DINOv2, and CLIP encoders, and a lightweight saved-score fusion model named SCP-Fusion. Experiments include repeated-seed same-domain runs, cross-dataset transfer between Ishu AI-vs-real images and a source-balanced Defactify/MS COCOAI split, calibration diagnostics, and two-threshold forensic triage.
 
-The results show that ranking, probability calibration, and binary decision quality are separate forensic questions. `combined_v3` conventional features and ResNet-18 tie on Ishu same-domain accuracy, while physics-guided fusion improves same-domain and robustness results. Frozen CLIP ViT-B/32 is the strongest cross-domain branch so far, reaching 0.8641 mean AUC on Ishu -> MS COCOAI and the best source-heldout triage point: 47% target coverage at 92.6% decided-case accuracy under a strict 5% calibration-error budget. Adding CLIP improves all-foundation SCP-Fusion to 0.7995 mean transfer AUC, but score-level fusion still trails standalone CLIP, showing that more branches are not automatically better under source shift. These findings support source-aware evaluation, frozen foundation baselines, and calibrated triage as practical requirements for AI-image forensics.
+The results show that ranking, probability calibration, and binary decision quality are separate forensic questions. `combined_v3` conventional features and ResNet-18 tie on Ishu same-domain accuracy, while physics-guided fusion improves same-domain and robustness results. Frozen CLIP ViT-B/32 is the strongest cross-domain ranking branch so far, reaching 0.8641 mean AUC on Ishu -> MS COCOAI and 0.8243 mean AUC on MS COCOAI -> Ishu. But reverse transfer also shows threshold sensitivity: ConvNeXt has better default/source-threshold accuracy on MS COCOAI -> Ishu even though CLIP ranks better. Adding CLIP improves all-foundation SCP-Fusion to 0.7995 mean transfer AUC, but score-level fusion still trails standalone CLIP, showing that more branches are not automatically better under source shift. These findings support source-aware evaluation, frozen foundation baselines, and calibrated triage as practical requirements for AI-image forensics.
 
 ## WIFS/DFF Paper Skeleton
 
@@ -82,7 +84,7 @@ The results show that ranking, probability calibration, and binary decision qual
 
 Priority order:
 
-1. Add one more direction, preferably MS COCOAI -> Ishu or Ishu -> another recent Kaggle dataset, for CLIP, ConvNeXt, DINOv2, ResNet, physics-guided fusion, and SCP-Fusion.
+1. Extend the new MS COCOAI -> Ishu direction beyond frozen foundations to ResNet-18, physics-guided fusion, and SCP-Fusion where saved prediction alignment allows it.
 2. Add source-heldout or calibration-aware fusion training so SCP-Fusion is not merely a score stack trained on a small Ishu validation split.
 3. Run `combined_v4` full repeated-seed transfer and decide whether it belongs in the main method or stays an ablation.
 4. Add another qualitative grid from a second seed or reverse transfer.
@@ -90,11 +92,11 @@ Priority order:
 
 ## Suggested Next Experiment
 
-The best next technical experiment is **reverse transfer with foundation branches**:
+The best next technical experiment is **reverse transfer with neural and fusion branches**:
 
 - train on the source-balanced MS COCOAI export;
 - evaluate on Ishu;
-- include `combined_v3`, ResNet-18, physics-guided fusion, frozen ConvNeXt, DINOv2, CLIP, and score fusion where saved prediction alignment allows it;
+- add `combined_v3`, ResNet-18, physics-guided fusion, and score fusion beside the checked-in ConvNeXt/DINOv2/CLIP reverse foundation result;
 - report default accuracy, AUC, Brier/ECE, and source-threshold accuracy.
 
-Why this first: CLIP now dominates Ishu -> MS COCOAI. A reverse-direction check will reveal whether CLIP's advantage is broad transfer strength or partly a property of this source/target direction.
+Why this first: the foundation-only reverse check shows that CLIP's ranking transfers, but its operating threshold shifts badly on Ishu. The next comparison should test whether physics-guided or score-fusion branches can keep more of CLIP's ranking while recovering ConvNeXt-like operating-point behavior.

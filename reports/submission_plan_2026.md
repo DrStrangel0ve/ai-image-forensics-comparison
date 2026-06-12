@@ -24,6 +24,7 @@ Current evidence:
 - The full three-seed DINOv2-small run reaches 0.6133 mean accuracy / 0.7063 mean AUC on Ishu -> source-balanced MS COCOAI, close to ConvNeXt's 0.6163 / 0.7139 but with higher fake recall and lower precision.
 - Adding DINOv2 as a fifth SCP-Fusion branch raises transfer AUC to 0.7503; source-calibrated five-branch fusion reaches 0.6127 accuracy / 0.3062 Brier / 0.2938 ECE and improves strict source-heldout triage to about 26% coverage at 80% decided-case accuracy.
 - The full three-seed CLIP ViT-B/32 run changes the foundation-baseline story: standalone CLIP reaches 0.9152 / 0.9701 on Ishu and 0.6363 / 0.8641 on Ishu -> source-balanced MS COCOAI, making it the strongest cross-domain ranker and source-heldout triage model so far.
+- The reverse foundation run keeps CLIP's ranking lead but exposes a deployment split: on MS COCOAI -> Ishu, CLIP reaches the best AUC at 0.8243, while ConvNeXt has the best default/source-threshold accuracy at 0.6579 / 0.6784.
 - Adding CLIP to saved-score fusion improves the fusion family, with all-foundation SCP-Fusion reaching 0.7995 transfer AUC, but it still trails standalone CLIP; this motivates calibration-aware or source-heldout fusion training rather than only adding more branches.
 - On Ishu -> source-balanced MS COCOAI, frozen ConvNeXt-Tiny has the best three-seed AUC at 0.7139, while physics-guided fusion has the best source-threshold accuracy at 0.6070.
 - SCP-Fusion v0 score fusion over `combined_v3`, ResNet-18, physics-guided fusion, and frozen ConvNeXt-Tiny improves Ishu -> MS COCOAI mean AUC to 0.7282, with oracle accuracy 0.6793 but default accuracy only 0.5910.
@@ -35,7 +36,7 @@ Current evidence:
 - Source-heldout triage mode shows frozen ConvNeXt and SCP-Fusion can make high-confidence decisions on about 21-24% of target images with roughly 75% triage accuracy at a strict 5% calibration error budget.
 - Source-heldout calibration and triage summary assets now include 95% deterministic bootstrap confidence intervals over held-out source/seed rows, so poster/paper tables can report uncertainty without recomputing predictions.
 - Publication assets now include six generated diagnostic figures, captions, a pipeline diagram, and a DFRWS-style abstract draft.
-- A submission-readiness snapshot now maps the current assets and gaps to DFRWS, WIFS, and DFF, with reverse-direction foundation transfer as the next paper-critical experiment.
+- A submission-readiness snapshot now maps the current assets and gaps to DFRWS, WIFS, and DFF; the first reverse-direction foundation transfer result is now checked in, and the next paper-critical gap is extending that direction to ResNet, physics-guided fusion, and score fusion.
 - Public sharing assets now include `CITATION.cff` and a reproducibility checklist that separates checked-in code/reports from external datasets and ignored model artifacts.
 - Qualitative failure grids now show seed-17 false positives, false negatives, and branch disagreements for SCP-Fusion on Ishu -> MS COCOAI.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
@@ -86,7 +87,7 @@ A compact, serious benchmark paper. WIFS will expect tighter experimental method
 Minimum additions before submission:
 
 - Run a full repeated-seed `combined_v4` ablation against `combined_v3`, using the new `--select-k` path and at least one stronger classifier.
-- Regenerate publication figures with the new CLIP and DINOv2 foundation/fusion results, then add at least one more dataset direction such as MS COCOAI -> Ishu or Ishu -> another recent Kaggle dataset.
+- Regenerate publication figures with the new CLIP/DINOv2 foundation/fusion and reverse-transfer results, then add either MS COCOAI -> Ishu neural/fusion baselines or Ishu -> another recent Kaggle dataset.
 - Expand the new source-heldout calibration split with a calibration-aware model/training ablation.
 - Use the new source-heldout confidence intervals in poster/paper tables and add seed-variability plots where space permits.
 - Keep claims conservative and avoid implying classic multi-light photometric stereo on single-image datasets.

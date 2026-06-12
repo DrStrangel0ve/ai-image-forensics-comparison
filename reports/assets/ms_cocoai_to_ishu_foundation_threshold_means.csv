@@ -1,0 +1,4 @@
+"encoder","split","n_seeds","default_accuracy","clean_threshold_accuracy","oracle_accuracy","auc"
+"convnext_tiny","ms_cocoai_to_ishu_test","3","0.657894736842105","0.678362573099415","0.760233918128655","0.808138341543514"
+"clip_vit_b_32","ms_cocoai_to_ishu_test","3","0.62280701754386","0.646198830409357","0.774853801169591","0.824250821018062"
+"dinov2_vits14","ms_cocoai_to_ishu_test","3","0.616959064327485","0.616959064327485","0.66374269005848","0.666923234811166"
