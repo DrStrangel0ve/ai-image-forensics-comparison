@@ -85,7 +85,7 @@ The catalog currently includes:
 - `cifake`: CIFAKE real vs Stable Diffusion images.
 - `ai_vs_real_2026`: practical-size 2026 Kaggle real-vs-AI image dataset.
 - `chatgpt_gemini_deepfake_2026`: validated May 2026 Kaggle image-folder probe with ChatGPT/Gemini realistic images.
-- `ishu_ai_vs_real_2026`: May 2026 Kaggle real-vs-AI candidate, pending label-folder mapping validation.
+- `ishu_ai_vs_real_2026`: validated May 2026 Kaggle real-vs-AI benchmark across seven nested categories.
 - `rhythm_ai_vs_real_2026`: another practical-size 2026 Kaggle real-vs-AI dataset.
 - `itszubi_ai_vs_real_2026`: compact April 2026 Kaggle candidate, pending binary-label validation.
 - `safemedia_ai_image_eval_2026`: recent Kaggle prompt/target sample for generated-image qualitative probes, not a ready binary benchmark.
@@ -376,3 +376,6 @@ Training ResNet-18 with the same deterministic variants improved its own blur an
 
 A small ChatGPT/Gemini May 2026 Kaggle probe is checked into [reports/chatgpt_gemini_deepfake_2026_probe.md](reports/chatgpt_gemini_deepfake_2026_probe.md).
 It validates the dataset layout, adds exact/perceptual duplicate auditing, and shows that in-dataset results are easy while MS COCOAI-to-ChatGPT/Gemini zero-shot transfer remains weak.
+
+An Ishu AI-vs-real May 2026 benchmark is checked into [reports/ishu_ai_vs_real_2026_benchmark.md](reports/ishu_ai_vs_real_2026_benchmark.md).
+On its deterministic split, `combined_v3` reached 0.8158 accuracy and 0.8938 AUC, beating six-epoch ResNet-18 at 0.7719 accuracy and 0.8608 AUC; in MS COCOAI zero-shot transfer, ResNet-18 reversed the ranking with 0.7003 AUC.

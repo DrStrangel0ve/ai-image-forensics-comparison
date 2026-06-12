@@ -33,7 +33,7 @@
     "local_dir": "data/raw/ishu_ai_vs_real_2026",
     "updated": "2026-05-28",
     "size_mb": 603,
-    "notes": "Recent Kaggle real-vs-AI candidate. File listing shows AI category folders such as AI-images/AI-images/ai_animals; verify the real-image folder mapping before direct ImageFolder training."
+    "notes": "Validated on 2026-06-12. Single-folder binary layout with AI-images and Real-images, 567 total images across animals/buildings/food/human/interior/items/nature. Audit found one exact duplicate group and four perceptual near-duplicate pairs, all within AI food images."
   },
   "rhythm_ai_vs_real_2026": {
     "title": "AI vs Real Images Dataset",
