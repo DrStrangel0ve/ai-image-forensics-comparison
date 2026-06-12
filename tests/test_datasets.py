@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image
 
 from forensic_compare.datasets import class_kind, collect_labeled_images, discover_layout
+from scripts.export_image_split import _records_for_split
 
 
 def _image(path: Path) -> None:
@@ -38,3 +39,15 @@ def test_collect_labeled_images_uses_fake_as_one(tmp_path: Path) -> None:
     assert class_kind("human-generated") == "real"
     assert class_kind("machine-generated") == "fake"
     assert class_kind("real") == "real"
+
+
+def test_export_records_for_split_is_stratified(tmp_path: Path) -> None:
+    for index in range(5):
+        _image(tmp_path / "REAL" / f"real-{index}.png")
+        _image(tmp_path / "FAKE" / f"fake-{index}.png")
+
+    records, _layout = _records_for_split(tmp_path, split="test", val_fraction=0.4, seed=7)
+    labels = sorted(record[1] for record in records)
+
+    assert len(records) == 4
+    assert labels == [0, 0, 1, 1]

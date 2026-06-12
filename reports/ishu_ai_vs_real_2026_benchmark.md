@@ -125,7 +125,7 @@ Three-run summary:
 | resnet18 | 3 | 0.8246 | 0.0372 | 0.8927 | 0.0241 | 0 | 0 |
 | physics_guided_resnet18_combined_v3 | 3 | 0.8450 | 0.0338 | 0.9177 | 0.0261 | 2 | 2 |
 
-The fusion model is the first in-dataset method here to clearly beat both the conventional stack and vanilla ResNet-18 on the three-seed mean. It still underperforms `combined_v3` on seed 7, so the result should be treated as promising rather than settled. The next check should be cross-domain transfer and robustness transforms for the fused model.
+The fusion model is the first in-dataset method here to clearly beat both the conventional stack and vanilla ResNet-18 on the three-seed mean. It still underperforms `combined_v3` on seed 7, so the result should be treated as promising rather than settled. Follow-up reports now cover Ishu seed-29 transfer to MS COCOAI and robustness transforms for the fused model.
 
 ## Category Breakdown
 
@@ -160,7 +160,7 @@ This dataset is now a validated, practical-size May 2026 benchmark with more ima
 
 The photometric normal-consistency baseline is meaningfully above chance at 0.7509 AUC, and the full `combined_v3` conventional stack remains competitive with the six-epoch pretrained ResNet-18 in the repeated split check. The physics-guided fusion model is currently strongest in-dataset, which supports keeping conventional signal features in the comparison and feeding them into neural models rather than treating them as weak standalone baselines.
 
-The zero-shot transfer result points in the opposite direction: training-domain coverage still matters more than raw in-dataset accuracy. The fused model has not yet been tested in transfer. The next best robustness step is to broaden the repeated-seed sweep and then test transform robustness on this Ishu dataset, especially for the weak `nature` category.
+The zero-shot transfer result points in the opposite direction: training-domain coverage still matters more than raw in-dataset accuracy. A later Ishu seed-29 to MS COCOAI check found the fused model ahead of both unfused branches, but still at only 0.6923 AUC. The next best robustness step is to repeat the Ishu transform sweep across seeds 7 and 17, especially for the weak `nature` category.
 
 ## Reproduce
 
