@@ -400,8 +400,8 @@ It adds a more diverse category split across animals, city, food, nature, and pe
 
 ## Cross-Dataset Generalization Result
 
-A zero-shot transfer run between the two 2026 datasets is checked into [reports/cross_dataset_2026_generalization.md](reports/cross_dataset_2026_generalization.md).
-The main result is that ResNet-18 still beats the combined conventional baseline, but both methods drop sharply outside their source dataset.
+A zero-shot transfer run between the 2026 datasets is checked into [reports/cross_dataset_2026_generalization.md](reports/cross_dataset_2026_generalization.md).
+The main result is that all methods drop sharply outside their source dataset, but physics-guided fusion now has the strongest Ishu/MS COCOAI transfer after source-domain threshold calibration.
 
 ## Conventional V2 Probe
 
@@ -439,7 +439,7 @@ A small ChatGPT/Gemini May 2026 Kaggle probe is checked into [reports/chatgpt_ge
 It validates the dataset layout, adds exact/perceptual duplicate auditing, and shows that in-dataset results are easy while MS COCOAI-to-ChatGPT/Gemini zero-shot transfer remains weak.
 
 An Ishu AI-vs-real May 2026 benchmark is checked into [reports/ishu_ai_vs_real_2026_benchmark.md](reports/ishu_ai_vs_real_2026_benchmark.md).
-Across seed-7, seed-17, and seed-29 deterministic splits, `combined_v3` and six-epoch ResNet-18 tied on mean accuracy to four decimals and were nearly tied on mean AUC. A follow-up physics-guided ResNet-18 fused with `combined_v3` features improved to 0.8450 mean accuracy and 0.9177 mean AUC. On Ishu seed-29 to source-balanced MS COCOAI transfer, the fusion model reached 0.6330 accuracy and 0.6923 AUC, ahead of both unfused branches but still far below same-dataset performance. In the reverse MS COCOAI-to-Ishu direction, fusion had the best AUC at 0.7089 but trailed ResNet-18 accuracy because the default threshold over-flagged real Ishu images.
+Across seed-7, seed-17, and seed-29 deterministic splits, `combined_v3` and six-epoch ResNet-18 tied on mean accuracy to four decimals and were nearly tied on mean AUC. A follow-up physics-guided ResNet-18 fused with `combined_v3` features improved to 0.8450 mean accuracy and 0.9177 mean AUC. On Ishu seed-29 to source-balanced MS COCOAI transfer, the fusion model reached 0.6330 accuracy and 0.6923 AUC, ahead of both unfused branches but still far below same-dataset performance. In the reverse MS COCOAI-to-Ishu direction, fusion had the best AUC at 0.7089 and improved from 0.5873 to 0.6596 accuracy when thresholded from source-domain validation predictions.
 
 An Ishu three-seed robustness follow-up is checked into [reports/ishu_physics_guided_robustness_3seed.md](reports/ishu_physics_guided_robustness_3seed.md).
 Across 12 seed-plus-transform checks, physics-guided fusion won 10 by accuracy and 10 by AUC. Its mean transformed score was 0.8443 accuracy and 0.9189 AUC, ahead of ResNet-18 at 0.8231 / 0.8904 and `combined_v3` at 0.7924 / 0.8751.

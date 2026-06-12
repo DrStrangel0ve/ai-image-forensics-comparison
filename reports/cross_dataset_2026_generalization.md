@@ -44,6 +44,28 @@ The reverse-direction check trains on the 1,000-image Defactify/MS COCOAI subset
 
 In this direction, fusion improves ranking quality but not fixed-threshold accuracy. It gains +0.0086 AUC over vanilla ResNet-18 and +0.1355 AUC over standalone `combined_v3`, but trails ResNet-18 by 3.7 accuracy points because it flags many real Ishu images as generated at the default 0.5 threshold. The practical takeaway is that fusion is promising for transferable signal, but it needs cross-domain calibration before being used as a binary decision rule.
 
+## Cross-Domain Threshold Calibration
+
+Because the reverse transfer had better AUC but worse default-threshold accuracy, this follow-up selects each method's decision threshold on the source-domain clean validation predictions, then applies that threshold to the target-domain transfer predictions without target tuning. The oracle column is diagnostic only because it selects the best threshold on the target labels.
+
+MS COCOAI -> Ishu:
+
+| method | source threshold | default target accuracy | source-calibrated target accuracy | oracle target accuracy | target roc_auc |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `combined_v3` | 0.5873 | 0.5608 | 0.5644 | 0.5732 | 0.5734 |
+| ResNet-18 | 0.5467 | 0.6243 | 0.6314 | 0.6508 | 0.7003 |
+| physics-guided ResNet-18 + `combined_v3` | 0.9015 | 0.5873 | 0.6596 | 0.6737 | 0.7089 |
+
+Ishu seed-29 -> MS COCOAI:
+
+| method | source threshold | default target accuracy | source-calibrated target accuracy | oracle target accuracy | target roc_auc |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `combined_v3` | 0.5014 | 0.5430 | 0.5440 | 0.5780 | 0.5840 |
+| ResNet-18 | 0.6773 | 0.5700 | 0.5600 | 0.5900 | 0.6016 |
+| physics-guided ResNet-18 + `combined_v3` | 0.5000 | 0.6330 | 0.6330 | 0.6520 | 0.6923 |
+
+The calibration result changes the reverse-transfer interpretation. MS COCOAI-trained fusion was not just producing a slightly better AUC; after source-domain calibration it also becomes the best thresholded detector on Ishu, beating source-calibrated ResNet-18 by 2.8 accuracy points. In the Ishu-to-MS COCOAI direction, calibration barely changes fusion because its source-optimal threshold is already 0.5, and it remains ahead of both unfused branches.
+
 ## Interpretation
 
 Same-dataset scores were much higher: ResNet-18 reached 0.8205 accuracy on `ai_vs_real_2026` and 0.9698 on `rhythm_ai_vs_real_2026`; the best combined conventional baselines reached 0.6821 and 0.8693 respectively.
@@ -52,7 +74,7 @@ The cross-dataset drop is the key finding. ResNet-18 still beats the combined co
 
 The conventional baseline remains valuable because it fails differently from the neural net. Its photometric, noise, compression, FFT, and chroma proxies are not enough for strong zero-shot detection, but they provide a cheap sanity check for whether the neural model is mostly exploiting dataset shortcuts.
 
-The two Ishu/MS COCOAI fusion directions now show a useful asymmetry. Ishu-trained fusion wins both accuracy and AUC on MS COCOAI; MS COCOAI-trained fusion only wins AUC on Ishu and loses accuracy to vanilla ResNet-18. The next fair check is to repeat the transfer across more seeds and add threshold calibration, not just more same-domain accuracy.
+The two Ishu/MS COCOAI fusion directions now show why both AUC and thresholded accuracy need to be reported. Ishu-trained fusion wins both accuracy and AUC on MS COCOAI with the default threshold. MS COCOAI-trained fusion initially loses default-threshold accuracy on Ishu, but source-domain threshold calibration raises it to the best transfer accuracy in that direction. The next fair check is to repeat this across more seeds and reserve a separate source calibration split when possible.
 
 ## New Dataset Leads Checked
 
@@ -164,4 +186,28 @@ python scripts/evaluate_physics_guided_net.py `
   --device cuda `
   --target-split all `
   --skip-errors
+```
+
+Cross-domain threshold calibration:
+
+```powershell
+python scripts/summarize_threshold_calibration.py `
+  --out-dir runs/cross_domain_threshold_calibration/ms_cocoai_to_ishu `
+  --objective accuracy `
+  --clean combined_v3=runs/ms_cocoai_2026_source_balanced_eval/combined_v3/predictions.csv `
+  --clean resnet18=runs/ms_cocoai_2026_source_balanced_eval/resnet18/predictions.csv `
+  --clean physics_guided_resnet18_combined_v3=runs/ms_cocoai_2026_source_balanced_eval/physics_guided_resnet18_combined_v3/predictions.csv `
+  --variant ishu:combined_v3=runs/ishu_ai_vs_real_2026_cross_ms_cocoai/combined_v3/predictions.csv `
+  --variant ishu:resnet18=runs/ishu_ai_vs_real_2026_cross_ms_cocoai/resnet18/predictions.csv `
+  --variant ishu:physics_guided_resnet18_combined_v3=runs/ishu_ai_vs_real_2026_cross_ms_cocoai/physics_guided_resnet18_combined_v3/predictions.csv
+
+python scripts/summarize_threshold_calibration.py `
+  --out-dir runs/cross_domain_threshold_calibration/ishu_seed29_to_ms_cocoai `
+  --objective accuracy `
+  --clean combined_v3=runs/ishu_ai_vs_real_2026_repeated_splits_auto/seed29/feature_combined_v3_logistic_regression/predictions.csv `
+  --clean resnet18=runs/ishu_ai_vs_real_2026_repeated_splits_auto/seed29/resnet18/predictions.csv `
+  --clean physics_guided_resnet18_combined_v3=runs/ishu_ai_vs_real_2026_physics_guided_seed29/physics_guided_resnet18_combined_v3/predictions.csv `
+  --variant ms_cocoai:combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed29/combined_v3/predictions.csv `
+  --variant ms_cocoai:resnet18=runs/ishu_to_ms_cocoai_source_balanced_seed29/resnet18/predictions.csv `
+  --variant ms_cocoai:physics_guided_resnet18_combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed29/physics_guided_resnet18_combined_v3/predictions.csv
 ```
