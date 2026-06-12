@@ -92,6 +92,21 @@ Three-seed summary:
 
 This repeats the main fusion story, but with a caveat. Fusion has the best three-seed mean and wins two of three seeds, yet seed 17 is a real failure case where ResNet-18 is stronger by both accuracy and AUC. Source-threshold calibration does not fix seed 17, so this is ranking instability rather than just threshold drift.
 
+## Seed-17 Source Diagnosis
+
+The seed-17 miss was grouped by Defactify/MS COCOAI source label. At the default 0.5 threshold, fusion is slightly cleaner than ResNet-18 on real MS COCO images, but it is much too conservative on most generated sources.
+
+| source | fusion detection/FPR | ResNet-18 detection/FPR | note |
+| --- | ---: | ---: | --- |
+| real | 0.0920 FPR | 0.0980 FPR | Fusion is marginally cleaner on real images. |
+| SD2.1 | 0.1700 | 0.3100 | Fusion misses 83% of generated images. |
+| SDXL | 0.2100 | 0.3700 | Fusion under-detects relative to ResNet. |
+| SD3 | 0.1200 | 0.2100 | Both struggle; fusion is worse. |
+| DALL-E 3 | 0.2900 | 0.2700 | Fusion is only slightly better here. |
+| Midjourney 6 | 0.0700 | 0.2100 | Fusion almost collapses on this source. |
+
+Oracle-threshold analysis confirms this is not just a source-calibration issue. Fusion's oracle target threshold is very low, 0.0287, and recovers generated detection to 0.58 SD2.1, 0.63 SDXL, 0.45 SD3, 0.63 DALL-E 3, and 0.43 Midjourney 6, but real-image FPR jumps to 0.3300. ResNet-18's oracle threshold, 0.1068, gives similar generated detection with a lower 0.2280 real-image FPR. The seed-17 fusion miss is therefore score-separation weakness on the MS COCOAI target, not simply a bad 0.5 threshold.
+
 ## Interpretation
 
 Same-dataset scores were much higher: ResNet-18 reached 0.8205 accuracy on `ai_vs_real_2026` and 0.9698 on `rhythm_ai_vs_real_2026`; the best combined conventional baselines reached 0.6821 and 0.8693 respectively.
@@ -100,7 +115,7 @@ The cross-dataset drop is the key finding. ResNet-18 still beats the combined co
 
 The conventional baseline remains valuable because it fails differently from the neural net. Its photometric, noise, compression, FFT, and chroma proxies are not enough for strong zero-shot detection, but they provide a cheap sanity check for whether the neural model is mostly exploiting dataset shortcuts.
 
-The two Ishu/MS COCOAI fusion directions now show why both AUC and thresholded accuracy need to be reported. Ishu-trained fusion wins the three-seed mean on MS COCOAI, but not every seed. MS COCOAI-trained fusion initially loses default-threshold accuracy on Ishu, but source-domain threshold calibration raises it to the best transfer accuracy in that direction. The next fair check is to reserve a separate source calibration split and diagnose the seed-17 fusion miss by category/source label rather than only by aggregate metrics.
+The two Ishu/MS COCOAI fusion directions now show why both AUC and thresholded accuracy need to be reported. Ishu-trained fusion wins the three-seed mean on MS COCOAI, but not every seed. MS COCOAI-trained fusion initially loses default-threshold accuracy on Ishu, but source-domain threshold calibration raises it to the best transfer accuracy in that direction. The next fair check is to reserve a separate source calibration split and test whether more stable fusion training, stronger regularization, or source-aware validation reduces the seed-17 score-separation failure.
 
 ## New Dataset Leads Checked
 
@@ -294,4 +309,25 @@ python scripts/summarize_threshold_calibration.py `
   --variant ms_cocoai:seed29_combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed29/combined_v3/predictions.csv `
   --variant ms_cocoai:seed29_resnet18=runs/ishu_to_ms_cocoai_source_balanced_seed29/resnet18/predictions.csv `
   --variant ms_cocoai:seed29_physics_guided_resnet18_combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed29/physics_guided_resnet18_combined_v3/predictions.csv
+```
+
+Seed-17 source diagnosis:
+
+```powershell
+python scripts/analyze_predictions_by_metadata.py `
+  --metadata data/raw/ms_cocoai_2026_validation_source_balanced_100/metadata.csv `
+  --data-dir data/raw/ms_cocoai_2026_validation_source_balanced_100 `
+  --split validation `
+  --out-dir runs/ishu_to_ms_cocoai_source_balanced_seed17/source_analysis `
+  --predictions combined_v3=runs/ishu_to_ms_cocoai_source_balanced_seed17/combined_v3/predictions.csv `
+  --predictions resnet18=runs/ishu_to_ms_cocoai_source_balanced_seed17/resnet18/predictions.csv `
+  --predictions physics_guided=runs/ishu_to_ms_cocoai_source_balanced_seed17/physics_guided_resnet18_combined_v3/predictions.csv
+
+python scripts/analyze_predictions_by_metadata.py `
+  --metadata data/raw/ms_cocoai_2026_validation_source_balanced_100/metadata.csv `
+  --data-dir data/raw/ms_cocoai_2026_validation_source_balanced_100 `
+  --split validation `
+  --threshold 0.0287107229232788 `
+  --out-dir runs/ishu_to_ms_cocoai_source_balanced_seed17/source_analysis_physics_guided_oracle_threshold `
+  --predictions physics_guided=runs/ishu_to_ms_cocoai_source_balanced_seed17/physics_guided_resnet18_combined_v3/predictions.csv
 ```
