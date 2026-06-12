@@ -20,6 +20,7 @@ Current evidence:
 - Physics-guided ResNet-18 + `combined_v3` improves Ishu same-domain mean accuracy to 0.8450 and AUC to 0.9177.
 - Frozen ConvNeXt-Tiny improves Ishu same-domain mean accuracy to 0.8947 and AUC to 0.9589.
 - CLIP/DINO frozen-encoder aliases are implemented, so the next foundation-baseline table can compare ConvNeXt against CLIP ViT-B/32 and DINOv2 under the same linear-probe protocol.
+- A bounded DINOv2-small smoke run already reaches 0.7059 AUC on Ishu -> source-balanced MS COCOAI transfer after training on only 80 Ishu images, making a full three-seed DINOv2 run worth prioritizing.
 - On Ishu -> source-balanced MS COCOAI, frozen ConvNeXt-Tiny has the best three-seed AUC at 0.7139, while physics-guided fusion has the best source-threshold accuracy at 0.6070.
 - SCP-Fusion v0 score fusion over `combined_v3`, ResNet-18, physics-guided fusion, and frozen ConvNeXt-Tiny improves Ishu -> MS COCOAI mean AUC to 0.7282, with oracle accuracy 0.6793 but default accuracy only 0.5910.
 - SCP-Fusion branch-dropout score fusion is implemented and exported with branch coefficients, but the first three-seed probe is negative/mixed: default accuracy 0.5923 versus 0.5910 for v0, with worse AUC, Brier, and ECE.

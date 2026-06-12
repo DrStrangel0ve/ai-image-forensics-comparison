@@ -32,6 +32,7 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | Ishu transform robustness | `reports/ishu_physics_guided_robustness_3seed.md` |
 | MS COCOAI source-balanced validation | `reports/ms_cocoai_source_balanced_validation.md` |
 | CLIP/DINO frozen encoder support | `reports/clip_dino_encoder_support_2026_06_13.md` |
+| DINOv2 frozen encoder smoke probe | `reports/dinov2_frozen_encoder_smoke_2026_06_13.md` |
 | SCP-Fusion branch-dropout probe | `reports/score_fusion_branch_dropout_probe_2026_06_12.md` |
 | SCP-Fusion source-calibration probe | `reports/score_fusion_source_calibration_probe_2026_06_13.md` |
 | SCP-Fusion source-heldout calibration probe | `reports/score_fusion_source_holdout_probe_2026_06_13.md` |

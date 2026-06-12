@@ -28,7 +28,7 @@ This update makes those baselines first-class experiments:
 
 ## Current Status
 
-Code support and tests are in place. The current local venv did not have `transformers` installed at the start of this heartbeat, so no CLIP/DINO model weights were downloaded or benchmarked yet. `requirements.txt` and `pyproject.toml` now include `transformers>=4.44`.
+Code support and tests are in place. The initial support pass did not benchmark CLIP/DINO because the local venv did not yet have `transformers` installed. A follow-up bounded DINOv2-small smoke run is now checked into `reports/dinov2_frozen_encoder_smoke_2026_06_13.md`: 0.7250 accuracy / 0.8225 AUC on the 80/40 Ishu smoke split, and 0.6080 accuracy / 0.7059 AUC on Ishu -> source-balanced MS COCOAI transfer.
 
 This means the next run can start directly from the normal install command:
 
