@@ -10,6 +10,7 @@ sys.path.insert(0, str(ROOT / "src"))
 import pandas as pd
 
 from forensic_compare.conventional import feature_names
+from forensic_compare.metrics import bootstrap_mean_ci
 from forensic_compare.utils import ensure_dir, read_json
 
 
@@ -35,6 +36,9 @@ def parse_args() -> argparse.Namespace:
         default="combined_v3",
         help="Feature set treated as the baseline when counting selected extra features.",
     )
+    parser.add_argument("--ci-confidence", type=float, default=0.95)
+    parser.add_argument("--ci-resamples", type=int, default=2000)
+    parser.add_argument("--ci-seed", type=int, default=0)
     return parser.parse_args()
 
 
@@ -85,14 +89,27 @@ def _selected_feature_rows(metrics_path: Path, run_root: Path, base_features: se
     ]
 
 
-def _summary_frame(runs: pd.DataFrame) -> pd.DataFrame:
+def _summary_frame(
+    runs: pd.DataFrame,
+    confidence: float,
+    n_resamples: int,
+    seed: int,
+) -> pd.DataFrame:
     rows = []
     group_columns = ["run", "feature_set", "classifier", "select_k"]
     for keys, group in runs.groupby(group_columns, dropna=False, sort=True):
         row = dict(zip(group_columns, keys))
         row["n_runs"] = int(len(group))
-        for metric in METRIC_COLUMNS:
-            row[f"{metric}_mean"] = float(group[metric].mean())
+        for index, metric in enumerate(METRIC_COLUMNS):
+            interval = bootstrap_mean_ci(
+                group[metric].to_numpy(dtype=float),
+                confidence=confidence,
+                n_resamples=n_resamples,
+                seed=seed + index,
+            )
+            row[f"{metric}_mean"] = interval["mean"]
+            row[f"{metric}_ci_low"] = interval["ci_low"]
+            row[f"{metric}_ci_high"] = interval["ci_high"]
             row[f"{metric}_std"] = float(group[metric].std(ddof=0))
             row[f"{metric}_min"] = float(group[metric].min())
             row[f"{metric}_max"] = float(group[metric].max())
@@ -134,7 +151,14 @@ def _markdown_table(frame: pd.DataFrame, columns: list[str]) -> str:
     return "\n".join(lines)
 
 
-def summarize(run_root: Path, out_dir: Path, extra_feature_base: str) -> None:
+def summarize(
+    run_root: Path,
+    out_dir: Path,
+    extra_feature_base: str,
+    ci_confidence: float = 0.95,
+    ci_resamples: int = 2000,
+    ci_seed: int = 0,
+) -> None:
     out_dir = ensure_dir(out_dir)
     metrics_paths = sorted(run_root.rglob("metrics.json"))
     if not metrics_paths:
@@ -142,7 +166,7 @@ def summarize(run_root: Path, out_dir: Path, extra_feature_base: str) -> None:
 
     base_features = set(feature_names(extra_feature_base))
     runs = pd.DataFrame([_metrics_row(path, run_root) for path in metrics_paths])
-    summary = _summary_frame(runs)
+    summary = _summary_frame(runs, ci_confidence, ci_resamples, ci_seed)
     selected = pd.DataFrame(
         row
         for path in metrics_paths
@@ -172,9 +196,17 @@ def summarize(run_root: Path, out_dir: Path, extra_feature_base: str) -> None:
                 "select_k",
                 "n_runs",
                 "accuracy_mean",
+                "accuracy_ci_low",
+                "accuracy_ci_high",
                 "roc_auc_mean",
+                "roc_auc_ci_low",
+                "roc_auc_ci_high",
                 "brier_score_mean",
+                "brier_score_ci_low",
+                "brier_score_ci_high",
                 "expected_calibration_error_mean",
+                "expected_calibration_error_ci_low",
+                "expected_calibration_error_ci_high",
             ],
         ),
         "",
@@ -190,7 +222,14 @@ def summarize(run_root: Path, out_dir: Path, extra_feature_base: str) -> None:
 
 def main() -> None:
     args = parse_args()
-    summarize(Path(args.run_root), Path(args.out_dir), args.extra_feature_base)
+    summarize(
+        Path(args.run_root),
+        Path(args.out_dir),
+        args.extra_feature_base,
+        ci_confidence=args.ci_confidence,
+        ci_resamples=args.ci_resamples,
+        ci_seed=args.ci_seed,
+    )
 
 
 if __name__ == "__main__":

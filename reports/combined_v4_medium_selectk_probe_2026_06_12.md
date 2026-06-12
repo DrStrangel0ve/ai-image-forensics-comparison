@@ -16,6 +16,7 @@ The goal is to test whether the earlier small-split result was mostly a dimensio
 ## Mean Results
 
 Generated assets are checked into `reports/assets/combined_v4_medium_selectk_probe/`.
+The regenerated summary CSV/report now includes 95% deterministic bootstrap confidence intervals across the three seeds.
 
 | method | mean accuracy | mean ROC AUC | mean Brier | mean ECE |
 | --- | ---: | ---: | ---: | ---: |
@@ -29,6 +30,7 @@ Generated assets are checked into `reports/assets/combined_v4_medium_selectk_pro
 This medium run changes the v4 story:
 
 - Raw `combined_v4` now has the best mean accuracy and AUC, narrowly beating `combined_v3`.
+- The interval-aware asset makes that a narrow ablation lead, not a final significance claim: raw `combined_v4` AUC is `0.8315` with a 95% bootstrap interval of `[0.8140, 0.8544]`, while `combined_v3` AUC is `0.8234` with interval `[0.7986, 0.8393]`.
 - `combined_v4` select-k60 has the best Brier score and ECE, so feature selection remains useful as a calibration-friendly variant.
 - `combined_v4` select-k80 keeps strong AUC but has lower default-threshold accuracy on these splits.
 - The recurrent v4-only selected features are not random: chroma Laplacian stats, low/mid FFT rings, JPEG q50 probes, and reconstruction luma/chroma ratios appear in every selected run.

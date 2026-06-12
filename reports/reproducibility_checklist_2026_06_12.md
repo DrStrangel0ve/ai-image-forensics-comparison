@@ -36,8 +36,8 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | Source-heldout triage with bootstrap CIs | `reports/source_holdout_triage_2026_06_12.md` |
 | Qualitative failure cases | `reports/qualitative_failure_cases_2026_06_12.md` |
 | `combined_v4` feature implementation probe | `reports/combined_v4_probe_2026_06_12.md` |
-| `combined_v4` feature-selection sweep | `reports/combined_v4_selectk_probe_2026_06_12.md` |
-| Medium `combined_v4` ablation grid | `reports/combined_v4_medium_selectk_probe_2026_06_12.md` |
+| `combined_v4` feature-selection sweep with bootstrap CIs | `reports/combined_v4_selectk_probe_2026_06_12.md` |
+| Medium `combined_v4` ablation grid with bootstrap CIs | `reports/combined_v4_medium_selectk_probe_2026_06_12.md` |
 
 ## Core Reproduction Commands
 
@@ -103,7 +103,7 @@ python scripts\build_publication_assets.py --out-dir reports\assets
 - Frozen ConvNeXt-Tiny is the strongest current same-domain ranking baseline on Ishu: 0.8947 mean accuracy / 0.9589 mean AUC.
 - SCP-Fusion v0 improves Ishu-to-MS-COCOAI mean AUC to 0.7282, but default-threshold accuracy remains weak because target-domain fake scores are under-confident.
 - Source-heldout calibration and triage assets include 95% deterministic bootstrap confidence intervals over held-out source/seed rows.
-- Medium `combined_v4` ablation suggests raw `combined_v4` is the best ranking/accuracy candidate at 240 train images per seed, while select-k60 is the best calibrated variant.
+- Medium `combined_v4` ablation suggests raw `combined_v4` is the best ranking/accuracy candidate at 240 train images per seed, while select-k60 is the best calibrated variant; regenerated ablation assets include 95% bootstrap confidence intervals.
 
 ## Known Limitations
 

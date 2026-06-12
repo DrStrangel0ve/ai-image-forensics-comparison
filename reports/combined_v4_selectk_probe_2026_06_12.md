@@ -42,7 +42,7 @@ This is the first evidence that the new reconstruction and spectral features are
 
 ## Expanded K and Tree Sweep
 
-A follow-up sweep adds `k=40`, `k=80`, and histogram-gradient-boosting variants. The generated CSVs and selected-feature frequencies are checked into `reports/assets/combined_v4_selectk_probe/`.
+A follow-up sweep adds `k=40`, `k=80`, and histogram-gradient-boosting variants. The generated CSVs and selected-feature frequencies are checked into `reports/assets/combined_v4_selectk_probe/`. The regenerated summary CSV/report now includes 95% deterministic bootstrap confidence intervals across the three seeds.
 
 | method | mean accuracy | mean ROC AUC | mean Brier | mean ECE |
 | --- | ---: | ---: | ---: | ---: |
@@ -59,6 +59,7 @@ The expanded sweep keeps the same story but makes it sharper:
 
 - `k=60` is the best ranking setting by AUC and Brier score.
 - `k=80` is the best default-threshold accuracy setting, but has worse AUC/calibration.
+- The interval-aware summary keeps this as model-selection evidence, not a final performance claim: select-k60 AUC is `0.8219` with a 95% bootstrap interval of `[0.8089, 0.8300]`, and `combined_v3` AUC is `0.8033` with interval `[0.7511, 0.8300]`.
 - histogram gradient boosting underperforms logistic regression on this small, high-dimensional split, so the next larger run should prioritize selected logistic regression before spending GPU/CPU time on tree models.
 - the same v4-only signals recur across selected runs: `recon_half_luma_chroma_ratio`, `recon_quarter_luma_chroma_ratio`, and low/mid FFT ring ratios.
 

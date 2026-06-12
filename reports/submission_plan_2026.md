@@ -33,6 +33,7 @@ Current evidence:
 - `combined_v4` now implements the planned reconstruction, multiscale frequency, chroma, and JPEG feature expansion; the first bounded smoke probe is usable but trails `combined_v3`, so the next claim needs full repeated-seed ablation rather than a single split.
 - A bounded three-seed feature-selection probe makes `combined_v4` promising again: select-k60 v4 reaches 0.7389 mean accuracy / 0.8219 mean AUC versus 0.7278 / 0.8033 for `combined_v3`; select-k80 has the best bounded accuracy at 0.7611 but lower AUC.
 - A medium three-seed probe with 240 training images per seed makes raw `combined_v4` the best ranking/accuracy candidate at 0.7544 mean accuracy / 0.8315 mean AUC, while select-k60 has the best Brier/ECE.
+- Repeated benchmark and feature-ablation summary scripts now emit 95% deterministic bootstrap confidence intervals, and the checked-in `combined_v4` ablation assets have been regenerated with those intervals.
 
 ## Target 1: DFRWS-USA 2026 Poster
 
@@ -127,6 +128,7 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - raw v4 trails `combined_v3` in the first 80/40 smoke probe, but select-k v4 leads the bounded three-seed 120/60 probe by mean AUC;
    - the expanded bounded sweep suggests `k=60` for ranking/AUC and `k=80` for default accuracy, while histogram-gradient boosting is weak on the small split;
    - the medium 240-train run suggests raw v4 may overtake selected v4 once there is enough data, with select-k60 still best calibrated;
+   - interval-aware summaries show the current v4 lead is narrow, so frame it as model-selection evidence until the larger repeated-seed run lands;
    - the next step is a full repeated-seed Ishu run for raw v4 and select-k60, then MS COCOAI/source-heldout transfer before adding v4 into score fusion.
 
 3. Improve calibration:

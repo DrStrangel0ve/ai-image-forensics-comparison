@@ -48,6 +48,10 @@ def test_summarize_feature_ablation_outputs_tables(tmp_path: Path) -> None:
 
     assert summary.loc[0, "n_runs"] == 2
     assert summary.loc[0, "accuracy_mean"] == 0.8
+    assert "accuracy_ci_low" in summary.columns
+    assert "accuracy_ci_high" in summary.columns
+    assert "roc_auc_ci_low" in summary.columns
+    assert "roc_auc_ci_high" in summary.columns
     extra = selected[selected["feature"] == "fft_ring_00_10_ratio"].iloc[0]
     assert bool(extra["is_extra_feature"])
     assert extra["count"] == 2
