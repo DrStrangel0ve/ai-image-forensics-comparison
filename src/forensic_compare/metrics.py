@@ -13,6 +13,39 @@ from sklearn.metrics import (
 )
 
 
+def bootstrap_mean_ci(
+    values: np.ndarray | list[float],
+    confidence: float = 0.95,
+    n_resamples: int = 2000,
+    seed: int = 0,
+) -> dict[str, float]:
+    """Return a deterministic bootstrap confidence interval for the mean."""
+
+    if not 0.0 < confidence < 1.0:
+        raise ValueError("confidence must be between 0 and 1")
+    if n_resamples < 1:
+        raise ValueError("n_resamples must be at least 1")
+    values_arr = np.asarray(values, dtype=float)
+    values_arr = values_arr[np.isfinite(values_arr)]
+    if len(values_arr) == 0:
+        return {"mean": float("nan"), "ci_low": float("nan"), "ci_high": float("nan")}
+    mean = float(values_arr.mean())
+    if len(values_arr) == 1:
+        return {"mean": mean, "ci_low": mean, "ci_high": mean}
+
+    rng = np.random.default_rng(seed)
+    sample_means = np.empty(n_resamples, dtype=float)
+    for index in range(n_resamples):
+        sample_indices = rng.integers(0, len(values_arr), size=len(values_arr))
+        sample_means[index] = values_arr[sample_indices].mean()
+    alpha = (1.0 - confidence) / 2.0
+    return {
+        "mean": mean,
+        "ci_low": float(np.quantile(sample_means, alpha)),
+        "ci_high": float(np.quantile(sample_means, 1.0 - alpha)),
+    }
+
+
 def _binary_arrays(
     y_true: np.ndarray | list[int],
     y_score: np.ndarray | list[float],

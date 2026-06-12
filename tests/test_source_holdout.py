@@ -60,4 +60,7 @@ def test_source_holdout_summary_uses_nonheldout_sources_for_threshold(tmp_path: 
     assert (detail["source_threshold_accuracy"] == 1.0).all()
     assert summary.loc[0, "method"] == "toy"
     assert summary.loc[0, "mean_source_threshold_accuracy"] == 1.0
+    assert summary.loc[0, "n_holdouts"] == 2
+    assert "mean_source_threshold_accuracy_ci_low" in summary.columns
+    assert "mean_source_threshold_accuracy_ci_high" in summary.columns
     assert (out_dir / "report.md").exists()

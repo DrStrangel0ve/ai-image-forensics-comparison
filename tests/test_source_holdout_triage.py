@@ -68,4 +68,7 @@ def test_source_holdout_triage_writes_summary_and_detail(tmp_path: Path) -> None
     assert summary.loc[0, "mean_test_coverage"] > 0.0
     assert 0.0 <= summary.loc[0, "mean_test_triage_accuracy"] <= 1.0
     assert summary.loc[0, "mean_test_fake_detection"] > 0.0
+    assert summary.loc[0, "n_holdouts"] == 2
+    assert "mean_test_triage_accuracy_ci_low" in summary.columns
+    assert "mean_test_triage_accuracy_ci_high" in summary.columns
     assert (out_dir / "report.md").exists()

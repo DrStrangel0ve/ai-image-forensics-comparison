@@ -24,6 +24,7 @@ Current evidence:
 - Calibration diagnostics show SCP-Fusion v0 has the best cross-domain Brier score, 0.3190, while all strong ranking models under-call generated MS COCOAI images at the default threshold.
 - Source-heldout post-hoc calibration shows class-balanced temperature scaling improves Brier/ECE without changing decisions, while Platt/isotonic calibration can overfit non-heldout source priors and inflate real-image false positives.
 - Source-heldout triage mode shows frozen ConvNeXt and SCP-Fusion can make high-confidence decisions on about 21-24% of target images with roughly 75% triage accuracy at a strict 5% calibration error budget.
+- Source-heldout calibration and triage summary assets now include 95% deterministic bootstrap confidence intervals over held-out source/seed rows, so poster/paper tables can report uncertainty without recomputing predictions.
 - Publication assets now include three generated figures, captions, a pipeline diagram, and a DFRWS-style abstract draft.
 - Public sharing assets now include `CITATION.cff` and a reproducibility checklist that separates checked-in code/reports from external datasets and ignored model artifacts.
 - Qualitative failure grids now show seed-17 false positives, false negatives, and branch disagreements for SCP-Fusion on Ishu -> MS COCOAI.
@@ -75,8 +76,8 @@ Minimum additions before submission:
 
 - Run a full repeated-seed `combined_v4` ablation against `combined_v3`, using the new `--select-k` path and at least one stronger classifier.
 - Add frozen encoder cross-domain results for at least one more dataset direction, ideally MS COCOAI -> Ishu or Ishu -> another recent Kaggle dataset.
-- Expand the new source-heldout calibration split with confidence intervals and a calibration-aware model/training ablation.
-- Add source-heldout tables with confidence intervals or seed variability.
+- Expand the new source-heldout calibration split with a calibration-aware model/training ablation.
+- Use the new source-heldout confidence intervals in poster/paper tables and add seed-variability plots where space permits.
 - Keep claims conservative and avoid implying classic multi-light photometric stereo on single-image datasets.
 
 Recommended title:

@@ -8,6 +8,7 @@ import pandas as pd
 import pytest
 
 from forensic_compare.metrics import (
+    bootstrap_mean_ci,
     brier_score,
     calibration_bins,
     expected_calibration_error,
@@ -43,6 +44,16 @@ def test_calibration_metrics_match_manual_two_bin_example() -> None:
     assert bins[1]["count"] == 2
     assert bins[1]["confidence"] == pytest.approx(0.8)
     assert bins[1]["accuracy"] == 1.0
+
+
+def test_bootstrap_mean_ci_is_deterministic_and_bounded() -> None:
+    interval = bootstrap_mean_ci([0.5, 0.7, 0.9], n_resamples=200, seed=11)
+    repeat = bootstrap_mean_ci([0.5, 0.7, 0.9], n_resamples=200, seed=11)
+
+    assert interval == repeat
+    assert interval["mean"] == pytest.approx(0.7)
+    assert 0.5 <= interval["ci_low"] <= interval["mean"]
+    assert interval["mean"] <= interval["ci_high"] <= 0.9
 
 
 def test_calibration_summary_script_writes_metric_and_bin_tables(tmp_path: Path) -> None:

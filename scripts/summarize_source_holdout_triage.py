@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT / "src"))
 import numpy as np
 import pandas as pd
 
+from forensic_compare.metrics import bootstrap_mean_ci
 from forensic_compare.utils import ensure_dir
 from scripts.summarize_source_holdout import (
     _metadata_frame,
@@ -71,6 +72,9 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Score transform before threshold selection. Repeat to include several modes.",
     )
+    parser.add_argument("--ci-confidence", type=float, default=0.95)
+    parser.add_argument("--ci-resamples", type=int, default=2000)
+    parser.add_argument("--ci-seed", type=int, default=0)
     return parser.parse_args()
 
 
@@ -243,6 +247,48 @@ def _markdown_table(rows: list[dict], columns: list[str]) -> str:
     return "\n".join(lines)
 
 
+def _summary_frame(
+    detail: pd.DataFrame,
+    confidence: float,
+    n_resamples: int,
+    seed: int,
+) -> pd.DataFrame:
+    metric_map = {
+        "test_coverage": "mean_test_coverage",
+        "test_triage_accuracy": "mean_test_triage_accuracy",
+        "test_real_fpr": "mean_test_real_fpr",
+        "test_fake_false_clearance": "mean_test_fake_false_clearance",
+        "test_fake_detection": "mean_test_fake_detection",
+        "test_real_clearance": "mean_test_real_clearance",
+        "test_fake_precision": "mean_test_fake_precision",
+        "test_real_precision": "mean_test_real_precision",
+        "real_threshold": "mean_real_threshold",
+        "fake_threshold": "mean_fake_threshold",
+    }
+    rows = []
+    for (method, score_mode), group in detail.groupby(["method", "score_mode"], sort=True):
+        row = {
+            "method": method,
+            "score_mode": score_mode,
+            "n_holdouts": int(len(group)),
+        }
+        for index, (metric, output_name) in enumerate(metric_map.items()):
+            interval = bootstrap_mean_ci(
+                group[metric].to_numpy(dtype=float),
+                confidence=confidence,
+                n_resamples=n_resamples,
+                seed=seed + index,
+            )
+            row[output_name] = interval["mean"]
+            row[f"{output_name}_ci_low"] = interval["ci_low"]
+            row[f"{output_name}_ci_high"] = interval["ci_high"]
+        rows.append(row)
+    return pd.DataFrame(rows).sort_values(
+        ["mean_test_triage_accuracy", "mean_test_coverage"],
+        ascending=[False, False],
+    )
+
+
 def main() -> None:
     args = parse_args()
     _validate_fraction("--max-real-fpr", args.max_real_fpr)
@@ -304,23 +350,7 @@ def main() -> None:
         raise ValueError("No source-holdout triage rows could be computed")
 
     detail = pd.DataFrame(sorted(rows, key=lambda row: (row["method"], row["score_mode"], row["group"], row["heldout_source"])))
-    summary = (
-        detail.groupby(["method", "score_mode"], as_index=False)
-        .agg(
-            n_holdouts=("heldout_source", "count"),
-            mean_test_coverage=("test_coverage", "mean"),
-            mean_test_triage_accuracy=("test_triage_accuracy", "mean"),
-            mean_test_real_fpr=("test_real_fpr", "mean"),
-            mean_test_fake_false_clearance=("test_fake_false_clearance", "mean"),
-            mean_test_fake_detection=("test_fake_detection", "mean"),
-            mean_test_real_clearance=("test_real_clearance", "mean"),
-            mean_test_fake_precision=("test_fake_precision", "mean"),
-            mean_test_real_precision=("test_real_precision", "mean"),
-            mean_real_threshold=("real_threshold", "mean"),
-            mean_fake_threshold=("fake_threshold", "mean"),
-        )
-        .sort_values(["mean_test_triage_accuracy", "mean_test_coverage"], ascending=[False, False])
-    )
+    summary = _summary_frame(detail, args.ci_confidence, args.ci_resamples, args.ci_seed)
 
     detail.to_csv(out_dir / "source_holdout_triage.csv", index=False)
     summary.to_csv(out_dir / "source_holdout_triage_summary.csv", index=False)
@@ -337,8 +367,13 @@ def main() -> None:
     summary_columns = [
         "method",
         "score_mode",
+        "n_holdouts",
         "mean_test_coverage",
+        "mean_test_coverage_ci_low",
+        "mean_test_coverage_ci_high",
         "mean_test_triage_accuracy",
+        "mean_test_triage_accuracy_ci_low",
+        "mean_test_triage_accuracy_ci_high",
         "mean_test_real_fpr",
         "mean_test_fake_false_clearance",
         "mean_test_fake_detection",
@@ -366,6 +401,7 @@ def main() -> None:
         f"Seed: `{args.seed}`",
         f"Calibration max real FPR: `{args.max_real_fpr}`",
         f"Calibration max fake clearance: `{args.max_fake_clearance}`",
+        f"Mean confidence intervals: `{args.ci_confidence:.0%}` bootstrap over held-out sources/seeds, `{args.ci_resamples}` resamples",
         "",
         "Scores above the fake threshold are called likely fake. Scores below the real threshold are called likely real. Scores between the two thresholds are marked uncertain.",
         "",

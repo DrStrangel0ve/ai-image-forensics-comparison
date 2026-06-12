@@ -64,4 +64,7 @@ def test_source_holdout_calibration_keeps_seed_groups_separate(tmp_path: Path) -
     assert set(detail["calibrator"]) == {"temperature", "platt"}
     assert set(detail["heldout_source"]) == {"sd21", "sdxl"}
     assert set(summary["calibrator"]) == {"temperature", "platt"}
+    assert set(summary["n_holdouts"]) == {2}
+    assert "mean_calibrated_brier_score_ci_low" in summary.columns
+    assert "mean_calibrated_brier_score_ci_high" in summary.columns
     assert (out_dir / "report.md").exists()

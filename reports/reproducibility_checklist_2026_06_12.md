@@ -32,8 +32,8 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | Ishu transform robustness | `reports/ishu_physics_guided_robustness_3seed.md` |
 | MS COCOAI source-balanced validation | `reports/ms_cocoai_source_balanced_validation.md` |
 | Calibration diagnostics | `reports/calibration_diagnostics_2026_06_12.md` |
-| Source-heldout calibration | `reports/source_holdout_calibration_2026_06_12.md` |
-| Source-heldout triage | `reports/source_holdout_triage_2026_06_12.md` |
+| Source-heldout calibration with bootstrap CIs | `reports/source_holdout_calibration_2026_06_12.md` |
+| Source-heldout triage with bootstrap CIs | `reports/source_holdout_triage_2026_06_12.md` |
 | Qualitative failure cases | `reports/qualitative_failure_cases_2026_06_12.md` |
 | `combined_v4` feature implementation probe | `reports/combined_v4_probe_2026_06_12.md` |
 | `combined_v4` feature-selection sweep | `reports/combined_v4_selectk_probe_2026_06_12.md` |
@@ -102,6 +102,7 @@ python scripts\build_publication_assets.py --out-dir reports\assets
 - Vanilla ResNet-18 still wins MS COCOAI in-domain validation: 0.8160 accuracy / 0.8967 AUC versus physics-guided fusion at 0.7800 / 0.8790.
 - Frozen ConvNeXt-Tiny is the strongest current same-domain ranking baseline on Ishu: 0.8947 mean accuracy / 0.9589 mean AUC.
 - SCP-Fusion v0 improves Ishu-to-MS-COCOAI mean AUC to 0.7282, but default-threshold accuracy remains weak because target-domain fake scores are under-confident.
+- Source-heldout calibration and triage assets include 95% deterministic bootstrap confidence intervals over held-out source/seed rows.
 - Medium `combined_v4` ablation suggests raw `combined_v4` is the best ranking/accuracy candidate at 240 train images per seed, while select-k60 is the best calibrated variant.
 
 ## Known Limitations

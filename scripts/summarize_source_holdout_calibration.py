@@ -17,7 +17,7 @@ import pandas as pd
 from sklearn.isotonic import IsotonicRegression
 from sklearn.linear_model import LogisticRegression
 
-from forensic_compare.metrics import binary_metrics
+from forensic_compare.metrics import binary_metrics, bootstrap_mean_ci
 from forensic_compare.utils import ensure_dir
 from scripts.summarize_source_holdout import (
     _metadata_frame,
@@ -76,6 +76,9 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Post-hoc calibrator to evaluate. Repeat to include several.",
     )
+    parser.add_argument("--ci-confidence", type=float, default=0.95)
+    parser.add_argument("--ci-resamples", type=int, default=2000)
+    parser.add_argument("--ci-seed", type=int, default=0)
     return parser.parse_args()
 
 
@@ -262,6 +265,49 @@ def _markdown_table(rows: list[dict], columns: list[str]) -> str:
     return "\n".join(lines)
 
 
+def _summary_frame(
+    detail: pd.DataFrame,
+    confidence: float,
+    n_resamples: int,
+    seed: int,
+) -> pd.DataFrame:
+    metric_map = {
+        "raw_accuracy": "mean_raw_accuracy",
+        "calibrated_accuracy": "mean_calibrated_accuracy",
+        "raw_brier_score": "mean_raw_brier_score",
+        "calibrated_brier_score": "mean_calibrated_brier_score",
+        "raw_expected_calibration_error": "mean_raw_ece",
+        "calibrated_expected_calibration_error": "mean_calibrated_ece",
+        "raw_real_fpr": "mean_raw_real_fpr",
+        "calibrated_real_fpr": "mean_calibrated_real_fpr",
+        "raw_fake_detection": "mean_raw_fake_detection",
+        "calibrated_fake_detection": "mean_calibrated_fake_detection",
+        "calibrated_roc_auc": "mean_calibrated_roc_auc",
+    }
+    rows = []
+    for (method, calibrator), group in detail.groupby(["method", "calibrator"], sort=True):
+        row = {
+            "method": method,
+            "calibrator": calibrator,
+            "n_holdouts": int(len(group)),
+        }
+        for index, (metric, output_name) in enumerate(metric_map.items()):
+            interval = bootstrap_mean_ci(
+                group[metric].to_numpy(dtype=float),
+                confidence=confidence,
+                n_resamples=n_resamples,
+                seed=seed + index,
+            )
+            row[output_name] = interval["mean"]
+            row[f"{output_name}_ci_low"] = interval["ci_low"]
+            row[f"{output_name}_ci_high"] = interval["ci_high"]
+        rows.append(row)
+    return pd.DataFrame(rows).sort_values(
+        ["mean_calibrated_brier_score", "mean_calibrated_ece"],
+        ascending=[True, True],
+    )
+
+
 def main() -> None:
     args = parse_args()
     out_dir = ensure_dir(args.out_dir)
@@ -322,24 +368,7 @@ def main() -> None:
 
     rows = sorted(rows, key=lambda row: (row["method"], row["calibrator"], row["group"], row["heldout_source"]))
     detail = pd.DataFrame(rows)
-    summary = (
-        detail.groupby(["method", "calibrator"], as_index=False)
-        .agg(
-            n_holdouts=("heldout_source", "count"),
-            mean_raw_accuracy=("raw_accuracy", "mean"),
-            mean_calibrated_accuracy=("calibrated_accuracy", "mean"),
-            mean_raw_brier_score=("raw_brier_score", "mean"),
-            mean_calibrated_brier_score=("calibrated_brier_score", "mean"),
-            mean_raw_ece=("raw_expected_calibration_error", "mean"),
-            mean_calibrated_ece=("calibrated_expected_calibration_error", "mean"),
-            mean_raw_real_fpr=("raw_real_fpr", "mean"),
-            mean_calibrated_real_fpr=("calibrated_real_fpr", "mean"),
-            mean_raw_fake_detection=("raw_fake_detection", "mean"),
-            mean_calibrated_fake_detection=("calibrated_fake_detection", "mean"),
-            mean_calibrated_roc_auc=("calibrated_roc_auc", "mean"),
-        )
-        .sort_values(["mean_calibrated_brier_score", "mean_calibrated_ece"], ascending=[True, True])
-    )
+    summary = _summary_frame(detail, args.ci_confidence, args.ci_resamples, args.ci_seed)
 
     detail.to_csv(out_dir / "source_holdout_calibration.csv", index=False)
     summary.to_csv(out_dir / "source_holdout_calibration_summary.csv", index=False)
@@ -356,12 +385,17 @@ def main() -> None:
     summary_columns = [
         "method",
         "calibrator",
+        "n_holdouts",
         "mean_raw_accuracy",
         "mean_calibrated_accuracy",
         "mean_raw_brier_score",
         "mean_calibrated_brier_score",
+        "mean_calibrated_brier_score_ci_low",
+        "mean_calibrated_brier_score_ci_high",
         "mean_raw_ece",
         "mean_calibrated_ece",
+        "mean_calibrated_ece_ci_low",
+        "mean_calibrated_ece_ci_high",
         "mean_calibrated_real_fpr",
         "mean_calibrated_fake_detection",
     ]
@@ -386,6 +420,7 @@ def main() -> None:
         f"Real test fraction: `{args.real_test_fraction}`",
         f"Seed: `{args.seed}`",
         f"Reliability bins: `{args.n_bins}`",
+        f"Mean confidence intervals: `{args.ci_confidence:.0%}` bootstrap over held-out sources/seeds, `{args.ci_resamples}` resamples",
         "",
         "Each row holds out one generated source. Calibrators are fitted on all other generated sources plus the calibration half of real images, then evaluated on the held-out generated source plus the real test half.",
         "",

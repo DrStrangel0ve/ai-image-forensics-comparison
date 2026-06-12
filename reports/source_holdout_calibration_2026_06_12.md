@@ -16,10 +16,13 @@ Implementation:
   - class-balanced isotonic regression.
 - seeds: 7, 17, 29
 - held-out generated sources per seed: SD2.1, SDXL, SD3, DALL-E 3, Midjourney 6
+- summary CSVs now include 95% deterministic bootstrap confidence intervals over the 15 held-out source/seed rows.
 
 ## Main Result
 
 Balanced temperature scaling is the safest calibration pass. It improves Brier score and ECE for the strongest neural/fusion models while preserving the raw `0.5` decision boundary. That means it improves probability quality, but it does not solve the fake-recall problem by itself.
+
+The checked-in summary asset includes confidence bounds for the means. For the strongest calibrated row, SCP-Fusion v0 with class-balanced temperature scaling has calibrated Brier `0.1995` with a 95% bootstrap interval of `[0.1964, 0.2023]`, and calibrated ECE `0.1331` with interval `[0.1034, 0.1638]`.
 
 | method | raw accuracy | calibrated accuracy | raw Brier | calibrated Brier | raw ECE | calibrated ECE | calibrated real FPR | calibrated fake detection |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |

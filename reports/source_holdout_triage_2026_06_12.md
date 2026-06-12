@@ -18,6 +18,7 @@ Implementation:
   - class-balanced temperature-scaled scores.
 - seeds: 7, 17, 29
 - held-out generated sources per seed: SD2.1, SDXL, SD3, DALL-E 3, Midjourney 6
+- summary CSVs now include 95% deterministic bootstrap confidence intervals over the 15 held-out source/seed rows.
 
 Because temperature scaling is monotonic, it does not change the triage membership when thresholds are selected after calibration. It is still included as a sanity check: calibration can improve probability quality while leaving rank-based triage decisions unchanged.
 
@@ -35,6 +36,8 @@ This operating point constrains calibration real false-positive rate to at most 
 
 ConvNeXt and SCP-Fusion are the most useful high-confidence triage detectors at this strict operating point. They only decide on about one quarter of target images, but those decisions are much cleaner than default-threshold full-coverage classification.
 
+The checked-in 5% summary asset now reports uncertainty columns. Frozen ConvNeXt-Tiny has triage accuracy `0.7542` with a 95% bootstrap interval of `[0.7027, 0.7990]`; SCP-Fusion v0 has triage accuracy `0.7476` with interval `[0.7091, 0.7845]`.
+
 ## 10% Calibration Error Budget
 
 This looser operating point increases coverage but shows the source-shift cost more clearly.
@@ -48,6 +51,8 @@ This looser operating point increases coverage but shows the source-shift cost m
 | `combined_v3` | 0.2430 | 0.5424 | 0.1120 | 0.1100 | 0.1780 | 0.1131 |
 
 The 10% setting roughly doubles decided coverage for SCP-Fusion, from 0.2143 to 0.4373, but held-out real FPR rises to 0.1307 and fake false-clearance rises to 0.1060. That is acceptable as a diagnostic curve, not as a deployment claim.
+
+At the 10% setting, SCP-Fusion v0 has triage accuracy `0.7160` with a 95% bootstrap interval of `[0.6933, 0.7374]`, and decided coverage `0.4373` with interval `[0.4242, 0.4499]`.
 
 ## Interpretation
 
