@@ -31,6 +31,9 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     clip_triage_10 = tmp_path / "clip_triage_10.csv"
     reverse_fusion = tmp_path / "reverse_fusion.csv"
     reverse_thresholds = tmp_path / "reverse_thresholds.csv"
+    reverse_all_metrics = tmp_path / "reverse_all_metrics.csv"
+    reverse_all_thresholds = tmp_path / "reverse_all_thresholds.csv"
+    reverse_source_threshold_fusion = tmp_path / "reverse_source_threshold_fusion.csv"
     out_dir = tmp_path / "assets"
 
     pd.DataFrame(
@@ -188,6 +191,51 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
             "clean_threshold_accuracy": [0.664, 0.664, 0.675, 0.684, 0.667, 0.658, 0.643],
         }
     ).to_csv(reverse_thresholds, index=False)
+    reverse_method_metrics = [
+        ("physics_guided_resnet18_combined_v3", 0.687, 0.742, 0.244, 0.190, 0.529),
+        ("convnext_tiny", 0.658, 0.808, 0.286, 0.295, 0.734),
+        ("clip_vit_b_32", 0.623, 0.824, 0.332, 0.357, 0.863),
+        ("score_fusion_all6_temp_balanced", 0.658, 0.829, 0.307, 0.330, 0.810),
+    ]
+    pd.DataFrame(
+        [
+            {
+                "method": method,
+                "split": "ms_cocoai_to_ishu_test",
+                "accuracy": accuracy,
+                "auc": auc,
+                "brier": brier,
+                "ece": ece,
+                "predicted_fake_rate": predicted_fake_rate,
+            }
+            for method, accuracy, auc, brier, ece, predicted_fake_rate in reverse_method_metrics
+        ]
+    ).to_csv(reverse_all_metrics, index=False)
+    pd.DataFrame(
+        {
+            "method": [
+                "physics_guided",
+                "convnext_tiny",
+                "clip_vit_b_32",
+                "score_fusion_all6_temp_balanced",
+            ],
+            "split": ["ms_cocoai_to_ishu_test"] * 4,
+            "default_accuracy": [0.687, 0.658, 0.623, 0.658],
+            "clean_threshold_accuracy": [0.681, 0.678, 0.646, 0.664],
+            "auc": [0.742, 0.808, 0.824, 0.829],
+        }
+    ).to_csv(reverse_all_thresholds, index=False)
+    pd.DataFrame(
+        {
+            "config": ["score_fusion_all6_c003_source_acc"],
+            "variant": ["ishu_test"],
+            "accuracy": [0.696],
+            "auc": [0.829],
+            "brier": [0.219],
+            "ece": [0.206],
+            "predicted_fake_rate": [0.708],
+        }
+    ).to_csv(reverse_source_threshold_fusion, index=False)
 
     subprocess.run(
         [
@@ -219,6 +267,12 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
             str(reverse_fusion),
             "--reverse-fusion-thresholds",
             str(reverse_thresholds),
+            "--reverse-all-method-metrics",
+            str(reverse_all_metrics),
+            "--reverse-all-method-thresholds",
+            str(reverse_all_thresholds),
+            "--reverse-source-threshold-fusion",
+            str(reverse_source_threshold_fusion),
             "--out-dir",
             str(out_dir),
             "--dpi",
@@ -235,3 +289,4 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     assert (out_dir / "publication_score_fusion_dinov2_gain.png").exists()
     assert (out_dir / "publication_score_fusion_clip_frontier.png").exists()
     assert (out_dir / "publication_reverse_fusion_tradeoff.png").exists()
+    assert (out_dir / "publication_reverse_operating_points.png").exists()

@@ -77,7 +77,15 @@ Caption draft:
 
 MS-COCOAI-to-Ishu reverse transfer shows the central SCP-Fusion tradeoff. Branch dropout gives the best reverse fusion AUC, while stronger regularization improves Brier score and source-threshold accuracy. No score-fusion setting fully recovers the physics-guided branch's default operating-point behavior, so the next method step is utility-aware fusion training rather than simply adding more branches.
 
-## Figure 8: Qualitative Failure Cases
+## Figure 8: Reverse Operating Points
+
+![Reverse operating point comparison](assets/publication_reverse_operating_points.png)
+
+Caption draft:
+
+Held-out source-threshold fusion gives the best MS-COCOAI-to-Ishu decision accuracy so far, reaching 0.6959 mean accuracy while preserving 0.8291 AUC. The fake-call-rate panel keeps the caveat visible: the regularized fusion still predicts generated images too often compared with the physics-guided branch, so this is a bridge toward utility-aware fusion training rather than a finished calibration solution.
+
+## Figure 9: Qualitative Failure Cases
 
 ![SCP-Fusion seed-17 false negatives](assets/qualitative_seed17_scp_fusion_false_negatives.png)
 
@@ -106,4 +114,5 @@ Generated files:
 - `reports\assets\publication_score_fusion_tuned_triage.png`
 - `reports\assets\publication_score_fusion_clip_frontier.png`
 - `reports\assets\publication_reverse_fusion_tradeoff.png`
+- `reports\assets\publication_reverse_operating_points.png`
 - `reports\assets\qualitative_seed17_scp_fusion_false_negatives.png`

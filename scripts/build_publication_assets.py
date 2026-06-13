@@ -115,6 +115,13 @@ REVERSE_FUSION_COLORS = {
     "score_fusion_all6_dropout_mean_r35x8": "#4C78A8",
     "score_fusion_all6_dropout_mean_r35x8_temp_balanced": "#72B7B2",
 }
+REVERSE_OPERATING_COLORS = {
+    "physics_guided": "#54A24B",
+    "convnext_tiny": "#B279A2",
+    "clip_vit_b_32": "#4C78A8",
+    "score_fusion_all6_temp_balanced": "#9E9E9E",
+    "score_fusion_all6_c003_source_acc": "#E45756",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -172,6 +179,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--reverse-fusion-thresholds",
         default="reports/assets/ms_cocoai_to_ishu_reverse_fusion_regularization_threshold_means.csv",
+    )
+    parser.add_argument(
+        "--reverse-all-method-metrics",
+        default="reports/assets/ms_cocoai_to_ishu_reverse_all_methods_mean_metrics.csv",
+    )
+    parser.add_argument(
+        "--reverse-all-method-thresholds",
+        default="reports/assets/ms_cocoai_to_ishu_reverse_all_methods_threshold_means.csv",
+    )
+    parser.add_argument(
+        "--reverse-source-threshold-fusion",
+        default="reports/assets/ms_cocoai_to_ishu_source_threshold_fusion_mean_metrics.csv",
     )
     parser.add_argument("--out-dir", default="reports/assets")
     parser.add_argument("--dpi", type=int, default=180)
@@ -670,6 +689,157 @@ def build_reverse_fusion_tradeoff(
     return out_path
 
 
+def _single_row(frame: pd.DataFrame, column: str, value: str) -> pd.Series:
+    rows = frame[frame[column] == value]
+    if rows.empty:
+        raise ValueError(f"No row found where {column}={value!r}")
+    return rows.iloc[0]
+
+
+def _reverse_operating_rows(
+    all_method_metrics: pd.DataFrame,
+    all_method_thresholds: pd.DataFrame,
+    source_threshold_fusion: pd.DataFrame,
+) -> pd.DataFrame:
+    metrics = all_method_metrics[all_method_metrics["split"] == "ms_cocoai_to_ishu_test"].copy()
+    thresholds = all_method_thresholds[
+        all_method_thresholds["split"] == "ms_cocoai_to_ishu_test"
+    ].copy()
+    source_fusion = source_threshold_fusion[source_threshold_fusion["variant"] == "ishu_test"].copy()
+    rows = []
+    for row_config in [
+        {
+            "key": "physics_guided",
+            "label": "Physics-guided",
+            "threshold_method": "physics_guided",
+            "metrics_method": "physics_guided_resnet18_combined_v3",
+            "accuracy_column": "default_accuracy",
+            "operating_point": "default",
+        },
+        {
+            "key": "convnext_tiny",
+            "label": "ConvNeXt",
+            "threshold_method": "convnext_tiny",
+            "metrics_method": "convnext_tiny",
+            "accuracy_column": "clean_threshold_accuracy",
+            "operating_point": "source threshold",
+        },
+        {
+            "key": "clip_vit_b_32",
+            "label": "CLIP",
+            "threshold_method": "clip_vit_b_32",
+            "metrics_method": "clip_vit_b_32",
+            "accuracy_column": "clean_threshold_accuracy",
+            "operating_point": "source threshold",
+        },
+        {
+            "key": "score_fusion_all6_temp_balanced",
+            "label": "All-branch fusion",
+            "threshold_method": "score_fusion_all6_temp_balanced",
+            "metrics_method": "score_fusion_all6_temp_balanced",
+            "accuracy_column": "clean_threshold_accuracy",
+            "operating_point": "source threshold",
+        },
+    ]:
+        threshold_row = _single_row(thresholds, "method", row_config["threshold_method"])
+        metrics_row = _single_row(metrics, "method", row_config["metrics_method"])
+        rows.append(
+            {
+                "key": row_config["key"],
+                "label": row_config["label"],
+                "operating_point": row_config["operating_point"],
+                "accuracy": float(threshold_row[row_config["accuracy_column"]]),
+                "auc": float(threshold_row["auc"]),
+                "brier": float(metrics_row["brier"]),
+                "ece": float(metrics_row["ece"]),
+                "predicted_fake_rate": float(metrics_row["predicted_fake_rate"]),
+            }
+        )
+
+    fusion_row = _single_row(source_fusion, "config", "score_fusion_all6_c003_source_acc")
+    rows.append(
+        {
+            "key": "score_fusion_all6_c003_source_acc",
+            "label": "C=.03 fusion",
+            "operating_point": "held-out threshold",
+            "accuracy": float(fusion_row["accuracy"]),
+            "auc": float(fusion_row["auc"]),
+            "brier": float(fusion_row["brier"]),
+            "ece": float(fusion_row["ece"]),
+            "predicted_fake_rate": float(fusion_row["predicted_fake_rate"]),
+        }
+    )
+    return pd.DataFrame(rows)
+
+
+def build_reverse_operating_points(
+    all_method_metrics_path: Path,
+    all_method_thresholds_path: Path,
+    source_threshold_fusion_path: Path,
+    out_dir: Path,
+    dpi: int,
+) -> Path:
+    frame = _reverse_operating_rows(
+        pd.read_csv(all_method_metrics_path),
+        pd.read_csv(all_method_thresholds_path),
+        pd.read_csv(source_threshold_fusion_path),
+    )
+    colors = [REVERSE_OPERATING_COLORS.get(key, "#777777") for key in frame["key"]]
+    labels = [
+        f"{row.label}\n{row.operating_point}"
+        for row in frame.itertuples(index=False)
+    ]
+
+    fig, axes = plt.subplots(1, 2, figsize=(12.0, 4.8), dpi=dpi)
+    ax = axes[0]
+    x = np.arange(len(frame))
+    values = frame["accuracy"].astype(float)
+    ax.bar(x, values, color=colors, edgecolor="#222222", linewidth=0.4)
+    ax.set_title("Reverse operating-point accuracy", fontsize=10, pad=8)
+    ax.set_ylabel("accuracy")
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels, rotation=24, ha="right")
+    ax.set_ylim(0.58, 0.72)
+    ax.grid(axis="y", alpha=0.25)
+    _annotate_bars(ax, values, offset=0.003)
+
+    ax = axes[1]
+    sizes = 900.0 * frame["auc"].astype(float).to_numpy()
+    ax.scatter(
+        frame["predicted_fake_rate"],
+        frame["accuracy"],
+        s=sizes,
+        c=colors,
+        edgecolor="#222222",
+        linewidth=0.5,
+        alpha=0.92,
+    )
+    for row in frame.itertuples(index=False):
+        offset = (-52, -10) if row.key == "score_fusion_all6_c003_source_acc" else (7, 4)
+        ax.annotate(
+            row.label,
+            (float(row.predicted_fake_rate), float(row.accuracy)),
+            xytext=offset,
+            textcoords="offset points",
+            fontsize=8,
+        )
+    ax.axvline(0.5, color="#555555", linestyle="--", linewidth=0.9)
+    ax.set_title("Accuracy vs fake-call rate", fontsize=10, pad=8)
+    ax.set_xlabel("predicted fake rate")
+    ax.set_ylabel("accuracy")
+    ax.set_xlim(0.45, 0.90)
+    ax.set_ylim(0.58, 0.72)
+    ax.grid(alpha=0.25)
+    ax.text(0.455, 0.713, "bubble size = AUC", fontsize=8, va="top")
+
+    fig.suptitle("MS COCOAI to Ishu: source-threshold fusion improves decisions", fontsize=13)
+    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.93))
+    out_path = out_dir / "publication_reverse_operating_points.png"
+    fig.savefig(out_path)
+    plt.close(fig)
+    return out_path
+
+
 def main() -> None:
     args = parse_args()
     out_dir = ensure_dir(args.out_dir)
@@ -695,6 +865,13 @@ def main() -> None:
         build_reverse_fusion_tradeoff(
             Path(args.reverse_fusion_regularization),
             Path(args.reverse_fusion_thresholds),
+            out_dir,
+            args.dpi,
+        ),
+        build_reverse_operating_points(
+            Path(args.reverse_all_method_metrics),
+            Path(args.reverse_all_method_thresholds),
+            Path(args.reverse_source_threshold_fusion),
             out_dir,
             args.dpi,
         ),
