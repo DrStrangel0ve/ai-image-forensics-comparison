@@ -51,6 +51,7 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | MS COCOAI to Ishu source-heldout model selection | `reports/ms_cocoai_to_ishu_source_holdout_model_selection_2026_06_13.md` |
 | MS COCOAI to Ishu source-heldout tuned fusion | `reports/ms_cocoai_to_ishu_source_holdout_tuned_fusion_2026_06_13.md` |
 | MS COCOAI to Ishu tuned-fusion constraint sweep | `reports/ms_cocoai_to_ishu_tuned_fusion_constraint_sweep_2026_06_13.md` |
+| MS COCOAI to Ishu tuned-fusion JPEG70 robustness | `reports/ms_cocoai_to_ishu_tuned_fusion_jpeg70_robustness_2026_06_13.md` |
 | Ishu to MS threshold objective sensitivity | `reports/ishu_to_ms_threshold_objective_sweep_2026_06_13.md` |
 | SCP-Fusion branch-dropout probe | `reports/score_fusion_branch_dropout_probe_2026_06_12.md` |
 | SCP-Fusion source-calibration probe | `reports/score_fusion_source_calibration_probe_2026_06_13.md` |
@@ -138,6 +139,7 @@ python scripts\build_claim_evidence_matrix.py --out-dir reports\assets
 - Leave-one-generator-out source utility reaches the same conclusion: source-heldout utility alone still selects over-firing fusion heads, while the 0.48 source fake-rate cap recovers 0.7193 accuracy / 0.8291 AUC.
 - Source-heldout tuned fusion is the first training-side constrained utility win: 0.7339 accuracy / 0.8341 AUC / 0.2748 Brier on MS-COCOAI-to-Ishu, with remaining target fake-call bias at 0.6813.
 - Sweeping tuned-fusion source fake-rate caps gives the best reverse operating point so far: cap 0.40 reaches 0.7632 accuracy / 0.8361 AUC and cuts the target fake-call rate to 0.5175.
+- The tuned-fusion cap_0p4 operating point is stable under a first JPEG70 target transform: 0.7661 accuracy / 0.8485 AUC with a 0.4678 target fake-call rate.
 - The opposite-direction Ishu-to-MS threshold objective sweep improves all-foundation SCP-Fusion accuracy from 0.6163 to 0.6470 on saved scores, but still under-calls generated images with a 0.1863 target fake-call rate.
 - All-foundation SCP-Fusion with CLIP and DINOv2 reaches 0.7995 transfer AUC, improving the fusion family while still trailing standalone CLIP.
 - SCP-Fusion branch dropout is implemented with coefficient export, but the first probe is negative/mixed: default accuracy is essentially flat while AUC/Brier/ECE worsen.

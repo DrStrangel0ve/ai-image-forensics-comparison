@@ -41,6 +41,7 @@ METHOD_LABELS = {
     "source_holdout_mean_utility_cap_0p48": "Reverse capped source-heldout utility selection",
     "source_holdout_tuned_fusion": "Reverse source-heldout tuned fusion",
     "tuned_fusion_constraint_sweep_best": "Reverse tuned-fusion constraint sweep best",
+    "tuned_fusion_jpeg70": "Reverse tuned-fusion JPEG70 robustness",
 }
 
 SAME_DOMAIN_IDS = {
@@ -117,6 +118,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--reverse-tuned-fusion-constraint-sweep",
         default="reports/assets/ms_cocoai_to_ishu_tuned_fusion_constraint_sweep_summary.csv",
+    )
+    parser.add_argument(
+        "--reverse-tuned-fusion-jpeg70-robustness",
+        default="reports/assets/ms_cocoai_to_ishu_tuned_fusion_jpeg70_robustness_summary.csv",
     )
     parser.add_argument("--out-dir", default="reports/assets")
     return parser.parse_args()
@@ -436,6 +441,23 @@ def _reverse_tuned_fusion_constraint_sweep_row(path: Path) -> dict[str, object]:
     )
 
 
+def _reverse_tuned_fusion_jpeg70_row(path: Path) -> dict[str, object]:
+    frame = pd.read_csv(path)
+    source_row = _single_row(frame, "variant", "jpeg70")
+    return _blank_row(
+        "ms_to_ishu_tuned_fusion_jpeg70",
+        "MS COCOAI -> Ishu tuned-fusion JPEG70 robustness",
+        METHOD_LABELS["tuned_fusion_jpeg70"],
+        path,
+        "Bounded robustness check for the best reverse tuned-fusion cap; source-selected policy survives JPEG recompression.",
+        accuracy=float(source_row["target_accuracy_mean"]),
+        auc=float(source_row["target_roc_auc_mean"]),
+        brier=float(source_row["target_brier_score_mean"]),
+        ece=float(source_row["target_expected_calibration_error_mean"]),
+        predicted_fake_rate=float(source_row["target_predicted_positive_rate_mean"]),
+    )
+
+
 def build_core_results_table(
     physics_guided_report: Path,
     calibration_summary: Path,
@@ -448,6 +470,7 @@ def build_core_results_table(
     reverse_source_holdout_selection: Path,
     reverse_source_holdout_tuned_fusion: Path,
     reverse_tuned_fusion_constraint_sweep: Path,
+    reverse_tuned_fusion_jpeg70_robustness: Path,
 ) -> pd.DataFrame:
     rows = []
     rows.extend(_same_domain_rows(physics_guided_report))
@@ -460,6 +483,7 @@ def build_core_results_table(
     rows.extend(_reverse_source_holdout_rows(reverse_source_holdout_selection))
     rows.append(_reverse_source_holdout_tuned_fusion_row(reverse_source_holdout_tuned_fusion))
     rows.append(_reverse_tuned_fusion_constraint_sweep_row(reverse_tuned_fusion_constraint_sweep))
+    rows.append(_reverse_tuned_fusion_jpeg70_row(reverse_tuned_fusion_jpeg70_robustness))
     return pd.DataFrame(rows, columns=CORE_COLUMNS)
 
 
@@ -507,6 +531,7 @@ def main() -> None:
         Path(args.reverse_source_holdout_selection),
         Path(args.reverse_source_holdout_tuned_fusion),
         Path(args.reverse_tuned_fusion_constraint_sweep),
+        Path(args.reverse_tuned_fusion_jpeg70_robustness),
     )
     csv_path = out_dir / "publication_core_results.csv"
     markdown_path = out_dir / "publication_core_results.md"

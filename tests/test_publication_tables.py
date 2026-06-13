@@ -22,6 +22,7 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
     reverse_holdout = tmp_path / "reverse_holdout.csv"
     reverse_tuned = tmp_path / "reverse_tuned.csv"
     reverse_constraint_sweep = tmp_path / "reverse_constraint_sweep.csv"
+    reverse_jpeg70 = tmp_path / "reverse_jpeg70.csv"
     out_dir = tmp_path / "assets"
 
     physics_report.write_text(
@@ -165,6 +166,18 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
         }
     ).to_csv(reverse_constraint_sweep, index=False)
 
+    pd.DataFrame(
+        {
+            "variant": ["jpeg70"],
+            "variant_policy": ["cap_0p4"],
+            "target_accuracy_mean": [0.77],
+            "target_roc_auc_mean": [0.85],
+            "target_brier_score_mean": [0.26],
+            "target_expected_calibration_error_mean": [0.27],
+            "target_predicted_positive_rate_mean": [0.47],
+        }
+    ).to_csv(reverse_jpeg70, index=False)
+
     subprocess.run(
         [
             sys.executable,
@@ -191,6 +204,8 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
             str(reverse_tuned),
             "--reverse-tuned-fusion-constraint-sweep",
             str(reverse_constraint_sweep),
+            "--reverse-tuned-fusion-jpeg70-robustness",
+            str(reverse_jpeg70),
             "--out-dir",
             str(out_dir),
         ],
@@ -213,5 +228,6 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
     assert "ms_to_ishu_source_holdout_mean_utility_cap_0p48" in set(frame["finding_id"])
     assert "ms_to_ishu_source_holdout_tuned_fusion" in set(frame["finding_id"])
     assert "ms_to_ishu_tuned_fusion_constraint_sweep_best" in set(frame["finding_id"])
+    assert "ms_to_ishu_tuned_fusion_jpeg70" in set(frame["finding_id"])
     assert frame.loc[frame["finding_id"] == "ishu_same_physics_guided", "auc"].iloc[0] == 0.9177
     assert "Publication Core Results Table" in markdown_path.read_text(encoding="utf-8")

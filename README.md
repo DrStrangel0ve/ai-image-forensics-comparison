@@ -548,6 +548,8 @@ A source-heldout tuned fusion follow-up is checked into [reports/ms_cocoai_to_is
 
 A source fake-rate constraint sweep for tuned fusion is checked into [reports/ms_cocoai_to_ishu_tuned_fusion_constraint_sweep_2026_06_13.md](reports/ms_cocoai_to_ishu_tuned_fusion_constraint_sweep_2026_06_13.md). Tightening the source cap to 0.40 gives the best reverse SCP-Fusion operating point so far: 0.7632 accuracy / 0.8361 AUC with a 0.5175 target fake-call rate.
 
+A JPEG70 robustness check for that tuned-fusion cap is checked into [reports/ms_cocoai_to_ishu_tuned_fusion_jpeg70_robustness_2026_06_13.md](reports/ms_cocoai_to_ishu_tuned_fusion_jpeg70_robustness_2026_06_13.md). The same source-selected `cap_0p4` policy reaches 0.7661 accuracy / 0.8485 AUC under JPEG recompression, with a 0.4678 target fake-call rate.
+
 An opposite-direction threshold-objective diagnostic is checked into [reports/ishu_to_ms_threshold_objective_sweep_2026_06_13.md](reports/ishu_to_ms_threshold_objective_sweep_2026_06_13.md). On saved Ishu-to-MS all-foundation SCP-Fusion scores, a less real-FPR-punitive source utility improves accuracy from the fixed-threshold 0.6163 to 0.6470, but the target fake-call rate remains low at 0.1863; treat this as a sensitivity result, not a deployable selector.
 
 A public reproducibility pass is checked into [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It adds a reviewer-facing map of included reports/assets, intentionally excluded raw data/model artifacts, core reproduction commands, and known limitations.
