@@ -546,6 +546,8 @@ A source-heldout generator selection follow-up is checked into [reports/ms_cocoa
 
 A source-heldout tuned fusion follow-up is checked into [reports/ms_cocoai_to_ishu_source_holdout_tuned_fusion_2026_06_13.md](reports/ms_cocoai_to_ishu_source_holdout_tuned_fusion_2026_06_13.md). It trains score-fusion heads over regularization, branch-dropout, and source fake-rate caps, selecting the best worst-source utility under a 0.48 source fake-rate cap. This is the first reverse SCP-Fusion result to beat the fixed capped threshold family, reaching 0.7339 accuracy / 0.8341 AUC with a 0.6813 target fake-call rate.
 
+A source fake-rate constraint sweep for tuned fusion is checked into [reports/ms_cocoai_to_ishu_tuned_fusion_constraint_sweep_2026_06_13.md](reports/ms_cocoai_to_ishu_tuned_fusion_constraint_sweep_2026_06_13.md). Tightening the source cap to 0.40 gives the best reverse SCP-Fusion operating point so far: 0.7632 accuracy / 0.8361 AUC with a 0.5175 target fake-call rate.
+
 A public reproducibility pass is checked into [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It adds a reviewer-facing map of included reports/assets, intentionally excluded raw data/model artifacts, core reproduction commands, and known limitations.
 
 A qualitative failure-case export is checked into [reports/qualitative_failure_cases_2026_06_12.md](reports/qualitative_failure_cases_2026_06_12.md). It adds reproducible false-positive, false-negative, and model-disagreement grids for the seed-17 Ishu-to-MS-COCOAI transfer run, with per-method score manifests.

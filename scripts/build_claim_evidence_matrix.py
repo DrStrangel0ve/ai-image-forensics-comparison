@@ -35,6 +35,7 @@ CLAIMS = [
             "ms_to_ishu_branch_dropout_auc",
             "ms_to_ishu_source_cap_accuracy",
             "ms_to_ishu_source_holdout_tuned_fusion",
+            "ms_to_ishu_tuned_fusion_constraint_sweep_best",
         ],
         "primary_artifact": "reports/assets/publication_core_results.md",
         "risk_or_caveat": "Do not frame this as state of the art; frame it as a source-heldout diagnostic benchmark.",
@@ -97,12 +98,13 @@ CLAIMS = [
             "ms_to_ishu_source_utility_unconstrained",
             "ms_to_ishu_source_holdout_mean_utility_unconstrained",
             "ms_to_ishu_source_holdout_tuned_fusion",
+            "ms_to_ishu_tuned_fusion_constraint_sweep_best",
         ],
         "primary_artifact": "reports/assets/publication_reverse_fusion_tradeoff.png",
         "risk_or_caveat": "Current score fusion can suppress the best branch and can inherit source-threshold bias.",
         "next_action": (
-            "The first source-heldout tuned fusion result beats capped thresholding but still over-calls generated images; "
-            "prioritize false-positive-constrained training before claiming SCP-Fusion v1."
+            "The source fake-rate constraint sweep improves target accuracy and fake-call bias; "
+            "verify the frontier on another dataset direction before claiming SCP-Fusion v1."
         ),
     },
     {
@@ -120,11 +122,12 @@ CLAIMS = [
             "ms_to_ishu_source_utility_cap_0p48",
             "ms_to_ishu_source_holdout_mean_utility_cap_0p48",
             "ms_to_ishu_source_holdout_tuned_fusion",
+            "ms_to_ishu_tuned_fusion_constraint_sweep_best",
         ],
         "primary_artifact": "reports/assets/publication_reverse_operating_points.png",
         "risk_or_caveat": "The capped source-threshold result is an operating point, not a learned general solution.",
         "next_action": (
-            "Source-heldout tuned fusion improves accuracy/AUC beyond cap_0p48; next reduce the remaining target fake-call bias."
+            "The cap sweep gives the best current reverse operating point; next check robustness and another dataset direction."
         ),
     },
     {

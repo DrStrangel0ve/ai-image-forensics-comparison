@@ -50,6 +50,7 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | MS COCOAI to Ishu source-utility model selection | `reports/ms_cocoai_to_ishu_model_utility_selection_2026_06_13.md` |
 | MS COCOAI to Ishu source-heldout model selection | `reports/ms_cocoai_to_ishu_source_holdout_model_selection_2026_06_13.md` |
 | MS COCOAI to Ishu source-heldout tuned fusion | `reports/ms_cocoai_to_ishu_source_holdout_tuned_fusion_2026_06_13.md` |
+| MS COCOAI to Ishu tuned-fusion constraint sweep | `reports/ms_cocoai_to_ishu_tuned_fusion_constraint_sweep_2026_06_13.md` |
 | SCP-Fusion branch-dropout probe | `reports/score_fusion_branch_dropout_probe_2026_06_12.md` |
 | SCP-Fusion source-calibration probe | `reports/score_fusion_source_calibration_probe_2026_06_13.md` |
 | SCP-Fusion source-heldout calibration probe | `reports/score_fusion_source_holdout_probe_2026_06_13.md` |
@@ -135,6 +136,7 @@ python scripts\build_claim_evidence_matrix.py --out-dir reports\assets
 - Source-utility model selection is a useful negative result: unconstrained source utility selects over-firing fusion heads at 0.6520 accuracy / 0.8216 target fake-call rate, while a 0.48 source fake-rate cap recovers 0.7193 accuracy but does not beat the fixed capped threshold family.
 - Leave-one-generator-out source utility reaches the same conclusion: source-heldout utility alone still selects over-firing fusion heads, while the 0.48 source fake-rate cap recovers 0.7193 accuracy / 0.8291 AUC.
 - Source-heldout tuned fusion is the first training-side constrained utility win: 0.7339 accuracy / 0.8341 AUC / 0.2748 Brier on MS-COCOAI-to-Ishu, with remaining target fake-call bias at 0.6813.
+- Sweeping tuned-fusion source fake-rate caps gives the best reverse operating point so far: cap 0.40 reaches 0.7632 accuracy / 0.8361 AUC and cuts the target fake-call rate to 0.5175.
 - All-foundation SCP-Fusion with CLIP and DINOv2 reaches 0.7995 transfer AUC, improving the fusion family while still trailing standalone CLIP.
 - SCP-Fusion branch dropout is implemented with coefficient export, but the first probe is negative/mixed: default accuracy is essentially flat while AUC/Brier/ECE worsen.
 - Source-calibrated SCP-Fusion improves default accuracy to 0.6073 and Brier/ECE to 0.3123 / 0.2947, with a small AUC tradeoff.
