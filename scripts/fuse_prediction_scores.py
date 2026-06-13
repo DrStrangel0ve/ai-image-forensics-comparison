@@ -21,6 +21,15 @@ from forensic_compare.metrics import binary_metrics
 from forensic_compare.utils import ensure_dir, write_json
 
 
+THRESHOLD_STRATEGIES = {
+    "fixed",
+    "source_accuracy",
+    "source_balanced_accuracy",
+    "source_f1",
+    "source_youden",
+}
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Train score-level fusion from aligned prediction CSVs."
@@ -39,7 +48,21 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--seed", type=int, default=7)
-    parser.add_argument("--threshold", type=float, default=0.5)
+    parser.add_argument(
+        "--threshold",
+        type=float,
+        default=0.5,
+        help="Fixed decision threshold, or fallback value when --threshold-strategy=fixed.",
+    )
+    parser.add_argument(
+        "--threshold-strategy",
+        choices=sorted(THRESHOLD_STRATEGIES),
+        default="fixed",
+        help=(
+            "Decision threshold policy. Source strategies tune the operating point on "
+            "held-out source calibration rows when available, otherwise on source train rows."
+        ),
+    )
     parser.add_argument(
         "--fusion-c",
         type=float,
@@ -74,7 +97,10 @@ def parse_args() -> argparse.Namespace:
         "--calibration-fraction",
         type=float,
         default=0.0,
-        help="Deterministic class-balanced fraction of source rows reserved for score calibration.",
+        help=(
+            "Deterministic class-balanced fraction of source rows reserved for score calibration "
+            "and/or source-threshold selection."
+        ),
     )
     return parser.parse_args()
 
@@ -207,6 +233,67 @@ def _augment_branch_dropout(
     return np.vstack(augmented), np.concatenate(labels)
 
 
+def _candidate_thresholds(scores: np.ndarray) -> np.ndarray:
+    values = np.unique(np.clip(scores.astype(float), 0.0, 1.0))
+    if len(values) == 0:
+        raise ValueError("Cannot select a threshold without scores")
+    midpoints = (values[:-1] + values[1:]) / 2.0 if len(values) > 1 else np.array([])
+    return np.unique(np.concatenate(([0.0, 0.5, 1.0], values, midpoints)))
+
+
+def _threshold_utility(
+    y_true: np.ndarray,
+    scores: np.ndarray,
+    threshold: float,
+    strategy: str,
+) -> float:
+    predicted = (scores >= threshold).astype(int)
+    true_positive = float(((predicted == 1) & (y_true == 1)).sum())
+    false_positive = float(((predicted == 1) & (y_true == 0)).sum())
+    true_negative = float(((predicted == 0) & (y_true == 0)).sum())
+    false_negative = float(((predicted == 0) & (y_true == 1)).sum())
+    positive_total = max(true_positive + false_negative, 1.0)
+    negative_total = max(true_negative + false_positive, 1.0)
+    recall = true_positive / positive_total
+    specificity = true_negative / negative_total
+    precision = true_positive / max(true_positive + false_positive, 1.0)
+
+    if strategy == "source_accuracy":
+        return float((predicted == y_true).mean())
+    if strategy == "source_balanced_accuracy":
+        return float((recall + specificity) / 2.0)
+    if strategy == "source_f1":
+        return float(2.0 * precision * recall / max(precision + recall, 1e-12))
+    if strategy == "source_youden":
+        return float(recall + specificity - 1.0)
+    raise ValueError(f"Unsupported threshold strategy: {strategy}")
+
+
+def _select_source_threshold(
+    y_true: np.ndarray,
+    scores: np.ndarray,
+    strategy: str,
+) -> tuple[float, float]:
+    if strategy == "fixed":
+        raise ValueError("Use --threshold directly for the fixed threshold strategy")
+    if len(np.unique(y_true)) != 2:
+        raise ValueError("Source threshold selection requires both classes")
+    if not np.isfinite(scores).all():
+        raise ValueError("Source threshold selection requires finite scores")
+    candidates = _candidate_thresholds(scores)
+    best_threshold = float(candidates[0])
+    best_utility = -np.inf
+    best_tiebreak = -np.inf
+    for threshold in candidates:
+        utility = _threshold_utility(y_true, scores, float(threshold), strategy)
+        tiebreak = -abs(float(threshold) - 0.5)
+        if (utility, tiebreak) > (best_utility, best_tiebreak):
+            best_threshold = float(threshold)
+            best_utility = float(utility)
+            best_tiebreak = float(tiebreak)
+    return best_threshold, best_utility
+
+
 def _split_calibration_frame(
     frame: pd.DataFrame,
     fraction: float,
@@ -269,6 +356,8 @@ def _metrics_row(
     frame: pd.DataFrame,
     classifier,
     threshold: float,
+    threshold_strategy: str,
+    threshold_source: str,
     calibrator=None,
 ) -> tuple[dict, list[dict]]:
     x = frame[methods].to_numpy(dtype=float)
@@ -284,6 +373,8 @@ def _metrics_row(
             "score_calibrator": calibrator.name if calibrator is not None else "none",
             "n_samples": int(len(y_true)),
             "threshold": float(threshold),
+            "threshold_strategy": threshold_strategy,
+            "threshold_source": threshold_source,
             "positive_rate": float(y_true.mean()) if len(y_true) else 0.0,
             "predicted_positive_rate": float((scores >= threshold).mean()) if len(scores) else 0.0,
             "score_mean": float(scores.mean()) if len(scores) else 0.0,
@@ -306,8 +397,14 @@ def _metrics_row(
 def main() -> None:
     args = parse_args()
     out_dir = ensure_dir(args.out_dir)
-    if args.score_calibrator == "none" and args.calibration_fraction != 0.0:
-        raise ValueError("--calibration-fraction requires --score-calibrator")
+    if (
+        args.score_calibrator == "none"
+        and args.threshold_strategy == "fixed"
+        and args.calibration_fraction != 0.0
+    ):
+        raise ValueError(
+            "--calibration-fraction requires --score-calibrator or a source threshold strategy"
+        )
     train_frame, methods = _aligned_matrix(list(map(_parse_train, args.train)))
     fit_frame, calibration_frame = _split_calibration_frame(
         train_frame,
@@ -334,9 +431,38 @@ def main() -> None:
         calibration_y = calibration_frame["y_true"].to_numpy(dtype=int)
         calibrator = fit_calibrator(args.score_calibrator, calibration_y, calibration_scores)
 
+    threshold = float(args.threshold)
+    threshold_source = "fixed"
+    threshold_selection_utility = None
+    if args.threshold_strategy != "fixed":
+        threshold_frame = calibration_frame if args.calibration_fraction > 0.0 else train_frame
+        threshold_source = (
+            "source_calibration" if args.calibration_fraction > 0.0 else "source_train"
+        )
+        source_raw_scores = classifier.predict_proba(
+            threshold_frame[methods].to_numpy(dtype=float)
+        )[:, 1]
+        source_scores = (
+            predict_calibrated(calibrator, source_raw_scores)
+            if calibrator is not None
+            else source_raw_scores
+        )
+        threshold, threshold_selection_utility = _select_source_threshold(
+            threshold_frame["y_true"].to_numpy(dtype=int),
+            source_scores,
+            args.threshold_strategy,
+        )
+
     all_metrics = []
     train_metrics, train_rows = _metrics_row(
-        "train", methods, train_frame, classifier, args.threshold, calibrator=calibrator
+        "train",
+        methods,
+        train_frame,
+        classifier,
+        threshold,
+        args.threshold_strategy,
+        threshold_source,
+        calibrator=calibrator,
     )
     all_metrics.append(train_metrics)
     train_dir = ensure_dir(out_dir / "train")
@@ -357,7 +483,9 @@ def main() -> None:
             methods,
             variant_frame,
             classifier,
-            args.threshold,
+            threshold,
+            args.threshold_strategy,
+            threshold_source,
             calibrator=calibrator,
         )
         all_metrics.append(metrics)
@@ -372,7 +500,11 @@ def main() -> None:
             "method": "score_fusion",
             "base_methods": methods,
             "seed": int(args.seed),
-            "threshold": float(args.threshold),
+            "threshold": float(threshold),
+            "requested_threshold": float(args.threshold),
+            "threshold_strategy": args.threshold_strategy,
+            "threshold_source": threshold_source,
+            "threshold_selection_utility": threshold_selection_utility,
             "n_train": int(len(train_frame)),
             "n_fusion_train": int(len(y_train)),
             "n_calibration": int(len(calibration_frame)),
@@ -410,6 +542,9 @@ def main() -> None:
             "brier_score": metrics["brier_score"],
             "expected_calibration_error": metrics["expected_calibration_error"],
             "maximum_calibration_error": metrics["maximum_calibration_error"],
+            "threshold": metrics["threshold"],
+            "threshold_strategy": metrics["threshold_strategy"],
+            "threshold_source": metrics["threshold_source"],
             "predicted_positive_rate": metrics["predicted_positive_rate"],
             "score_mean": metrics["score_mean"],
             "raw_score_mean": metrics["raw_score_mean"],
