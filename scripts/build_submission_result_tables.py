@@ -1,0 +1,271 @@
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+import pandas as pd
+
+
+SAME_DOMAIN_IDS = [
+    "ishu_same_combined_v3",
+    "ishu_same_resnet18",
+    "ishu_same_physics_guided",
+]
+
+TRANSFER_IDS = [
+    "ishu_to_ms_combined_v3",
+    "ishu_to_ms_resnet18",
+    "ishu_to_ms_physics_guided",
+    "ishu_to_ms_convnext_tiny_frozen",
+    "ishu_to_ms_scp_fusion_v0",
+    "ishu_to_ms_scp_fusion_dinov2",
+    "ishu_to_ms_scp_fusion_all_foundation",
+    "ishu_to_ms_clip_standalone",
+    "ishu_to_ms_triage5_clip_standalone",
+]
+
+REVERSE_IDS = [
+    "ms_to_ishu_physics_guided",
+    "ms_to_ishu_clip_vit_b_32",
+    "ms_to_ishu_score_fusion_all6_temp_balanced",
+    "ms_to_ishu_branch_dropout_auc",
+    "ms_to_ishu_source_cap_accuracy",
+    "ms_to_ishu_source_holdout_tuned_fusion",
+    "ms_to_ishu_tuned_fusion_constraint_sweep_best",
+    "ms_to_ishu_tuned_fusion_native_tiling_best",
+]
+
+ROBUSTNESS_IDS = [
+    "ms_to_ishu_tuned_fusion_constraint_sweep_best",
+    "ms_to_ishu_tuned_fusion_native_tiling_best",
+    "ms_to_ishu_tuned_fusion_jpeg70",
+    "ms_to_ishu_tuned_fusion_jpeg50",
+    "ms_to_ishu_tuned_fusion_jpeg30",
+    "ms_to_ishu_tuned_fusion_noise3",
+    "ms_to_ishu_tuned_fusion_social_square",
+    "ms_to_ishu_tuned_fusion_social_720p",
+    "ms_to_ishu_tuned_fusion_crop85",
+    "ms_to_ishu_tuned_fusion_screenshot",
+    "ms_to_ishu_tuned_fusion_blur1",
+    "ms_to_ishu_tuned_fusion_resize_half",
+]
+
+TABLES = [
+    {
+        "table_id": "same_domain_anchor",
+        "title": "Same-Domain Anchors",
+        "filename": "submission_table_same_domain_anchor.csv",
+        "venue_use": "DFRWS,WIFS,DFF",
+        "purpose": "Shows why same-domain accuracy alone is a weak forensic endpoint.",
+        "finding_ids": SAME_DOMAIN_IDS,
+        "columns": ["method", "accuracy", "auc", "paper_use"],
+    },
+    {
+        "table_id": "transfer_frontier",
+        "title": "Ishu -> MS COCOAI Transfer Frontier",
+        "filename": "submission_table_transfer_frontier.csv",
+        "venue_use": "DFRWS,WIFS,DFF",
+        "purpose": "Main transfer-ranking, calibration, and triage table.",
+        "finding_ids": TRANSFER_IDS,
+        "columns": [
+            "method",
+            "accuracy",
+            "auc",
+            "brier",
+            "ece",
+            "fake_call_rate",
+            "coverage",
+            "decided_accuracy",
+            "paper_use",
+        ],
+    },
+    {
+        "table_id": "reverse_operating_points",
+        "title": "MS COCOAI -> Ishu Reverse Operating Points",
+        "filename": "submission_table_reverse_operating_points.csv",
+        "venue_use": "WIFS,DFF",
+        "purpose": "Compact reverse-direction ranking/calibration/threshold comparison.",
+        "finding_ids": REVERSE_IDS,
+        "columns": ["method", "accuracy", "auc", "brier", "ece", "fake_call_rate", "paper_use"],
+    },
+    {
+        "table_id": "robustness_stress",
+        "title": "Reverse Tuned-Fusion Robustness Stress",
+        "filename": "submission_table_robustness_stress.csv",
+        "venue_use": "DFRWS,WIFS,DFF",
+        "purpose": "Stress table with deltas relative to the clean source-capped reverse tuned-fusion operating point.",
+        "finding_ids": ROBUSTNESS_IDS,
+        "columns": [
+            "method",
+            "accuracy",
+            "delta_accuracy_vs_clean",
+            "auc",
+            "delta_auc_vs_clean",
+            "fake_call_rate",
+            "paper_use",
+        ],
+    },
+]
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Build compact venue-facing result tables from publication_core_results.csv."
+    )
+    parser.add_argument(
+        "--core-results",
+        default="reports/assets/publication_core_results.csv",
+        help="Canonical publication result table.",
+    )
+    parser.add_argument("--out-dir", default="reports/assets", help="Directory for generated CSV tables.")
+    parser.add_argument(
+        "--report-out",
+        default="reports/submission_result_tables_2026_06_14.md",
+        help="Markdown report with copy-ready compact tables.",
+    )
+    return parser.parse_args()
+
+
+def _find_row(core: pd.DataFrame, finding_id: str) -> pd.Series:
+    matches = core[core["finding_id"] == finding_id]
+    if matches.empty:
+        raise ValueError(f"Missing finding_id={finding_id!r}")
+    return matches.iloc[0]
+
+
+def _metric(row: pd.Series, column: str) -> float | None:
+    value = row.get(column)
+    if pd.isna(value):
+        return None
+    return float(value)
+
+
+def _format(value: object) -> str:
+    if value is None or pd.isna(value):
+        return ""
+    if isinstance(value, float):
+        return f"{value:.4f}"
+    return str(value)
+
+
+def _display_frame(frame: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
+    display = frame[columns].copy()
+    for column in display.columns:
+        if pd.api.types.is_float_dtype(display[column]):
+            display[column] = display[column].map(lambda value: "" if pd.isna(value) else f"{float(value):.4f}")
+    return display
+
+
+def _markdown_table(frame: pd.DataFrame, columns: list[str]) -> str:
+    display = _display_frame(frame, columns)
+    lines = [
+        "| " + " | ".join(columns) + " |",
+        "| " + " | ".join(["---"] * len(columns)) + " |",
+    ]
+    for row in display.itertuples(index=False):
+        lines.append("| " + " | ".join(str(value).replace("\n", " ") for value in row) + " |")
+    return "\n".join(lines)
+
+
+def _table_frame(core: pd.DataFrame, finding_ids: list[str]) -> pd.DataFrame:
+    rows = []
+    for finding_id in finding_ids:
+        source = _find_row(core, finding_id)
+        rows.append(
+            {
+                "finding_id": finding_id,
+                "method": source["method"],
+                "setting": source["setting"],
+                "accuracy": _metric(source, "accuracy"),
+                "auc": _metric(source, "auc"),
+                "brier": _metric(source, "brier"),
+                "ece": _metric(source, "ece"),
+                "fake_call_rate": _metric(source, "predicted_fake_rate"),
+                "coverage": _metric(source, "coverage"),
+                "decided_accuracy": _metric(source, "decided_accuracy"),
+                "source": source["source"],
+                "paper_use": source["interpretation"],
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def _with_robustness_deltas(frame: pd.DataFrame) -> pd.DataFrame:
+    clean = frame[frame["finding_id"] == "ms_to_ishu_tuned_fusion_constraint_sweep_best"]
+    if clean.empty:
+        raise ValueError("Robustness table needs the clean tuned-fusion finding.")
+    clean_row = clean.iloc[0]
+    frame = frame.copy()
+    frame["delta_accuracy_vs_clean"] = frame["accuracy"] - float(clean_row["accuracy"])
+    frame["delta_auc_vs_clean"] = frame["auc"] - float(clean_row["auc"])
+    return frame
+
+
+def build_submission_tables(core_results: Path, out_dir: Path) -> tuple[dict[str, pd.DataFrame], pd.DataFrame]:
+    core = pd.read_csv(core_results)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    tables: dict[str, pd.DataFrame] = {}
+    manifest_rows = []
+    for spec in TABLES:
+        frame = _table_frame(core, spec["finding_ids"])
+        if spec["table_id"] == "robustness_stress":
+            frame = _with_robustness_deltas(frame)
+        out_path = out_dir / spec["filename"]
+        frame.to_csv(out_path, index=False)
+        tables[spec["table_id"]] = frame
+        manifest_rows.append(
+            {
+                "table_id": spec["table_id"],
+                "title": spec["title"],
+                "path": out_path.as_posix(),
+                "venue_use": spec["venue_use"],
+                "purpose": spec["purpose"],
+                "n_rows": len(frame),
+            }
+        )
+    manifest = pd.DataFrame(manifest_rows)
+    manifest.to_csv(out_dir / "submission_result_table_manifest.csv", index=False)
+    return tables, manifest
+
+
+def write_report(tables: dict[str, pd.DataFrame], manifest: pd.DataFrame, report_out: Path) -> None:
+    lines = [
+        "# Submission Result Tables",
+        "",
+        "Run date: 2026-06-14",
+        "",
+        "Generated by `scripts/build_submission_result_tables.py` from `reports/assets/publication_core_results.csv`.",
+        "",
+        "These are compact, copy-ready tables for DFRWS, WIFS, and DFF drafting. They intentionally separate same-domain anchors, transfer ranking, reverse operating points, and robustness deltas.",
+        "",
+        "## Table Manifest",
+        "",
+        _markdown_table(manifest, list(manifest.columns)),
+    ]
+    for spec in TABLES:
+        frame = tables[spec["table_id"]]
+        lines.extend(
+            [
+                "",
+                f"## {spec['title']}",
+                "",
+                f"Use: {spec['purpose']}",
+                "",
+                _markdown_table(frame, spec["columns"]),
+            ]
+        )
+    lines.append("")
+    report_out.parent.mkdir(parents=True, exist_ok=True)
+    report_out.write_text("\n".join(lines), encoding="utf-8")
+
+
+def main() -> None:
+    args = parse_args()
+    tables, manifest = build_submission_tables(Path(args.core_results), Path(args.out_dir))
+    write_report(tables, manifest, Path(args.report_out))
+    print(Path(args.report_out).resolve())
+    print((Path(args.out_dir) / "submission_result_table_manifest.csv").resolve())
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,5 @@
+table_id,title,path,venue_use,purpose,n_rows
+same_domain_anchor,Same-Domain Anchors,reports/assets/submission_table_same_domain_anchor.csv,"DFRWS,WIFS,DFF",Shows why same-domain accuracy alone is a weak forensic endpoint.,3
+transfer_frontier,Ishu -> MS COCOAI Transfer Frontier,reports/assets/submission_table_transfer_frontier.csv,"DFRWS,WIFS,DFF","Main transfer-ranking, calibration, and triage table.",9
+reverse_operating_points,MS COCOAI -> Ishu Reverse Operating Points,reports/assets/submission_table_reverse_operating_points.csv,"WIFS,DFF",Compact reverse-direction ranking/calibration/threshold comparison.,8
+robustness_stress,Reverse Tuned-Fusion Robustness Stress,reports/assets/submission_table_robustness_stress.csv,"DFRWS,WIFS,DFF",Stress table with deltas relative to the clean source-capped reverse tuned-fusion operating point.,12

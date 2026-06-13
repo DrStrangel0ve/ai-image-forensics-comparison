@@ -52,6 +52,11 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/submission_readiness_2026_06_13.md | Current readiness snapshot, lead results, figure package, and remaining gaps. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
+| table | reports/submission_result_tables_2026_06_14.md | Copy-ready compact result tables for poster and paper drafting. |
+| table | reports/assets/submission_result_table_manifest.csv | Machine-readable manifest for compact submission result tables. |
+| table | reports/assets/submission_table_same_domain_anchor.csv | Compact same-domain anchor table. |
+| table | reports/assets/submission_table_transfer_frontier.csv | Compact Ishu-to-MS-COCOAI transfer frontier table. |
+| table | reports/assets/submission_table_robustness_stress.csv | Compact reverse tuned-fusion robustness stress table with clean-baseline deltas. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
@@ -84,6 +89,12 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/submission_readiness_2026_06_13.md | Current readiness snapshot, lead results, figure package, and remaining gaps. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
+| table | reports/submission_result_tables_2026_06_14.md | Copy-ready compact result tables for poster and paper drafting. |
+| table | reports/assets/submission_result_table_manifest.csv | Machine-readable manifest for compact submission result tables. |
+| table | reports/assets/submission_table_same_domain_anchor.csv | Compact same-domain anchor table. |
+| table | reports/assets/submission_table_transfer_frontier.csv | Compact Ishu-to-MS-COCOAI transfer frontier table. |
+| table | reports/assets/submission_table_reverse_operating_points.csv | Compact MS-COCOAI-to-Ishu reverse operating point table. |
+| table | reports/assets/submission_table_robustness_stress.csv | Compact reverse tuned-fusion robustness stress table with clean-baseline deltas. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
@@ -114,6 +125,12 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/submission_readiness_2026_06_13.md | Current readiness snapshot, lead results, figure package, and remaining gaps. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
+| table | reports/submission_result_tables_2026_06_14.md | Copy-ready compact result tables for poster and paper drafting. |
+| table | reports/assets/submission_result_table_manifest.csv | Machine-readable manifest for compact submission result tables. |
+| table | reports/assets/submission_table_same_domain_anchor.csv | Compact same-domain anchor table. |
+| table | reports/assets/submission_table_transfer_frontier.csv | Compact Ishu-to-MS-COCOAI transfer frontier table. |
+| table | reports/assets/submission_table_reverse_operating_points.csv | Compact MS-COCOAI-to-Ishu reverse operating point table. |
+| table | reports/assets/submission_table_robustness_stress.csv | Compact reverse tuned-fusion robustness stress table with clean-baseline deltas. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
@@ -140,6 +157,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | --- | --- |
 | claim matrix | python scripts/build_claim_evidence_matrix.py |
 | publication tables | python scripts/build_publication_tables.py |
+| submission result tables | python scripts/build_submission_result_tables.py |
 | publication figures | python scripts/build_publication_assets.py |
 | DFRWS poster brief | python scripts/build_dfrws_poster_brief.py |
 | DFRWS poster panels | python scripts/build_dfrws_poster_figures.py |

@@ -1,0 +1,4 @@
+finding_id,method,setting,accuracy,auc,brier,ece,fake_call_rate,coverage,decided_accuracy,source,paper_use
+ishu_same_combined_v3,combined_v3,"Ishu same-domain, 3 seeds",0.8246,0.8942,,,,,,reports/physics_guided_vs_resnet_2026_06_12.md,Same-domain comparator for the physics-guided result.
+ishu_same_resnet18,ResNet-18,"Ishu same-domain, 3 seeds",0.8246,0.8927,,,,,,reports/physics_guided_vs_resnet_2026_06_12.md,Same-domain comparator for the physics-guided result.
+ishu_same_physics_guided,Physics-guided ResNet-18 + combined_v3,"Ishu same-domain, 3 seeds",0.845,0.9177,,,,,,reports/physics_guided_vs_resnet_2026_06_12.md,Physics-guided fusion is the first Ishu same-domain model to beat both standalone branches.
