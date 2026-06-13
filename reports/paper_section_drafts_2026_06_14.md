@@ -15,7 +15,7 @@ These are prose starting points for WIFS/DFF authoring. They are not final copy 
 | WIFS Data And Audit Draft | 107 | False | False |
 | WIFS Methods Draft | 101 | False | True |
 | WIFS Results Draft | 151 | True | False |
-| DFF Expansion Draft | 132 | False | False |
+| DFF Expansion Draft | 135 | False | False |
 | Limitations And Reproducibility Draft | 104 | False | True |
 
 ## WIFS Introduction Draft
@@ -40,7 +40,7 @@ Same-domain Ishu results show why the physical branch is worth keeping: physics-
 
 ## DFF Expansion Draft
 
-The DFF version should make SCP-Fusion the organizing protocol rather than a single model claim. The strongest story is that different branches answer different forensic questions: CLIP gives the best standalone transfer ranking, physics-guided fusion improves the same-domain and some calibration anchors, source-capped fusion makes reverse binary decisions less biased, and strict two-threshold triage avoids pretending every image deserves a confident binary call. Failure grids and source-slice diagnostics should be used as explainability evidence: when generated images are missed, the paper should ask whether the miss is semantic, spectral, compression-driven, or a source-threshold artifact. The DFF framing can also carry the `combined_v4` and reconstruction roadmap, but it should keep the caveat that current `combined_v4` is an ablation candidate and that true AEROBLADE/FIRE-style reconstruction has not yet replaced the lightweight residual branch.
+The DFF version should make SCP-Fusion the diagnostic protocol and organizing frame rather than a single model claim. The strongest story is that different branches answer different forensic questions: CLIP gives the best standalone transfer ranking, physics-guided fusion improves the same-domain and some calibration anchors, source-capped fusion makes reverse binary decisions less biased, and strict two-threshold triage avoids pretending every image deserves a confident binary call. Failure grids and source-slice diagnostics should be used as explainability evidence: when generated images are missed, the paper should ask whether the miss is semantic, spectral, compression-driven, or a source-threshold artifact. The DFF framing can also carry the `combined_v4` and reconstruction roadmap, but it should keep the caveat that current `combined_v4` is an ablation candidate and that true AEROBLADE/FIRE-style reconstruction has not yet replaced the lightweight residual branch.
 
 ## Limitations And Reproducibility Draft
 

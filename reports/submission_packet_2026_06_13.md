@@ -117,6 +117,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | writing | reports/assets/submission_text_drafts_word_counts.csv | Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts. |
 | writing | reports/paper_section_drafts_2026_06_14.md | Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats. |
 | writing | reports/assets/paper_section_draft_manifest.csv | Machine-readable section word counts and caveat/metric flags for generated paper prose drafts. |
+| quality-control | reports/paper_section_drafts_lint_2026_06_14.md | Generated lint report for WIFS/DFF section prose, required metric anchors, caveats, and overclaim checks. |
+| quality-control | reports/assets/paper_section_drafts_lint.csv | Machine-readable WIFS/DFF section prose lint checks. |
 | quality-control | reports/submission_package_lint_2026_06_14.md | Generated lint report for missing packet assets, abstract word counts, and overclaim language. |
 | quality-control | reports/assets/submission_package_lint.csv | Machine-readable submission package lint checks. |
 | figure | reports/assets/publication_score_fusion_clip_frontier.png | CLIP transfer frontier and all-foundation fusion comparison. |
@@ -171,6 +173,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | writing | reports/assets/submission_text_drafts_word_counts.csv | Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts. |
 | writing | reports/paper_section_drafts_2026_06_14.md | Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats. |
 | writing | reports/assets/paper_section_draft_manifest.csv | Machine-readable section word counts and caveat/metric flags for generated paper prose drafts. |
+| quality-control | reports/paper_section_drafts_lint_2026_06_14.md | Generated lint report for WIFS/DFF section prose, required metric anchors, caveats, and overclaim checks. |
+| quality-control | reports/assets/paper_section_drafts_lint.csv | Machine-readable WIFS/DFF section prose lint checks. |
 | quality-control | reports/submission_package_lint_2026_06_14.md | Generated lint report for missing packet assets, abstract word counts, and overclaim language. |
 | quality-control | reports/assets/submission_package_lint.csv | Machine-readable submission package lint checks. |
 | figure | reports/assets/publication_score_fusion_clip_frontier.png | CLIP transfer frontier and all-foundation fusion comparison. |
@@ -204,6 +208,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | DFRWS poster panels | python scripts/build_dfrws_poster_figures.py |
 | submission text drafts | python scripts/build_submission_text_drafts.py |
 | paper section drafts | python scripts/build_paper_section_drafts.py |
+| paper section draft lint | python scripts/lint_paper_section_drafts.py |
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |
 

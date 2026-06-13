@@ -173,7 +173,7 @@ def build_sections(core_results: Path, claim_matrix: Path, literature_map: Path)
         _section(
             "DFF Expansion Draft",
             (
-                "The DFF version should make SCP-Fusion the organizing protocol rather than a single model claim. "
+                "The DFF version should make SCP-Fusion the diagnostic protocol and organizing frame rather than a single model claim. "
                 "The strongest story is that different branches answer different forensic questions: CLIP gives the "
                 "best standalone transfer ranking, physics-guided fusion improves the same-domain and some "
                 "calibration anchors, source-capped fusion makes reverse binary decisions less biased, and strict "

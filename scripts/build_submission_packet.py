@@ -267,6 +267,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/paper_section_drafts_lint_2026_06_14.md",
+        "type": "quality-control",
+        "venues": "WIFS,DFF",
+        "purpose": "Generated lint report for WIFS/DFF section prose, required metric anchors, caveats, and overclaim checks.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/paper_section_drafts_lint.csv",
+        "type": "quality-control",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable WIFS/DFF section prose lint checks.",
+        "required": False,
+    },
+    {
         "path": "reports/submission_package_lint_2026_06_14.md",
         "type": "quality-control",
         "venues": "DFRWS,WIFS,DFF",
@@ -484,6 +498,7 @@ REGEN_COMMANDS = [
     ("DFRWS poster panels", "python scripts/build_dfrws_poster_figures.py"),
     ("submission text drafts", "python scripts/build_submission_text_drafts.py"),
     ("paper section drafts", "python scripts/build_paper_section_drafts.py"),
+    ("paper section draft lint", "python scripts/lint_paper_section_drafts.py"),
     ("submission packet", "python scripts/build_submission_packet.py"),
     ("submission package lint", "python scripts/lint_submission_package.py"),
 ]
