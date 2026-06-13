@@ -1,0 +1,9 @@
+panel,label,finding_id,accuracy,auc,brier,ece,predicted_fake_rate,coverage,decided_accuracy
+Ishu same-domain,combined_v3,ishu_same_combined_v3,0.8246,0.8942,,,,,
+Ishu same-domain,ResNet-18,ishu_same_resnet18,0.8246,0.8927,,,,,
+Ishu same-domain,Physics-guided,ishu_same_physics_guided,0.845,0.9177,,,,,
+Ishu -> MS COCOAI,Physics-guided,ishu_to_ms_physics_guided,0.606,0.6636693333333333,0.3366714871422014,0.30938615826539,0.2706666666666666,,
+Ishu -> MS COCOAI,Frozen ConvNeXt,ishu_to_ms_convnext_tiny_frozen,0.6163333333333333,0.7138800000000001,0.3302081259850456,0.3184633374737904,0.1869999999999999,,
+Ishu -> MS COCOAI,SCP-Fusion all-foundation,ishu_to_ms_scp_fusion_all_foundation,0.6163333333333333,0.7994946666666666,0.3117628085448408,0.3262967482194517,0.1323333333333333,,
+Ishu -> MS COCOAI,Frozen CLIP,ishu_to_ms_clip_standalone,0.6363333333333333,0.8641186666666667,0.3145590660101832,0.332607239038613,0.163,,
+5% source-heldout triage,Frozen CLIP triage,ishu_to_ms_triage5_clip_standalone,,,,,,0.4746666666666667,0.9261335711624388

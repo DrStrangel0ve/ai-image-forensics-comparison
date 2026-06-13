@@ -12,6 +12,7 @@ This is the first editable one-slide DFRWS poster draft generated from the check
 | rendered PNG preview | `reports/assets/dfrws_poster_draft_2026_06_13.png` |
 | source brief | `reports/dfrws_poster_brief_2026_06_13.md` |
 | key numbers | `reports/assets/dfrws_poster_key_numbers.csv` |
+| poster-native figure pack | `reports/dfrws_poster_native_figures_2026_06_13.md` |
 
 ![DFRWS poster draft preview](assets/dfrws_poster_draft_2026_06_13.png)
 
@@ -35,4 +36,4 @@ Same-domain accuracy is only the warm-up. Under generator and processing shift, 
 
 ## Next Edit
 
-The next poster improvement should replace the dense embedded paper figures with simplified, poster-native editable charts while preserving the exact numbers from `reports/assets/dfrws_poster_key_numbers.csv`.
+The next poster improvement should revise the editable PPTX to use the new poster-native transfer and robustness panels from `reports/dfrws_poster_native_figures_2026_06_13.md` instead of the dense embedded paper figures.

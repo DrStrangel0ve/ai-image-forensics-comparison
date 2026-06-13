@@ -62,6 +62,8 @@ The matrix marks each claim as `ready`, `ready_with_caveat`, or `needs_more_evid
 | figure | file | use |
 | --- | --- | --- |
 | pipeline diagram | `reports/publication_assets_2026_06_12.md` | poster overview and paper method schematic |
+| poster transfer panel | `reports/assets/dfrws_poster_transfer_panel.png` and `.svg` | large-label DFRWS headline replacement for dense paper figure |
+| poster robustness panel | `reports/assets/dfrws_poster_robustness_panel.png` and `.svg` | large-label DFRWS robustness caveat panel |
 | transfer ranking/calibration | `reports/assets/publication_cross_domain_calibration.png` | historical baseline comparison |
 | source-heldout calibration | `reports/assets/publication_source_heldout_calibration.png` | probability-quality evidence |
 | source-heldout triage | `reports/assets/publication_triage_operating_points.png` | operational forensic framing |
@@ -85,6 +87,13 @@ Editable poster draft:
 - Report: `reports/dfrws_poster_draft_2026_06_13.md`
 - PowerPoint: `reports/assets/dfrws_poster_draft_2026_06_13.pptx`
 - PNG preview: `reports/assets/dfrws_poster_draft_2026_06_13.png`
+
+Poster-native figure pack:
+
+- Report: `reports/dfrws_poster_native_figures_2026_06_13.md`
+- Transfer panel: `reports/assets/dfrws_poster_transfer_panel.png` / `.svg`
+- Robustness panel: `reports/assets/dfrws_poster_robustness_panel.png` / `.svg`
+- Rebuild: `python scripts\build_dfrws_poster_figures.py`
 
 Recommended title:
 
@@ -128,7 +137,7 @@ Priority order:
 1. Extend tuned-fusion robustness to native-resolution and stronger in-the-wild perturbations. JPEG70, JPEG50, noise3, and social_square are comparatively stable, but JPEG30, blur1, resize_half, and screenshot-style roundtrips expose real transform weaknesses; the next gap is native-resolution tiling, stronger social-media processing, or a larger source split before calling the 0.40 reverse frontier contest-ready.
 2. Run `combined_v4` full repeated-seed transfer and decide whether it belongs in the main method or stays an ablation.
 3. Add another qualitative grid from a second seed or reverse transfer.
-4. Improve the one-slide DFRWS poster draft by replacing dense embedded paper figures with poster-native editable charts.
+4. Rev the one-slide DFRWS poster PPTX to swap in the new poster-native transfer and robustness panels.
 
 ## Suggested Next Experiment
 
