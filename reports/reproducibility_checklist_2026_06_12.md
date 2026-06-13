@@ -31,6 +31,8 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | Claim evidence matrix for poster/paper claims | `reports/assets/claim_evidence_matrix.md` |
 | Publication core results table | `reports/assets/publication_core_results.md` |
 | DFRWS-style figures and abstract draft | `reports/publication_assets_2026_06_12.md` |
+| Generated DFRWS poster brief | `reports/dfrws_poster_brief_2026_06_13.md` |
+| DFRWS poster key numbers CSV | `reports/assets/dfrws_poster_key_numbers.csv` |
 | Physics-guided ResNet vs vanilla ResNet | `reports/physics_guided_vs_resnet_2026_06_12.md` |
 | Ishu repeated split and transfer results | `reports/ishu_ai_vs_real_2026_benchmark.md` |
 | Ishu transform robustness | `reports/ishu_physics_guided_robustness_3seed.md` |
@@ -130,6 +132,7 @@ Rebuild publication figures, core tables, and claim audit:
 python scripts\build_publication_assets.py --out-dir reports\assets
 python scripts\build_publication_tables.py --out-dir reports\assets
 python scripts\build_claim_evidence_matrix.py --out-dir reports\assets
+python scripts\build_dfrws_poster_brief.py
 ```
 
 ## Current Result Snapshot
