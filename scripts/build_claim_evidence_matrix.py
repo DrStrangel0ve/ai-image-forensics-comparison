@@ -96,7 +96,10 @@ CLAIMS = [
         ],
         "primary_artifact": "reports/assets/publication_reverse_fusion_tradeoff.png",
         "risk_or_caveat": "Current score fusion can suppress the best branch and can inherit source-threshold bias.",
-        "next_action": "Prioritize utility-aware/source-heldout fusion training before claiming SCP-Fusion v1.",
+        "next_action": (
+            "Threshold-only source utility matched the capped threshold baseline; "
+            "prioritize utility-aware fusion training or validation selection before claiming SCP-Fusion v1."
+        ),
     },
     {
         "claim_id": "source_thresholding_improves_decisions",
@@ -113,7 +116,10 @@ CLAIMS = [
         ],
         "primary_artifact": "reports/assets/publication_reverse_operating_points.png",
         "risk_or_caveat": "The capped source-threshold result is an operating point, not a learned general solution.",
-        "next_action": "Turn this into a utility-aware fusion objective and rerun the reverse suite.",
+        "next_action": (
+            "The source-utility threshold sweep matched cap_0p48 but did not improve beyond it; "
+            "move utility into model selection or fusion training."
+        ),
     },
     {
         "claim_id": "high_confidence_triage_is_viable",

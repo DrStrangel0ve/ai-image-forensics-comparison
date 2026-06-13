@@ -538,7 +538,7 @@ A submission-readiness snapshot is checked into [reports/submission_readiness_20
 
 A generated claim-evidence matrix is checked into [reports/assets/claim_evidence_matrix.md](reports/assets/claim_evidence_matrix.md). It maps each poster/paper claim to exact result rows, marks claims as ready or caveated, and keeps `combined_v4` framed as an ablation candidate until the larger repeated-seed transfer check is done.
 
-A source-utility threshold strategy is checked into [reports/score_fusion_source_utility_threshold_2026_06_13.md](reports/score_fusion_source_utility_threshold_2026_06_13.md). It adds `--threshold-strategy source_utility` to score fusion, with asymmetric fake-detection, real-clearance, real-FPR, and fake-miss weights for the next reverse-transfer SCP-Fusion sweep.
+A source-utility threshold strategy is checked into [reports/score_fusion_source_utility_threshold_2026_06_13.md](reports/score_fusion_source_utility_threshold_2026_06_13.md), and the reverse sweep is summarized in [reports/ms_cocoai_to_ishu_source_utility_threshold_2026_06_13.md](reports/ms_cocoai_to_ishu_source_utility_threshold_2026_06_13.md). Threshold-only source utility matches the previous `cap_0p48` operating point at 0.7222 accuracy / 0.8291 AUC, so the next SCP-Fusion step should move utility into fusion training or validation selection.
 
 A public reproducibility pass is checked into [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It adds a reviewer-facing map of included reports/assets, intentionally excluded raw data/model artifacts, core reproduction commands, and known limitations.
 

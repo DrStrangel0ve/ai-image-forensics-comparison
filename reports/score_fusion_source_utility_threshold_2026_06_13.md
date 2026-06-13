@@ -44,7 +44,15 @@ The current reverse-transfer results show a split between ranking and operating-
 
 ## Next Experiment
 
-Rerun the MS-COCOAI-to-Ishu all-branch fusion grid with `source_utility`, sweeping at least:
+The MS-COCOAI-to-Ishu all-branch fusion grid has now been run in `reports/ms_cocoai_to_ishu_source_utility_threshold_2026_06_13.md`.
+
+Result:
+
+- best source-utility setting: `0.7222` accuracy / `0.8291` AUC with the `0.48` source fake-rate cap;
+- best uncapped utility setting: `0.7193` accuracy with `0.6608` target fake-call rate;
+- conclusion: source-utility thresholding matches the previous capped source-accuracy operating point, but does not improve beyond it.
+
+The next model-side experiment should use `source_utility` as the evaluator while changing how the fusion head is selected or trained. A useful grid would sweep:
 
 | parameter | suggested values |
 | --- | --- |
@@ -54,4 +62,4 @@ Rerun the MS-COCOAI-to-Ishu all-branch fusion grid with `source_utility`, sweepi
 | fake-miss penalty | `1`, `1.5`, `2` |
 | source fake-rate cap | none, `0.50`, `0.48`, `0.45` |
 
-The comparison should keep the existing reverse suite fixed and report accuracy, AUC, Brier, ECE, recall, precision, and predicted fake rate. If utility-selected thresholds beat or match the `0.7222` capped source-accuracy operating point without worsening fake-call bias, this becomes the first true SCP-Fusion v1 candidate.
+The comparison should keep the existing reverse suite fixed and report accuracy, AUC, Brier, ECE, recall, precision, and predicted fake rate. A true SCP-Fusion v1 candidate should beat or match the `0.7222` capped source-threshold operating point while improving fake-call bias or calibration, not merely reproduce the same threshold.
