@@ -101,6 +101,9 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/latex_tables/transfer_frontier.tex | LaTeX fragment for the Ishu-to-MS-COCOAI transfer frontier table. |
 | table | reports/assets/latex_tables/reverse_operating_points.tex | LaTeX fragment for the reverse operating point table. |
 | table | reports/assets/latex_tables/robustness_stress.tex | LaTeX fragment for the robustness stress table. |
+| paper-draft | reports/submission_paper_skeletons_2026_06_14.md | Report listing generated WIFS/DFF paper skeletons. |
+| paper-draft | reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv | Machine-readable manifest for generated WIFS/DFF paper skeletons. |
+| paper-draft | reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex | IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
@@ -143,6 +146,9 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/latex_tables/transfer_frontier.tex | LaTeX fragment for the Ishu-to-MS-COCOAI transfer frontier table. |
 | table | reports/assets/latex_tables/reverse_operating_points.tex | LaTeX fragment for the reverse operating point table. |
 | table | reports/assets/latex_tables/robustness_stress.tex | LaTeX fragment for the robustness stress table. |
+| paper-draft | reports/submission_paper_skeletons_2026_06_14.md | Report listing generated WIFS/DFF paper skeletons. |
+| paper-draft | reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv | Machine-readable manifest for generated WIFS/DFF paper skeletons. |
+| paper-draft | reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex | ACM-style DFF workshop skeleton with generated abstract, tables, and figures. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
@@ -171,6 +177,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | publication tables | python scripts/build_publication_tables.py |
 | submission result tables | python scripts/build_submission_result_tables.py |
 | submission LaTeX tables | python scripts/build_submission_latex_tables.py |
+| submission paper skeletons | python scripts/build_submission_paper_skeletons.py |
 | publication figures | python scripts/build_publication_assets.py |
 | DFRWS poster brief | python scripts/build_dfrws_poster_brief.py |
 | DFRWS poster panels | python scripts/build_dfrws_poster_figures.py |

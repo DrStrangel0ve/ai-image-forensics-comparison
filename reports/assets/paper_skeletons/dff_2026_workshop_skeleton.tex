@@ -1,0 +1,85 @@
+% Auto-generated draft skeleton. Replace the document class with the official venue template before submission.
+\documentclass[sigconf,review,anonymous]{acmart}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{url}
+
+\title{SCP-Fusion: Source-Calibrated Physical and Foundation Features for Robust AI-Generated Image Forensics}
+\author{Anonymous Author(s)}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Robust detection of AI-generated images is not only a model-selection problem: detectors must survive new generator sources, real-world processing, and ambiguous operating points. We introduce SCP-Fusion as a diagnostic protocol that compares and combines single-image physical/signal features, neural image classifiers, physics-guided ResNet fusion, and frozen foundation encoders for real-vs-generated image forensics. Across repeated source-heldout experiments, frozen CLIP remains the transfer-ranking frontier on Ishu to source-balanced MS COCOAI with 0.8641 AUC, while all-foundation SCP-Fusion reaches 0.7995 AUC and exposes where fused scores are conservative on generated images. Strict CLIP triage covers 0.4747 of target images at 0.9261 decided-case accuracy, motivating partial-decision forensic workflows. For MS COCOAI to Ishu, source-capped tuned fusion with a native-tiled conventional branch reaches 0.7749 accuracy and 0.8472 AUC, but transform checks show important weaknesses: JPEG30 drops to 0.7076 accuracy and blur drops to 0.7872 AUC. The resulting benchmark package includes source-slice diagnostics, calibration metrics, robustness transforms, and qualitative failure grids, making SCP-Fusion a reproducible framework for studying robustness and dataset bias rather than a universal best-detector claim.
+\end{abstract}
+
+\section{Introduction}
+TODO: Motivate source-heldout AI-generated image forensics and explain why ranking, calibration, fake-call rate, and triage coverage should be reported separately.
+
+\section{Related Work}
+TODO: Cover AI-generated image detection, single-image physical/signal forensics, frozen foundation encoders, score fusion, calibration, and forensic triage.
+
+\section{Data and Audit}
+TODO: Describe Ishu AI-vs-real, source-balanced MS COCOAI, generator source labels, dataset export commands, and duplicate/leakage audit assumptions.
+
+\section{Methods}
+TODO: Define combined\_v3/v4 physical-signal features, ResNet-18, physics-guided ResNet fusion, frozen ConvNeXt/DINOv2/CLIP probes, SCP-Fusion, source-heldout thresholding, and high-confidence triage.
+
+\section{Experiments}
+TODO: State repeated seeds, same-domain and transfer splits, source-heldout generator validation, calibration metrics, and robustness transforms.
+
+\section{Results}
+The following generated table fragments are checked into the repository and can be edited for space.
+
+% same-domain anchor table
+\input{reports/assets/latex_tables/same_domain_anchor.tex}
+
+% transfer frontier table
+\input{reports/assets/latex_tables/transfer_frontier.tex}
+
+% reverse operating point table
+\input{reports/assets/latex_tables/reverse_operating_points.tex}
+
+% robustness stress table
+\input{reports/assets/latex_tables/robustness_stress.tex}
+
+\section{Figures and Failure Analysis}
+TODO: Select two to three figures for the main paper and move the rest to an appendix.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{reports/assets/publication_score_fusion_clip_frontier.png}
+\caption{CLIP transfer frontier and all-foundation SCP-Fusion comparison.}
+\label{fig:submission-figure-1}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{reports/assets/publication_triage_operating_points.png}
+\caption{High-confidence source-heldout triage operating points.}
+\label{fig:submission-figure-2}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{reports/assets/publication_reverse_operating_points.png}
+\caption{Reverse-direction source-aware operating points.}
+\label{fig:submission-figure-3}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{reports/assets/qualitative_seed17_scp_fusion_false_negatives.png}
+\caption{Representative generated-image misses for failure analysis.}
+\label{fig:submission-figure-4}
+\end{figure}
+
+\section{Limitations}
+TODO: Keep these caveats explicit: the physical branch is a single-image proxy, SCP-Fusion does not universally beat CLIP, native tiling only changes the conventional target branch in the current fused diagnostic, and robustness depends on the transform.
+
+\section{Reproducibility}
+TODO: Cite the public repository, submission packet manifest, lint report, dataset export commands, and generated table/figure builders.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+\end{document}
