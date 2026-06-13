@@ -28,6 +28,7 @@ TRIAGE_CALLOUT = "ishu_to_ms_triage5_clip_standalone"
 
 ROBUSTNESS_ROWS = [
     ("ms_to_ishu_tuned_fusion_constraint_sweep_best", "clean"),
+    ("ms_to_ishu_tuned_fusion_native_tiling_best", "tiled-v3"),
     ("ms_to_ishu_tuned_fusion_jpeg70", "JPEG70"),
     ("ms_to_ishu_tuned_fusion_jpeg50", "JPEG50"),
     ("ms_to_ishu_tuned_fusion_jpeg30", "JPEG30"),
@@ -127,7 +128,16 @@ def _save_both(fig: plt.Figure, stem: Path, dpi: int) -> tuple[Path, Path]:
     png = stem.with_suffix(".png")
     svg = stem.with_suffix(".svg")
     fig.savefig(png, dpi=dpi, bbox_inches="tight", facecolor="white")
-    fig.savefig(svg, bbox_inches="tight", facecolor="white")
+    fig.savefig(
+        svg,
+        bbox_inches="tight",
+        facecolor="white",
+        metadata={"Date": "2026-06-13"},
+    )
+    svg.write_text(
+        "\n".join(line.rstrip() for line in svg.read_text(encoding="utf-8").splitlines()) + "\n",
+        encoding="utf-8",
+    )
     plt.close(fig)
     return png, svg
 
@@ -142,6 +152,7 @@ def build_transfer_panel(core: pd.DataFrame, out_dir: Path, dpi: int) -> tuple[p
         {
             "font.family": "DejaVu Sans",
             "svg.fonttype": "none",
+            "svg.hashsalt": "ai-image-forensics-comparison",
             "axes.titleweight": "bold",
         }
     )
@@ -233,6 +244,7 @@ def build_robustness_panel(core: pd.DataFrame, out_dir: Path, dpi: int) -> tuple
         {
             "font.family": "DejaVu Sans",
             "svg.fonttype": "none",
+            "svg.hashsalt": "ai-image-forensics-comparison",
             "axes.titleweight": "bold",
         }
     )
@@ -250,7 +262,7 @@ def build_robustness_panel(core: pd.DataFrame, out_dir: Path, dpi: int) -> tuple
     fig.text(
         0.075,
         0.915,
-        "Reverse tuned fusion with source fake-rate cap 0.40; all values are target means over three seeds.",
+        "Reverse tuned fusion with source fake-rate cap 0.40; tiled-v3 swaps in native-tiled combined_v3 target scores.",
         fontsize=12,
         color="#4A5568",
         va="bottom",
@@ -286,7 +298,7 @@ def build_robustness_panel(core: pd.DataFrame, out_dir: Path, dpi: int) -> tuple
     ax.text(
         0.02,
         0.06,
-        "Read this panel as a stress test, not a final production guarantee: blur, resize, and harsh JPEG still move the operating point.",
+        "Read this panel as a stress test, not a final production guarantee: tiling helps, but blur, resize, and harsh JPEG still move the operating point.",
         transform=ax.transAxes,
         fontsize=11,
         color=INK,
@@ -339,7 +351,7 @@ def build_report(
             "",
             f"![DFRWS robustness panel]({link(robustness_png)})",
             "",
-            "This panel makes the caveat visible: the source-capped reverse fusion setting is useful, but blur, resize, screenshots, and harsh recompression still shift ranking and fake-call behavior.",
+            "This panel makes the caveat visible: source-capped reverse fusion improves slightly when the conventional branch is native-tiled, but blur, resize, screenshots, and harsh recompression still shift ranking and fake-call behavior.",
             "",
             "## Suggested Poster Swap",
             "",

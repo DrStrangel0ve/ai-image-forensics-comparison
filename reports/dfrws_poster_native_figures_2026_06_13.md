@@ -23,7 +23,7 @@ This panel keeps the poster claim crisp: physics-guided fusion improves the same
 
 ![DFRWS robustness panel](assets/dfrws_poster_robustness_panel.png)
 
-This panel makes the caveat visible: the source-capped reverse fusion setting is useful, but blur, resize, screenshots, and harsh recompression still shift ranking and fake-call behavior.
+This panel makes the caveat visible: source-capped reverse fusion improves slightly when the conventional branch is native-tiled, but blur, resize, screenshots, and harsh recompression still shift ranking and fake-call behavior.
 
 ## Suggested Poster Swap
 

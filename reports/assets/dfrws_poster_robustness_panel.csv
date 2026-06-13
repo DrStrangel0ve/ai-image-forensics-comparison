@@ -1,5 +1,6 @@
 panel,label,finding_id,accuracy,auc,brier,ece,predicted_fake_rate,coverage,decided_accuracy
 MS COCOAI -> Ishu tuned fusion robustness,clean,ms_to_ishu_tuned_fusion_constraint_sweep_best,0.7631578947368421,0.8361042692939243,0.2850544237268182,0.3042382361545629,0.5175438596491229,,
+MS COCOAI -> Ishu tuned fusion robustness,tiled-v3,ms_to_ishu_tuned_fusion_native_tiling_best,0.7748538011695906,0.8471880131362889,0.2975588973364195,0.3188061800047906,0.5467836257309941,,
 MS COCOAI -> Ishu tuned fusion robustness,JPEG70,ms_to_ishu_tuned_fusion_jpeg70,0.7660818713450293,0.8485221674876847,0.2598762387414059,0.2635048809275155,0.4678362573099415,,
 MS COCOAI -> Ishu tuned fusion robustness,JPEG50,ms_to_ishu_tuned_fusion_jpeg50,0.7514619883040936,0.8308702791461412,0.2486102459322505,0.2516930802832123,0.4239766081871345,,
 MS COCOAI -> Ishu tuned fusion robustness,JPEG30,ms_to_ishu_tuned_fusion_jpeg30,0.7076023391812866,0.8167077175697864,0.2331669275333915,0.2215336615881319,0.3450292397660818,,
