@@ -37,6 +37,8 @@ The current research plan is documented in [reports/research_deep_dive_2026_06_1
 
 The active publication roadmap is documented in [reports/submission_plan_2026.md](reports/submission_plan_2026.md). The current targets are DFRWS-USA 2026 posters, IEEE WIFS 2026, and DFF-2026 at ACM Multimedia.
 
+The current venue-facing packet manifest is documented in [reports/submission_packet_2026_06_13.md](reports/submission_packet_2026_06_13.md), with a machine-readable artifact index in [reports/assets/submission_packet_manifest.csv](reports/assets/submission_packet_manifest.csv). It validates the files to carry into DFRWS, WIFS, and DFF drafts and keeps the major claim caveats visible.
+
 The public reproducibility checklist is documented in [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It lists what is included in the public repo, what must be downloaded externally, and the shortest commands for tests, ablations, and publication figure generation.
 
 The completed `combined_v4` full-transfer gate is summarized in [reports/combined_v4_full_transfer_summary_2026_06_13.md](reports/combined_v4_full_transfer_summary_2026_06_13.md). Across seeds 7/17/29, raw v4 improves Ishu -> source-balanced MS COCOAI transfer accuracy but not transfer AUC or calibration, while select-k60 v4 improves transfer AUC/Brier/ECE at the cost of same-domain Ishu accuracy. `combined_v3` remains the main conventional baseline; `combined_v4_selectk60` is now a caveated transfer/calibration ablation.

@@ -1,0 +1,470 @@
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+import pandas as pd
+
+
+LEAD_FINDINGS = [
+    "ishu_same_combined_v3",
+    "ishu_same_resnet18",
+    "ishu_same_physics_guided",
+    "ishu_to_ms_clip_standalone",
+    "ishu_to_ms_scp_fusion_all_foundation",
+    "ishu_to_ms_triage5_clip_standalone",
+    "ms_to_ishu_tuned_fusion_constraint_sweep_best",
+    "ms_to_ishu_tuned_fusion_native_tiling_best",
+    "ms_to_ishu_tuned_fusion_jpeg30",
+    "ms_to_ishu_tuned_fusion_blur1",
+    "ms_to_ishu_tuned_fusion_social_720p",
+]
+
+ARTIFACTS = [
+    {
+        "path": "README.md",
+        "type": "repo",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Public project entry point with setup, dataset catalog, commands, and result map.",
+        "required": True,
+    },
+    {
+        "path": "CITATION.cff",
+        "type": "repo",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Citation metadata for public release and reproducibility review.",
+        "required": True,
+    },
+    {
+        "path": "reports/reproducibility_checklist_2026_06_12.md",
+        "type": "reproducibility",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Reviewer-facing map of included artifacts, external datasets, and commands.",
+        "required": True,
+    },
+    {
+        "path": "reports/submission_readiness_2026_06_13.md",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Current readiness snapshot, lead results, figure package, and remaining gaps.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/publication_core_results.csv",
+        "type": "table",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Canonical machine-readable result rows used by claim and figure builders.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/publication_core_results.md",
+        "type": "table",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Readable core result table for paper drafting.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/claim_evidence_matrix.csv",
+        "type": "claim-audit",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable claim-to-evidence map with caveats and next actions.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/claim_evidence_matrix.md",
+        "type": "claim-audit",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Readable claim-to-evidence map for authoring and review.",
+        "required": True,
+    },
+    {
+        "path": "reports/dfrws_poster_brief_2026_06_13.md",
+        "type": "poster",
+        "venues": "DFRWS",
+        "purpose": "Poster spine, key numbers, figure package, and overclaim warnings.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/dfrws_poster_key_numbers.csv",
+        "type": "poster",
+        "venues": "DFRWS",
+        "purpose": "Compact poster-leading key number table.",
+        "required": True,
+    },
+    {
+        "path": "reports/dfrws_poster_native_figures_2026_06_13.md",
+        "type": "poster",
+        "venues": "DFRWS",
+        "purpose": "Large-label poster figure pack with transfer and robustness panels.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/dfrws_poster_transfer_panel.png",
+        "type": "figure",
+        "venues": "DFRWS",
+        "purpose": "Poster-native transfer headline panel.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/dfrws_poster_transfer_panel.svg",
+        "type": "figure",
+        "venues": "DFRWS",
+        "purpose": "Editable SVG source for the poster transfer panel.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/dfrws_poster_robustness_panel.png",
+        "type": "figure",
+        "venues": "DFRWS",
+        "purpose": "Poster-native robustness panel with native-tiling diagnostic and transforms.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/dfrws_poster_robustness_panel.svg",
+        "type": "figure",
+        "venues": "DFRWS",
+        "purpose": "Editable SVG source for the poster robustness panel.",
+        "required": True,
+    },
+    {
+        "path": "reports/dfrws_poster_draft_v2_2026_06_13.md",
+        "type": "poster",
+        "venues": "DFRWS",
+        "purpose": "Editable poster draft notes and preview references.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/dfrws_poster_draft_v2_2026_06_13.pptx",
+        "type": "poster",
+        "venues": "DFRWS",
+        "purpose": "Editable PowerPoint poster draft.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/dfrws_poster_draft_v2_2026_06_13.png",
+        "type": "poster",
+        "venues": "DFRWS",
+        "purpose": "Poster draft PNG preview.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/publication_score_fusion_clip_frontier.png",
+        "type": "figure",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "CLIP transfer frontier and all-foundation fusion comparison.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/publication_triage_operating_points.png",
+        "type": "figure",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "High-confidence source-heldout triage operating points.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/publication_reverse_operating_points.png",
+        "type": "figure",
+        "venues": "WIFS,DFF",
+        "purpose": "Reverse-transfer source-threshold and operating-point comparison.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/publication_reverse_transform_robustness.png",
+        "type": "figure",
+        "venues": "WIFS,DFF",
+        "purpose": "Reverse tuned-fusion target-transform robustness stress result.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/publication_reverse_fusion_tradeoff.png",
+        "type": "figure",
+        "venues": "WIFS,DFF",
+        "purpose": "Reverse fusion ranking, calibration, and operating-point tradeoff.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/publication_score_fusion_dinov2_gain.png",
+        "type": "figure",
+        "venues": "WIFS,DFF",
+        "purpose": "DINOv2 branch-complementarity and fusion gain figure.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/publication_source_heldout_calibration.png",
+        "type": "figure",
+        "venues": "WIFS,DFF",
+        "purpose": "Source-heldout calibration evidence.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/qualitative_seed17_scp_fusion_false_negatives.png",
+        "type": "qualitative",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Failure-case grid for generated-image misses.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/qualitative_seed29_scp_fusion_false_negatives.png",
+        "type": "qualitative",
+        "venues": "WIFS,DFF",
+        "purpose": "Second-seed failure-case repeatability grid.",
+        "required": True,
+    },
+    {
+        "path": "reports/physics_guided_vs_resnet_2026_06_12.md",
+        "type": "result-note",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Conservative physics-guided ResNet versus vanilla ResNet framing.",
+        "required": True,
+    },
+    {
+        "path": "reports/combined_v4_full_transfer_summary_2026_06_13.md",
+        "type": "result-note",
+        "venues": "WIFS,DFF",
+        "purpose": "combined_v4 transfer gate and ablation caveat.",
+        "required": True,
+    },
+    {
+        "path": "reports/combined_v4_source_slice_diagnostics_2026_06_13.md",
+        "type": "result-note",
+        "venues": "WIFS,DFF",
+        "purpose": "Generator/category slice analysis for combined_v4 caveats.",
+        "required": True,
+    },
+    {
+        "path": "reports/ms_cocoai_to_ishu_tuned_fusion_native_tiling_2026_06_13.md",
+        "type": "result-note",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Bounded fused native-tiling diagnostic.",
+        "required": True,
+    },
+]
+
+VENUES = [
+    {
+        "venue": "DFRWS-USA 2026 poster/demo",
+        "deadline": "2026-07-07",
+        "status": "ready to polish",
+        "title": "When AI Image Detectors Travel: Source-Heldout Diagnostics for Physical, Neural, and Frozen-Encoder Forensics",
+        "claim": "Lead with source-heldout diagnostics, CLIP transfer ranking, triage, robustness caveats, and public reproducibility.",
+        "next_action": "Finalize poster layout, choose one qualitative grid, and export the final PDF/poster image.",
+    },
+    {
+        "venue": "IEEE WIFS 2026 paper",
+        "deadline": "2026-07-15",
+        "status": "feasible with tighter breadth",
+        "title": "Source-Heldout Evaluation of Physical, Neural, and Frozen-Encoder Signals for AI-Generated Image Detection",
+        "claim": "Use a compact benchmark-paper framing around metric splits: ranking, calibration, fake-call rate, and source-aware decisions.",
+        "next_action": "Draft the 6-page paper, keep claims conservative, and add only one paper-critical breadth check.",
+    },
+    {
+        "venue": "DFF-2026 ACM Multimedia workshop",
+        "deadline": "2026-07-16",
+        "status": "best full-paper fit",
+        "title": "SCP-Fusion: Source-Calibrated Physical and Foundation Features for Robust AI-Generated Image Forensics",
+        "claim": "Frame SCP-Fusion as a diagnostic fusion protocol for robustness, dataset bias, explainability, and real-world processing.",
+        "next_action": "Turn failure grids and source-slice diagnostics into a short explainability/failure-analysis section.",
+    },
+]
+
+REGEN_COMMANDS = [
+    ("claim matrix", "python scripts/build_claim_evidence_matrix.py"),
+    ("publication tables", "python scripts/build_publication_tables.py"),
+    ("publication figures", "python scripts/build_publication_assets.py"),
+    ("DFRWS poster brief", "python scripts/build_dfrws_poster_brief.py"),
+    ("DFRWS poster panels", "python scripts/build_dfrws_poster_figures.py"),
+    ("submission packet", "python scripts/build_submission_packet.py"),
+]
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Build a venue-facing submission packet manifest from checked-in reports."
+    )
+    parser.add_argument("--repo-root", default=".", help="Repository root for validating relative artifact paths.")
+    parser.add_argument(
+        "--core-results",
+        default="reports/assets/publication_core_results.csv",
+        help="Core result table generated by build_publication_tables.py.",
+    )
+    parser.add_argument(
+        "--claim-matrix",
+        default="reports/assets/claim_evidence_matrix.csv",
+        help="Claim/evidence matrix generated by build_claim_evidence_matrix.py.",
+    )
+    parser.add_argument(
+        "--out-path",
+        default="reports/submission_packet_2026_06_13.md",
+        help="Markdown packet report to write.",
+    )
+    parser.add_argument(
+        "--manifest-out",
+        default="reports/assets/submission_packet_manifest.csv",
+        help="Machine-readable artifact manifest to write.",
+    )
+    return parser.parse_args()
+
+
+def _metric_summary(row: pd.Series) -> str:
+    parts = []
+    for column, label in [
+        ("accuracy", "accuracy"),
+        ("auc", "AUC"),
+        ("brier", "Brier"),
+        ("ece", "ECE"),
+        ("predicted_fake_rate", "fake-call rate"),
+        ("coverage", "coverage"),
+        ("decided_accuracy", "decided accuracy"),
+    ]:
+        value = row.get(column)
+        if pd.notna(value):
+            parts.append(f"{label} {float(value):.4f}")
+    return " / ".join(parts)
+
+
+def _rows_by_id(frame: pd.DataFrame, finding_ids: list[str]) -> pd.DataFrame:
+    rows = []
+    for finding_id in finding_ids:
+        matches = frame[frame["finding_id"] == finding_id]
+        if matches.empty:
+            raise ValueError(f"Missing finding_id={finding_id!r}")
+        rows.append(matches.iloc[0])
+    return pd.DataFrame(rows)
+
+
+def _markdown_escape(value: object) -> str:
+    if value is None or pd.isna(value):
+        return ""
+    return str(value).replace("\n", " ").replace("|", "\\|")
+
+
+def _markdown_table(frame: pd.DataFrame, columns: list[str]) -> str:
+    lines = [
+        "| " + " | ".join(columns) + " |",
+        "| " + " | ".join(["---"] * len(columns)) + " |",
+    ]
+    for row in frame[columns].itertuples(index=False):
+        lines.append("| " + " | ".join(_markdown_escape(value) for value in row) + " |")
+    return "\n".join(lines)
+
+
+def _artifact_manifest(repo_root: Path) -> pd.DataFrame:
+    rows = []
+    for artifact in ARTIFACTS:
+        artifact_path = repo_root / artifact["path"]
+        rows.append(
+            {
+                **artifact,
+                "exists": artifact_path.exists(),
+                "size_bytes": artifact_path.stat().st_size if artifact_path.exists() else pd.NA,
+            }
+        )
+    manifest = pd.DataFrame(rows)
+    missing = manifest[(manifest["required"]) & (~manifest["exists"])]
+    if not missing.empty:
+        missing_paths = ", ".join(missing["path"].tolist())
+        raise FileNotFoundError(f"Missing required submission artifacts: {missing_paths}")
+    return manifest
+
+
+def _lead_result_table(core_results: pd.DataFrame) -> pd.DataFrame:
+    rows = _rows_by_id(core_results, LEAD_FINDINGS)
+    return pd.DataFrame(
+        {
+            "finding": rows["finding_id"],
+            "method": rows["method"],
+            "setting": rows["setting"],
+            "metrics": [_metric_summary(row) for _index, row in rows.iterrows()],
+            "interpretation": rows["interpretation"],
+        }
+    )
+
+
+def _claim_table(claim_matrix: pd.DataFrame) -> pd.DataFrame:
+    ready = claim_matrix[claim_matrix["status"].isin(["ready", "ready_with_caveat"])].copy()
+    return ready[["claim_id", "status", "submission_use", "risk_or_caveat"]]
+
+
+def _venue_table(manifest: pd.DataFrame, venue_key: str) -> pd.DataFrame:
+    mask = manifest["venues"].str.split(",").apply(lambda values: venue_key in values)
+    return manifest[mask][["type", "path", "purpose"]]
+
+
+def build_submission_packet(repo_root: Path, core_results: Path, claim_matrix: Path) -> tuple[str, pd.DataFrame]:
+    repo_root = repo_root.resolve()
+    core = pd.read_csv(core_results)
+    claims = pd.read_csv(claim_matrix)
+    manifest = _artifact_manifest(repo_root)
+    lead = _lead_result_table(core)
+    claim_display = _claim_table(claims)
+    venue_frame = pd.DataFrame(VENUES)
+    commands = pd.DataFrame(REGEN_COMMANDS, columns=["asset", "command"])
+
+    lines = [
+        "# Submission Packet Manifest",
+        "",
+        "Run date: 2026-06-13",
+        "",
+        "Generated by `scripts/build_submission_packet.py` from checked-in reports, figures, and claim tables.",
+        "",
+        "This packet is an authoring map, not a substitute for venue-specific formatting. It validates that the files currently cited for DFRWS, WIFS, and DFF exist in the public repo.",
+        "",
+        "## Venue Status",
+        "",
+        _markdown_table(venue_frame, ["venue", "deadline", "status", "title", "claim", "next_action"]),
+        "",
+        "## Lead Results To Carry",
+        "",
+        _markdown_table(lead, ["finding", "method", "setting", "metrics", "interpretation"]),
+        "",
+        "## Claims And Caveats",
+        "",
+        _markdown_table(claim_display, list(claim_display.columns)),
+        "",
+        "## DFRWS Packet",
+        "",
+        _markdown_table(_venue_table(manifest, "DFRWS"), ["type", "path", "purpose"]),
+        "",
+        "## WIFS Packet",
+        "",
+        _markdown_table(_venue_table(manifest, "WIFS"), ["type", "path", "purpose"]),
+        "",
+        "## DFF Packet",
+        "",
+        _markdown_table(_venue_table(manifest, "DFF"), ["type", "path", "purpose"]),
+        "",
+        "## Regeneration Commands",
+        "",
+        _markdown_table(commands, ["asset", "command"]),
+        "",
+        "## Current Editorial Guardrails",
+        "",
+        "- Do not claim classic multi-light photometric stereo; the current physical branch is a single-image proxy.",
+        "- Do not claim SCP-Fusion universally beats frozen CLIP; CLIP is still the transfer-ranking frontier in the current evidence.",
+        "- Treat native tiling as bounded evidence: only the conventional target branch is tiled in the current fused diagnostic.",
+        "- Keep `combined_v4` as an ablation unless source-aware feature selection or stronger regularization changes the transfer gate.",
+        "",
+    ]
+    return "\n".join(lines), manifest
+
+
+def main() -> None:
+    args = parse_args()
+    repo_root = Path(args.repo_root)
+    text, manifest = build_submission_packet(
+        repo_root=repo_root,
+        core_results=Path(args.core_results),
+        claim_matrix=Path(args.claim_matrix),
+    )
+    out_path = Path(args.out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(text, encoding="utf-8")
+    manifest_path = Path(args.manifest_out)
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest.to_csv(manifest_path, index=False)
+    print(out_path.resolve())
+    print(manifest_path.resolve())
+
+
+if __name__ == "__main__":
+    main()
