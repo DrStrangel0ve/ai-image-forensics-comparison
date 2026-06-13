@@ -82,6 +82,7 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | `combined_v4` feature implementation probe | `reports/combined_v4_probe_2026_06_12.md` |
 | `combined_v4` feature-selection sweep with bootstrap CIs | `reports/combined_v4_selectk_probe_2026_06_12.md` |
 | Medium `combined_v4` ablation grid with bootstrap CIs | `reports/combined_v4_medium_selectk_probe_2026_06_12.md` |
+| `combined_v4` transfer-readiness gate and command manifest | `reports/combined_v4_transfer_readiness_2026_06_13.md` |
 
 ## Core Reproduction Commands
 
@@ -141,6 +142,7 @@ python scripts\build_publication_tables.py --out-dir reports\assets
 python scripts\build_claim_evidence_matrix.py --out-dir reports\assets
 python scripts\build_dfrws_poster_brief.py
 python scripts\build_dfrws_poster_figures.py
+python scripts\build_combined_v4_transfer_readiness.py
 ```
 
 ## Current Result Snapshot
@@ -168,6 +170,7 @@ python scripts\build_dfrws_poster_figures.py
 - Under source-heldout triage, DINOv2-enhanced SCP-Fusion improves the strict 5% operating point to about 26% coverage with about 80% decided-case accuracy.
 - Source-heldout calibration and triage assets include 95% deterministic bootstrap confidence intervals over held-out source/seed rows.
 - Medium `combined_v4` ablation suggests raw `combined_v4` is the best ranking/accuracy candidate at 240 train images per seed, while select-k60 is the best calibrated variant; regenerated ablation assets include 95% bootstrap confidence intervals.
+- The `combined_v4` transfer-readiness gate keeps v4 as an ablation candidate until the checked-in full-transfer command manifest produces raw-v4/select-k60 transfer rows.
 
 ## Known Limitations
 

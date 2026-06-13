@@ -184,9 +184,12 @@ CLAIMS = [
         "submission_use": "WIFS/DFF ablation roadmap; optional appendix if repeated-seed run lands.",
         "status": "needs_more_evidence",
         "evidence_finding_ids": [],
-        "primary_artifact": "reports/combined_v4_medium_selectk_probe_2026_06_12.md",
+        "primary_artifact": "reports/combined_v4_transfer_readiness_2026_06_13.md",
         "risk_or_caveat": "Current v4 evidence is bounded and interval-overlapping; it is not yet a paper headline.",
-        "next_action": "Run full repeated-seed raw-v4/select-k60 Ishu and transfer ablations before submission.",
+        "next_action": (
+            "Run the checked-in combined_v4 transfer command manifest, then add raw-v4 and select-k60 transfer rows "
+            "to the publication core table."
+        ),
     },
 ]
 

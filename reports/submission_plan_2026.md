@@ -55,6 +55,7 @@ Current evidence:
 - A bounded three-seed feature-selection probe makes `combined_v4` promising again: select-k60 v4 reaches 0.7389 mean accuracy / 0.8219 mean AUC versus 0.7278 / 0.8033 for `combined_v3`; select-k80 has the best bounded accuracy at 0.7611 but lower AUC.
 - A medium three-seed probe with 240 training images per seed makes raw `combined_v4` the best ranking/accuracy candidate at 0.7544 mean accuracy / 0.8315 mean AUC, while select-k60 has the best Brier/ECE.
 - Repeated benchmark and feature-ablation summary scripts now emit 95% deterministic bootstrap confidence intervals, and the checked-in `combined_v4` ablation assets have been regenerated with those intervals.
+- A `combined_v4` transfer-readiness gate now quantifies the bounded v4 deltas and confirms the missing transfer row: raw v4 is +0.0081 AUC versus `combined_v3` in the medium probe with overlapping intervals, while select-k60 improves ECE by 0.0541; the exact full-transfer command manifest is checked in.
 
 ## Target 1: DFRWS-USA 2026 Poster
 
@@ -155,7 +156,7 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - the expanded bounded sweep suggests `k=60` for ranking/AUC and `k=80` for default accuracy, while histogram-gradient boosting is weak on the small split;
    - the medium 240-train run suggests raw v4 may overtake selected v4 once there is enough data, with select-k60 still best calibrated;
    - interval-aware summaries show the current v4 lead is narrow, so frame it as model-selection evidence until the larger repeated-seed run lands;
-   - the next step is a full repeated-seed Ishu run for raw v4 and select-k60, then MS COCOAI/source-heldout transfer before adding v4 into score fusion.
+   - the next step is to run `reports/assets/combined_v4_transfer_command_manifest.csv`, summarize raw-v4/select-k60 transfer rows, then decide whether v4 joins the main conventional branch or stays an appendix ablation.
 
 3. Improve calibration:
    - Brier score, expected calibration error, reliability curves, and source-heldout post-hoc calibration are now implemented;

@@ -471,6 +471,8 @@ A feature-selection follow-up is checked into [reports/combined_v4_selectk_probe
 
 A medium-size grid rerun is checked into [reports/combined_v4_medium_selectk_probe_2026_06_12.md](reports/combined_v4_medium_selectk_probe_2026_06_12.md), with assets in [reports/assets/combined_v4_medium_selectk_probe](reports/assets/combined_v4_medium_selectk_probe). At 240 train / 114 validation images per seed, raw `combined_v4` has the best mean accuracy/AUC at 0.7544 / 0.8315, while select-k60 has the best Brier/ECE. The ablation summaries now report confidence intervals, making the narrow `combined_v4` lead easier to frame honestly.
 
+A transfer-readiness gate is checked into [reports/combined_v4_transfer_readiness_2026_06_13.md](reports/combined_v4_transfer_readiness_2026_06_13.md), with deltas in [reports/assets/combined_v4_transfer_readiness.csv](reports/assets/combined_v4_transfer_readiness.csv) and exact next-run commands in [reports/assets/combined_v4_transfer_command_manifest.csv](reports/assets/combined_v4_transfer_command_manifest.csv). It keeps `combined_v4` as an ablation candidate until raw-v4/select-k60 transfer rows are available.
+
 ## Defactify / MS COCOAI Subset Result
 
 A Hugging Face export and benchmark run on a 2,000-image Defactify/MS COCOAI subset is checked into [reports/ms_cocoai_2026_subset_benchmark.md](reports/ms_cocoai_2026_subset_benchmark.md).
