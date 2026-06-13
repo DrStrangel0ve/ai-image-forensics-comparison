@@ -27,6 +27,8 @@ Mean over three seeds on MS COCOAI -> Ishu:
 
 The `C=0.03` source-threshold fusion is the first reverse all-branch fusion setting to beat the physics-guided ResNet-18 default accuracy (`0.6959` vs `0.6871`) while preserving a much stronger ranking signal (`0.8291` vs `0.7420` AUC). It also improves Brier score relative to physics-guided (`0.2188` vs `0.2436`), although physics-guided still has slightly better ECE (`0.1902` vs `0.2060`) and a more plausible fake-call rate.
 
+Follow-up: `reports/ms_cocoai_to_ishu_threshold_tiebreak_probe_2026_06_13.md` keeps the same score model and source objective but uses conservative threshold tie-breaking. That raises the reverse operating-point accuracy to `0.7193` and reduces the predicted fake rate to `0.6608`.
+
 ## Interpretation
 
 This supports a sharper SCP-Fusion framing:

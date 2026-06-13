@@ -31,7 +31,7 @@ Core numbers to lead with:
 | all-branch fusion on MS COCOAI -> Ishu | 0.6579 accuracy / 0.8285 AUC | best reverse-direction AUC, but still over-calls generated images |
 | branch-dropout fusion on MS COCOAI -> Ishu | 0.6520 accuracy / 0.8406 AUC | new reverse AUC frontier, still poorly calibrated |
 | strongly regularized fusion on MS COCOAI -> Ishu | 0.6608 accuracy / 0.2213 Brier / 0.2091 ECE | best reverse fusion probability quality |
-| strongly regularized source-threshold fusion on MS COCOAI -> Ishu | 0.6959 accuracy / 0.8291 AUC / 0.2188 Brier | best reverse fusion operating point so far |
+| conservative source-threshold fusion on MS COCOAI -> Ishu | 0.7193 accuracy / 0.8291 AUC / 0.2188 Brier | best reverse fusion operating point so far |
 | physics-guided ResNet on MS COCOAI -> Ishu | 0.6871 default accuracy / 0.6813 source-threshold accuracy | best default-threshold single-model operating point and ECE anchor |
 | CLIP source-heldout triage, strict 5% budget | 0.4747 coverage / 0.9261 decided-case accuracy | best current forensic triage operating point |
 | DINOv2-enhanced source-calibrated fusion | 0.6127 accuracy / 0.3062 Brier / 0.2938 ECE | best calibrated fusion-family operating point before CLIP |
@@ -91,7 +91,7 @@ The results show that ranking, probability calibration, and binary decision qual
 
 Priority order:
 
-1. Add utility-aware fusion training so SCP-Fusion can keep branch-dropout/CLIP-like ranking without over-calling generated images on reverse transfer. The first held-out source-threshold probe now beats the physics-guided default accuracy, but still predicts generated too often.
+1. Add utility-aware fusion training so SCP-Fusion can keep branch-dropout/CLIP-like ranking without over-calling generated images on reverse transfer. Conservative held-out source-threshold tie-breaking now beats the physics-guided default accuracy, but still predicts generated too often.
 2. Regenerate publication figures and tables with the reverse all-method result.
 3. Run `combined_v4` full repeated-seed transfer and decide whether it belongs in the main method or stays an ablation.
 4. Add another qualitative grid from a second seed or reverse transfer.
@@ -105,4 +105,4 @@ The best next technical experiment is **utility-aware reverse fusion training**:
 - combine the branch-dropout AUC gain with the strong-regularization Brier/ECE gain;
 - preserve the current reverse suite as the fixed comparison table.
 
-Why this first: branch dropout now has the best reverse AUC, strong regularization with held-out source thresholding gives the best fusion operating point, and physics-guided ResNet-18 remains the most interpretable calibration anchor. The paper story gets much stronger if SCP-Fusion can combine those three behaviors.
+Why this first: branch dropout now has the best reverse AUC, strong regularization with conservative held-out source thresholding gives the best fusion operating point, and physics-guided ResNet-18 remains the most interpretable calibration anchor. The paper story gets much stronger if SCP-Fusion can combine those three behaviors.

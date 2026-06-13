@@ -28,6 +28,11 @@ THRESHOLD_STRATEGIES = {
     "source_f1",
     "source_youden",
 }
+THRESHOLD_TIEBREAKERS = {
+    "near_half",
+    "higher",
+    "lower",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -61,6 +66,15 @@ def parse_args() -> argparse.Namespace:
         help=(
             "Decision threshold policy. Source strategies tune the operating point on "
             "held-out source calibration rows when available, otherwise on source train rows."
+        ),
+    )
+    parser.add_argument(
+        "--threshold-tiebreak",
+        choices=sorted(THRESHOLD_TIEBREAKERS),
+        default="near_half",
+        help=(
+            "Tie-breaker when multiple source thresholds have equal utility. "
+            "'higher' is the conservative fake-call option."
         ),
     )
     parser.add_argument(
@@ -269,10 +283,21 @@ def _threshold_utility(
     raise ValueError(f"Unsupported threshold strategy: {strategy}")
 
 
+def _threshold_tiebreak_value(threshold: float, tiebreak: str) -> float:
+    if tiebreak == "near_half":
+        return -abs(float(threshold) - 0.5)
+    if tiebreak == "higher":
+        return float(threshold)
+    if tiebreak == "lower":
+        return -float(threshold)
+    raise ValueError(f"Unsupported threshold tie-breaker: {tiebreak}")
+
+
 def _select_source_threshold(
     y_true: np.ndarray,
     scores: np.ndarray,
     strategy: str,
+    tiebreak: str,
 ) -> tuple[float, float]:
     if strategy == "fixed":
         raise ValueError("Use --threshold directly for the fixed threshold strategy")
@@ -286,11 +311,11 @@ def _select_source_threshold(
     best_tiebreak = -np.inf
     for threshold in candidates:
         utility = _threshold_utility(y_true, scores, float(threshold), strategy)
-        tiebreak = -abs(float(threshold) - 0.5)
-        if (utility, tiebreak) > (best_utility, best_tiebreak):
+        tiebreak_value = _threshold_tiebreak_value(float(threshold), tiebreak)
+        if (utility, tiebreak_value) > (best_utility, best_tiebreak):
             best_threshold = float(threshold)
             best_utility = float(utility)
-            best_tiebreak = float(tiebreak)
+            best_tiebreak = float(tiebreak_value)
     return best_threshold, best_utility
 
 
@@ -357,6 +382,7 @@ def _metrics_row(
     classifier,
     threshold: float,
     threshold_strategy: str,
+    threshold_tiebreak: str,
     threshold_source: str,
     calibrator=None,
 ) -> tuple[dict, list[dict]]:
@@ -374,6 +400,7 @@ def _metrics_row(
             "n_samples": int(len(y_true)),
             "threshold": float(threshold),
             "threshold_strategy": threshold_strategy,
+            "threshold_tiebreak": threshold_tiebreak,
             "threshold_source": threshold_source,
             "positive_rate": float(y_true.mean()) if len(y_true) else 0.0,
             "predicted_positive_rate": float((scores >= threshold).mean()) if len(scores) else 0.0,
@@ -451,6 +478,7 @@ def main() -> None:
             threshold_frame["y_true"].to_numpy(dtype=int),
             source_scores,
             args.threshold_strategy,
+            args.threshold_tiebreak,
         )
 
     all_metrics = []
@@ -461,6 +489,7 @@ def main() -> None:
         classifier,
         threshold,
         args.threshold_strategy,
+        args.threshold_tiebreak,
         threshold_source,
         calibrator=calibrator,
     )
@@ -485,6 +514,7 @@ def main() -> None:
             classifier,
             threshold,
             args.threshold_strategy,
+            args.threshold_tiebreak,
             threshold_source,
             calibrator=calibrator,
         )
@@ -503,6 +533,7 @@ def main() -> None:
             "threshold": float(threshold),
             "requested_threshold": float(args.threshold),
             "threshold_strategy": args.threshold_strategy,
+            "threshold_tiebreak": args.threshold_tiebreak,
             "threshold_source": threshold_source,
             "threshold_selection_utility": threshold_selection_utility,
             "n_train": int(len(train_frame)),
@@ -544,6 +575,7 @@ def main() -> None:
             "maximum_calibration_error": metrics["maximum_calibration_error"],
             "threshold": metrics["threshold"],
             "threshold_strategy": metrics["threshold_strategy"],
+            "threshold_tiebreak": metrics["threshold_tiebreak"],
             "threshold_source": metrics["threshold_source"],
             "predicted_positive_rate": metrics["predicted_positive_rate"],
             "score_mean": metrics["score_mean"],
