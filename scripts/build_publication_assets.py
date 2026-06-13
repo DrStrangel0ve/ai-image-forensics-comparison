@@ -126,31 +126,37 @@ TRANSFORM_ROBUSTNESS_ORDER = [
     "clean",
     "jpeg70",
     "jpeg50",
+    "jpeg30",
     "blur1",
     "resize_half",
     "crop85",
     "noise3",
     "screenshot",
+    "social_square",
 ]
 TRANSFORM_ROBUSTNESS_LABELS = {
     "clean": "clean",
     "jpeg70": "JPEG70",
     "jpeg50": "JPEG50",
+    "jpeg30": "JPEG30",
     "blur1": "blur",
     "resize_half": "half-resize",
     "crop85": "crop85",
     "noise3": "noise",
     "screenshot": "screenshot",
+    "social_square": "social sq.",
 }
 TRANSFORM_ROBUSTNESS_COLORS = {
     "clean": "#333333",
     "jpeg70": "#4C78A8",
     "jpeg50": "#72B7B2",
+    "jpeg30": "#86BCB6",
     "blur1": "#E45756",
     "resize_half": "#F58518",
     "crop85": "#54A24B",
     "noise3": "#B279A2",
     "screenshot": "#79706E",
+    "social_square": "#D67195",
 }
 
 
@@ -240,11 +246,13 @@ def parse_args() -> argparse.Namespace:
         default=[
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_jpeg70_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_jpeg50_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_jpeg30_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_blur1_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_resize_half_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_crop85_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_noise3_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_screenshot_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_social_square_robustness_summary.csv",
         ],
     )
     parser.add_argument("--out-dir", default="reports/assets")
@@ -956,11 +964,11 @@ def build_reverse_transform_robustness(
     labels = [TRANSFORM_ROBUSTNESS_LABELS.get(variant, variant) for variant in frame["variant"]]
     colors = [TRANSFORM_ROBUSTNESS_COLORS.get(variant, "#777777") for variant in frame["variant"]]
     x = np.arange(len(frame))
-    fig, axes = plt.subplots(1, 3, figsize=(14.0, 4.6), dpi=dpi)
+    fig, axes = plt.subplots(1, 3, figsize=(15.6, 4.8), dpi=dpi)
     for ax, column, title, ylabel, ylim in [
         (axes[0], "accuracy", "Decision Accuracy", "accuracy", (0.68, 0.79)),
         (axes[1], "auc", "Ranking AUC", "AUC", (0.76, 0.88)),
-        (axes[2], "predicted_fake_rate", "Fake-Call Rate", "fraction predicted fake", (0.42, 0.60)),
+        (axes[2], "predicted_fake_rate", "Fake-Call Rate", "fraction predicted fake", (0.32, 0.60)),
     ]:
         values = frame[column].astype(float)
         ax.bar(x, values, color=colors, edgecolor="#222222", linewidth=0.4)

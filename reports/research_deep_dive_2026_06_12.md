@@ -82,7 +82,7 @@ Evaluation:
 1. In-domain: Ishu, Rhythm, AI-vs-real Kaggle datasets.
 2. Cross-domain: Ishu -> MS COCOAI and MS COCOAI -> Ishu.
 3. Leave-one-generator-out: train on four MS COCOAI generator labels, test on the held-out generator.
-4. Robust transforms: JPEG70/50, blur, resize, crop, screenshot/noise.
+4. Robust transforms: JPEG70/50/30, blur, resize, crop, screenshot/noise, and social-media crop/recompression.
 5. High-resolution tiling: compare 128x128 resize against local-tile plus global-view inference.
 
 ## Immediate Implementation Plan

@@ -9,11 +9,13 @@ from PIL import Image, ImageFilter
 ROBUSTNESS_VARIANTS = (
     "jpeg70",
     "jpeg50",
+    "jpeg30",
     "blur1",
     "resize_half",
     "crop85",
     "noise3",
     "screenshot",
+    "social_square",
 )
 
 
@@ -32,6 +34,15 @@ def center_crop_resize(image: Image.Image, fraction: float) -> Image.Image:
     left = (width - crop_width) // 2
     top = (height - crop_height) // 2
     cropped = image.crop((left, top, left + crop_width, top + crop_height))
+    return cropped.resize((width, height), Image.Resampling.BICUBIC)
+
+
+def center_square_crop_resize(image: Image.Image) -> Image.Image:
+    width, height = image.size
+    side = max(1, min(width, height))
+    left = (width - side) // 2
+    top = (height - side) // 2
+    cropped = image.crop((left, top, left + side, top + side))
     return cropped.resize((width, height), Image.Resampling.BICUBIC)
 
 
@@ -57,12 +68,18 @@ def screenshot_roundtrip(image: Image.Image) -> Image.Image:
     return jpeg_roundtrip(restored, quality=85)
 
 
+def social_square_roundtrip(image: Image.Image) -> Image.Image:
+    return jpeg_roundtrip(center_square_crop_resize(image), quality=80)
+
+
 def apply_robustness_variant(image: Image.Image, variant: str) -> Image.Image:
     image = image.convert("RGB")
     if variant == "jpeg70":
         return jpeg_roundtrip(image, quality=70)
     if variant == "jpeg50":
         return jpeg_roundtrip(image, quality=50)
+    if variant == "jpeg30":
+        return jpeg_roundtrip(image, quality=30)
     if variant == "blur1":
         return image.filter(ImageFilter.GaussianBlur(radius=1.0))
     if variant == "resize_half":
@@ -73,4 +90,6 @@ def apply_robustness_variant(image: Image.Image, variant: str) -> Image.Image:
         return deterministic_gaussian_noise(image, sigma=3.0)
     if variant == "screenshot":
         return screenshot_roundtrip(image)
+    if variant == "social_square":
+        return social_square_roundtrip(image)
     raise ValueError(f"Unsupported variant: {variant}")

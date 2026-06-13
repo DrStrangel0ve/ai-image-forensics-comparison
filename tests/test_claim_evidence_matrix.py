@@ -40,8 +40,10 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
         "ms_to_ishu_tuned_fusion_resize_half",
         "ms_to_ishu_tuned_fusion_crop85",
         "ms_to_ishu_tuned_fusion_jpeg50",
+        "ms_to_ishu_tuned_fusion_jpeg30",
         "ms_to_ishu_tuned_fusion_noise3",
         "ms_to_ishu_tuned_fusion_screenshot",
+        "ms_to_ishu_tuned_fusion_social_square",
     ]
     pd.DataFrame(
         {

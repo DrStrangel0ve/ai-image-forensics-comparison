@@ -37,11 +37,13 @@ Core numbers to lead with:
 | tuned fusion cap sweep on MS COCOAI -> Ishu | 0.7632 accuracy / 0.8361 AUC / 0.5175 fake-call rate | best reverse SCP-Fusion operating point so far |
 | tuned fusion cap_0p4 under JPEG70 | 0.7661 accuracy / 0.8485 AUC / 0.4678 fake-call rate | first robustness check for the reverse cap frontier |
 | tuned fusion cap_0p4 under JPEG50 | 0.7515 accuracy / 0.8309 AUC / 0.4240 fake-call rate | stronger recompression only mildly degrades the clean cap frontier |
+| tuned fusion cap_0p4 under JPEG30 | 0.7076 accuracy / 0.8167 AUC / 0.3450 fake-call rate | harsh recompression causes under-calling of generated images |
 | tuned fusion cap_0p4 under blur1 | 0.7105 accuracy / 0.7872 AUC / 0.5585 fake-call rate | blur is the clearest current transform weakness |
 | tuned fusion cap_0p4 under resize_half | 0.7164 accuracy / 0.7816 AUC / 0.5526 fake-call rate | half-resolution resize similarly hurts ranking and calibration |
 | tuned fusion cap_0p4 under crop85 | 0.7251 accuracy / 0.8227 AUC / 0.5205 fake-call rate | crop is weaker than clean but less damaging than blur/resize |
 | tuned fusion cap_0p4 under noise3 | 0.7690 accuracy / 0.8704 AUC / 0.4708 fake-call rate | small sensor-like noise is not a current weakness |
 | tuned fusion cap_0p4 under screenshot | 0.7310 accuracy / 0.7965 AUC / 0.5263 fake-call rate | screenshot-style resize plus recompression is a realistic stressor |
+| tuned fusion cap_0p4 under social_square | 0.7778 accuracy / 0.8474 AUC / 0.5088 fake-call rate | centered social crop plus recompression is stable in this bounded check |
 | physics-guided ResNet on MS COCOAI -> Ishu | 0.6871 default accuracy / 0.6813 source-threshold accuracy | best default-threshold single-model operating point and ECE anchor |
 | CLIP source-heldout triage, strict 5% budget | 0.4747 coverage / 0.9261 decided-case accuracy | best current forensic triage operating point |
 | DINOv2-enhanced source-calibrated fusion | 0.6127 accuracy / 0.3062 Brier / 0.2938 ECE | best calibrated fusion-family operating point before CLIP |
@@ -111,7 +113,7 @@ The results show that ranking, probability calibration, and binary decision qual
 
 Priority order:
 
-1. Extend tuned-fusion robustness to native-resolution and stronger in-the-wild perturbations. JPEG70, JPEG50, noise3, and crop85 are comparatively stable, but blur1, resize_half, and screenshot-style roundtrips expose real transform weaknesses; the next gap is native-resolution tiling, stronger social-media crops/recompression, or a larger source split before calling the 0.40 reverse frontier contest-ready.
+1. Extend tuned-fusion robustness to native-resolution and stronger in-the-wild perturbations. JPEG70, JPEG50, noise3, and social_square are comparatively stable, but JPEG30, blur1, resize_half, and screenshot-style roundtrips expose real transform weaknesses; the next gap is native-resolution tiling, stronger social-media processing, or a larger source split before calling the 0.40 reverse frontier contest-ready.
 2. Run `combined_v4` full repeated-seed transfer and decide whether it belongs in the main method or stays an ablation.
 3. Add another qualitative grid from a second seed or reverse transfer.
 4. Convert the DFRWS poster draft into a one-page visual artifact after the next experiment.
@@ -121,7 +123,7 @@ Priority order:
 The best next technical experiment is **source-heldout utility-aware reverse fusion**:
 
 - use the checked-in `--threshold-strategy source_utility` implementation and the model-selection selector as fixed operating-point evaluators;
-- extend the 0.40 source-cap tuned fusion robustness check from JPEG/blur/resize/crop/noise/screenshot to native-resolution tiling, stronger social-media crops, or a larger source split;
+- extend the 0.40 source-cap tuned fusion robustness check from JPEG/blur/resize/crop/noise/screenshot/social-square to native-resolution tiling, stronger social-media processing, or a larger source split;
 - combine the branch-dropout AUC gain with the strong-regularization Brier/ECE gain;
 - preserve the current reverse suite as the fixed comparison table.
 
