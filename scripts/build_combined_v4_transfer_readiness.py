@@ -237,33 +237,63 @@ def build_report(
         (deltas["scale"] == "medium_240_train_probe")
         & (deltas["candidate"] == "combined_v4_logreg_selectk60")
     ].iloc[0]
+    intro_sentence = (
+        "This report records the completed `combined_v4` transfer gate for WIFS/DFF."
+        if has_transfer
+        else (
+            "This report turns the current `combined_v4` ablation evidence into a decision gate for "
+            "WIFS/DFF. It does not promote `combined_v4` to the main method; it defines what has to be "
+            "run before that claim is safe."
+        )
+    )
     transfer_sentence = (
-        "A `combined_v4` transfer row is already present in the core table."
+        "The `combined_v4` transfer rows are present in the core table; the gate outcome is now checked in."
         if has_transfer
         else "No `combined_v4` transfer row is present in the core table yet."
     )
+    command_next_steps = (
+        [
+            "The manifest remains checked in for reproduction or extension.",
+            "",
+            "To reproduce the gate:",
+            "",
+            "1. Run all `train` commands.",
+            "2. Run all `transfer_eval` commands.",
+            "3. Run `python scripts\\summarize_combined_v4_transfer.py` and rebuild publication tables.",
+        ]
+        if has_transfer
+        else [
+            "Recommended execution order:",
+            "",
+            "1. Run all `train` commands.",
+            "2. Run all `transfer_eval` commands.",
+            "3. Summarize the resulting `metrics.json` files and add the new transfer rows to the publication core table.",
+        ]
+    )
+    decision_sentence = (
+        "`combined_v4` should remain an ablation candidate for now. In the medium bounded Ishu "
+        f"probe, raw v4 improves AUC over `combined_v3` by {medium_raw['auc_delta_vs_v3']:.4f} "
+        f"and accuracy by {medium_raw['accuracy_delta_vs_v3']:.4f}, but the AUC intervals still "
+        f"{'overlap' if medium_raw['auc_ci_overlap'] else 'do not overlap'}. Select-k60 is the "
+        f"calibration-friendly variant, changing ECE by {medium_select['ece_delta_vs_v3']:.4f} "
+        "relative to v3 on the same medium probe."
+    )
+    if has_transfer:
+        decision_sentence += (
+            " The completed full-transfer gate keeps `combined_v3` as the main conventional "
+            "baseline and moves `combined_v4_selectk60` into the appendix-ablation bucket."
+        )
 
     lines = [
         "# combined_v4 Transfer Readiness",
         "",
         "Run date: 2026-06-13",
         "",
-        (
-            "This report turns the current `combined_v4` ablation evidence into a decision gate for "
-            "WIFS/DFF. It does not promote `combined_v4` to the main method; it defines what has to be "
-            "run before that claim is safe."
-        ),
+        intro_sentence,
         "",
         "## Current Decision",
         "",
-        (
-            "`combined_v4` should remain an ablation candidate for now. In the medium bounded Ishu "
-            f"probe, raw v4 improves AUC over `combined_v3` by {medium_raw['auc_delta_vs_v3']:.4f} "
-            f"and accuracy by {medium_raw['accuracy_delta_vs_v3']:.4f}, but the AUC intervals still "
-            f"{'overlap' if medium_raw['auc_ci_overlap'] else 'do not overlap'}. Select-k60 is the "
-            f"calibration-friendly variant, changing ECE by {medium_select['ece_delta_vs_v3']:.4f} "
-            "relative to v3 on the same medium probe."
-        ),
+        decision_sentence,
         "",
         transfer_sentence,
         "",
@@ -298,11 +328,7 @@ def build_report(
         "",
         f"Commands are written to `reports/assets/combined_v4_transfer_command_manifest.csv` for seeds {', '.join(map(str, seeds))}.",
         "",
-        "Recommended execution order:",
-        "",
-        "1. Run all `train` commands.",
-        "2. Run all `transfer_eval` commands.",
-        "3. Summarize the resulting `metrics.json` files and add the new transfer rows to the publication core table.",
+        *command_next_steps,
         "",
         "First command:",
         "",

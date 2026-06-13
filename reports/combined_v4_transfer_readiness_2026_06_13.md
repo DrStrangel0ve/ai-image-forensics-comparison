@@ -2,13 +2,13 @@
 
 Run date: 2026-06-13
 
-This report turns the current `combined_v4` ablation evidence into a decision gate for WIFS/DFF. It does not promote `combined_v4` to the main method; it defines what has to be run before that claim is safe.
+This report records the completed `combined_v4` transfer gate for WIFS/DFF.
 
 ## Current Decision
 
-`combined_v4` should remain an ablation candidate for now. In the medium bounded Ishu probe, raw v4 improves AUC over `combined_v3` by 0.0081 and accuracy by 0.0029, but the AUC intervals still overlap. Select-k60 is the calibration-friendly variant, changing ECE by -0.0541 relative to v3 on the same medium probe.
+`combined_v4` should remain an ablation candidate for now. In the medium bounded Ishu probe, raw v4 improves AUC over `combined_v3` by 0.0081 and accuracy by 0.0029, but the AUC intervals still overlap. Select-k60 is the calibration-friendly variant, changing ECE by -0.0541 relative to v3 on the same medium probe. The completed full-transfer gate keeps `combined_v3` as the main conventional baseline and moves `combined_v4_selectk60` into the appendix-ablation bucket.
 
-No `combined_v4` transfer row is present in the core table yet.
+The `combined_v4` transfer rows are present in the core table; the gate outcome is now checked in.
 
 ## Delta Versus combined_v3
 
@@ -33,11 +33,13 @@ Keep select-k60 as a calibration ablation if it keeps lower Brier/ECE even when 
 
 Commands are written to `reports/assets/combined_v4_transfer_command_manifest.csv` for seeds 7, 17, 29.
 
-Recommended execution order:
+The manifest remains checked in for reproduction or extension.
+
+To reproduce the gate:
 
 1. Run all `train` commands.
 2. Run all `transfer_eval` commands.
-3. Summarize the resulting `metrics.json` files and add the new transfer rows to the publication core table.
+3. Run `python scripts\summarize_combined_v4_transfer.py` and rebuild publication tables.
 
 First command:
 
@@ -50,3 +52,10 @@ First transfer command:
 ```powershell
 python scripts\evaluate_feature_model.py --model-dir runs\combined_v4_full_transfer\seed7\combined_v3_logreg --target-dir data\raw\ms_cocoai_2026_validation_source_balanced_100 --output-dir runs\combined_v4_full_transfer_to_ms\seed7\combined_v3_logreg --image-size 128 --target-split all --seed 7 --skip-errors
 ```
+
+## Existing Transfer Rows
+
+| finding_id | setting | method | accuracy | auc | brier | ece |
+| --- | --- | --- | --- | --- | --- | --- |
+| ishu_to_ms_combined_v4_raw | Ishu -> source-balanced MS COCOAI, combined_v4 transfer gate | combined_v4 | 0.5600 | 0.5801 | 0.3459 | 0.2964 |
+| ishu_to_ms_combined_v4_selectk60 | Ishu -> source-balanced MS COCOAI, combined_v4 transfer gate | combined_v4 select-k60 | 0.5553 | 0.5922 | 0.3261 | 0.2663 |

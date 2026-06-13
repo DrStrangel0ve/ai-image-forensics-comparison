@@ -22,6 +22,10 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
         "ishu_to_ms_scp_fusion_v0",
         "ishu_to_ms_scp_fusion_all_foundation",
         "ishu_to_ms_clip_standalone",
+        "ishu_same_combined_v4_raw",
+        "ishu_same_combined_v4_selectk60",
+        "ishu_to_ms_combined_v4_raw",
+        "ishu_to_ms_combined_v4_selectk60",
         "ishu_to_ms_triage5_scp_fusion_all_foundation",
         "ishu_to_ms_triage5_clip_standalone",
         "ms_to_ishu_physics_guided",
@@ -83,6 +87,8 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
     frame = pd.read_csv(csv_path)
     assert "clip_transfer_frontier" in set(frame["claim_id"])
     assert "combined_v4_is_ablation_candidate" in set(frame["claim_id"])
-    assert "needs_more_evidence" in set(frame["status"])
+    v4_row = frame[frame["claim_id"] == "combined_v4_is_ablation_candidate"].iloc[0]
+    assert v4_row["status"] == "ready_with_caveat"
+    assert "ishu_to_ms_combined_v4_selectk60" in v4_row["evidence_finding_ids"]
     assert "ms_to_ishu_source_cap_accuracy" in frame["evidence_finding_ids"].str.cat(sep=",")
     assert "Claim Evidence Matrix" in markdown_path.read_text(encoding="utf-8")

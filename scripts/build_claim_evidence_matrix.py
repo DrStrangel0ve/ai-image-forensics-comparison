@@ -178,17 +178,24 @@ CLAIMS = [
     {
         "claim_id": "combined_v4_is_ablation_candidate",
         "claim": (
-            "combined_v4 is promising as a richer physical/signal ablation, but it should not be promoted to the main "
-            "claimed method until the larger repeated-seed and transfer checks are complete."
+            "combined_v4 is useful as a richer physical/signal ablation, especially with feature selection, but the "
+            "completed transfer gate does not justify replacing combined_v3 as the main conventional baseline."
         ),
         "submission_use": "WIFS/DFF ablation roadmap; optional appendix if repeated-seed run lands.",
-        "status": "needs_more_evidence",
-        "evidence_finding_ids": [],
-        "primary_artifact": "reports/combined_v4_transfer_readiness_2026_06_13.md",
-        "risk_or_caveat": "Current v4 evidence is bounded and interval-overlapping; it is not yet a paper headline.",
+        "status": "ready_with_caveat",
+        "evidence_finding_ids": [
+            "ishu_same_combined_v4_raw",
+            "ishu_same_combined_v4_selectk60",
+            "ishu_to_ms_combined_v4_raw",
+            "ishu_to_ms_combined_v4_selectk60",
+        ],
+        "primary_artifact": "reports/combined_v4_full_transfer_summary_2026_06_13.md",
+        "risk_or_caveat": (
+            "Raw v4 mainly helps transfer accuracy, while select-k60 helps transfer AUC/calibration but loses "
+            "same-domain Ishu accuracy; keep it as an ablation rather than a headline method."
+        ),
         "next_action": (
-            "Run the checked-in combined_v4 transfer command manifest, then add raw-v4 and select-k60 transfer rows "
-            "to the publication core table."
+            "Try source-aware feature selection or a stronger regularized classifier before any main-method promotion."
         ),
     },
 ]

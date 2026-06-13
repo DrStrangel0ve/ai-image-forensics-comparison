@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import pandas as pd
 
 
@@ -26,6 +27,9 @@ METRIC_COLUMNS = [
     "real_false_positive_rate",
     "fake_miss_rate",
 ]
+
+BOOTSTRAP_SEED = 20260613
+BOOTSTRAP_RESAMPLES = 2000
 
 
 def parse_args() -> argparse.Namespace:
@@ -173,16 +177,31 @@ def load_seed_summary(source_root: Path, transfer_root: Path, runs: list[str]) -
     return pd.DataFrame(rows).sort_values(["phase", "seed", "run"]).reset_index(drop=True)
 
 
-def _mean_ci(values: pd.Series) -> pd.Series:
+def _summary_stats(values: pd.Series) -> pd.Series:
     numeric = pd.to_numeric(values, errors="coerce").dropna()
     if numeric.empty:
-        return pd.Series({"mean": None, "std": None, "min": None, "max": None})
+        return pd.Series(
+            {"mean": None, "std": None, "min": None, "max": None, "ci_low": None, "ci_high": None}
+        )
+    if len(numeric) == 1:
+        ci_low = ci_high = float(numeric.iloc[0])
+    else:
+        rng = np.random.default_rng(BOOTSTRAP_SEED)
+        values_array = numeric.to_numpy(dtype=float)
+        samples = rng.choice(
+            values_array,
+            size=(BOOTSTRAP_RESAMPLES, len(values_array)),
+            replace=True,
+        ).mean(axis=1)
+        ci_low, ci_high = np.percentile(samples, [2.5, 97.5])
     return pd.Series(
         {
             "mean": numeric.mean(),
             "std": numeric.std(ddof=1) if len(numeric) > 1 else 0.0,
             "min": numeric.min(),
             "max": numeric.max(),
+            "ci_low": ci_low,
+            "ci_high": ci_high,
         }
     )
 
@@ -195,11 +214,13 @@ def build_mean_summary(seed_summary: pd.DataFrame) -> pd.DataFrame:
         row["n_seeds"] = int(group["seed"].nunique())
         row["seeds"] = ",".join(str(seed) for seed in sorted(group["seed"].unique()))
         for column in METRIC_COLUMNS:
-            stats = _mean_ci(group[column])
+            stats = _summary_stats(group[column])
             row[f"{column}_mean"] = stats["mean"]
             row[f"{column}_std"] = stats["std"]
             row[f"{column}_min"] = stats["min"]
             row[f"{column}_max"] = stats["max"]
+            row[f"{column}_ci_low"] = stats["ci_low"]
+            row[f"{column}_ci_high"] = stats["ci_high"]
         rows.append(row)
     return pd.DataFrame(rows)
 
@@ -226,9 +247,12 @@ def build_delta_summary(seed_summary: pd.DataFrame) -> pd.DataFrame:
             }
             for column in METRIC_COLUMNS:
                 diffs = cand.loc[common, column].astype(float) - baseline.loc[common, column].astype(float)
-                row[f"{column}_delta_mean"] = diffs.mean()
-                row[f"{column}_delta_min"] = diffs.min()
-                row[f"{column}_delta_max"] = diffs.max()
+                stats = _summary_stats(diffs)
+                row[f"{column}_delta_mean"] = stats["mean"]
+                row[f"{column}_delta_min"] = stats["min"]
+                row[f"{column}_delta_max"] = stats["max"]
+                row[f"{column}_delta_ci_low"] = stats["ci_low"]
+                row[f"{column}_delta_ci_high"] = stats["ci_high"]
             rows.append(row)
     return pd.DataFrame(rows)
 
@@ -249,6 +273,104 @@ def _markdown_table(frame: pd.DataFrame, columns: list[str]) -> str:
     for _index, row in frame.iterrows():
         lines.append("| " + " | ".join(_format(row[column]) for column in columns) + " |")
     return "\n".join(lines)
+
+
+def _metric_delta(delta_summary: pd.DataFrame, phase: str, candidate: str, metric: str) -> float:
+    row = delta_summary[
+        (delta_summary["phase"] == phase) & (delta_summary["candidate"] == candidate)
+    ]
+    if row.empty:
+        raise ValueError(f"Missing delta for phase={phase!r}, candidate={candidate!r}")
+    return float(row.iloc[0][f"{metric}_delta_mean"])
+
+
+def _interpretation(delta_summary: pd.DataFrame, has_full_three_seed: bool) -> list[str]:
+    if not has_full_three_seed:
+        return [
+            (
+                "For the current seed slice, `combined_v4_selectk60` is the most interesting "
+                "transfer candidate because it improves MS COCOAI transfer accuracy, AUC, "
+                "Brier score, and ECE versus `combined_v3`. The same model is slightly weaker "
+                "on the Ishu holdout split, so it should stay an ablation until the remaining "
+                "seeds confirm whether this is a real cross-domain gain."
+            ),
+            "",
+            (
+                "Raw `combined_v4` remains a useful diagnostic branch: it nudges same-domain "
+                "Ishu ranking upward in this seed, but it does not improve transfer AUC yet."
+            ),
+            "",
+            "Next step: run the remaining rows in `reports/assets/combined_v4_transfer_command_manifest.csv` and regenerate this report.",
+        ]
+
+    raw_acc = _metric_delta(delta_summary, "ishu_to_ms_cocoai", "combined_v4_logreg", "accuracy")
+    raw_auc = _metric_delta(delta_summary, "ishu_to_ms_cocoai", "combined_v4_logreg", "roc_auc")
+    raw_brier = _metric_delta(delta_summary, "ishu_to_ms_cocoai", "combined_v4_logreg", "brier_score")
+    raw_ece = _metric_delta(
+        delta_summary,
+        "ishu_to_ms_cocoai",
+        "combined_v4_logreg",
+        "expected_calibration_error",
+    )
+    selected_acc = _metric_delta(
+        delta_summary,
+        "ishu_to_ms_cocoai",
+        "combined_v4_logreg_selectk60",
+        "accuracy",
+    )
+    selected_auc = _metric_delta(
+        delta_summary,
+        "ishu_to_ms_cocoai",
+        "combined_v4_logreg_selectk60",
+        "roc_auc",
+    )
+    selected_brier = _metric_delta(
+        delta_summary,
+        "ishu_to_ms_cocoai",
+        "combined_v4_logreg_selectk60",
+        "brier_score",
+    )
+    selected_ece = _metric_delta(
+        delta_summary,
+        "ishu_to_ms_cocoai",
+        "combined_v4_logreg_selectk60",
+        "expected_calibration_error",
+    )
+    selected_source_acc = _metric_delta(
+        delta_summary,
+        "ishu_holdout",
+        "combined_v4_logreg_selectk60",
+        "accuracy",
+    )
+    selected_source_auc = _metric_delta(
+        delta_summary,
+        "ishu_holdout",
+        "combined_v4_logreg_selectk60",
+        "roc_auc",
+    )
+    return [
+        (
+            "The full three-seed gate does not justify promoting `combined_v4` as the main "
+            "conventional branch. Raw v4 improves Ishu -> MS COCOAI transfer accuracy by "
+            f"{raw_acc:+.4f}, but its transfer AUC is effectively flat at {raw_auc:+.4f} "
+            f"and its Brier/ECE move by {raw_brier:+.4f} / {raw_ece:+.4f}."
+        ),
+        "",
+        (
+            "`combined_v4_selectk60` is the more useful ablation: it improves transfer AUC "
+            f"by {selected_auc:+.4f} and Brier/ECE by {selected_brier:+.4f} / "
+            f"{selected_ece:+.4f}, with a smaller transfer accuracy gain of "
+            f"{selected_acc:+.4f}. The cost is same-domain Ishu degradation: "
+            f"{selected_source_acc:+.4f} accuracy and {selected_source_auc:+.4f} AUC."
+        ),
+        "",
+        (
+            "Decision: keep `combined_v3` as the main conventional baseline for now, and use "
+            "`combined_v4_selectk60` as a calibration/transfer ablation in the WIFS/DFF appendix. "
+            "The next useful v4 experiment is not another same split rerun; it is source-aware "
+            "feature selection or a stronger regularized classifier."
+        ),
+    ]
 
 
 def build_report(
@@ -310,6 +432,8 @@ def build_report(
                 "brier_score_mean",
                 "expected_calibration_error_mean",
                 "fake_call_rate_mean",
+                "roc_auc_ci_low",
+                "roc_auc_ci_high",
             ],
         ),
         "",
@@ -326,25 +450,14 @@ def build_report(
                 "brier_score_delta_mean",
                 "expected_calibration_error_delta_mean",
                 "fake_call_rate_delta_mean",
+                "roc_auc_delta_ci_low",
+                "roc_auc_delta_ci_high",
             ],
         ),
         "",
         "## Interpretation",
         "",
-        (
-            "For the current seed slice, `combined_v4_selectk60` is the most interesting "
-            "transfer candidate because it improves MS COCOAI transfer accuracy, AUC, "
-            "Brier score, and ECE versus `combined_v3`. The same model is slightly weaker "
-            "on the Ishu holdout split, so it should stay an ablation until seeds 17 and 29 "
-            "confirm whether this is a real cross-domain gain."
-        ),
-        "",
-        (
-            "Raw `combined_v4` remains a useful diagnostic branch: it nudges same-domain "
-            "Ishu ranking upward in this seed, but it does not improve transfer AUC yet."
-        ),
-        "",
-        "Next step: run the remaining rows in `reports/assets/combined_v4_transfer_command_manifest.csv` and regenerate this report.",
+        *_interpretation(delta_summary, has_full_three_seed),
         "",
     ]
     return "\n".join(lines)

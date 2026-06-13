@@ -55,8 +55,7 @@ Current evidence:
 - A bounded three-seed feature-selection probe makes `combined_v4` promising again: select-k60 v4 reaches 0.7389 mean accuracy / 0.8219 mean AUC versus 0.7278 / 0.8033 for `combined_v3`; select-k80 has the best bounded accuracy at 0.7611 but lower AUC.
 - A medium three-seed probe with 240 training images per seed makes raw `combined_v4` the best ranking/accuracy candidate at 0.7544 mean accuracy / 0.8315 mean AUC, while select-k60 has the best Brier/ECE.
 - Repeated benchmark and feature-ablation summary scripts now emit 95% deterministic bootstrap confidence intervals, and the checked-in `combined_v4` ablation assets have been regenerated with those intervals.
-- A `combined_v4` transfer-readiness gate now quantifies the bounded v4 deltas and confirms the missing transfer row: raw v4 is +0.0081 AUC versus `combined_v3` in the medium probe with overlapping intervals, while select-k60 improves ECE by 0.0541; the exact full-transfer command manifest is checked in.
-- The first seed-7 full-transfer slice has landed: on Ishu -> source-balanced MS COCOAI, `combined_v4_selectk60` improves over `combined_v3` by +0.0160 accuracy, +0.0226 AUC, -0.0281 Brier, and -0.0499 ECE, but it is slightly weaker on the Ishu holdout split. Treat this as a promising ablation until seeds 17 and 29 are complete.
+- A completed `combined_v4` transfer gate now settles the v4 claim for this paper draft: raw v4 improves Ishu -> MS COCOAI transfer accuracy by +0.0133 but leaves AUC flat and worsens Brier/ECE, while select-k60 improves transfer AUC by +0.0119 and Brier/ECE by -0.0156 / -0.0249 at a -0.0292 same-domain Ishu accuracy cost. Keep `combined_v3` as the main conventional baseline and use `combined_v4_selectk60` as a caveated transfer/calibration ablation.
 
 ## Target 1: DFRWS-USA 2026 Poster
 
@@ -98,7 +97,7 @@ A compact, serious benchmark paper. WIFS will expect tighter experimental method
 
 Minimum additions before submission:
 
-- Run a full repeated-seed `combined_v4` ablation against `combined_v3`, using the new `--select-k` path and at least one stronger classifier.
+- Use the completed `combined_v4` transfer gate as a caveated ablation, and only run another v4 experiment if it adds source-aware feature selection or a stronger regularized classifier.
 - Regenerate publication figures with the new CLIP/DINOv2 foundation/fusion and reverse-transfer regularization results, then add either utility-aware reverse fusion or Ishu -> another recent Kaggle dataset.
 - Expand the new source-heldout calibration split with a calibration-aware model/training ablation.
 - Use the new source-heldout confidence intervals in poster/paper tables and add seed-variability plots where space permits.
@@ -156,9 +155,8 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - raw v4 trails `combined_v3` in the first 80/40 smoke probe, but select-k v4 leads the bounded three-seed 120/60 probe by mean AUC;
    - the expanded bounded sweep suggests `k=60` for ranking/AUC and `k=80` for default accuracy, while histogram-gradient boosting is weak on the small split;
    - the medium 240-train run suggests raw v4 may overtake selected v4 once there is enough data, with select-k60 still best calibrated;
-   - interval-aware summaries show the current v4 lead is narrow, so frame it as model-selection evidence until the larger repeated-seed run lands;
-   - the seed-7 full-transfer slice is summarized in `reports/combined_v4_full_transfer_summary_2026_06_13.md`: select-k60 v4 improves Ishu -> MS transfer metrics but gives up same-domain Ishu holdout performance;
-   - the next step is to finish seeds 17 and 29 from `reports/assets/combined_v4_transfer_command_manifest.csv`, regenerate the transfer summary, then decide whether v4 joins the main conventional branch or stays an appendix ablation.
+   - the full transfer gate is summarized in `reports/combined_v4_full_transfer_summary_2026_06_13.md`: raw v4 helps transfer accuracy but not AUC/calibration, while select-k60 helps transfer AUC/calibration but gives up same-domain Ishu accuracy;
+   - decision: keep `combined_v3` as the main conventional baseline, report `combined_v4_selectk60` as an appendix ablation, and only spend more v4 time on source-aware feature selection or stronger regularized classifiers.
 
 3. Improve calibration:
    - Brier score, expected calibration error, reliability curves, and source-heldout post-hoc calibration are now implemented;

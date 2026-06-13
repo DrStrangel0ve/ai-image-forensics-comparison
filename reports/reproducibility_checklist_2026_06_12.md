@@ -172,8 +172,7 @@ python scripts\summarize_combined_v4_transfer.py
 - Under source-heldout triage, DINOv2-enhanced SCP-Fusion improves the strict 5% operating point to about 26% coverage with about 80% decided-case accuracy.
 - Source-heldout calibration and triage assets include 95% deterministic bootstrap confidence intervals over held-out source/seed rows.
 - Medium `combined_v4` ablation suggests raw `combined_v4` is the best ranking/accuracy candidate at 240 train images per seed, while select-k60 is the best calibrated variant; regenerated ablation assets include 95% bootstrap confidence intervals.
-- The `combined_v4` transfer-readiness gate keeps v4 as an ablation candidate until the checked-in full-transfer command manifest finishes all repeated seeds.
-- In the first seed-7 full-transfer slice, `combined_v4_selectk60` improves Ishu-to-MS-COCOAI transfer over `combined_v3` by +0.0160 accuracy, +0.0226 AUC, -0.0281 Brier, and -0.0499 ECE, but is slightly weaker on the Ishu same-domain holdout.
+- The completed `combined_v4` transfer gate keeps `combined_v3` as the main conventional baseline. Raw v4 improves Ishu-to-MS-COCOAI transfer accuracy by +0.0133 but leaves AUC flat and worsens Brier/ECE; select-k60 improves transfer AUC by +0.0119 and Brier/ECE by -0.0156 / -0.0249, but loses -0.0292 same-domain Ishu accuracy.
 
 ## Known Limitations
 

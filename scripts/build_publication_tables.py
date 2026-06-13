@@ -32,6 +32,8 @@ METHOD_LABELS = {
     "scp_fusion_all_foundation": "SCP-Fusion + CLIP + DINOv2",
     "clip_standalone": "Frozen CLIP ViT-B/32",
     "clip_vit_b_32": "Frozen CLIP ViT-B/32",
+    "combined_v4_raw": "combined_v4",
+    "combined_v4_selectk60": "combined_v4 select-k60",
     "score_fusion_all6_dropout_mean_r35x8": "Reverse all-branch dropout fusion",
     "score_fusion_all6_temp_balanced": "Reverse all-branch fusion + balanced temperature",
     "cap_0p48": "Reverse source-threshold capped fusion",
@@ -91,6 +93,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--clip-triage-5pct",
         default="reports/assets/score_fusion_clip_source_holdout_triage_5pct.csv",
+    )
+    parser.add_argument(
+        "--combined-v4-transfer-summary",
+        default="reports/assets/combined_v4_full_transfer_mean_summary.csv",
+        help="Optional repeated-seed combined_v4 same-domain/transfer summary.",
     )
     parser.add_argument(
         "--reverse-all-methods",
@@ -282,6 +289,51 @@ def _foundation_metric_rows(path: Path) -> list[dict[str, object]]:
                 predicted_fake_rate=float(source_row["mean_predicted_positive_rate"]),
             )
         )
+    return rows
+
+
+def _combined_v4_transfer_rows(path: Path) -> list[dict[str, object]]:
+    if not path.exists():
+        return []
+    frame = pd.read_csv(path)
+    rows = []
+    run_to_key = {
+        "combined_v4_logreg": "combined_v4_raw",
+        "combined_v4_logreg_selectk60": "combined_v4_selectk60",
+    }
+    phase_to_prefix = {
+        "ishu_holdout": "ishu_same",
+        "ishu_to_ms_cocoai": "ishu_to_ms",
+    }
+    phase_to_setting = {
+        "ishu_holdout": "Ishu same-domain, 3 seeds",
+        "ishu_to_ms_cocoai": "Ishu -> source-balanced MS COCOAI, combined_v4 transfer gate",
+    }
+    for phase, prefix in phase_to_prefix.items():
+        phase_frame = frame[frame["phase"] == phase]
+        if phase_frame.empty:
+            continue
+        for run, key in run_to_key.items():
+            source_row = _single_row(phase_frame, "run", run)
+            interpretation = (
+                "Raw combined_v4 transfer-gate ablation; improves transfer accuracy but not transfer AUC or calibration."
+                if key == "combined_v4_raw"
+                else "Feature-selected combined_v4 transfer-gate ablation; improves transfer AUC and calibration but gives up same-domain Ishu accuracy."
+            )
+            rows.append(
+                _blank_row(
+                    f"{prefix}_{key}",
+                    phase_to_setting[phase],
+                    METHOD_LABELS[key],
+                    path,
+                    interpretation,
+                    accuracy=float(source_row["accuracy_mean"]),
+                    auc=float(source_row["roc_auc_mean"]),
+                    brier=float(source_row["brier_score_mean"]),
+                    ece=float(source_row["expected_calibration_error_mean"]),
+                    predicted_fake_rate=float(source_row["fake_call_rate_mean"]),
+                )
+            )
     return rows
 
 
@@ -498,6 +550,7 @@ def build_core_results_table(
     calibration_summary: Path,
     clip_calibration_summary: Path,
     clip_triage_5pct: Path,
+    combined_v4_transfer_summary: Path,
     reverse_all_methods: Path,
     reverse_fusion_regularization: Path,
     reverse_threshold_cap: Path,
@@ -511,6 +564,7 @@ def build_core_results_table(
     rows = []
     rows.extend(_same_domain_rows(physics_guided_report))
     rows.extend(_calibration_metric_rows(calibration_summary))
+    rows.extend(_combined_v4_transfer_rows(combined_v4_transfer_summary))
     rows.extend(_foundation_metric_rows(clip_calibration_summary))
     rows.extend(_triage_rows(clip_triage_5pct))
     rows.extend(_reverse_transfer_rows(reverse_all_methods, reverse_fusion_regularization))
@@ -563,6 +617,7 @@ def main() -> None:
         Path(args.calibration_summary),
         Path(args.clip_calibration_summary),
         Path(args.clip_triage_5pct),
+        Path(args.combined_v4_transfer_summary),
         Path(args.reverse_all_methods),
         Path(args.reverse_fusion_regularization),
         Path(args.reverse_threshold_cap),

@@ -39,7 +39,7 @@ The active publication roadmap is documented in [reports/submission_plan_2026.md
 
 The public reproducibility checklist is documented in [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It lists what is included in the public repo, what must be downloaded externally, and the shortest commands for tests, ablations, and publication figure generation.
 
-The first `combined_v4` full-transfer seed slice is summarized in [reports/combined_v4_full_transfer_summary_2026_06_13.md](reports/combined_v4_full_transfer_summary_2026_06_13.md). It is preliminary: select-k60 v4 improves Ishu -> source-balanced MS COCOAI transfer on seed 7, but is slightly weaker on the Ishu same-domain holdout, so the remaining seeds are still required before promoting v4 into the main branch.
+The completed `combined_v4` full-transfer gate is summarized in [reports/combined_v4_full_transfer_summary_2026_06_13.md](reports/combined_v4_full_transfer_summary_2026_06_13.md). Across seeds 7/17/29, raw v4 improves Ishu -> source-balanced MS COCOAI transfer accuracy but not transfer AUC or calibration, while select-k60 v4 improves transfer AUC/Brier/ECE at the cost of same-domain Ishu accuracy. `combined_v3` remains the main conventional baseline; `combined_v4_selectk60` is now a caveated transfer/calibration ablation.
 
 ## Setup
 
@@ -473,7 +473,7 @@ A feature-selection follow-up is checked into [reports/combined_v4_selectk_probe
 
 A medium-size grid rerun is checked into [reports/combined_v4_medium_selectk_probe_2026_06_12.md](reports/combined_v4_medium_selectk_probe_2026_06_12.md), with assets in [reports/assets/combined_v4_medium_selectk_probe](reports/assets/combined_v4_medium_selectk_probe). At 240 train / 114 validation images per seed, raw `combined_v4` has the best mean accuracy/AUC at 0.7544 / 0.8315, while select-k60 has the best Brier/ECE. The ablation summaries now report confidence intervals, making the narrow `combined_v4` lead easier to frame honestly.
 
-A transfer-readiness gate is checked into [reports/combined_v4_transfer_readiness_2026_06_13.md](reports/combined_v4_transfer_readiness_2026_06_13.md), with deltas in [reports/assets/combined_v4_transfer_readiness.csv](reports/assets/combined_v4_transfer_readiness.csv) and exact next-run commands in [reports/assets/combined_v4_transfer_command_manifest.csv](reports/assets/combined_v4_transfer_command_manifest.csv). It keeps `combined_v4` as an ablation candidate until raw-v4/select-k60 transfer rows are available.
+A completed transfer gate is checked into [reports/combined_v4_full_transfer_summary_2026_06_13.md](reports/combined_v4_full_transfer_summary_2026_06_13.md), with seed/mean/delta CSVs in [reports/assets](reports/assets). The reproducibility command manifest remains checked in at [reports/assets/combined_v4_transfer_command_manifest.csv](reports/assets/combined_v4_transfer_command_manifest.csv). The outcome keeps `combined_v3` as the main conventional baseline and frames `combined_v4_selectk60` as a caveated transfer/calibration ablation.
 
 ## Defactify / MS COCOAI Subset Result
 
@@ -548,7 +548,7 @@ An updated DFRWS poster draft v2 is checked into [reports/dfrws_poster_draft_v2_
 
 A submission-readiness snapshot is checked into [reports/submission_readiness_2026_06_13.md](reports/submission_readiness_2026_06_13.md). It verifies the DFRWS, WIFS, and DFF deadlines, maps the checked-in figure package to each target, drafts the DFRWS poster structure, and names reverse-direction foundation transfer as the next paper-critical experiment.
 
-A generated claim-evidence matrix is checked into [reports/assets/claim_evidence_matrix.md](reports/assets/claim_evidence_matrix.md). It maps each poster/paper claim to exact result rows, marks claims as ready or caveated, and keeps `combined_v4` framed as an ablation candidate until the larger repeated-seed transfer check is done.
+A generated claim-evidence matrix is checked into [reports/assets/claim_evidence_matrix.md](reports/assets/claim_evidence_matrix.md). It maps each poster/paper claim to exact result rows, marks claims as ready or caveated, and now cites the completed raw-v4/select-k60 transfer rows while keeping `combined_v4` framed as an ablation rather than a headline method.
 
 A source-utility threshold strategy is checked into [reports/score_fusion_source_utility_threshold_2026_06_13.md](reports/score_fusion_source_utility_threshold_2026_06_13.md), and the reverse sweep is summarized in [reports/ms_cocoai_to_ishu_source_utility_threshold_2026_06_13.md](reports/ms_cocoai_to_ishu_source_utility_threshold_2026_06_13.md). Threshold-only source utility matches the previous `cap_0p48` operating point at 0.7222 accuracy / 0.8291 AUC, so the next SCP-Fusion step should move utility into fusion training or validation selection.
 

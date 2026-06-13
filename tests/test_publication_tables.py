@@ -15,6 +15,7 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
     calibration_summary = tmp_path / "calibration.csv"
     clip_calibration = tmp_path / "clip_calibration.csv"
     clip_triage = tmp_path / "clip_triage.csv"
+    combined_v4_transfer = tmp_path / "combined_v4_transfer.csv"
     reverse_all = tmp_path / "reverse_all.csv"
     reverse_regularization = tmp_path / "reverse_regularization.csv"
     reverse_cap = tmp_path / "reverse_cap.csv"
@@ -76,6 +77,38 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
             "mean_test_triage_accuracy": [0.87, 0.93, 0.86, 0.92],
         }
     ).to_csv(clip_triage, index=False)
+
+    pd.DataFrame(
+        {
+            "phase": [
+                "ishu_holdout",
+                "ishu_holdout",
+                "ishu_to_ms_cocoai",
+                "ishu_to_ms_cocoai",
+            ],
+            "phase_label": [
+                "Ishu holdout split",
+                "Ishu holdout split",
+                "Ishu -> source-balanced MS COCOAI",
+                "Ishu -> source-balanced MS COCOAI",
+            ],
+            "run": [
+                "combined_v4_logreg",
+                "combined_v4_logreg_selectk60",
+                "combined_v4_logreg",
+                "combined_v4_logreg_selectk60",
+            ],
+            "feature_set": ["combined_v4"] * 4,
+            "classifier": ["logistic_regression"] * 4,
+            "select_k": [0, 60, 0, 60],
+            "n_seeds": [3, 3, 3, 3],
+            "accuracy_mean": [0.81, 0.80, 0.56, 0.55],
+            "roc_auc_mean": [0.90, 0.88, 0.58, 0.59],
+            "brier_score_mean": [0.13, 0.14, 0.35, 0.33],
+            "expected_calibration_error_mean": [0.09, 0.08, 0.30, 0.27],
+            "fake_call_rate_mean": [0.51, 0.52, 0.18, 0.18],
+        }
+    ).to_csv(combined_v4_transfer, index=False)
 
     pd.DataFrame(
         {
@@ -203,6 +236,8 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
             str(clip_calibration),
             "--clip-triage-5pct",
             str(clip_triage),
+            "--combined-v4-transfer-summary",
+            str(combined_v4_transfer),
             "--reverse-all-methods",
             str(reverse_all),
             "--reverse-fusion-regularization",
@@ -235,6 +270,7 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
 
     frame = pd.read_csv(csv_path)
     assert "ishu_same_physics_guided" in set(frame["finding_id"])
+    assert "ishu_to_ms_combined_v4_selectk60" in set(frame["finding_id"])
     assert "ishu_to_ms_triage5_clip_standalone" in set(frame["finding_id"])
     assert "ms_to_ishu_source_cap_accuracy" in set(frame["finding_id"])
     assert "ms_to_ishu_source_utility_unconstrained" in set(frame["finding_id"])
