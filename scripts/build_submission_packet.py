@@ -50,6 +50,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/submission_scorecard_2026_06_14.md",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Venue-level readiness scorecard aggregating packet artifacts, lint reports, claim caveats, deadlines, and next actions.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/submission_scorecard.csv",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable venue-level readiness scorecard.",
+        "required": False,
+    },
+    {
         "path": "reports/literature_map_2026_06_14.md",
         "type": "literature",
         "venues": "WIFS,DFF",
@@ -531,6 +545,7 @@ REGEN_COMMANDS = [
     ("paper section draft lint", "python scripts/lint_paper_section_drafts.py"),
     ("submission packet", "python scripts/build_submission_packet.py"),
     ("submission package lint", "python scripts/lint_submission_package.py"),
+    ("submission scorecard", "python scripts/build_submission_scorecard.py"),
 ]
 
 
