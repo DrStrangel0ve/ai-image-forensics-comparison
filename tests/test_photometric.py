@@ -85,6 +85,18 @@ def test_shared_robustness_variants_match_script_wrapper() -> None:
         assert shared.mode == wrapped.mode == "RGB"
 
 
+def test_noise_robustness_variant_is_deterministic() -> None:
+    image = Image.fromarray(
+        np.random.default_rng(6).integers(0, 255, size=(32, 32, 3), dtype=np.uint8)
+    )
+
+    first = np.asarray(apply_robustness_variant(image, "noise3"))
+    second = np.asarray(apply_robustness_variant(image, "noise3"))
+
+    assert np.array_equal(first, second)
+    assert not np.array_equal(first, np.asarray(image.convert("RGB")))
+
+
 def test_feature_extraction_can_augment_training_rows(tmp_path: Path) -> None:
     image = np.random.default_rng(4).integers(0, 255, size=(32, 32, 3), dtype=np.uint8)
     path = tmp_path / "image.png"

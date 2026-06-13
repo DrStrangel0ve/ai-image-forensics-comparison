@@ -1,10 +1,20 @@
 from __future__ import annotations
 
+import hashlib
 from io import BytesIO
 
+import numpy as np
 from PIL import Image, ImageFilter
 
-ROBUSTNESS_VARIANTS = ("jpeg70", "blur1", "resize_half", "crop85")
+ROBUSTNESS_VARIANTS = (
+    "jpeg70",
+    "jpeg50",
+    "blur1",
+    "resize_half",
+    "crop85",
+    "noise3",
+    "screenshot",
+)
 
 
 def jpeg_roundtrip(image: Image.Image, quality: int) -> Image.Image:
@@ -31,14 +41,36 @@ def resize_half_roundtrip(image: Image.Image) -> Image.Image:
     return down.resize((width, height), Image.Resampling.BICUBIC)
 
 
+def deterministic_gaussian_noise(image: Image.Image, sigma: float) -> Image.Image:
+    seed = int.from_bytes(hashlib.blake2b(image.tobytes(), digest_size=8).digest(), "little")
+    rng = np.random.default_rng(seed)
+    array = np.asarray(image).astype(np.float32)
+    noisy = array + rng.normal(loc=0.0, scale=sigma, size=array.shape)
+    return Image.fromarray(np.clip(noisy, 0, 255).astype(np.uint8), mode="RGB")
+
+
+def screenshot_roundtrip(image: Image.Image) -> Image.Image:
+    width, height = image.size
+    down_size = (max(1, int(round(width * 0.75))), max(1, int(round(height * 0.75))))
+    down = image.resize(down_size, Image.Resampling.BILINEAR)
+    restored = down.resize((width, height), Image.Resampling.BILINEAR)
+    return jpeg_roundtrip(restored, quality=85)
+
+
 def apply_robustness_variant(image: Image.Image, variant: str) -> Image.Image:
     image = image.convert("RGB")
     if variant == "jpeg70":
         return jpeg_roundtrip(image, quality=70)
+    if variant == "jpeg50":
+        return jpeg_roundtrip(image, quality=50)
     if variant == "blur1":
         return image.filter(ImageFilter.GaussianBlur(radius=1.0))
     if variant == "resize_half":
         return resize_half_roundtrip(image)
     if variant == "crop85":
         return center_crop_resize(image, fraction=0.85)
+    if variant == "noise3":
+        return deterministic_gaussian_noise(image, sigma=3.0)
+    if variant == "screenshot":
+        return screenshot_roundtrip(image)
     raise ValueError(f"Unsupported variant: {variant}")

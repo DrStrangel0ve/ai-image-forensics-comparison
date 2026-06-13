@@ -131,6 +131,9 @@ def parse_args() -> argparse.Namespace:
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_blur1_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_resize_half_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_crop85_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_jpeg50_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_noise3_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_screenshot_robustness_summary.csv",
         ],
         help="Additional tuned-fusion target-transform robustness summary CSVs.",
     )

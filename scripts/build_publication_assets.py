@@ -122,20 +122,35 @@ REVERSE_OPERATING_COLORS = {
     "score_fusion_all6_temp_balanced": "#9E9E9E",
     "score_fusion_all6_c003_source_acc": "#E45756",
 }
-TRANSFORM_ROBUSTNESS_ORDER = ["clean", "jpeg70", "blur1", "resize_half", "crop85"]
+TRANSFORM_ROBUSTNESS_ORDER = [
+    "clean",
+    "jpeg70",
+    "jpeg50",
+    "blur1",
+    "resize_half",
+    "crop85",
+    "noise3",
+    "screenshot",
+]
 TRANSFORM_ROBUSTNESS_LABELS = {
     "clean": "clean",
     "jpeg70": "JPEG70",
+    "jpeg50": "JPEG50",
     "blur1": "blur",
     "resize_half": "half-resize",
     "crop85": "crop85",
+    "noise3": "noise",
+    "screenshot": "screenshot",
 }
 TRANSFORM_ROBUSTNESS_COLORS = {
     "clean": "#333333",
     "jpeg70": "#4C78A8",
+    "jpeg50": "#72B7B2",
     "blur1": "#E45756",
     "resize_half": "#F58518",
     "crop85": "#54A24B",
+    "noise3": "#B279A2",
+    "screenshot": "#79706E",
 }
 
 
@@ -224,9 +239,12 @@ def parse_args() -> argparse.Namespace:
         nargs="*",
         default=[
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_jpeg70_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_jpeg50_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_blur1_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_resize_half_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_crop85_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_noise3_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_screenshot_robustness_summary.csv",
         ],
     )
     parser.add_argument("--out-dir", default="reports/assets")
@@ -938,10 +956,10 @@ def build_reverse_transform_robustness(
     labels = [TRANSFORM_ROBUSTNESS_LABELS.get(variant, variant) for variant in frame["variant"]]
     colors = [TRANSFORM_ROBUSTNESS_COLORS.get(variant, "#777777") for variant in frame["variant"]]
     x = np.arange(len(frame))
-    fig, axes = plt.subplots(1, 3, figsize=(12.0, 4.2), dpi=dpi)
+    fig, axes = plt.subplots(1, 3, figsize=(14.0, 4.6), dpi=dpi)
     for ax, column, title, ylabel, ylim in [
         (axes[0], "accuracy", "Decision Accuracy", "accuracy", (0.68, 0.79)),
-        (axes[1], "auc", "Ranking AUC", "AUC", (0.76, 0.86)),
+        (axes[1], "auc", "Ranking AUC", "AUC", (0.76, 0.88)),
         (axes[2], "predicted_fake_rate", "Fake-Call Rate", "fraction predicted fake", (0.42, 0.60)),
     ]:
         values = frame[column].astype(float)
@@ -949,7 +967,7 @@ def build_reverse_transform_robustness(
         ax.set_title(title, fontsize=10, pad=8)
         ax.set_ylabel(ylabel)
         ax.set_xticks(x)
-        ax.set_xticklabels(labels, rotation=25, ha="right")
+        ax.set_xticklabels(labels, rotation=32, ha="right")
         ax.set_ylim(*ylim)
         ax.grid(axis="y", alpha=0.25)
         _annotate_bars(ax, values, offset=(ylim[1] - ylim[0]) * 0.02)
