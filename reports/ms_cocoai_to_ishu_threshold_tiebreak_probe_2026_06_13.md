@@ -30,6 +30,8 @@ The conservative `higher` tie-breaker is the best current reverse operating poin
 
 For paper framing, this is useful because it is still source-only: target labels are not used to choose the threshold. It does not fully solve calibration because the predicted fake rate remains above the true balanced target prior, but it shows that forensic operating preferences can be encoded in the source-threshold procedure.
 
+Follow-up: `reports/ms_cocoai_to_ishu_threshold_cap_probe_2026_06_13.md` adds a source-side predicted-fake-rate cap. The best `0.48` cap raises the reverse operating-point accuracy to `0.7222` and lowers the target fake-call rate to `0.6228`.
+
 ## Interpretation
 
 - Conservative tie-breaking is a simple utility-aware step that helps exactly where reverse fusion was failing.

@@ -196,6 +196,10 @@ def parse_args() -> argparse.Namespace:
         "--reverse-threshold-tiebreak",
         default="reports/assets/ms_cocoai_to_ishu_threshold_tiebreak_mean_metrics.csv",
     )
+    parser.add_argument(
+        "--reverse-threshold-cap",
+        default="reports/assets/ms_cocoai_to_ishu_threshold_cap_mean_metrics.csv",
+    )
     parser.add_argument("--out-dir", default="reports/assets")
     parser.add_argument("--dpi", type=int, default=180)
     return parser.parse_args()
@@ -705,6 +709,7 @@ def _reverse_operating_rows(
     all_method_thresholds: pd.DataFrame,
     source_threshold_fusion: pd.DataFrame,
     threshold_tiebreak_fusion: pd.DataFrame,
+    threshold_cap_fusion: pd.DataFrame,
 ) -> pd.DataFrame:
     metrics = all_method_metrics[all_method_metrics["split"] == "ms_cocoai_to_ishu_test"].copy()
     thresholds = all_method_thresholds[
@@ -714,6 +719,7 @@ def _reverse_operating_rows(
     tiebreak_fusion = threshold_tiebreak_fusion[
         threshold_tiebreak_fusion["variant"] == "ishu_test"
     ].copy()
+    cap_fusion = threshold_cap_fusion[threshold_cap_fusion["variant"] == "ishu_test"].copy()
     rows = []
     for row_config in [
         {
@@ -764,12 +770,15 @@ def _reverse_operating_rows(
             }
         )
 
+    cap_rows = cap_fusion[cap_fusion["config"] == "cap_0p48"]
     fusion_rows = tiebreak_fusion[
         (tiebreak_fusion["config"] == "score_fusion_all6_c003_source_acc")
         & (tiebreak_fusion["threshold_tiebreak"] == "higher")
     ]
     fusion_row = (
-        fusion_rows.iloc[0]
+        cap_rows.iloc[0]
+        if not cap_rows.empty
+        else fusion_rows.iloc[0]
         if not fusion_rows.empty
         else _single_row(source_fusion, "config", "score_fusion_all6_c003_source_acc")
     )
@@ -777,7 +786,7 @@ def _reverse_operating_rows(
         {
             "key": "score_fusion_all6_c003_source_acc",
             "label": "C=.03 fusion",
-            "operating_point": "conservative threshold",
+            "operating_point": "source-cap threshold" if not cap_rows.empty else "conservative threshold",
             "accuracy": float(fusion_row["accuracy"]),
             "auc": float(fusion_row["auc"]),
             "brier": float(fusion_row["brier"]),
@@ -793,6 +802,7 @@ def build_reverse_operating_points(
     all_method_thresholds_path: Path,
     source_threshold_fusion_path: Path,
     threshold_tiebreak_fusion_path: Path,
+    threshold_cap_fusion_path: Path,
     out_dir: Path,
     dpi: int,
 ) -> Path:
@@ -801,6 +811,7 @@ def build_reverse_operating_points(
         pd.read_csv(all_method_thresholds_path),
         pd.read_csv(source_threshold_fusion_path),
         pd.read_csv(threshold_tiebreak_fusion_path),
+        pd.read_csv(threshold_cap_fusion_path),
     )
     colors = [REVERSE_OPERATING_COLORS.get(key, "#777777") for key in frame["key"]]
     labels = [
@@ -891,6 +902,7 @@ def main() -> None:
             Path(args.reverse_all_method_thresholds),
             Path(args.reverse_source_threshold_fusion),
             Path(args.reverse_threshold_tiebreak),
+            Path(args.reverse_threshold_cap),
             out_dir,
             args.dpi,
         ),

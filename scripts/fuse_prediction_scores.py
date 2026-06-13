@@ -78,6 +78,15 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--threshold-max-positive-rate",
+        type=float,
+        default=None,
+        help=(
+            "Optional source-side cap on the selected threshold's predicted fake rate. "
+            "Applies only to source threshold strategies."
+        ),
+    )
+    parser.add_argument(
         "--fusion-c",
         type=float,
         default=1.0,
@@ -298,25 +307,37 @@ def _select_source_threshold(
     scores: np.ndarray,
     strategy: str,
     tiebreak: str,
-) -> tuple[float, float]:
+    max_positive_rate: float | None,
+) -> tuple[float, float, float]:
     if strategy == "fixed":
         raise ValueError("Use --threshold directly for the fixed threshold strategy")
     if len(np.unique(y_true)) != 2:
         raise ValueError("Source threshold selection requires both classes")
     if not np.isfinite(scores).all():
         raise ValueError("Source threshold selection requires finite scores")
+    if max_positive_rate is not None and not 0.0 <= max_positive_rate <= 1.0:
+        raise ValueError("--threshold-max-positive-rate must be in [0, 1]")
     candidates = _candidate_thresholds(scores)
     best_threshold = float(candidates[0])
     best_utility = -np.inf
     best_tiebreak = -np.inf
+    best_positive_rate = np.inf
+    found_candidate = False
     for threshold in candidates:
+        positive_rate = float((scores >= float(threshold)).mean())
+        if max_positive_rate is not None and positive_rate > max_positive_rate + 1e-12:
+            continue
         utility = _threshold_utility(y_true, scores, float(threshold), strategy)
         tiebreak_value = _threshold_tiebreak_value(float(threshold), tiebreak)
         if (utility, tiebreak_value) > (best_utility, best_tiebreak):
             best_threshold = float(threshold)
             best_utility = float(utility)
             best_tiebreak = float(tiebreak_value)
-    return best_threshold, best_utility
+            best_positive_rate = positive_rate
+            found_candidate = True
+    if not found_candidate:
+        raise ValueError("No source threshold satisfies --threshold-max-positive-rate")
+    return best_threshold, best_utility, best_positive_rate
 
 
 def _split_calibration_frame(
@@ -384,6 +405,8 @@ def _metrics_row(
     threshold_strategy: str,
     threshold_tiebreak: str,
     threshold_source: str,
+    threshold_max_positive_rate: float | None,
+    threshold_source_predicted_positive_rate: float | None,
     calibrator=None,
 ) -> tuple[dict, list[dict]]:
     x = frame[methods].to_numpy(dtype=float)
@@ -402,6 +425,8 @@ def _metrics_row(
             "threshold_strategy": threshold_strategy,
             "threshold_tiebreak": threshold_tiebreak,
             "threshold_source": threshold_source,
+            "threshold_max_positive_rate": threshold_max_positive_rate,
+            "threshold_source_predicted_positive_rate": threshold_source_predicted_positive_rate,
             "positive_rate": float(y_true.mean()) if len(y_true) else 0.0,
             "predicted_positive_rate": float((scores >= threshold).mean()) if len(scores) else 0.0,
             "score_mean": float(scores.mean()) if len(scores) else 0.0,
@@ -432,6 +457,8 @@ def main() -> None:
         raise ValueError(
             "--calibration-fraction requires --score-calibrator or a source threshold strategy"
         )
+    if args.threshold_max_positive_rate is not None and args.threshold_strategy == "fixed":
+        raise ValueError("--threshold-max-positive-rate requires a source threshold strategy")
     train_frame, methods = _aligned_matrix(list(map(_parse_train, args.train)))
     fit_frame, calibration_frame = _split_calibration_frame(
         train_frame,
@@ -461,6 +488,7 @@ def main() -> None:
     threshold = float(args.threshold)
     threshold_source = "fixed"
     threshold_selection_utility = None
+    threshold_source_predicted_positive_rate = None
     if args.threshold_strategy != "fixed":
         threshold_frame = calibration_frame if args.calibration_fraction > 0.0 else train_frame
         threshold_source = (
@@ -474,11 +502,16 @@ def main() -> None:
             if calibrator is not None
             else source_raw_scores
         )
-        threshold, threshold_selection_utility = _select_source_threshold(
+        (
+            threshold,
+            threshold_selection_utility,
+            threshold_source_predicted_positive_rate,
+        ) = _select_source_threshold(
             threshold_frame["y_true"].to_numpy(dtype=int),
             source_scores,
             args.threshold_strategy,
             args.threshold_tiebreak,
+            args.threshold_max_positive_rate,
         )
 
     all_metrics = []
@@ -491,6 +524,8 @@ def main() -> None:
         args.threshold_strategy,
         args.threshold_tiebreak,
         threshold_source,
+        args.threshold_max_positive_rate,
+        threshold_source_predicted_positive_rate,
         calibrator=calibrator,
     )
     all_metrics.append(train_metrics)
@@ -516,6 +551,8 @@ def main() -> None:
             args.threshold_strategy,
             args.threshold_tiebreak,
             threshold_source,
+            args.threshold_max_positive_rate,
+            threshold_source_predicted_positive_rate,
             calibrator=calibrator,
         )
         all_metrics.append(metrics)
@@ -536,6 +573,8 @@ def main() -> None:
             "threshold_tiebreak": args.threshold_tiebreak,
             "threshold_source": threshold_source,
             "threshold_selection_utility": threshold_selection_utility,
+            "threshold_max_positive_rate": args.threshold_max_positive_rate,
+            "threshold_source_predicted_positive_rate": threshold_source_predicted_positive_rate,
             "n_train": int(len(train_frame)),
             "n_fusion_train": int(len(y_train)),
             "n_calibration": int(len(calibration_frame)),
@@ -577,6 +616,10 @@ def main() -> None:
             "threshold_strategy": metrics["threshold_strategy"],
             "threshold_tiebreak": metrics["threshold_tiebreak"],
             "threshold_source": metrics["threshold_source"],
+            "threshold_max_positive_rate": metrics["threshold_max_positive_rate"],
+            "threshold_source_predicted_positive_rate": metrics[
+                "threshold_source_predicted_positive_rate"
+            ],
             "predicted_positive_rate": metrics["predicted_positive_rate"],
             "score_mean": metrics["score_mean"],
             "raw_score_mean": metrics["raw_score_mean"],

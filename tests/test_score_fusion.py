@@ -67,6 +67,8 @@ def test_score_fusion_writes_train_and_variant_outputs(tmp_path: Path) -> None:
     assert metrics["threshold_strategy"] == "fixed"
     assert metrics["threshold_tiebreak"] == "near_half"
     assert metrics["threshold_source"] == "fixed"
+    assert metrics["threshold_max_positive_rate"] is None
+    assert metrics["threshold_source_predicted_positive_rate"] is None
     assert [row["variant"] for row in metrics["metrics"]] == ["train", "target"]
     assert {row["method"] for row in metrics["coefficients"]} == {"a", "b", "__intercept__"}
     train_predictions = pd.read_csv(out_dir / "train" / "predictions.csv")
@@ -173,6 +175,7 @@ def test_score_fusion_can_select_source_operating_threshold(tmp_path: Path) -> N
     assert metrics["threshold_strategy"] == "source_accuracy"
     assert metrics["threshold_tiebreak"] == "near_half"
     assert metrics["threshold_source"] == "source_calibration"
+    assert metrics["threshold_source_predicted_positive_rate"] is not None
     assert metrics["n_fusion_train"] == 4
     assert metrics["n_calibration"] == 4
     assert metrics["threshold_selection_utility"] >= 0.5
@@ -223,3 +226,50 @@ def test_score_fusion_can_conservatively_tiebreak_source_threshold(tmp_path: Pat
     assert metrics["threshold_tiebreak"] == "higher"
     assert metrics["threshold"] > 0.5
     assert set(summary["threshold_tiebreak"]) == {"higher"}
+
+
+def test_score_fusion_can_cap_source_positive_rate(tmp_path: Path) -> None:
+    labels = [0, 0, 0, 0, 1, 1, 1, 1]
+    _predictions(tmp_path / "train_a.csv", [0.05, 0.10, 0.20, 0.30, 0.60, 0.70, 0.80, 0.90], labels)
+    _predictions(tmp_path / "train_b.csv", [0.10, 0.20, 0.25, 0.35, 0.55, 0.65, 0.75, 0.85], labels)
+    _predictions(tmp_path / "target_a.csv", [0.05, 0.25, 0.35, 0.45, 0.55, 0.65, 0.78, 0.88], labels)
+    _predictions(tmp_path / "target_b.csv", [0.08, 0.18, 0.30, 0.40, 0.58, 0.68, 0.76, 0.86], labels)
+    out_dir = tmp_path / "capped_thresholded_fusion"
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "fuse_prediction_scores.py"),
+            "--out-dir",
+            str(out_dir),
+            "--train",
+            f"a={tmp_path / 'train_a.csv'}",
+            "--train",
+            f"b={tmp_path / 'train_b.csv'}",
+            "--variant",
+            f"target:a={tmp_path / 'target_a.csv'}",
+            "--variant",
+            f"target:b={tmp_path / 'target_b.csv'}",
+            "--seed",
+            "11",
+            "--fusion-c",
+            "0.1",
+            "--threshold-strategy",
+            "source_accuracy",
+            "--threshold-tiebreak",
+            "higher",
+            "--threshold-max-positive-rate",
+            "0.5",
+            "--calibration-fraction",
+            "0.5",
+        ],
+        cwd=ROOT,
+        check=True,
+    )
+
+    metrics = json.loads((out_dir / "metrics.json").read_text(encoding="utf-8"))
+    summary = pd.read_csv(out_dir / "summary.csv")
+    assert metrics["threshold_max_positive_rate"] == 0.5
+    assert metrics["threshold_source_predicted_positive_rate"] <= 0.5
+    assert set(summary["threshold_max_positive_rate"]) == {0.5}
+    assert summary["threshold_source_predicted_positive_rate"].max() <= 0.5

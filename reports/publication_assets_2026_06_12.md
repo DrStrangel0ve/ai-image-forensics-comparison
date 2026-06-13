@@ -83,7 +83,7 @@ MS-COCOAI-to-Ishu reverse transfer shows the central SCP-Fusion tradeoff. Branch
 
 Caption draft:
 
-Held-out source-threshold fusion with conservative tie-breaking gives the best MS-COCOAI-to-Ishu decision accuracy so far, reaching 0.7193 mean accuracy while preserving 0.8291 AUC. The fake-call-rate panel keeps the caveat visible: the regularized fusion still predicts generated images too often compared with the physics-guided branch, so this is a bridge toward utility-aware fusion training rather than a finished calibration solution.
+Held-out source-threshold fusion with a source fake-rate cap gives the best MS-COCOAI-to-Ishu decision accuracy so far, reaching 0.7222 mean accuracy while preserving 0.8291 AUC. The fake-call-rate panel keeps the caveat visible: the regularized fusion still predicts generated images too often compared with the physics-guided branch, so this is a bridge toward utility-aware fusion training rather than a finished calibration solution.
 
 ## Figure 9: Qualitative Failure Cases
 

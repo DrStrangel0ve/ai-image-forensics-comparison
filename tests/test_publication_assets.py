@@ -35,6 +35,7 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     reverse_all_thresholds = tmp_path / "reverse_all_thresholds.csv"
     reverse_source_threshold_fusion = tmp_path / "reverse_source_threshold_fusion.csv"
     reverse_threshold_tiebreak = tmp_path / "reverse_threshold_tiebreak.csv"
+    reverse_threshold_cap = tmp_path / "reverse_threshold_cap.csv"
     out_dir = tmp_path / "assets"
 
     pd.DataFrame(
@@ -249,6 +250,17 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
             "predicted_fake_rate": [0.661],
         }
     ).to_csv(reverse_threshold_tiebreak, index=False)
+    pd.DataFrame(
+        {
+            "config": ["cap_0p48"],
+            "variant": ["ishu_test"],
+            "accuracy": [0.722],
+            "auc": [0.829],
+            "brier": [0.219],
+            "ece": [0.206],
+            "predicted_fake_rate": [0.623],
+        }
+    ).to_csv(reverse_threshold_cap, index=False)
 
     subprocess.run(
         [
@@ -288,6 +300,8 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
             str(reverse_source_threshold_fusion),
             "--reverse-threshold-tiebreak",
             str(reverse_threshold_tiebreak),
+            "--reverse-threshold-cap",
+            str(reverse_threshold_cap),
             "--out-dir",
             str(out_dir),
             "--dpi",
