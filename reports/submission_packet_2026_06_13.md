@@ -75,6 +75,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | poster | reports/dfrws_poster_draft_v2_2026_06_13.md | Editable poster draft notes and preview references. |
 | poster | reports/assets/dfrws_poster_draft_v2_2026_06_13.pptx | Editable PowerPoint poster draft. |
 | poster | reports/assets/dfrws_poster_draft_v2_2026_06_13.png | Poster draft PNG preview. |
+| quality-control | reports/dfrws_poster_package_lint_2026_06_14.md | Generated lint report for DFRWS poster assets, key-number consistency, figure dimensions, and overclaim cautions. |
+| quality-control | reports/assets/dfrws_poster_package_lint.csv | Machine-readable DFRWS poster package lint checks. |
 | figure | reports/assets/publication_score_fusion_clip_frontier.png | CLIP transfer frontier and all-foundation fusion comparison. |
 | figure | reports/assets/publication_triage_operating_points.png | High-confidence source-heldout triage operating points. |
 | qualitative | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Failure-case grid for generated-image misses. |
@@ -213,6 +215,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | publication figures | python scripts/build_publication_assets.py |
 | DFRWS poster brief | python scripts/build_dfrws_poster_brief.py |
 | DFRWS poster panels | python scripts/build_dfrws_poster_figures.py |
+| DFRWS poster package lint | python scripts/lint_dfrws_poster_package.py |
 | submission text drafts | python scripts/build_submission_text_drafts.py |
 | paper section drafts | python scripts/build_paper_section_drafts.py |
 | paper section draft lint | python scripts/lint_paper_section_drafts.py |

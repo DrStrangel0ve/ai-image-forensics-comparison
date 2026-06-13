@@ -1,0 +1,22 @@
+check,passed,detail
+DFRWS poster package files exist,True,all poster package files are present
+brief figure package files exist,True,all brief figure files are present
+brief section present: ## Working Title,True,present
+brief section present: ## One-Sentence Claim,True,present
+brief section present: ## Poster Spine,True,present
+brief section present: ## Key Numbers,True,present
+brief section present: ## Robustness Stress Panel,True,present
+brief section present: ## Figure Package,True,present
+brief section present: ## Claims To Carry,True,present
+brief section present: ## Do Not Overclaim,True,present
+brief section present: ## Immediate Poster TODOs,True,present
+brief caution present: Do not claim SCP-Fusion beats frozen CLIP,True,present
+brief caution present: single-image physical/signal proxy,True,present
+"brief caution present: JPEG30, blur, resize, and screenshot transforms still expose weaknesses",True,present
+poster key numbers match canonical results,True,key-number CSV matches poster brief builder
+transfer panel CSV matches canonical results,True,transfer panel CSV matches figure builder
+robustness panel CSV matches canonical results,True,robustness panel CSV matches figure builder
+transfer panel image dimensions,True,reports/assets/dfrws_poster_transfer_panel.png: 3435x1609; minimum 2500x1000
+robustness panel image dimensions,True,reports/assets/dfrws_poster_robustness_panel.png: 3271x1397; minimum 2500x1000
+poster draft preview dimensions,True,reports/assets/dfrws_poster_draft_v2_2026_06_13.png: 1280x720; minimum 1000x600
+poster draft PPTX is nontrivial,True,size_bytes=456141; minimum 10000

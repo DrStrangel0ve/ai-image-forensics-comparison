@@ -379,6 +379,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/dfrws_poster_package_lint_2026_06_14.md",
+        "type": "quality-control",
+        "venues": "DFRWS",
+        "purpose": "Generated lint report for DFRWS poster assets, key-number consistency, figure dimensions, and overclaim cautions.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/dfrws_poster_package_lint.csv",
+        "type": "quality-control",
+        "venues": "DFRWS",
+        "purpose": "Machine-readable DFRWS poster package lint checks.",
+        "required": False,
+    },
+    {
         "path": "reports/assets/publication_score_fusion_clip_frontier.png",
         "type": "figure",
         "venues": "DFRWS,WIFS,DFF",
@@ -511,6 +525,7 @@ REGEN_COMMANDS = [
     ("publication figures", "python scripts/build_publication_assets.py"),
     ("DFRWS poster brief", "python scripts/build_dfrws_poster_brief.py"),
     ("DFRWS poster panels", "python scripts/build_dfrws_poster_figures.py"),
+    ("DFRWS poster package lint", "python scripts/lint_dfrws_poster_package.py"),
     ("submission text drafts", "python scripts/build_submission_text_drafts.py"),
     ("paper section drafts", "python scripts/build_paper_section_drafts.py"),
     ("paper section draft lint", "python scripts/lint_paper_section_drafts.py"),

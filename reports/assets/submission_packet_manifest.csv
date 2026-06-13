@@ -1,5 +1,5 @@
 path,type,venues,purpose,required,exists,size_bytes
-README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,45598
+README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,45814
 CITATION.cff,repo,"DFRWS,WIFS,DFF",Citation metadata for public release and reproducibility review.,True,True,788
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF","Reviewer-facing map of included artifacts, external datasets, and commands.",True,True,16823
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
@@ -50,6 +50,8 @@ reports/assets/dfrws_poster_robustness_panel.svg,figure,DFRWS,Editable SVG sourc
 reports/dfrws_poster_draft_v2_2026_06_13.md,poster,DFRWS,Editable poster draft notes and preview references.,True,True,1612
 reports/assets/dfrws_poster_draft_v2_2026_06_13.pptx,poster,DFRWS,Editable PowerPoint poster draft.,True,True,456141
 reports/assets/dfrws_poster_draft_v2_2026_06_13.png,poster,DFRWS,Poster draft PNG preview.,True,True,128876
+reports/dfrws_poster_package_lint_2026_06_14.md,quality-control,DFRWS,"Generated lint report for DFRWS poster assets, key-number consistency, figure dimensions, and overclaim cautions.",False,True,2072
+reports/assets/dfrws_poster_package_lint.csv,quality-control,DFRWS,Machine-readable DFRWS poster package lint checks.,False,True,1652
 reports/assets/publication_score_fusion_clip_frontier.png,figure,"DFRWS,WIFS,DFF",CLIP transfer frontier and all-foundation fusion comparison.,True,True,136885
 reports/assets/publication_triage_operating_points.png,figure,"DFRWS,WIFS,DFF",High-confidence source-heldout triage operating points.,True,True,77184
 reports/assets/publication_reverse_operating_points.png,figure,"WIFS,DFF",Reverse-transfer source-threshold and operating-point comparison.,True,True,134191
