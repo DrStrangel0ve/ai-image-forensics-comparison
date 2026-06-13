@@ -109,6 +109,18 @@ def test_social_square_variant_preserves_nonsquare_canvas() -> None:
     assert not np.array_equal(np.asarray(transformed), np.asarray(image.convert("RGB")))
 
 
+def test_social_720p_variant_downscales_and_restores_canvas() -> None:
+    image = Image.fromarray(
+        np.random.default_rng(8).integers(0, 255, size=(900, 1200, 3), dtype=np.uint8)
+    )
+
+    transformed = apply_robustness_variant(image, "social_720p")
+
+    assert transformed.size == image.size
+    assert transformed.mode == "RGB"
+    assert not np.array_equal(np.asarray(transformed), np.asarray(image.convert("RGB")))
+
+
 def test_feature_extraction_can_augment_training_rows(tmp_path: Path) -> None:
     image = np.random.default_rng(4).integers(0, 255, size=(32, 32, 3), dtype=np.uint8)
     path = tmp_path / "image.png"

@@ -30,6 +30,7 @@ def test_dfrws_poster_figure_builder_writes_panels_and_source_tables(tmp_path: P
         ("ms_to_ishu_tuned_fusion_jpeg30", "JPEG30", 0.7076, 0.8167, 0.3450, None),
         ("ms_to_ishu_tuned_fusion_noise3", "noise3", 0.7690, 0.8704, 0.4708, None),
         ("ms_to_ishu_tuned_fusion_social_square", "social", 0.7778, 0.8474, 0.5088, None),
+        ("ms_to_ishu_tuned_fusion_social_720p", "social720", 0.7602, 0.8506, 0.4678, None),
         ("ms_to_ishu_tuned_fusion_crop85", "crop85", 0.7251, 0.8227, 0.5205, None),
         ("ms_to_ishu_tuned_fusion_screenshot", "screen", 0.7310, 0.7965, 0.5263, None),
         ("ms_to_ishu_tuned_fusion_blur1", "blur1", 0.7105, 0.7872, 0.5585, None),
@@ -79,8 +80,9 @@ def test_dfrws_poster_figure_builder_writes_panels_and_source_tables(tmp_path: P
     assert (out_dir / "dfrws_poster_transfer_panel.png").stat().st_size > 0
     assert (out_dir / "dfrws_poster_robustness_panel.png").stat().st_size > 0
     assert len(transfer_csv) == 8
-    assert len(robustness_csv) == 10
+    assert len(robustness_csv) == 11
     assert "Frozen CLIP" in set(transfer_csv["label"])
     assert "JPEG30" in set(robustness_csv["label"])
+    assert "social720" in set(robustness_csv["label"])
     assert "DFRWS Poster-Native Figure Pack" in report
     assert "Frozen CLIP" in transfer_svg

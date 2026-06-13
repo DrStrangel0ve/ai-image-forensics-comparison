@@ -133,6 +133,7 @@ TRANSFORM_ROBUSTNESS_ORDER = [
     "noise3",
     "screenshot",
     "social_square",
+    "social_720p",
 ]
 TRANSFORM_ROBUSTNESS_LABELS = {
     "clean": "clean",
@@ -145,6 +146,7 @@ TRANSFORM_ROBUSTNESS_LABELS = {
     "noise3": "noise",
     "screenshot": "screenshot",
     "social_square": "social sq.",
+    "social_720p": "social 720p",
 }
 TRANSFORM_ROBUSTNESS_COLORS = {
     "clean": "#333333",
@@ -157,6 +159,7 @@ TRANSFORM_ROBUSTNESS_COLORS = {
     "noise3": "#B279A2",
     "screenshot": "#79706E",
     "social_square": "#D67195",
+    "social_720p": "#C85200",
 }
 
 
@@ -253,6 +256,7 @@ def parse_args() -> argparse.Namespace:
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_noise3_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_screenshot_robustness_summary.csv",
             "reports/assets/ms_cocoai_to_ishu_tuned_fusion_social_square_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_social_720p_robustness_summary.csv",
         ],
     )
     parser.add_argument("--out-dir", default="reports/assets")

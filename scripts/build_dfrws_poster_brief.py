@@ -27,6 +27,7 @@ ROBUSTNESS_FINDINGS = [
     "ms_to_ishu_tuned_fusion_noise3",
     "ms_to_ishu_tuned_fusion_screenshot",
     "ms_to_ishu_tuned_fusion_social_square",
+    "ms_to_ishu_tuned_fusion_social_720p",
 ]
 
 FIGURE_PACKAGE = [

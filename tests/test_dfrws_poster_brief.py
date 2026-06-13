@@ -33,6 +33,7 @@ def test_dfrws_poster_brief_builder_writes_markdown_and_key_numbers(tmp_path: Pa
         "ms_to_ishu_tuned_fusion_noise3",
         "ms_to_ishu_tuned_fusion_screenshot",
         "ms_to_ishu_tuned_fusion_social_square",
+        "ms_to_ishu_tuned_fusion_social_720p",
     ]
     pd.DataFrame(
         {
@@ -88,4 +89,4 @@ def test_dfrws_poster_brief_builder_writes_markdown_and_key_numbers(tmp_path: Pa
     assert "Do Not Overclaim" in text
     assert "clip_transfer_frontier" in text
     assert "combined_v4_is_ablation_candidate" not in text
-    assert "ms_to_ishu_tuned_fusion_social_square" in set(key_numbers["finding"])
+    assert "ms_to_ishu_tuned_fusion_social_720p" in set(key_numbers["finding"])

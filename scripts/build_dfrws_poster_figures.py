@@ -33,6 +33,7 @@ ROBUSTNESS_ROWS = [
     ("ms_to_ishu_tuned_fusion_jpeg30", "JPEG30"),
     ("ms_to_ishu_tuned_fusion_noise3", "noise3"),
     ("ms_to_ishu_tuned_fusion_social_square", "social"),
+    ("ms_to_ishu_tuned_fusion_social_720p", "social720"),
     ("ms_to_ishu_tuned_fusion_crop85", "crop85"),
     ("ms_to_ishu_tuned_fusion_screenshot", "screen"),
     ("ms_to_ishu_tuned_fusion_blur1", "blur1"),

@@ -16,6 +16,7 @@ ROBUSTNESS_VARIANTS = (
     "noise3",
     "screenshot",
     "social_square",
+    "social_720p",
 )
 
 
@@ -72,6 +73,26 @@ def social_square_roundtrip(image: Image.Image) -> Image.Image:
     return jpeg_roundtrip(center_square_crop_resize(image), quality=80)
 
 
+def long_edge_downscale_roundtrip(image: Image.Image, max_long_edge: int, quality: int) -> Image.Image:
+    width, height = image.size
+    long_edge = max(width, height)
+    if long_edge > max_long_edge:
+        scale = max_long_edge / long_edge
+        down_size = (
+            max(1, int(round(width * scale))),
+            max(1, int(round(height * scale))),
+        )
+        down = image.resize(down_size, Image.Resampling.LANCZOS)
+        restored = down.resize((width, height), Image.Resampling.BICUBIC)
+    else:
+        restored = image
+    return jpeg_roundtrip(restored, quality=quality)
+
+
+def social_720p_roundtrip(image: Image.Image) -> Image.Image:
+    return long_edge_downscale_roundtrip(image, max_long_edge=720, quality=72)
+
+
 def apply_robustness_variant(image: Image.Image, variant: str) -> Image.Image:
     image = image.convert("RGB")
     if variant == "jpeg70":
@@ -92,4 +113,6 @@ def apply_robustness_variant(image: Image.Image, variant: str) -> Image.Image:
         return screenshot_roundtrip(image)
     if variant == "social_square":
         return social_square_roundtrip(image)
+    if variant == "social_720p":
+        return social_720p_roundtrip(image)
     raise ValueError(f"Unsupported variant: {variant}")

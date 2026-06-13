@@ -50,7 +50,7 @@ Poster-scale transfer summary. Same-domain Ishu results show the physics-guided 
 
 Caption draft:
 
-Poster-scale robustness summary for the reverse tuned-fusion source fake-rate cap. The clean and mild-recompression operating points remain strong, but harsh JPEG, blur, resize, and screenshot-style transforms move ranking and fake-call behavior enough that the poster should frame the result as a stress-tested diagnostic rather than a production detector.
+Poster-scale robustness summary for the reverse tuned-fusion source fake-rate cap. The clean, mild-recompression, noise, and social-processing operating points remain strong, but harsh JPEG, blur, resize, and screenshot-style transforms move ranking and fake-call behavior enough that the poster should frame the result as a stress-tested diagnostic rather than a production detector.
 
 ## Figure 1: Transfer Ranking and Calibration
 

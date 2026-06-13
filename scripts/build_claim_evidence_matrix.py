@@ -45,6 +45,7 @@ CLAIMS = [
             "ms_to_ishu_tuned_fusion_noise3",
             "ms_to_ishu_tuned_fusion_screenshot",
             "ms_to_ishu_tuned_fusion_social_square",
+            "ms_to_ishu_tuned_fusion_social_720p",
         ],
         "primary_artifact": "reports/assets/publication_core_results.md",
         "risk_or_caveat": "Do not frame this as state of the art; frame it as a source-heldout diagnostic benchmark.",
@@ -117,12 +118,13 @@ CLAIMS = [
             "ms_to_ishu_tuned_fusion_noise3",
             "ms_to_ishu_tuned_fusion_screenshot",
             "ms_to_ishu_tuned_fusion_social_square",
+            "ms_to_ishu_tuned_fusion_social_720p",
         ],
         "primary_artifact": "reports/assets/publication_reverse_fusion_tradeoff.png",
         "risk_or_caveat": "Current score fusion can suppress the best branch and can inherit source-threshold bias.",
         "next_action": (
             "The source fake-rate constraint sweep improves target accuracy and fake-call bias; "
-            "JPEG70, JPEG50, noise, crop, and social-square processing are relatively stable, while JPEG30, "
+            "JPEG70, JPEG50, noise, social-square, and social-720p processing are relatively stable, while JPEG30, "
             "blur, resize, and screenshot-style roundtrips expose the next robustness gap."
         ),
     },
@@ -151,12 +153,12 @@ CLAIMS = [
             "ms_to_ishu_tuned_fusion_noise3",
             "ms_to_ishu_tuned_fusion_screenshot",
             "ms_to_ishu_tuned_fusion_social_square",
+            "ms_to_ishu_tuned_fusion_social_720p",
         ],
         "primary_artifact": "reports/assets/publication_reverse_operating_points.png",
         "risk_or_caveat": "The capped source-threshold result is an operating point, not a learned general solution.",
         "next_action": (
-            "Add native-resolution tiling, stronger social-media processing, and larger source splits before "
-            "calling the cap frontier contest-ready."
+            "Add native-resolution tiling and larger source splits before calling the cap frontier contest-ready."
         ),
     },
     {
