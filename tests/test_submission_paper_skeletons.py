@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_submission_paper_skeleton_builder_writes_wifs_and_dff_tex(tmp_path: Path) -> None:
     text_drafts = tmp_path / "submission_text_drafts.md"
+    claim_matrix = tmp_path / "claim_evidence_matrix.csv"
     out_dir = tmp_path / "paper_skeletons"
     report_out = tmp_path / "paper_skeletons.md"
     text_drafts.write_text(
@@ -31,6 +32,32 @@ def test_submission_paper_skeleton_builder_writes_wifs_and_dff_tex(tmp_path: Pat
         ),
         encoding="utf-8",
     )
+    pd.DataFrame(
+        [
+            {
+                "claim_id": "physics_guided_branch_helps",
+                "claim": "Physics-guided fusion helps on the current evidence.",
+                "submission_use": "WIFS/DFF ablation section.",
+                "status": "ready_with_caveat",
+                "evidence_finding_ids": "ishu_same_physics_guided",
+                "evidence_summary": "supporting row",
+                "primary_artifact": "reports/physics_guided_vs_resnet_2026_06_12.md",
+                "risk_or_caveat": "single-image physical proxy, not true photometric stereo",
+                "next_action": "keep comparative",
+            },
+            {
+                "claim_id": "poster_only_claim",
+                "claim": "Poster-only wording.",
+                "submission_use": "DFRWS poster lead.",
+                "status": "ready",
+                "evidence_finding_ids": "poster_row",
+                "evidence_summary": "supporting row",
+                "primary_artifact": "reports/dfrws_poster_brief_2026_06_13.md",
+                "risk_or_caveat": "poster only",
+                "next_action": "none",
+            },
+        ]
+    ).to_csv(claim_matrix, index=False)
 
     subprocess.run(
         [
@@ -38,6 +65,8 @@ def test_submission_paper_skeleton_builder_writes_wifs_and_dff_tex(tmp_path: Pat
             str(ROOT / "scripts" / "build_submission_paper_skeletons.py"),
             "--text-drafts",
             str(text_drafts),
+            "--claim-matrix",
+            str(claim_matrix),
             "--out-dir",
             str(out_dir),
             "--report-out",
@@ -56,5 +85,9 @@ def test_submission_paper_skeleton_builder_writes_wifs_and_dff_tex(tmp_path: Pat
     assert "\\documentclass[conference]{IEEEtran}" in wifs
     assert "\\documentclass[sigconf,review,anonymous]{acmart}" in dff
     assert "\\input{reports/assets/latex_tables/robustness_stress.tex}" in wifs
+    assert "Claim-Evidence Checklist" in wifs
+    assert "physics\\_guided\\_branch\\_helps" in wifs
+    assert "poster\\_only\\_claim" not in wifs
     assert "single-image proxy" in dff
+    assert set(manifest["claim_count"]) == {1}
     assert "Submission Paper Skeletons" in report

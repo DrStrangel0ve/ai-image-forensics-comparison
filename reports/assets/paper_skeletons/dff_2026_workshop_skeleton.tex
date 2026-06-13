@@ -74,6 +74,19 @@ TODO: Select two to three figures for the main paper and move the rest to an app
 \label{fig:submission-figure-4}
 \end{figure}
 
+\section{Claim-Evidence Checklist}
+This generated checklist mirrors the repository claim-evidence matrix so paper claims stay tied to concrete artifacts and caveats during editing.
+
+\begin{itemize}
+\item \textbf{source\_shift\_splits\_metrics}: Same-domain detector performance is not enough for AI-image forensics; ranking, calibration, and default decisions diverge under source shift. \textit{Evidence artifact:} reports/assets/publication\_core\_results.md. \textit{Caveat:} Do not frame this as state of the art; frame it as a source-heldout diagnostic benchmark.
+\item \textbf{physics\_guided\_branch\_helps}: Physics-guided ResNet fusion improves over vanilla ResNet and combined\_v3 on Ishu same-domain and gives a useful reverse-transfer calibration anchor. \textit{Evidence artifact:} reports/physics\_guided\_vs\_resnet\_2026\_06\_12.md. \textit{Caveat:} This is a single-image physical/signal proxy, not true multi-light photometric stereo; vanilla ResNet still wins some in-domain MS COCOAI checks.
+\item \textbf{clip\_transfer\_frontier}: Frozen CLIP ViT-B/32 is the strongest standalone transfer-ranking and high-confidence triage branch in the current benchmark. \textit{Evidence artifact:} reports/assets/publication\_score\_fusion\_clip\_frontier.png. \textit{Caveat:} CLIP has strong ranking but reverse-transfer default thresholds still over-call generated images.
+\item \textbf{scp\_fusion\_is\_diagnostic}: SCP-Fusion is currently most defensible as a diagnostic fusion protocol: it combines physical, neural, and foundation signals, but score-level fusion does not always beat the best standalone branch. \textit{Evidence artifact:} reports/assets/publication\_reverse\_fusion\_tradeoff.png. \textit{Caveat:} Current score fusion can suppress the best branch and can inherit source-threshold bias.
+\item \textbf{source\_thresholding\_improves\_decisions}: Source-aware operating-point selection can turn strong but biased reverse-transfer ranking into better binary decisions. \textit{Evidence artifact:} reports/assets/publication\_reverse\_operating\_points.png. \textit{Caveat:} The capped source-threshold result is an operating point, not a learned general solution.
+\item \textbf{high\_confidence\_triage\_is\_viable}: Strict source-heldout two-threshold triage can provide high-accuracy decisions on a subset of target images instead of forcing unreliable binary calls everywhere. \textit{Evidence artifact:} reports/assets/publication\_triage\_operating\_points.png. \textit{Caveat:} Coverage is intentionally partial; this is an investigative triage mode, not full automation.
+\item \textbf{combined\_v4\_is\_ablation\_candidate}: combined\_v4 is useful as a richer physical/signal ablation, especially with feature selection, but the completed transfer gate does not justify replacing combined\_v3 as the main conventional baseline. \textit{Evidence artifact:} reports/combined\_v4\_full\_transfer\_summary\_2026\_06\_13.md. \textit{Caveat:} Raw v4 mainly helps transfer accuracy, while select-k60 helps transfer AUC/calibration but loses same-domain Ishu accuracy; source-slice diagnostics show the gains and losses are generator/category uneven, so keep it as an ablation rather than a headline method.
+\end{itemize}
+
 \section{Limitations}
 TODO: Keep these caveats explicit: the physical branch is a single-image proxy, SCP-Fusion does not universally beat CLIP, native tiling only changes the conventional target branch in the current fused diagnostic, and robustness depends on the transform.
 
