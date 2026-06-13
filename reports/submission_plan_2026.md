@@ -48,7 +48,7 @@ Current evidence:
 - Publication assets now include six generated diagnostic figures, captions, a pipeline diagram, and a DFRWS-style abstract draft.
 - A submission-readiness snapshot now maps the current assets and gaps to DFRWS, WIFS, and DFF; reverse-direction foundation, neural, physics-guided, score-fusion, and regularization baselines are now checked in, and the next paper-critical gap is held-out-generator utility-aware fusion training.
 - Public sharing assets now include `CITATION.cff` and a reproducibility checklist that separates checked-in code/reports from external datasets and ignored model artifacts.
-- Qualitative failure grids now show seed-17 false positives, false negatives, and branch disagreements for SCP-Fusion on Ishu -> MS COCOAI.
+- Qualitative failure grids now show seed-17 and seed-29 false positives, false negatives, and branch disagreements for SCP-Fusion on Ishu -> MS COCOAI; the seed-29 pass repeats the confident generated-image miss pattern across SD2.1, DALL-E 3, SD3, and MidJourney v6 examples.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
 - A focused physics-guided-vs-ResNet note now sharpens the claim: physics-guided ResNet is stronger on Ishu, robustness, and several transfer diagnostics, but vanilla ResNet still wins MS COCOAI in-domain validation.
 - `combined_v4` now implements the planned reconstruction, multiscale frequency, chroma, and JPEG feature expansion; the first bounded smoke probe is usable but trails `combined_v3`, so the next claim needs full repeated-seed ablation rather than a single split.
@@ -130,7 +130,7 @@ Minimum additions before submission:
   - compare against the current saved-score logistic fusion.
   - branch dropout is now implemented and tested as a negative/mixed result, so prioritize source-aware calibration before adding more score-stack regularization.
 - Expand the first qualitative grids into a short explainability section using feature coefficients and source-level score distributions.
-- Add one more qualitative grid from a second seed or dataset direction.
+- Use the seed-17 and seed-29 qualitative grids as the failure-analysis panel set; add a reverse-transfer grid only if space allows.
 - Add a reproducibility appendix with exact commands and dataset audit notes.
 
 Recommended title:
@@ -166,8 +166,8 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - next step is a calibration-aware training objective that improves held-out fake recall without inflating real false positives.
 
 4. Add failure-case export:
-   - false positives, false negatives, and high-disagreement grids are now implemented for seed 17;
-   - next step is repeating the export for another seed or reverse transfer.
+   - false positives, false negatives, and high-disagreement grids are now implemented for seeds 17 and 29;
+   - next step is using these in the DFF/WIFS failure-analysis text, with reverse-transfer export as an optional appendix figure.
 
 5. Draft paper assets:
    - one shared results figure is generated;
@@ -176,7 +176,7 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - the DINOv2 SCP-Fusion gain figure is generated;
    - the CLIP transfer frontier figure is generated;
    - utility-tuned score-fusion triage now has a generated figure;
-   - one qualitative failure grid set is generated.
+   - two qualitative failure grid sets are generated.
 
 ## Recommended Order
 

@@ -122,7 +122,7 @@ Held-out source-threshold fusion with a source fake-rate cap gives the best MS-C
 
 Caption draft:
 
-Generated MS COCOAI images missed by SCP-Fusion v0 in the seed-17 transfer run. Several examples receive near-zero fake scores from all compared branches, showing that cross-source failure is not merely a threshold-calibration problem. Additional false-positive and disagreement grids are in `reports/qualitative_failure_cases_2026_06_12.md`.
+Generated MS COCOAI images missed by SCP-Fusion v0 in the seed-17 transfer run. Several examples receive near-zero fake scores from all compared branches, showing that cross-source failure is not merely a threshold-calibration problem. A second seed-29 grid repeats the confident-miss pattern across SD2.1, DALL-E 3, SD3, and MidJourney v6 examples; additional false-positive and disagreement grids are in `reports/qualitative_failure_cases_2026_06_12.md`.
 
 ## DFRWS Poster Abstract Draft
 
@@ -170,3 +170,4 @@ Generated files:
 - `reports\assets\publication_reverse_fusion_tradeoff.png`
 - `reports\assets\publication_reverse_operating_points.png`
 - `reports\assets\qualitative_seed17_scp_fusion_false_negatives.png`
+- `reports\assets\qualitative_seed29_scp_fusion_false_negatives.png`

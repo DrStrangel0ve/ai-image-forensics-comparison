@@ -173,7 +173,10 @@ CLAIMS = [
         ],
         "primary_artifact": "reports/assets/publication_triage_operating_points.png",
         "risk_or_caveat": "Coverage is intentionally partial; this is an investigative triage mode, not full automation.",
-        "next_action": "Add a second qualitative grid for triage failures or reverse-transfer misses.",
+        "next_action": (
+            "Use the seed-17 and seed-29 qualitative grids to illustrate confident misses and branch "
+            "disagreement; add a reverse-transfer grid only if space allows."
+        ),
     },
     {
         "claim_id": "combined_v4_is_ablation_candidate",
@@ -181,7 +184,7 @@ CLAIMS = [
             "combined_v4 is useful as a richer physical/signal ablation, especially with feature selection, but the "
             "completed transfer gate does not justify replacing combined_v3 as the main conventional baseline."
         ),
-        "submission_use": "WIFS/DFF ablation roadmap; optional appendix if repeated-seed run lands.",
+        "submission_use": "WIFS/DFF ablation roadmap; appendix feature-family caveat.",
         "status": "ready_with_caveat",
         "evidence_finding_ids": [
             "ishu_same_combined_v4_raw",

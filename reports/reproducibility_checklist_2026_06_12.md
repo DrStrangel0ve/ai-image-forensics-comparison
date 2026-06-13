@@ -176,6 +176,7 @@ python scripts\analyze_combined_v4_source_slices.py
 - Medium `combined_v4` ablation suggests raw `combined_v4` is the best ranking/accuracy candidate at 240 train images per seed, while select-k60 is the best calibrated variant; regenerated ablation assets include 95% bootstrap confidence intervals.
 - The completed `combined_v4` transfer gate keeps `combined_v3` as the main conventional baseline. Raw v4 improves Ishu-to-MS-COCOAI transfer accuracy by +0.0133 but leaves AUC flat and worsens Brier/ECE; select-k60 improves transfer AUC by +0.0119 and Brier/ECE by -0.0156 / -0.0249, but loses -0.0292 same-domain Ishu accuracy.
 - Source-slice diagnostics explain the v4 caveat: select-k60 improves transfer detection most on MidJourney v6 (+0.0500) and DALL-E 3 (+0.0400), while same-domain Ishu accuracy drops most on food (-0.0833), items (-0.0571), and animals (-0.0521).
+- Qualitative SCP-Fusion failure grids are now checked for two Ishu-to-MS-COCOAI transfer seeds. Seed 29 repeats the seed-17 pattern of confident generated-image misses, including SD2.1, DALL-E 3, SD3, and MidJourney v6 examples with near-zero branch scores.
 
 ## Known Limitations
 

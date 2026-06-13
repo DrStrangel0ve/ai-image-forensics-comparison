@@ -73,6 +73,7 @@ The matrix marks each claim as `ready`, `ready_with_caveat`, or `needs_more_evid
 | reverse operating points | `reports/assets/publication_reverse_operating_points.png` | source-threshold fusion headline |
 | reverse transform robustness | `reports/assets/publication_reverse_transform_robustness.png` | tuned-fusion robustness stress panel |
 | qualitative misses | `reports/assets/qualitative_seed17_scp_fusion_false_negatives.png` | failure-mode/explainability panel |
+| second-seed qualitative check | `reports/assets/qualitative_seed29_scp_fusion_false_negatives.png` and disagreement/false-positive companions | failure-mode repeatability panel |
 | combined_v4 source slices | `reports/combined_v4_source_slice_diagnostics_2026_06_13.md` | appendix/failure-analysis evidence for v4 caveat |
 
 ## DFRWS Poster Draft Plan
@@ -143,7 +144,7 @@ Priority order:
 
 1. Extend tuned-fusion robustness to native-resolution and stronger in-the-wild perturbations. JPEG70, JPEG50, noise3, and social_square are comparatively stable, but JPEG30, blur1, resize_half, and screenshot-style roundtrips expose real transform weaknesses; the next gap is native-resolution tiling, stronger social-media processing, or a larger source split before calling the 0.40 reverse frontier contest-ready.
 2. Try source-aware feature selection or a stronger regularized classifier for `combined_v4` only if the paper needs another ablation; the current gate keeps `combined_v3` as the main conventional baseline.
-3. Add another qualitative grid from a second seed or reverse transfer.
+3. Use the seed-17 and seed-29 qualitative grids in the failure-analysis section; add a reverse-transfer grid only if the final paper layout has room.
 4. If the final DFRWS format requires fully editable charts, rebuild the two v2 embedded raster panels as native PowerPoint primitives using the checked-in SVG/CSV panel sources.
 
 ## Suggested Next Experiment

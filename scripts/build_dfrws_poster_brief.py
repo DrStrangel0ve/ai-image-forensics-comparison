@@ -51,9 +51,14 @@ FIGURE_PACKAGE = [
         "Target transforms separate ranking robustness from fake-call-rate stability.",
     ),
     (
-        "Failure cases",
+        "Failure cases seed 17",
         "reports/assets/qualitative_seed17_scp_fusion_false_negatives.png",
-        "Qualitative misses and branch disagreements for forensic discussion.",
+        "Qualitative misses for forensic discussion.",
+    ),
+    (
+        "Failure cases seed 29",
+        "reports/assets/qualitative_seed29_scp_fusion_false_negatives.png",
+        "Second-seed repeatability check for confident generated-image misses.",
     ),
 ]
 
@@ -215,7 +220,7 @@ def build_poster_brief(core_results: Path, claim_matrix: Path) -> tuple[str, pd.
         "## Immediate Poster TODOs",
         "",
         "- Convert this brief into a one-page visual poster or slide.",
-        "- Add one compact qualitative failure grid near the robustness panel.",
+        "- Choose one seed-17 or seed-29 qualitative grid for the poster, then reserve the companion grids for the paper appendix.",
         "- Keep DFRWS as a reproducibility/demo poster; reserve stronger novelty claims for WIFS/DFF after the next breadth check.",
         "",
     ]

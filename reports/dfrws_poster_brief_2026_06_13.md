@@ -52,7 +52,8 @@ AI-image forensic detectors need source-heldout evaluation because ranking, prob
 | Calibration and triage | reports/assets/publication_triage_operating_points.png | High-confidence triage is more defensible than forcing every image into a binary decision. |
 | Reverse transfer | reports/assets/publication_reverse_operating_points.png | Source-aware operating points improve binary decisions under generator shift. |
 | Robustness stress panel | reports/assets/publication_reverse_transform_robustness.png | Target transforms separate ranking robustness from fake-call-rate stability. |
-| Failure cases | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Qualitative misses and branch disagreements for forensic discussion. |
+| Failure cases seed 17 | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Qualitative misses for forensic discussion. |
+| Failure cases seed 29 | reports/assets/qualitative_seed29_scp_fusion_false_negatives.png | Second-seed repeatability check for confident generated-image misses. |
 
 ## Claims To Carry
 
@@ -64,6 +65,7 @@ AI-image forensic detectors need source-heldout evaluation because ranking, prob
 | scp_fusion_is_diagnostic | ready_with_caveat | DFF method framing; WIFS cautionary fusion result; DFRWS reproducibility panel. | Current score fusion can suppress the best branch and can inherit source-threshold bias. |
 | source_thresholding_improves_decisions | ready_with_caveat | DFRWS operational triage panel; WIFS/DFF calibration and utility section. | The capped source-threshold result is an operating point, not a learned general solution. |
 | high_confidence_triage_is_viable | ready | DFRWS poster workflow; DFF real-world processing discussion. | Coverage is intentionally partial; this is an investigative triage mode, not full automation. |
+| combined_v4_is_ablation_candidate | ready_with_caveat | WIFS/DFF ablation roadmap; appendix feature-family caveat. | Raw v4 mainly helps transfer accuracy, while select-k60 helps transfer AUC/calibration but loses same-domain Ishu accuracy; source-slice diagnostics show the gains and losses are generator/category uneven, so keep it as an ablation rather than a headline method. |
 
 ## Do Not Overclaim
 
@@ -74,5 +76,5 @@ AI-image forensic detectors need source-heldout evaluation because ranking, prob
 ## Immediate Poster TODOs
 
 - Convert this brief into a one-page visual poster or slide.
-- Add one compact qualitative failure grid near the robustness panel.
+- Choose one seed-17 or seed-29 qualitative grid for the poster, then reserve the companion grids for the paper appendix.
 - Keep DFRWS as a reproducibility/demo poster; reserve stronger novelty claims for WIFS/DFF after the next breadth check.
