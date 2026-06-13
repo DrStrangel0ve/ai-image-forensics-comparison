@@ -12,7 +12,7 @@ These are editable authoring drafts. The wording intentionally preserves caveats
 | --- | --- |
 | DFRWS poster abstract | 183 |
 | WIFS compact abstract | 139 |
-| DFF workshop abstract | 181 |
+| DFF workshop abstract | 179 |
 
 ## DFRWS Poster Abstract
 
@@ -24,7 +24,7 @@ AI-generated image detection is commonly reported as closed-set accuracy, yet fo
 
 ## DFF Workshop Abstract
 
-Robust detection of AI-generated images is not only a model-selection problem: detectors must survive new generator sources, real-world processing, and ambiguous operating points. We introduce SCP-Fusion as a diagnostic protocol that compares and combines single-image physical/signal features, neural image classifiers, physics-guided ResNet fusion, and frozen foundation encoders for real-vs-generated image forensics. Across repeated source-heldout experiments, frozen CLIP remains the transfer-ranking frontier on Ishu to source-balanced MS COCOAI with 0.8641 AUC, while all-foundation SCP-Fusion reaches 0.7995 AUC and exposes where fused scores are conservative on generated images. Strict CLIP triage covers 0.4747 of target images at 0.9261 decided-case accuracy, motivating partial-decision forensic workflows. For MS COCOAI to Ishu, source-capped tuned fusion with a native-tiled conventional branch reaches 0.7749 accuracy and 0.8472 AUC, but transform checks show important weaknesses: JPEG30 drops to 0.7076 accuracy and blur drops to 0.7872 AUC. The resulting benchmark package includes source-slice diagnostics, calibration metrics, robustness transforms, and qualitative failure grids, making SCP-Fusion a reproducible framework for studying robustness and dataset bias rather than a claim of universal state-of-the-art detection.
+Robust detection of AI-generated images is not only a model-selection problem: detectors must survive new generator sources, real-world processing, and ambiguous operating points. We introduce SCP-Fusion as a diagnostic protocol that compares and combines single-image physical/signal features, neural image classifiers, physics-guided ResNet fusion, and frozen foundation encoders for real-vs-generated image forensics. Across repeated source-heldout experiments, frozen CLIP remains the transfer-ranking frontier on Ishu to source-balanced MS COCOAI with 0.8641 AUC, while all-foundation SCP-Fusion reaches 0.7995 AUC and exposes where fused scores are conservative on generated images. Strict CLIP triage covers 0.4747 of target images at 0.9261 decided-case accuracy, motivating partial-decision forensic workflows. For MS COCOAI to Ishu, source-capped tuned fusion with a native-tiled conventional branch reaches 0.7749 accuracy and 0.8472 AUC, but transform checks show important weaknesses: JPEG30 drops to 0.7076 accuracy and blur drops to 0.7872 AUC. The resulting benchmark package includes source-slice diagnostics, calibration metrics, robustness transforms, and qualitative failure grids, making SCP-Fusion a reproducible framework for studying robustness and dataset bias rather than a universal best-detector claim.
 
 ## Contribution Wording
 

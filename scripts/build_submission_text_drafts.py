@@ -149,7 +149,7 @@ def _dff_abstract(core: pd.DataFrame) -> str:
         f"Across repeated source-heldout experiments, frozen CLIP remains the transfer-ranking frontier on Ishu to source-balanced MS COCOAI with {_metric(clip, 'auc')} AUC, while all-foundation SCP-Fusion reaches {_metric(fusion, 'auc')} AUC and exposes where fused scores are conservative on generated images. "
         f"Strict CLIP triage covers {_metric(triage, 'coverage')} of target images at {_metric(triage, 'decided_accuracy')} decided-case accuracy, motivating partial-decision forensic workflows. "
         f"For MS COCOAI to Ishu, source-capped tuned fusion with a native-tiled conventional branch reaches {_metric(tiled, 'accuracy')} accuracy and {_metric(tiled, 'auc')} AUC, but transform checks show important weaknesses: JPEG30 drops to {_metric(jpeg, 'accuracy')} accuracy and blur drops to {_metric(blur, 'auc')} AUC. "
-        "The resulting benchmark package includes source-slice diagnostics, calibration metrics, robustness transforms, and qualitative failure grids, making SCP-Fusion a reproducible framework for studying robustness and dataset bias rather than a claim of universal state-of-the-art detection."
+        "The resulting benchmark package includes source-slice diagnostics, calibration metrics, robustness transforms, and qualitative failure grids, making SCP-Fusion a reproducible framework for studying robustness and dataset bias rather than a universal best-detector claim."
     )
 
 

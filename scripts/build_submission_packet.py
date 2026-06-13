@@ -92,6 +92,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/submission_package_lint_2026_06_14.md",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Generated lint report for missing packet assets, abstract word counts, and overclaim language.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/submission_package_lint.csv",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable submission package lint checks.",
+        "required": False,
+    },
+    {
         "path": "reports/dfrws_poster_brief_2026_06_13.md",
         "type": "poster",
         "venues": "DFRWS",
@@ -289,6 +303,7 @@ REGEN_COMMANDS = [
     ("DFRWS poster panels", "python scripts/build_dfrws_poster_figures.py"),
     ("submission text drafts", "python scripts/build_submission_text_drafts.py"),
     ("submission packet", "python scripts/build_submission_packet.py"),
+    ("submission package lint", "python scripts/lint_submission_package.py"),
 ]
 
 
