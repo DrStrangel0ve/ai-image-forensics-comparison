@@ -26,6 +26,7 @@ Core numbers to lead with:
 | physics-guided ResNet + `combined_v3` on Ishu | 0.8450 accuracy / 0.9177 AUC | physics-informed fusion helps same-domain and robustness |
 | frozen CLIP on Ishu -> MS COCOAI | 0.6363 accuracy / 0.8641 AUC | strongest standalone transfer ranking |
 | all-foundation SCP-Fusion on Ishu -> MS COCOAI | 0.6163 accuracy / 0.7995 AUC | CLIP improves fusion, but fusion still trails CLIP ranking |
+| Ishu -> MS threshold-objective diagnostic | 0.6470 accuracy / 0.7995 AUC / 0.1863 fake-call rate | source utility can improve decisions on saved fusion scores, but still under-calls generated images |
 | frozen CLIP on MS COCOAI -> Ishu | 0.6228 accuracy / 0.8243 AUC | reverse direction keeps CLIP's ranking lead but shows threshold shift |
 | frozen ConvNeXt on MS COCOAI -> Ishu | 0.6579 default accuracy / 0.6784 source-threshold accuracy | best reverse-direction operating point among foundation branches |
 | all-branch fusion on MS COCOAI -> Ishu | 0.6579 accuracy / 0.8285 AUC | best reverse-direction AUC, but still over-calls generated images |
@@ -102,7 +103,7 @@ The results show that ranking, probability calibration, and binary decision qual
 
 Priority order:
 
-1. Validate the tuned-fusion cap frontier. The 0.40 source fake-rate cap is now the best reverse SCP-Fusion operating point at 0.7632 accuracy / 0.8361 AUC and 0.5175 target fake-call rate. The next method gap is checking whether this frontier survives another dataset direction, robustness transform, or larger source split.
+1. Validate the tuned-fusion cap frontier under robustness or larger source splits. The opposite-direction Ishu -> MS threshold-objective sweep shows the cap lesson is directional: MS -> Ishu needs fake-call caps, while Ishu -> MS already under-calls generated images. The next method gap is checking whether the 0.40 reverse frontier survives perturbations without assuming it transfers symmetrically.
 2. Regenerate publication figures and tables with the reverse all-method result.
 3. Run `combined_v4` full repeated-seed transfer and decide whether it belongs in the main method or stays an ablation.
 4. Add another qualitative grid from a second seed or reverse transfer.
@@ -113,7 +114,7 @@ Priority order:
 The best next technical experiment is **source-heldout utility-aware reverse fusion**:
 
 - use the checked-in `--threshold-strategy source_utility` implementation and the model-selection selector as fixed operating-point evaluators;
-- validate the 0.40 source-cap tuned fusion frontier on another dataset direction or robustness transform;
+- validate the 0.40 source-cap tuned fusion frontier on robustness transforms or a larger source split;
 - combine the branch-dropout AUC gain with the strong-regularization Brier/ECE gain;
 - preserve the current reverse suite as the fixed comparison table.
 
