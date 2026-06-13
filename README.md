@@ -475,6 +475,8 @@ A medium-size grid rerun is checked into [reports/combined_v4_medium_selectk_pro
 
 A completed transfer gate is checked into [reports/combined_v4_full_transfer_summary_2026_06_13.md](reports/combined_v4_full_transfer_summary_2026_06_13.md), with seed/mean/delta CSVs in [reports/assets](reports/assets). The reproducibility command manifest remains checked in at [reports/assets/combined_v4_transfer_command_manifest.csv](reports/assets/combined_v4_transfer_command_manifest.csv). The outcome keeps `combined_v3` as the main conventional baseline and frames `combined_v4_selectk60` as a caveated transfer/calibration ablation.
 
+A source-slice diagnostic is checked into [reports/combined_v4_source_slice_diagnostics_2026_06_13.md](reports/combined_v4_source_slice_diagnostics_2026_06_13.md). It decomposes the v4 gate by Ishu content category and MS COCOAI generator label: select-k60 gains are strongest for MidJourney v6 and DALL-E 3 transfer detection, while Ishu food, items, and animals categories explain most of the same-domain accuracy loss.
+
 ## Defactify / MS COCOAI Subset Result
 
 A Hugging Face export and benchmark run on a 2,000-image Defactify/MS COCOAI subset is checked into [reports/ms_cocoai_2026_subset_benchmark.md](reports/ms_cocoai_2026_subset_benchmark.md).

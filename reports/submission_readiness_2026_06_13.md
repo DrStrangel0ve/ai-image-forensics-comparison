@@ -55,7 +55,7 @@ The current submission claims are audited in a generated claim-evidence matrix:
 - Markdown: `reports/assets/claim_evidence_matrix.md`
 - CSV: `reports/assets/claim_evidence_matrix.csv`
 
-The matrix marks each claim as `ready`, `ready_with_caveat`, or `needs_more_evidence`, cites the exact rows from `reports/assets/publication_core_results.csv`, and names the paper/poster artifact that should carry the claim. The important editorial outcome is that the CLIP transfer frontier, source-shift split, and high-confidence triage claims are ready now; the physics-guided, SCP-Fusion, and `combined_v4` claims are ready only with caveats. The completed v4 gate is summarized in `reports/combined_v4_full_transfer_summary_2026_06_13.md` and supports v4 as an appendix ablation, not a main-method replacement.
+The matrix marks each claim as `ready`, `ready_with_caveat`, or `needs_more_evidence`, cites the exact rows from `reports/assets/publication_core_results.csv`, and names the paper/poster artifact that should carry the claim. The important editorial outcome is that the CLIP transfer frontier, source-shift split, and high-confidence triage claims are ready now; the physics-guided, SCP-Fusion, and `combined_v4` claims are ready only with caveats. The completed v4 gate is summarized in `reports/combined_v4_full_transfer_summary_2026_06_13.md`, and the source-slice caveat is decomposed in `reports/combined_v4_source_slice_diagnostics_2026_06_13.md`.
 
 ## Checked-In Figure Package
 
@@ -73,6 +73,7 @@ The matrix marks each claim as `ready`, `ready_with_caveat`, or `needs_more_evid
 | reverse operating points | `reports/assets/publication_reverse_operating_points.png` | source-threshold fusion headline |
 | reverse transform robustness | `reports/assets/publication_reverse_transform_robustness.png` | tuned-fusion robustness stress panel |
 | qualitative misses | `reports/assets/qualitative_seed17_scp_fusion_false_negatives.png` | failure-mode/explainability panel |
+| combined_v4 source slices | `reports/combined_v4_source_slice_diagnostics_2026_06_13.md` | appendix/failure-analysis evidence for v4 caveat |
 
 ## DFRWS Poster Draft Plan
 

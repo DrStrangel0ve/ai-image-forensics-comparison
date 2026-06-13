@@ -84,6 +84,7 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | Medium `combined_v4` ablation grid with bootstrap CIs | `reports/combined_v4_medium_selectk_probe_2026_06_12.md` |
 | `combined_v4` transfer-readiness gate and command manifest | `reports/combined_v4_transfer_readiness_2026_06_13.md` |
 | `combined_v4` full-transfer seed summary | `reports/combined_v4_full_transfer_summary_2026_06_13.md` |
+| `combined_v4` source-slice diagnostics | `reports/combined_v4_source_slice_diagnostics_2026_06_13.md` |
 
 ## Core Reproduction Commands
 
@@ -145,6 +146,7 @@ python scripts\build_dfrws_poster_brief.py
 python scripts\build_dfrws_poster_figures.py
 python scripts\build_combined_v4_transfer_readiness.py
 python scripts\summarize_combined_v4_transfer.py
+python scripts\analyze_combined_v4_source_slices.py
 ```
 
 ## Current Result Snapshot
@@ -173,6 +175,7 @@ python scripts\summarize_combined_v4_transfer.py
 - Source-heldout calibration and triage assets include 95% deterministic bootstrap confidence intervals over held-out source/seed rows.
 - Medium `combined_v4` ablation suggests raw `combined_v4` is the best ranking/accuracy candidate at 240 train images per seed, while select-k60 is the best calibrated variant; regenerated ablation assets include 95% bootstrap confidence intervals.
 - The completed `combined_v4` transfer gate keeps `combined_v3` as the main conventional baseline. Raw v4 improves Ishu-to-MS-COCOAI transfer accuracy by +0.0133 but leaves AUC flat and worsens Brier/ECE; select-k60 improves transfer AUC by +0.0119 and Brier/ECE by -0.0156 / -0.0249, but loses -0.0292 same-domain Ishu accuracy.
+- Source-slice diagnostics explain the v4 caveat: select-k60 improves transfer detection most on MidJourney v6 (+0.0500) and DALL-E 3 (+0.0400), while same-domain Ishu accuracy drops most on food (-0.0833), items (-0.0571), and animals (-0.0521).
 
 ## Known Limitations
 

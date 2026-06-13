@@ -56,6 +56,7 @@ Current evidence:
 - A medium three-seed probe with 240 training images per seed makes raw `combined_v4` the best ranking/accuracy candidate at 0.7544 mean accuracy / 0.8315 mean AUC, while select-k60 has the best Brier/ECE.
 - Repeated benchmark and feature-ablation summary scripts now emit 95% deterministic bootstrap confidence intervals, and the checked-in `combined_v4` ablation assets have been regenerated with those intervals.
 - A completed `combined_v4` transfer gate now settles the v4 claim for this paper draft: raw v4 improves Ishu -> MS COCOAI transfer accuracy by +0.0133 but leaves AUC flat and worsens Brier/ECE, while select-k60 improves transfer AUC by +0.0119 and Brier/ECE by -0.0156 / -0.0249 at a -0.0292 same-domain Ishu accuracy cost. Keep `combined_v3` as the main conventional baseline and use `combined_v4_selectk60` as a caveated transfer/calibration ablation.
+- A `combined_v4` source-slice diagnostic now explains that caveat: select-k60's transfer detection gains are concentrated on MidJourney v6 (+0.0500) and DALL-E 3 (+0.0400), while same-domain Ishu losses are largest on food (-0.0833), items (-0.0571), and animals (-0.0521).
 
 ## Target 1: DFRWS-USA 2026 Poster
 
@@ -156,6 +157,7 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - the expanded bounded sweep suggests `k=60` for ranking/AUC and `k=80` for default accuracy, while histogram-gradient boosting is weak on the small split;
    - the medium 240-train run suggests raw v4 may overtake selected v4 once there is enough data, with select-k60 still best calibrated;
    - the full transfer gate is summarized in `reports/combined_v4_full_transfer_summary_2026_06_13.md`: raw v4 helps transfer accuracy but not AUC/calibration, while select-k60 helps transfer AUC/calibration but gives up same-domain Ishu accuracy;
+   - the source-slice diagnostic in `reports/combined_v4_source_slice_diagnostics_2026_06_13.md` turns that into failure-analysis material: select-k60 helps some MS generator sources while degrading several Ishu categories;
    - decision: keep `combined_v3` as the main conventional baseline, report `combined_v4_selectk60` as an appendix ablation, and only spend more v4 time on source-aware feature selection or stronger regularized classifiers.
 
 3. Improve calibration:

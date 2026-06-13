@@ -192,7 +192,8 @@ CLAIMS = [
         "primary_artifact": "reports/combined_v4_full_transfer_summary_2026_06_13.md",
         "risk_or_caveat": (
             "Raw v4 mainly helps transfer accuracy, while select-k60 helps transfer AUC/calibration but loses "
-            "same-domain Ishu accuracy; keep it as an ablation rather than a headline method."
+            "same-domain Ishu accuracy; source-slice diagnostics show the gains and losses are generator/category "
+            "uneven, so keep it as an ablation rather than a headline method."
         ),
         "next_action": (
             "Try source-aware feature selection or a stronger regularized classifier before any main-method promotion."
