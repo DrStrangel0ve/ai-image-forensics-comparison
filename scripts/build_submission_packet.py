@@ -176,6 +176,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/paper_skeleton_lint_2026_06_14.md",
+        "type": "quality-control",
+        "venues": "WIFS,DFF",
+        "purpose": "Generated lint report for WIFS/DFF paper skeleton structure, referenced assets, and claim guardrails.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/paper_skeleton_lint.csv",
+        "type": "quality-control",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable WIFS/DFF paper skeleton lint checks.",
+        "required": False,
+    },
+    {
         "path": "reports/assets/claim_evidence_matrix.csv",
         "type": "claim-audit",
         "venues": "DFRWS,WIFS,DFF",
@@ -413,6 +427,7 @@ REGEN_COMMANDS = [
     ("submission result tables", "python scripts/build_submission_result_tables.py"),
     ("submission LaTeX tables", "python scripts/build_submission_latex_tables.py"),
     ("submission paper skeletons", "python scripts/build_submission_paper_skeletons.py"),
+    ("paper skeleton lint", "python scripts/lint_paper_skeletons.py"),
     ("publication figures", "python scripts/build_publication_assets.py"),
     ("DFRWS poster brief", "python scripts/build_dfrws_poster_brief.py"),
     ("DFRWS poster panels", "python scripts/build_dfrws_poster_figures.py"),

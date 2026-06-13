@@ -1,0 +1,106 @@
+from __future__ import annotations
+
+import subprocess
+import sys
+from pathlib import Path
+
+import pandas as pd
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path) -> None:
+    repo_root = tmp_path / "repo"
+    skeleton_dir = repo_root / "reports" / "assets" / "paper_skeletons"
+    table_dir = repo_root / "reports" / "assets" / "latex_tables"
+    asset_dir = repo_root / "reports" / "assets"
+    skeleton_dir.mkdir(parents=True)
+    table_dir.mkdir(parents=True)
+    asset_dir.mkdir(parents=True, exist_ok=True)
+
+    table_paths = [
+        "reports/assets/latex_tables/same_domain_anchor.tex",
+        "reports/assets/latex_tables/transfer_frontier.tex",
+        "reports/assets/latex_tables/reverse_operating_points.tex",
+        "reports/assets/latex_tables/robustness_stress.tex",
+    ]
+    figure_paths = [
+        "reports/assets/publication_score_fusion_clip_frontier.png",
+        "reports/assets/publication_triage_operating_points.png",
+        "reports/assets/publication_reverse_operating_points.png",
+        "reports/assets/qualitative_seed17_scp_fusion_false_negatives.png",
+    ]
+    for relative in table_paths + figure_paths:
+        path = repo_root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("placeholder\n", encoding="utf-8")
+
+    tex_path = skeleton_dir / "wifs_2026_paper_skeleton.tex"
+    tex_path.write_text(
+        "\n".join(
+            [
+                r"\documentclass[conference]{IEEEtran}",
+                r"\title{Skeleton}",
+                r"\begin{document}",
+                r"\maketitle",
+                r"\begin{abstract}",
+                "Abstract.",
+                r"\end{abstract}",
+                *[rf"\input{{{path}}}" for path in table_paths],
+                *[rf"\includegraphics[width=\linewidth]{{{path}}}" for path in figure_paths],
+                r"\section{Claim-Evidence Checklist}",
+                r"\begin{itemize}",
+                (
+                    r"\item \textbf{claim_one}: Claim text. "
+                    r"\textit{Evidence artifact:} reports/example.md. "
+                    r"\textit{Caveat:} single-image proxy; does not universally beat CLIP; "
+                    "robustness depends on the transform."
+                ),
+                r"\end{itemize}",
+                r"\bibliography{references}",
+                r"\end{document}",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    manifest = skeleton_dir / "submission_paper_skeleton_manifest.csv"
+    pd.DataFrame(
+        [
+            {
+                "paper_id": "wifs_2026",
+                "venue": "IEEE WIFS 2026",
+                "title": "Skeleton",
+                "path": "reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex",
+                "template_hint": "IEEEtran",
+                "abstract_header": "WIFS Compact Abstract",
+                "claim_count": 1,
+            }
+        ]
+    ).to_csv(manifest, index=False)
+
+    out_path = tmp_path / "paper_skeleton_lint.md"
+    checks_out = tmp_path / "paper_skeleton_lint.csv"
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "lint_paper_skeletons.py"),
+            "--repo-root",
+            str(repo_root),
+            "--manifest",
+            str(manifest),
+            "--out-path",
+            str(out_path),
+            "--checks-out",
+            str(checks_out),
+        ],
+        cwd=ROOT,
+        check=True,
+    )
+
+    report = out_path.read_text(encoding="utf-8")
+    checks = pd.read_csv(checks_out)
+    assert "Status: **PASS**" in report
+    assert checks["passed"].all()
+    assert "claim count matches manifest" in checks["check"].str.cat(sep=" ")

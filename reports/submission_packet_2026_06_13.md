@@ -104,6 +104,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | paper-draft | reports/submission_paper_skeletons_2026_06_14.md | Report listing generated WIFS/DFF paper skeletons. |
 | paper-draft | reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv | Machine-readable manifest for generated WIFS/DFF paper skeletons. |
 | paper-draft | reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex | IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures. |
+| quality-control | reports/paper_skeleton_lint_2026_06_14.md | Generated lint report for WIFS/DFF paper skeleton structure, referenced assets, and claim guardrails. |
+| quality-control | reports/assets/paper_skeleton_lint.csv | Machine-readable WIFS/DFF paper skeleton lint checks. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
@@ -149,6 +151,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | paper-draft | reports/submission_paper_skeletons_2026_06_14.md | Report listing generated WIFS/DFF paper skeletons. |
 | paper-draft | reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv | Machine-readable manifest for generated WIFS/DFF paper skeletons. |
 | paper-draft | reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex | ACM-style DFF workshop skeleton with generated abstract, tables, and figures. |
+| quality-control | reports/paper_skeleton_lint_2026_06_14.md | Generated lint report for WIFS/DFF paper skeleton structure, referenced assets, and claim guardrails. |
+| quality-control | reports/assets/paper_skeleton_lint.csv | Machine-readable WIFS/DFF paper skeleton lint checks. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
@@ -178,6 +182,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | submission result tables | python scripts/build_submission_result_tables.py |
 | submission LaTeX tables | python scripts/build_submission_latex_tables.py |
 | submission paper skeletons | python scripts/build_submission_paper_skeletons.py |
+| paper skeleton lint | python scripts/lint_paper_skeletons.py |
 | publication figures | python scripts/build_publication_assets.py |
 | DFRWS poster brief | python scripts/build_dfrws_poster_brief.py |
 | DFRWS poster panels | python scripts/build_dfrws_poster_figures.py |
