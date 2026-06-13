@@ -19,6 +19,7 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
     reverse_regularization = tmp_path / "reverse_regularization.csv"
     reverse_cap = tmp_path / "reverse_cap.csv"
     reverse_utility = tmp_path / "reverse_utility.csv"
+    reverse_holdout = tmp_path / "reverse_holdout.csv"
     out_dir = tmp_path / "assets"
 
     physics_report.write_text(
@@ -126,6 +127,20 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
         }
     ).to_csv(reverse_utility, index=False)
 
+    pd.DataFrame(
+        {
+            "selection_policy": [
+                "source_holdout_mean_utility_unconstrained",
+                "source_holdout_mean_utility_cap_0p48",
+            ],
+            "target_accuracy_mean": [0.65, 0.72],
+            "target_roc_auc_mean": [0.83, 0.83],
+            "target_brier_score_mean": [0.29, 0.22],
+            "target_expected_calibration_error_mean": [0.32, 0.21],
+            "target_predicted_positive_rate_mean": [0.82, 0.62],
+        }
+    ).to_csv(reverse_holdout, index=False)
+
     subprocess.run(
         [
             sys.executable,
@@ -146,6 +161,8 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
             str(reverse_cap),
             "--reverse-model-utility-selection",
             str(reverse_utility),
+            "--reverse-source-holdout-selection",
+            str(reverse_holdout),
             "--out-dir",
             str(out_dir),
         ],
@@ -164,5 +181,7 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
     assert "ms_to_ishu_source_cap_accuracy" in set(frame["finding_id"])
     assert "ms_to_ishu_source_utility_unconstrained" in set(frame["finding_id"])
     assert "ms_to_ishu_source_utility_cap_0p48" in set(frame["finding_id"])
+    assert "ms_to_ishu_source_holdout_mean_utility_unconstrained" in set(frame["finding_id"])
+    assert "ms_to_ishu_source_holdout_mean_utility_cap_0p48" in set(frame["finding_id"])
     assert frame.loc[frame["finding_id"] == "ishu_same_physics_guided", "auc"].iloc[0] == 0.9177
     assert "Publication Core Results Table" in markdown_path.read_text(encoding="utf-8")

@@ -100,7 +100,7 @@ The results show that ranking, probability calibration, and binary decision qual
 
 Priority order:
 
-1. Move utility into source-heldout validation or fusion training. The `source_utility` threshold sweep matched the `cap_0p48` source-accuracy result at 0.7222 accuracy / 0.8291 AUC, and the model-side source-utility selector is a useful negative result: unconstrained source utility picks over-firing models at 0.6520 accuracy / 0.8216 target fake-call rate, while a 0.48 source fake-rate cap recovers 0.7193 accuracy but still does not beat the fixed capped threshold family.
+1. Move utility into constrained source-heldout fusion training. The `source_utility` threshold sweep matched the `cap_0p48` source-accuracy result at 0.7222 accuracy / 0.8291 AUC. Full source-train model selection and leave-one-generator-out source selection are both useful negative results: unconstrained utility picks over-firing models at 0.6520 accuracy / 0.8216 target fake-call rate, while a 0.48 source fake-rate cap recovers 0.7193 accuracy but still does not beat the fixed capped threshold family.
 2. Regenerate publication figures and tables with the reverse all-method result.
 3. Run `combined_v4` full repeated-seed transfer and decide whether it belongs in the main method or stays an ablation.
 4. Add another qualitative grid from a second seed or reverse transfer.
@@ -111,7 +111,7 @@ Priority order:
 The best next technical experiment is **source-heldout utility-aware reverse fusion**:
 
 - use the checked-in `--threshold-strategy source_utility` implementation and the model-selection selector as fixed operating-point evaluators;
-- train or select the score-fusion head with explicit held-out-generator utility rather than full source-train utility or only source-domain log-loss;
+- train the score-fusion head with explicit held-out-generator utility and a real-image false-positive/fake-call constraint rather than only source-domain log-loss;
 - combine the branch-dropout AUC gain with the strong-regularization Brier/ECE gain;
 - preserve the current reverse suite as the fixed comparison table.
 
