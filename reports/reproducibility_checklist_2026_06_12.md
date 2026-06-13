@@ -33,6 +33,9 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | DFRWS-style figures and abstract draft | `reports/publication_assets_2026_06_12.md` |
 | Generated DFRWS poster brief | `reports/dfrws_poster_brief_2026_06_13.md` |
 | DFRWS poster key numbers CSV | `reports/assets/dfrws_poster_key_numbers.csv` |
+| Editable DFRWS poster draft | `reports/dfrws_poster_draft_2026_06_13.md` |
+| DFRWS poster draft PPTX | `reports/assets/dfrws_poster_draft_2026_06_13.pptx` |
+| DFRWS poster draft PNG preview | `reports/assets/dfrws_poster_draft_2026_06_13.png` |
 | Physics-guided ResNet vs vanilla ResNet | `reports/physics_guided_vs_resnet_2026_06_12.md` |
 | Ishu repeated split and transfer results | `reports/ishu_ai_vs_real_2026_benchmark.md` |
 | Ishu transform robustness | `reports/ishu_physics_guided_robustness_3seed.md` |

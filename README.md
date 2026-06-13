@@ -536,6 +536,8 @@ A publication-assets pass is checked into [reports/publication_assets_2026_06_12
 
 A generated DFRWS poster brief is checked into [reports/dfrws_poster_brief_2026_06_13.md](reports/dfrws_poster_brief_2026_06_13.md), with compact key numbers in [reports/assets/dfrws_poster_key_numbers.csv](reports/assets/dfrws_poster_key_numbers.csv). It turns the current tables into a poster spine, figure package, claims to carry, and explicit overclaim warnings.
 
+A first editable DFRWS poster draft is checked into [reports/dfrws_poster_draft_2026_06_13.md](reports/dfrws_poster_draft_2026_06_13.md), with the PowerPoint file at [reports/assets/dfrws_poster_draft_2026_06_13.pptx](reports/assets/dfrws_poster_draft_2026_06_13.pptx) and a PNG preview at [reports/assets/dfrws_poster_draft_2026_06_13.png](reports/assets/dfrws_poster_draft_2026_06_13.png).
+
 A submission-readiness snapshot is checked into [reports/submission_readiness_2026_06_13.md](reports/submission_readiness_2026_06_13.md). It verifies the DFRWS, WIFS, and DFF deadlines, maps the checked-in figure package to each target, drafts the DFRWS poster structure, and names reverse-direction foundation transfer as the next paper-critical experiment.
 
 A generated claim-evidence matrix is checked into [reports/assets/claim_evidence_matrix.md](reports/assets/claim_evidence_matrix.md). It maps each poster/paper claim to exact result rows, marks claims as ready or caveated, and keeps `combined_v4` framed as an ablation candidate until the larger repeated-seed transfer check is done.
