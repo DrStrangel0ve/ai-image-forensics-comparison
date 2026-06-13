@@ -113,12 +113,15 @@ The results show a consistent gap between ranking, calibration, and binary decis
 ```powershell
 python scripts/build_publication_assets.py --out-dir reports\assets
 python scripts/build_publication_tables.py --out-dir reports\assets
+python scripts/build_claim_evidence_matrix.py --out-dir reports\assets
 ```
 
 Generated files:
 
 - `reports\assets\publication_core_results.csv`
 - `reports\assets\publication_core_results.md`
+- `reports\assets\claim_evidence_matrix.csv`
+- `reports\assets\claim_evidence_matrix.md`
 - `reports\assets\publication_cross_domain_calibration.png`
 - `reports\assets\publication_source_heldout_calibration.png`
 - `reports\assets\publication_triage_operating_points.png`

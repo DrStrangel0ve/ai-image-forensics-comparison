@@ -27,6 +27,8 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | Research roadmap and contest/venue fit | `reports/research_deep_dive_2026_06_12.md` |
 | Submission plan for DFRWS, WIFS, and DFF | `reports/submission_plan_2026.md` |
 | Submission readiness snapshot | `reports/submission_readiness_2026_06_13.md` |
+| Claim evidence matrix for poster/paper claims | `reports/assets/claim_evidence_matrix.md` |
+| Publication core results table | `reports/assets/publication_core_results.md` |
 | DFRWS-style figures and abstract draft | `reports/publication_assets_2026_06_12.md` |
 | Physics-guided ResNet vs vanilla ResNet | `reports/physics_guided_vs_resnet_2026_06_12.md` |
 | Ishu repeated split and transfer results | `reports/ishu_ai_vs_real_2026_benchmark.md` |
@@ -105,10 +107,12 @@ python scripts\run_feature_ablation_grid.py `
   --skip-existing
 ```
 
-Rebuild publication figures:
+Rebuild publication figures, core tables, and claim audit:
 
 ```powershell
 python scripts\build_publication_assets.py --out-dir reports\assets
+python scripts\build_publication_tables.py --out-dir reports\assets
+python scripts\build_claim_evidence_matrix.py --out-dir reports\assets
 ```
 
 ## Current Result Snapshot

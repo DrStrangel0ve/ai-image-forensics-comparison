@@ -36,6 +36,15 @@ Core numbers to lead with:
 | CLIP source-heldout triage, strict 5% budget | 0.4747 coverage / 0.9261 decided-case accuracy | best current forensic triage operating point |
 | DINOv2-enhanced source-calibrated fusion | 0.6127 accuracy / 0.3062 Brier / 0.2938 ECE | best calibrated fusion-family operating point before CLIP |
 
+## Claim Evidence Matrix
+
+The current submission claims are audited in a generated claim-evidence matrix:
+
+- Markdown: `reports/assets/claim_evidence_matrix.md`
+- CSV: `reports/assets/claim_evidence_matrix.csv`
+
+The matrix marks each claim as `ready`, `ready_with_caveat`, or `needs_more_evidence`, cites the exact rows from `reports/assets/publication_core_results.csv`, and names the paper/poster artifact that should carry the claim. The important editorial outcome is that the CLIP transfer frontier, source-shift split, and high-confidence triage claims are ready now; the physics-guided and SCP-Fusion claims are ready only with caveats; and `combined_v4` should remain an ablation candidate until the larger repeated-seed transfer check lands.
+
 ## Checked-In Figure Package
 
 | figure | file | use |
