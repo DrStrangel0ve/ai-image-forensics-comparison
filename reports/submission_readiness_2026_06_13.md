@@ -55,7 +55,7 @@ The current submission claims are audited in a generated claim-evidence matrix:
 - Markdown: `reports/assets/claim_evidence_matrix.md`
 - CSV: `reports/assets/claim_evidence_matrix.csv`
 
-The matrix marks each claim as `ready`, `ready_with_caveat`, or `needs_more_evidence`, cites the exact rows from `reports/assets/publication_core_results.csv`, and names the paper/poster artifact that should carry the claim. The important editorial outcome is that the CLIP transfer frontier, source-shift split, and high-confidence triage claims are ready now; the physics-guided and SCP-Fusion claims are ready only with caveats; and `combined_v4` should remain an ablation candidate until the checked-in transfer command manifest produces raw-v4/select-k60 transfer rows.
+The matrix marks each claim as `ready`, `ready_with_caveat`, or `needs_more_evidence`, cites the exact rows from `reports/assets/publication_core_results.csv`, and names the paper/poster artifact that should carry the claim. The important editorial outcome is that the CLIP transfer frontier, source-shift split, and high-confidence triage claims are ready now; the physics-guided and SCP-Fusion claims are ready only with caveats; and `combined_v4` should remain an ablation candidate until the checked-in transfer command manifest finishes all repeated seeds. The first seed-7 slice is now summarized in `reports/combined_v4_full_transfer_summary_2026_06_13.md`.
 
 ## Checked-In Figure Package
 
@@ -141,7 +141,7 @@ The results show that ranking, probability calibration, and binary decision qual
 Priority order:
 
 1. Extend tuned-fusion robustness to native-resolution and stronger in-the-wild perturbations. JPEG70, JPEG50, noise3, and social_square are comparatively stable, but JPEG30, blur1, resize_half, and screenshot-style roundtrips expose real transform weaknesses; the next gap is native-resolution tiling, stronger social-media processing, or a larger source split before calling the 0.40 reverse frontier contest-ready.
-2. Run `reports/assets/combined_v4_transfer_command_manifest.csv` and decide whether raw `combined_v4` belongs in the main method or stays an ablation.
+2. Finish seeds 17 and 29 from `reports/assets/combined_v4_transfer_command_manifest.csv`, regenerate `reports/combined_v4_full_transfer_summary_2026_06_13.md`, and decide whether raw or select-k `combined_v4` belongs in the main method or stays an ablation.
 3. Add another qualitative grid from a second seed or reverse transfer.
 4. If the final DFRWS format requires fully editable charts, rebuild the two v2 embedded raster panels as native PowerPoint primitives using the checked-in SVG/CSV panel sources.
 

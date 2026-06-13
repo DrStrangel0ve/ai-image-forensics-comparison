@@ -39,6 +39,8 @@ The active publication roadmap is documented in [reports/submission_plan_2026.md
 
 The public reproducibility checklist is documented in [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It lists what is included in the public repo, what must be downloaded externally, and the shortest commands for tests, ablations, and publication figure generation.
 
+The first `combined_v4` full-transfer seed slice is summarized in [reports/combined_v4_full_transfer_summary_2026_06_13.md](reports/combined_v4_full_transfer_summary_2026_06_13.md). It is preliminary: select-k60 v4 improves Ishu -> source-balanced MS COCOAI transfer on seed 7, but is slightly weaker on the Ishu same-domain holdout, so the remaining seeds are still required before promoting v4 into the main branch.
+
 ## Setup
 
 From this repo root:
