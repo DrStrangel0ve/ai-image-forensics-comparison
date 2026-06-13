@@ -43,6 +43,7 @@ METHOD_LABELS = {
     "source_holdout_mean_utility_cap_0p48": "Reverse capped source-heldout utility selection",
     "source_holdout_tuned_fusion": "Reverse source-heldout tuned fusion",
     "tuned_fusion_constraint_sweep_best": "Reverse tuned-fusion constraint sweep best",
+    "tuned_fusion_native_tiling_best": "Reverse tuned fusion + native tiled combined_v3",
     "tuned_fusion_jpeg70": "Reverse tuned-fusion JPEG70 robustness",
     "tuned_fusion_transform": "Reverse tuned-fusion target-transform robustness",
 }
@@ -126,6 +127,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--reverse-tuned-fusion-constraint-sweep",
         default="reports/assets/ms_cocoai_to_ishu_tuned_fusion_constraint_sweep_summary.csv",
+    )
+    parser.add_argument(
+        "--reverse-tuned-fusion-native-tiling",
+        default="reports/assets/ms_cocoai_to_ishu_tuned_fusion_native_tiling_summary.csv",
     )
     parser.add_argument(
         "--reverse-tuned-fusion-jpeg70-robustness",
@@ -510,6 +515,32 @@ def _reverse_tuned_fusion_constraint_sweep_row(path: Path) -> dict[str, object]:
     )
 
 
+def _reverse_tuned_fusion_native_tiling_row(path: Path) -> dict[str, object] | None:
+    if not path.exists():
+        return None
+    frame = pd.read_csv(path)
+    source_row = frame.sort_values(
+        ["target_accuracy_mean", "target_roc_auc_mean", "target_predicted_positive_rate_mean"],
+        ascending=[False, False, True],
+    ).iloc[0]
+    score_mode = str(source_row["score_mode"])
+    return _blank_row(
+        "ms_to_ishu_tuned_fusion_native_tiling_best",
+        "MS COCOAI -> Ishu tuned-fusion native-tiling diagnostic",
+        METHOD_LABELS["tuned_fusion_native_tiling_best"],
+        path,
+        (
+            f"Replacing the target combined_v3 branch with `{score_mode}` native-tile scores gives a "
+            "small fused-stack gain; neural and foundation branches remain global-image scores."
+        ),
+        accuracy=float(source_row["target_accuracy_mean"]),
+        auc=float(source_row["target_roc_auc_mean"]),
+        brier=float(source_row["target_brier_score_mean"]),
+        ece=float(source_row["target_expected_calibration_error_mean"]),
+        predicted_fake_rate=float(source_row["target_predicted_positive_rate_mean"]),
+    )
+
+
 def _reverse_tuned_fusion_robustness_row(path: Path, *, expected_variant: str | None = None) -> dict[str, object]:
     frame = pd.read_csv(path)
     source_row = _single_row(frame, "variant", expected_variant) if expected_variant else frame.iloc[0]
@@ -559,6 +590,7 @@ def build_core_results_table(
     reverse_source_holdout_selection: Path,
     reverse_source_holdout_tuned_fusion: Path,
     reverse_tuned_fusion_constraint_sweep: Path,
+    reverse_tuned_fusion_native_tiling: Path,
     reverse_tuned_fusion_jpeg70_robustness: Path,
     reverse_tuned_fusion_extra_robustness: list[Path] | None = None,
 ) -> pd.DataFrame:
@@ -574,6 +606,9 @@ def build_core_results_table(
     rows.extend(_reverse_source_holdout_rows(reverse_source_holdout_selection))
     rows.append(_reverse_source_holdout_tuned_fusion_row(reverse_source_holdout_tuned_fusion))
     rows.append(_reverse_tuned_fusion_constraint_sweep_row(reverse_tuned_fusion_constraint_sweep))
+    native_tiling_row = _reverse_tuned_fusion_native_tiling_row(reverse_tuned_fusion_native_tiling)
+    if native_tiling_row is not None:
+        rows.append(native_tiling_row)
     rows.append(_reverse_tuned_fusion_jpeg70_row(reverse_tuned_fusion_jpeg70_robustness))
     for robustness_path in reverse_tuned_fusion_extra_robustness or []:
         if robustness_path.exists():
@@ -626,6 +661,7 @@ def main() -> None:
         Path(args.reverse_source_holdout_selection),
         Path(args.reverse_source_holdout_tuned_fusion),
         Path(args.reverse_tuned_fusion_constraint_sweep),
+        Path(args.reverse_tuned_fusion_native_tiling),
         Path(args.reverse_tuned_fusion_jpeg70_robustness),
         [Path(path) for path in args.reverse_tuned_fusion_extra_robustness],
     )

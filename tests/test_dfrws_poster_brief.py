@@ -24,6 +24,7 @@ def test_dfrws_poster_brief_builder_writes_markdown_and_key_numbers(tmp_path: Pa
         "ishu_to_ms_triage5_clip_standalone",
         "ms_to_ishu_branch_dropout_auc",
         "ms_to_ishu_tuned_fusion_constraint_sweep_best",
+        "ms_to_ishu_tuned_fusion_native_tiling_best",
         "ms_to_ishu_tuned_fusion_jpeg70",
         "ms_to_ishu_tuned_fusion_jpeg50",
         "ms_to_ishu_tuned_fusion_jpeg30",
@@ -90,3 +91,4 @@ def test_dfrws_poster_brief_builder_writes_markdown_and_key_numbers(tmp_path: Pa
     assert "clip_transfer_frontier" in text
     assert "combined_v4_is_ablation_candidate" not in text
     assert "ms_to_ishu_tuned_fusion_social_720p" in set(key_numbers["finding"])
+    assert "ms_to_ishu_tuned_fusion_native_tiling_best" in set(key_numbers["finding"])

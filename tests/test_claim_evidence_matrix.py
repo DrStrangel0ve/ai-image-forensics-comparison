@@ -39,6 +39,7 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
         "ms_to_ishu_source_holdout_mean_utility_cap_0p48",
         "ms_to_ishu_source_holdout_tuned_fusion",
         "ms_to_ishu_tuned_fusion_constraint_sweep_best",
+        "ms_to_ishu_tuned_fusion_native_tiling_best",
         "ms_to_ishu_tuned_fusion_jpeg70",
         "ms_to_ishu_tuned_fusion_blur1",
         "ms_to_ishu_tuned_fusion_resize_half",
@@ -92,4 +93,5 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
     assert v4_row["status"] == "ready_with_caveat"
     assert "ishu_to_ms_combined_v4_selectk60" in v4_row["evidence_finding_ids"]
     assert "ms_to_ishu_source_cap_accuracy" in frame["evidence_finding_ids"].str.cat(sep=",")
+    assert "ms_to_ishu_tuned_fusion_native_tiling_best" in frame["evidence_finding_ids"].str.cat(sep=",")
     assert "Claim Evidence Matrix" in markdown_path.read_text(encoding="utf-8")

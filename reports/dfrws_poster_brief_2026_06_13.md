@@ -29,6 +29,7 @@ AI-image forensic detectors need source-heldout evaluation because ranking, prob
 | ishu_to_ms_triage5_clip_standalone | Frozen CLIP ViT-B/32 | Ishu -> MS COCOAI source-heldout triage, 5% calibration budget | coverage 0.4747 / decided accuracy 0.9261 | High-confidence decided-case operating point under generator shift. |
 | ms_to_ishu_branch_dropout_auc | Reverse all-branch dropout fusion | MS COCOAI -> Ishu reverse transfer | accuracy 0.6520 / AUC 0.8406 / Brier 0.3057 / ECE 0.3275 / fake-call rate 0.8158 | Best reverse fusion AUC frontier so far, but still threshold-biased and poorly calibrated. |
 | ms_to_ishu_tuned_fusion_constraint_sweep_best | Reverse tuned-fusion constraint sweep best | MS COCOAI -> Ishu tuned-fusion source fake-rate constraint sweep | accuracy 0.7632 / AUC 0.8361 / Brier 0.2851 / ECE 0.3042 / fake-call rate 0.5175 | Best reverse SCP-Fusion operating point so far; stricter source fake-rate cap reduces target fake-call bias while improving accuracy. |
+| ms_to_ishu_tuned_fusion_native_tiling_best | Reverse tuned fusion + native tiled combined_v3 | MS COCOAI -> Ishu tuned-fusion native-tiling diagnostic | accuracy 0.7749 / AUC 0.8472 / Brier 0.2976 / ECE 0.3188 / fake-call rate 0.5468 | Replacing the target combined_v3 branch with `tile_max` native-tile scores gives a small fused-stack gain; neural and foundation branches remain global-image scores. |
 
 ## Robustness Stress Panel
 

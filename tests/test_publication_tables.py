@@ -23,6 +23,7 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
     reverse_holdout = tmp_path / "reverse_holdout.csv"
     reverse_tuned = tmp_path / "reverse_tuned.csv"
     reverse_constraint_sweep = tmp_path / "reverse_constraint_sweep.csv"
+    reverse_native_tiling = tmp_path / "reverse_native_tiling.csv"
     reverse_jpeg70 = tmp_path / "reverse_jpeg70.csv"
     reverse_blur = tmp_path / "reverse_blur.csv"
     out_dir = tmp_path / "assets"
@@ -202,6 +203,18 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
 
     pd.DataFrame(
         {
+            "score_mode": ["global", "tile_max"],
+            "constraint_policy": ["cap_0p4", "cap_0p4"],
+            "target_accuracy_mean": [0.76, 0.78],
+            "target_roc_auc_mean": [0.84, 0.85],
+            "target_brier_score_mean": [0.28, 0.30],
+            "target_expected_calibration_error_mean": [0.30, 0.32],
+            "target_predicted_positive_rate_mean": [0.52, 0.55],
+        }
+    ).to_csv(reverse_native_tiling, index=False)
+
+    pd.DataFrame(
+        {
             "variant": ["jpeg70"],
             "variant_policy": ["cap_0p4"],
             "target_accuracy_mean": [0.77],
@@ -252,6 +265,8 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
             str(reverse_tuned),
             "--reverse-tuned-fusion-constraint-sweep",
             str(reverse_constraint_sweep),
+            "--reverse-tuned-fusion-native-tiling",
+            str(reverse_native_tiling),
             "--reverse-tuned-fusion-jpeg70-robustness",
             str(reverse_jpeg70),
             "--reverse-tuned-fusion-extra-robustness",
@@ -279,6 +294,7 @@ def test_publication_table_builder_writes_core_csv_and_markdown(tmp_path: Path) 
     assert "ms_to_ishu_source_holdout_mean_utility_cap_0p48" in set(frame["finding_id"])
     assert "ms_to_ishu_source_holdout_tuned_fusion" in set(frame["finding_id"])
     assert "ms_to_ishu_tuned_fusion_constraint_sweep_best" in set(frame["finding_id"])
+    assert "ms_to_ishu_tuned_fusion_native_tiling_best" in set(frame["finding_id"])
     assert "ms_to_ishu_tuned_fusion_jpeg70" in set(frame["finding_id"])
     assert "ms_to_ishu_tuned_fusion_blur1" in set(frame["finding_id"])
     assert frame.loc[frame["finding_id"] == "ishu_same_physics_guided", "auc"].iloc[0] == 0.9177

@@ -15,6 +15,7 @@ KEY_FINDINGS = [
     "ishu_to_ms_triage5_clip_standalone",
     "ms_to_ishu_branch_dropout_auc",
     "ms_to_ishu_tuned_fusion_constraint_sweep_best",
+    "ms_to_ishu_tuned_fusion_native_tiling_best",
 ]
 
 ROBUSTNESS_FINDINGS = [

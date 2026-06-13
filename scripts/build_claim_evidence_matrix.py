@@ -36,6 +36,7 @@ CLAIMS = [
             "ms_to_ishu_source_cap_accuracy",
             "ms_to_ishu_source_holdout_tuned_fusion",
             "ms_to_ishu_tuned_fusion_constraint_sweep_best",
+            "ms_to_ishu_tuned_fusion_native_tiling_best",
             "ms_to_ishu_tuned_fusion_jpeg70",
             "ms_to_ishu_tuned_fusion_blur1",
             "ms_to_ishu_tuned_fusion_resize_half",
@@ -109,6 +110,7 @@ CLAIMS = [
             "ms_to_ishu_source_holdout_mean_utility_unconstrained",
             "ms_to_ishu_source_holdout_tuned_fusion",
             "ms_to_ishu_tuned_fusion_constraint_sweep_best",
+            "ms_to_ishu_tuned_fusion_native_tiling_best",
             "ms_to_ishu_tuned_fusion_jpeg70",
             "ms_to_ishu_tuned_fusion_blur1",
             "ms_to_ishu_tuned_fusion_resize_half",
@@ -124,8 +126,9 @@ CLAIMS = [
         "risk_or_caveat": "Current score fusion can suppress the best branch and can inherit source-threshold bias.",
         "next_action": (
             "The source fake-rate constraint sweep improves target accuracy and fake-call bias; "
-            "JPEG70, JPEG50, noise, social-square, and social-720p processing are relatively stable, while JPEG30, "
-            "blur, resize, and screenshot-style roundtrips expose the next robustness gap."
+            "native tiled combined_v3 gives a small fused-stack gain; JPEG70, JPEG50, noise, social-square, "
+            "and social-720p processing are relatively stable, while JPEG30, blur, resize, and "
+            "screenshot-style roundtrips expose the next robustness gap."
         ),
     },
     {
@@ -144,6 +147,7 @@ CLAIMS = [
             "ms_to_ishu_source_holdout_mean_utility_cap_0p48",
             "ms_to_ishu_source_holdout_tuned_fusion",
             "ms_to_ishu_tuned_fusion_constraint_sweep_best",
+            "ms_to_ishu_tuned_fusion_native_tiling_best",
             "ms_to_ishu_tuned_fusion_jpeg70",
             "ms_to_ishu_tuned_fusion_blur1",
             "ms_to_ishu_tuned_fusion_resize_half",
@@ -158,8 +162,8 @@ CLAIMS = [
         "primary_artifact": "reports/assets/publication_reverse_operating_points.png",
         "risk_or_caveat": "The capped source-threshold result is an operating point, not a learned general solution.",
         "next_action": (
-            "Use the branch-level native-tiling diagnostic as a calibration caveat; add full fused-model tiling "
-            "or larger source splits before calling the cap frontier contest-ready."
+            "Use the fused native-tiling diagnostic as a bounded gain; add larger source splits before calling "
+            "the cap frontier contest-ready."
         ),
     },
     {
