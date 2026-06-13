@@ -1,5 +1,5 @@
 path,type,venues,purpose,required,exists,size_bytes
-README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,43840
+README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,43994
 CITATION.cff,repo,"DFRWS,WIFS,DFF",Citation metadata for public release and reproducibility review.,True,True,788
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF","Reviewer-facing map of included artifacts, external datasets, and commands.",True,True,16823
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
@@ -7,6 +7,8 @@ reports/assets/publication_core_results.csv,table,"DFRWS,WIFS,DFF",Canonical mac
 reports/assets/publication_core_results.md,table,"DFRWS,WIFS,DFF",Readable core result table for paper drafting.,True,True,14189
 reports/assets/claim_evidence_matrix.csv,claim-audit,"DFRWS,WIFS,DFF",Machine-readable claim-to-evidence map with caveats and next actions.,True,True,16847
 reports/assets/claim_evidence_matrix.md,claim-audit,"DFRWS,WIFS,DFF",Readable claim-to-evidence map for authoring and review.,True,True,17156
+reports/submission_text_drafts_2026_06_14.md,writing,"DFRWS,WIFS,DFF","Venue-specific abstracts, contribution wording, result sentences, and paper skeletons.",True,True,12491
+reports/assets/submission_text_drafts_word_counts.csv,writing,"DFRWS,WIFS,DFF","Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts.",True,True,99
 reports/dfrws_poster_brief_2026_06_13.md,poster,DFRWS,"Poster spine, key numbers, figure package, and overclaim warnings.",True,True,11082
 reports/assets/dfrws_poster_key_numbers.csv,poster,DFRWS,Compact poster-leading key number table.,True,True,5972
 reports/dfrws_poster_native_figures_2026_06_13.md,poster,DFRWS,Large-label poster figure pack with transfer and robustness panels.,True,True,1523

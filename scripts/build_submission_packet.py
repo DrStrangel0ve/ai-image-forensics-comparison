@@ -78,6 +78,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/submission_text_drafts_2026_06_14.md",
+        "type": "writing",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Venue-specific abstracts, contribution wording, result sentences, and paper skeletons.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/submission_text_drafts_word_counts.csv",
+        "type": "writing",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts.",
+        "required": True,
+    },
+    {
         "path": "reports/dfrws_poster_brief_2026_06_13.md",
         "type": "poster",
         "venues": "DFRWS",
@@ -273,6 +287,7 @@ REGEN_COMMANDS = [
     ("publication figures", "python scripts/build_publication_assets.py"),
     ("DFRWS poster brief", "python scripts/build_dfrws_poster_brief.py"),
     ("DFRWS poster panels", "python scripts/build_dfrws_poster_figures.py"),
+    ("submission text drafts", "python scripts/build_submission_text_drafts.py"),
     ("submission packet", "python scripts/build_submission_packet.py"),
 ]
 

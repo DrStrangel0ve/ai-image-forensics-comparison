@@ -54,6 +54,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
+| writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
+| writing | reports/assets/submission_text_drafts_word_counts.csv | Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts. |
 | poster | reports/dfrws_poster_brief_2026_06_13.md | Poster spine, key numbers, figure package, and overclaim warnings. |
 | poster | reports/assets/dfrws_poster_key_numbers.csv | Compact poster-leading key number table. |
 | poster | reports/dfrws_poster_native_figures_2026_06_13.md | Large-label poster figure pack with transfer and robustness panels. |
@@ -82,6 +84,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
+| writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
+| writing | reports/assets/submission_text_drafts_word_counts.csv | Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts. |
 | figure | reports/assets/publication_score_fusion_clip_frontier.png | CLIP transfer frontier and all-foundation fusion comparison. |
 | figure | reports/assets/publication_triage_operating_points.png | High-confidence source-heldout triage operating points. |
 | figure | reports/assets/publication_reverse_operating_points.png | Reverse-transfer source-threshold and operating-point comparison. |
@@ -108,6 +112,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
+| writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
+| writing | reports/assets/submission_text_drafts_word_counts.csv | Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts. |
 | figure | reports/assets/publication_score_fusion_clip_frontier.png | CLIP transfer frontier and all-foundation fusion comparison. |
 | figure | reports/assets/publication_triage_operating_points.png | High-confidence source-heldout triage operating points. |
 | figure | reports/assets/publication_reverse_operating_points.png | Reverse-transfer source-threshold and operating-point comparison. |
@@ -131,6 +137,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | publication figures | python scripts/build_publication_assets.py |
 | DFRWS poster brief | python scripts/build_dfrws_poster_brief.py |
 | DFRWS poster panels | python scripts/build_dfrws_poster_figures.py |
+| submission text drafts | python scripts/build_submission_text_drafts.py |
 | submission packet | python scripts/build_submission_packet.py |
 
 ## Current Editorial Guardrails
