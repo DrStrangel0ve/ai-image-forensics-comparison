@@ -1,5 +1,5 @@
 path,type,venues,purpose,required,exists,size_bytes
-README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,45075
+README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,45221
 CITATION.cff,repo,"DFRWS,WIFS,DFF",Citation metadata for public release and reproducibility review.,True,True,788
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF","Reviewer-facing map of included artifacts, external datasets, and commands.",True,True,16823
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
@@ -26,12 +26,14 @@ reports/submission_paper_skeletons_2026_06_14.md,paper-draft,"WIFS,DFF",Report l
 reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv,paper-draft,"WIFS,DFF",Machine-readable manifest for generated WIFS/DFF paper skeletons.,True,True,711
 reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex,paper-draft,WIFS,"IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures.",True,True,7980
 reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex,paper-draft,DFF,"ACM-style DFF workshop skeleton with generated abstract, tables, and figures.",True,True,8732
-reports/paper_skeleton_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF paper skeleton structure, referenced assets, and claim guardrails.",False,True,2788
-reports/assets/paper_skeleton_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF paper skeleton lint checks.,False,True,2222
+reports/paper_skeleton_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF paper skeleton structure, referenced assets, and claim guardrails.",False,True,3283
+reports/assets/paper_skeleton_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF paper skeleton lint checks.,False,True,2657
 reports/assets/claim_evidence_matrix.csv,claim-audit,"DFRWS,WIFS,DFF",Machine-readable claim-to-evidence map with caveats and next actions.,True,True,16847
 reports/assets/claim_evidence_matrix.md,claim-audit,"DFRWS,WIFS,DFF",Readable claim-to-evidence map for authoring and review.,True,True,17156
 reports/submission_text_drafts_2026_06_14.md,writing,"DFRWS,WIFS,DFF","Venue-specific abstracts, contribution wording, result sentences, and paper skeletons.",True,True,12475
 reports/assets/submission_text_drafts_word_counts.csv,writing,"DFRWS,WIFS,DFF","Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts.",True,True,99
+reports/paper_section_drafts_2026_06_14.md,writing,"WIFS,DFF","Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats.",True,True,7195
+reports/assets/paper_section_draft_manifest.csv,writing,"WIFS,DFF",Machine-readable section word counts and caveat/metric flags for generated paper prose drafts.,True,True,325
 reports/submission_package_lint_2026_06_14.md,quality-control,"DFRWS,WIFS,DFF","Generated lint report for missing packet assets, abstract word counts, and overclaim language.",False,True,2614
 reports/assets/submission_package_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable submission package lint checks.,False,True,2131
 reports/dfrws_poster_brief_2026_06_13.md,poster,DFRWS,"Poster spine, key numbers, figure package, and overclaim warnings.",True,True,11082

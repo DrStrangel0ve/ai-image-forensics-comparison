@@ -253,6 +253,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/paper_section_drafts_2026_06_14.md",
+        "type": "writing",
+        "venues": "WIFS,DFF",
+        "purpose": "Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/paper_section_draft_manifest.csv",
+        "type": "writing",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable section word counts and caveat/metric flags for generated paper prose drafts.",
+        "required": True,
+    },
+    {
         "path": "reports/submission_package_lint_2026_06_14.md",
         "type": "quality-control",
         "venues": "DFRWS,WIFS,DFF",
@@ -469,6 +483,7 @@ REGEN_COMMANDS = [
     ("DFRWS poster brief", "python scripts/build_dfrws_poster_brief.py"),
     ("DFRWS poster panels", "python scripts/build_dfrws_poster_figures.py"),
     ("submission text drafts", "python scripts/build_submission_text_drafts.py"),
+    ("paper section drafts", "python scripts/build_paper_section_drafts.py"),
     ("submission packet", "python scripts/build_submission_packet.py"),
     ("submission package lint", "python scripts/lint_submission_package.py"),
 ]

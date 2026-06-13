@@ -1,0 +1,116 @@
+from __future__ import annotations
+
+import subprocess
+import sys
+from pathlib import Path
+
+import pandas as pd
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -> None:
+    core_results = tmp_path / "publication_core_results.csv"
+    claim_matrix = tmp_path / "claim_evidence_matrix.csv"
+    literature_map = tmp_path / "literature_map.csv"
+    out_path = tmp_path / "paper_section_drafts.md"
+    manifest_out = tmp_path / "paper_section_draft_manifest.csv"
+
+    finding_ids = [
+        "ishu_same_combined_v3",
+        "ishu_same_resnet18",
+        "ishu_same_physics_guided",
+        "ishu_to_ms_clip_standalone",
+        "ishu_to_ms_scp_fusion_all_foundation",
+        "ishu_to_ms_triage5_clip_standalone",
+        "ms_to_ishu_tuned_fusion_constraint_sweep_best",
+        "ms_to_ishu_tuned_fusion_native_tiling_best",
+        "ms_to_ishu_tuned_fusion_jpeg30",
+        "ms_to_ishu_tuned_fusion_blur1",
+        "ms_to_ishu_tuned_fusion_social_720p",
+    ]
+    pd.DataFrame(
+        {
+            "finding_id": finding_ids,
+            "setting": ["setting"] * len(finding_ids),
+            "method": ["method"] * len(finding_ids),
+            "accuracy": [0.8, 0.8, 0.85, 0.64, 0.62, pd.NA, 0.76, 0.77, 0.71, 0.70, 0.75],
+            "auc": [0.89, 0.88, 0.92, 0.86, 0.80, pd.NA, 0.84, 0.85, 0.82, 0.78, 0.85],
+            "brier": [pd.NA] * len(finding_ids),
+            "ece": [pd.NA] * len(finding_ids),
+            "predicted_fake_rate": [pd.NA, pd.NA, pd.NA, 0.16, 0.13, pd.NA, 0.52, 0.55, 0.35, 0.56, 0.47],
+            "coverage": [pd.NA, pd.NA, pd.NA, pd.NA, pd.NA, 0.47, pd.NA, pd.NA, pd.NA, pd.NA, pd.NA],
+            "decided_accuracy": [pd.NA, pd.NA, pd.NA, pd.NA, pd.NA, 0.93, pd.NA, pd.NA, pd.NA, pd.NA, pd.NA],
+            "source": ["source"] * len(finding_ids),
+            "interpretation": ["interpretation"] * len(finding_ids),
+        }
+    ).to_csv(core_results, index=False)
+    pd.DataFrame(
+        {
+            "claim_id": ["claim_a", "claim_b"],
+            "claim": ["claim", "claim"],
+            "submission_use": ["WIFS", "DFF"],
+            "status": ["ready", "ready_with_caveat"],
+            "evidence_finding_ids": ["a", "b"],
+            "evidence_summary": ["summary", "summary"],
+            "primary_artifact": ["artifact", "artifact"],
+            "risk_or_caveat": ["caveat", "caveat"],
+            "next_action": ["next", "next"],
+        }
+    ).to_csv(claim_matrix, index=False)
+    pd.DataFrame(
+        {
+            "key": [
+                "universal_fake_detectors_2023",
+                "genimage_2023",
+                "aide_chameleon_2025",
+                "spectral_any_resolution_2025",
+                "fake_or_jpeg_2024",
+                "no_pixel_left_behind_2025",
+                "photometric_faces_2023",
+                "light2lie_2026",
+            ],
+            "theme": [
+                "foundation generalization",
+                "cross-generator benchmark",
+                "multi-expert detection",
+                "spectral learning",
+                "compression bias",
+                "high-resolution tiling",
+                "physics-informed analysis",
+                "reflectance physics",
+            ],
+        }
+    ).to_csv(literature_map, index=False)
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "build_paper_section_drafts.py"),
+            "--core-results",
+            str(core_results),
+            "--claim-matrix",
+            str(claim_matrix),
+            "--literature-map",
+            str(literature_map),
+            "--out-path",
+            str(out_path),
+            "--manifest-out",
+            str(manifest_out),
+        ],
+        cwd=ROOT,
+        check=True,
+    )
+
+    report = out_path.read_text(encoding="utf-8")
+    manifest = pd.read_csv(manifest_out)
+
+    assert "Paper Section Drafts" in report
+    assert "WIFS Introduction Draft" in report
+    assert "0.8500 accuracy" in report
+    assert "single-image physical/signal proxy" in report
+    assert "does not universally beat frozen CLIP" in report
+    assert len(manifest) >= 6
+    assert manifest["has_metric"].any()
+    assert manifest["has_caveat"].any()
