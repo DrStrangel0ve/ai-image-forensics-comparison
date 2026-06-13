@@ -100,7 +100,7 @@ The results show that ranking, probability calibration, and binary decision qual
 
 Priority order:
 
-1. Add utility-aware fusion training so SCP-Fusion can keep branch-dropout/CLIP-like ranking without over-calling generated images on reverse transfer. Capped held-out source-threshold selection now beats the physics-guided default accuracy, but still predicts generated too often.
+1. Run the new `source_utility` threshold strategy on the reverse all-branch fusion grid so SCP-Fusion can explicitly tune the fake-detection/real-false-positive tradeoff before moving to a learned utility-aware fusion objective. Capped held-out source-threshold selection now beats the physics-guided default accuracy, but still predicts generated too often.
 2. Regenerate publication figures and tables with the reverse all-method result.
 3. Run `combined_v4` full repeated-seed transfer and decide whether it belongs in the main method or stays an ablation.
 4. Add another qualitative grid from a second seed or reverse transfer.
@@ -110,6 +110,7 @@ Priority order:
 
 The best next technical experiment is **utility-aware reverse fusion training**:
 
+- start with the checked-in `--threshold-strategy source_utility` implementation to sweep source-side forensic utilities and fake-rate caps;
 - train the score-fusion head with an explicit validation utility rather than only source-domain log-loss;
 - combine the branch-dropout AUC gain with the strong-regularization Brier/ECE gain;
 - preserve the current reverse suite as the fixed comparison table.

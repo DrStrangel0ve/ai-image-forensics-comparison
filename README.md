@@ -538,6 +538,8 @@ A submission-readiness snapshot is checked into [reports/submission_readiness_20
 
 A generated claim-evidence matrix is checked into [reports/assets/claim_evidence_matrix.md](reports/assets/claim_evidence_matrix.md). It maps each poster/paper claim to exact result rows, marks claims as ready or caveated, and keeps `combined_v4` framed as an ablation candidate until the larger repeated-seed transfer check is done.
 
+A source-utility threshold strategy is checked into [reports/score_fusion_source_utility_threshold_2026_06_13.md](reports/score_fusion_source_utility_threshold_2026_06_13.md). It adds `--threshold-strategy source_utility` to score fusion, with asymmetric fake-detection, real-clearance, real-FPR, and fake-miss weights for the next reverse-transfer SCP-Fusion sweep.
+
 A public reproducibility pass is checked into [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It adds a reviewer-facing map of included reports/assets, intentionally excluded raw data/model artifacts, core reproduction commands, and known limitations.
 
 A qualitative failure-case export is checked into [reports/qualitative_failure_cases_2026_06_12.md](reports/qualitative_failure_cases_2026_06_12.md). It adds reproducible false-positive, false-negative, and model-disagreement grids for the seed-17 Ishu-to-MS-COCOAI transfer run, with per-method score manifests.

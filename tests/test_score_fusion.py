@@ -273,3 +273,65 @@ def test_score_fusion_can_cap_source_positive_rate(tmp_path: Path) -> None:
     assert metrics["threshold_source_predicted_positive_rate"] <= 0.5
     assert set(summary["threshold_max_positive_rate"]) == {0.5}
     assert summary["threshold_source_predicted_positive_rate"].max() <= 0.5
+
+
+def test_score_fusion_can_select_source_utility_threshold(tmp_path: Path) -> None:
+    labels = [0, 0, 0, 0, 1, 1, 1, 1]
+    _predictions(tmp_path / "train_a.csv", [0.05, 0.10, 0.20, 0.45, 0.50, 0.68, 0.80, 0.92], labels)
+    _predictions(tmp_path / "train_b.csv", [0.10, 0.15, 0.30, 0.42, 0.52, 0.70, 0.78, 0.90], labels)
+    _predictions(tmp_path / "target_a.csv", [0.10, 0.25, 0.40, 0.48, 0.56, 0.66, 0.76, 0.86], labels)
+    _predictions(tmp_path / "target_b.csv", [0.12, 0.20, 0.35, 0.46, 0.58, 0.68, 0.74, 0.88], labels)
+    out_dir = tmp_path / "utility_thresholded_fusion"
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "fuse_prediction_scores.py"),
+            "--out-dir",
+            str(out_dir),
+            "--train",
+            f"a={tmp_path / 'train_a.csv'}",
+            "--train",
+            f"b={tmp_path / 'train_b.csv'}",
+            "--variant",
+            f"target:a={tmp_path / 'target_a.csv'}",
+            "--variant",
+            f"target:b={tmp_path / 'target_b.csv'}",
+            "--seed",
+            "19",
+            "--fusion-c",
+            "0.1",
+            "--threshold-strategy",
+            "source_utility",
+            "--threshold-tiebreak",
+            "higher",
+            "--threshold-fake-detection-weight",
+            "1.0",
+            "--threshold-real-clearance-weight",
+            "1.0",
+            "--threshold-real-fpr-penalty",
+            "4.0",
+            "--threshold-fake-miss-penalty",
+            "1.5",
+            "--threshold-max-positive-rate",
+            "0.5",
+            "--calibration-fraction",
+            "0.5",
+        ],
+        cwd=ROOT,
+        check=True,
+    )
+
+    metrics = json.loads((out_dir / "metrics.json").read_text(encoding="utf-8"))
+    summary = pd.read_csv(out_dir / "summary.csv")
+    assert metrics["threshold_strategy"] == "source_utility"
+    assert metrics["threshold_tiebreak"] == "higher"
+    assert metrics["threshold_fake_detection_weight"] == 1.0
+    assert metrics["threshold_real_clearance_weight"] == 1.0
+    assert metrics["threshold_real_fpr_penalty"] == 4.0
+    assert metrics["threshold_fake_miss_penalty"] == 1.5
+    assert metrics["threshold_source_predicted_positive_rate"] <= 0.5
+    assert metrics["threshold_selection_utility"] is not None
+    assert set(summary["threshold_strategy"]) == {"source_utility"}
+    assert set(summary["threshold_real_fpr_penalty"]) == {4.0}
+    assert summary["threshold_source_predicted_positive_rate"].max() <= 0.5

@@ -26,6 +26,7 @@ THRESHOLD_STRATEGIES = {
     "source_accuracy",
     "source_balanced_accuracy",
     "source_f1",
+    "source_utility",
     "source_youden",
 }
 THRESHOLD_TIEBREAKERS = {
@@ -85,6 +86,30 @@ def parse_args() -> argparse.Namespace:
             "Optional source-side cap on the selected threshold's predicted fake rate. "
             "Applies only to source threshold strategies."
         ),
+    )
+    parser.add_argument(
+        "--threshold-fake-detection-weight",
+        type=float,
+        default=0.5,
+        help="Reward for source fake recall when --threshold-strategy=source_utility.",
+    )
+    parser.add_argument(
+        "--threshold-real-clearance-weight",
+        type=float,
+        default=0.5,
+        help="Reward for source real specificity when --threshold-strategy=source_utility.",
+    )
+    parser.add_argument(
+        "--threshold-real-fpr-penalty",
+        type=float,
+        default=1.0,
+        help="Penalty for source real images called fake when --threshold-strategy=source_utility.",
+    )
+    parser.add_argument(
+        "--threshold-fake-miss-penalty",
+        type=float,
+        default=1.0,
+        help="Penalty for source fake images called real when --threshold-strategy=source_utility.",
     )
     parser.add_argument(
         "--fusion-c",
@@ -269,6 +294,10 @@ def _threshold_utility(
     scores: np.ndarray,
     threshold: float,
     strategy: str,
+    fake_detection_weight: float,
+    real_clearance_weight: float,
+    real_fpr_penalty: float,
+    fake_miss_penalty: float,
 ) -> float:
     predicted = (scores >= threshold).astype(int)
     true_positive = float(((predicted == 1) & (y_true == 1)).sum())
@@ -287,6 +316,15 @@ def _threshold_utility(
         return float((recall + specificity) / 2.0)
     if strategy == "source_f1":
         return float(2.0 * precision * recall / max(precision + recall, 1e-12))
+    if strategy == "source_utility":
+        real_fpr = 1.0 - specificity
+        fake_miss_rate = 1.0 - recall
+        return float(
+            fake_detection_weight * recall
+            + real_clearance_weight * specificity
+            - real_fpr_penalty * real_fpr
+            - fake_miss_penalty * fake_miss_rate
+        )
     if strategy == "source_youden":
         return float(recall + specificity - 1.0)
     raise ValueError(f"Unsupported threshold strategy: {strategy}")
@@ -308,6 +346,10 @@ def _select_source_threshold(
     strategy: str,
     tiebreak: str,
     max_positive_rate: float | None,
+    fake_detection_weight: float = 0.5,
+    real_clearance_weight: float = 0.5,
+    real_fpr_penalty: float = 1.0,
+    fake_miss_penalty: float = 1.0,
 ) -> tuple[float, float, float]:
     if strategy == "fixed":
         raise ValueError("Use --threshold directly for the fixed threshold strategy")
@@ -327,7 +369,16 @@ def _select_source_threshold(
         positive_rate = float((scores >= float(threshold)).mean())
         if max_positive_rate is not None and positive_rate > max_positive_rate + 1e-12:
             continue
-        utility = _threshold_utility(y_true, scores, float(threshold), strategy)
+        utility = _threshold_utility(
+            y_true,
+            scores,
+            float(threshold),
+            strategy,
+            fake_detection_weight,
+            real_clearance_weight,
+            real_fpr_penalty,
+            fake_miss_penalty,
+        )
         tiebreak_value = _threshold_tiebreak_value(float(threshold), tiebreak)
         if (utility, tiebreak_value) > (best_utility, best_tiebreak):
             best_threshold = float(threshold)
@@ -448,6 +499,14 @@ def _metrics_row(
 
 def main() -> None:
     args = parse_args()
+    utility_values = [
+        args.threshold_fake_detection_weight,
+        args.threshold_real_clearance_weight,
+        args.threshold_real_fpr_penalty,
+        args.threshold_fake_miss_penalty,
+    ]
+    if any(value < 0.0 for value in utility_values):
+        raise ValueError("Source utility threshold weights and penalties must be non-negative")
     out_dir = ensure_dir(args.out_dir)
     if (
         args.score_calibrator == "none"
@@ -512,6 +571,10 @@ def main() -> None:
             args.threshold_strategy,
             args.threshold_tiebreak,
             args.threshold_max_positive_rate,
+            args.threshold_fake_detection_weight,
+            args.threshold_real_clearance_weight,
+            args.threshold_real_fpr_penalty,
+            args.threshold_fake_miss_penalty,
         )
 
     all_metrics = []
@@ -573,6 +636,10 @@ def main() -> None:
             "threshold_tiebreak": args.threshold_tiebreak,
             "threshold_source": threshold_source,
             "threshold_selection_utility": threshold_selection_utility,
+            "threshold_fake_detection_weight": float(args.threshold_fake_detection_weight),
+            "threshold_real_clearance_weight": float(args.threshold_real_clearance_weight),
+            "threshold_real_fpr_penalty": float(args.threshold_real_fpr_penalty),
+            "threshold_fake_miss_penalty": float(args.threshold_fake_miss_penalty),
             "threshold_max_positive_rate": args.threshold_max_positive_rate,
             "threshold_source_predicted_positive_rate": threshold_source_predicted_positive_rate,
             "n_train": int(len(train_frame)),
@@ -616,6 +683,10 @@ def main() -> None:
             "threshold_strategy": metrics["threshold_strategy"],
             "threshold_tiebreak": metrics["threshold_tiebreak"],
             "threshold_source": metrics["threshold_source"],
+            "threshold_fake_detection_weight": args.threshold_fake_detection_weight,
+            "threshold_real_clearance_weight": args.threshold_real_clearance_weight,
+            "threshold_real_fpr_penalty": args.threshold_real_fpr_penalty,
+            "threshold_fake_miss_penalty": args.threshold_fake_miss_penalty,
             "threshold_max_positive_rate": metrics["threshold_max_positive_rate"],
             "threshold_source_predicted_positive_rate": metrics[
                 "threshold_source_predicted_positive_rate"

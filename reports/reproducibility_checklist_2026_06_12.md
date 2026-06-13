@@ -45,6 +45,7 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | MS COCOAI to Ishu source-threshold fusion | `reports/ms_cocoai_to_ishu_source_threshold_fusion_2026_06_13.md` |
 | MS COCOAI to Ishu threshold tie-break probe | `reports/ms_cocoai_to_ishu_threshold_tiebreak_probe_2026_06_13.md` |
 | MS COCOAI to Ishu threshold cap probe | `reports/ms_cocoai_to_ishu_threshold_cap_probe_2026_06_13.md` |
+| Source-utility score-fusion threshold strategy | `reports/score_fusion_source_utility_threshold_2026_06_13.md` |
 | SCP-Fusion branch-dropout probe | `reports/score_fusion_branch_dropout_probe_2026_06_12.md` |
 | SCP-Fusion source-calibration probe | `reports/score_fusion_source_calibration_probe_2026_06_13.md` |
 | SCP-Fusion source-heldout calibration probe | `reports/score_fusion_source_holdout_probe_2026_06_13.md` |
