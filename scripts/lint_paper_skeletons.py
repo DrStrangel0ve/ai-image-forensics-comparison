@@ -21,6 +21,8 @@ REQUIRED_COLUMNS = {
     "abstract_header",
     "claim_count",
     "citation_count",
+    "draft_section_count",
+    "todo_count",
 }
 
 
@@ -133,6 +135,23 @@ def _lint_one_skeleton(repo_root: Path, row: pd.Series) -> list[dict[str, object
         not missing_bib_keys and bool(cited_keys),
         f"{len(cited_keys)} cited keys found" if not missing_bib_keys else ", ".join(missing_bib_keys),
     )
+    todo_count = len(re.findall(r"\bTODO\b", text))
+    expected_todos = int(row.get("todo_count", 0))
+    _add_check(
+        checks,
+        paper_id,
+        "no TODO placeholders",
+        todo_count == 0 and expected_todos == 0,
+        f"{todo_count} TODO markers in tex; manifest records {expected_todos}",
+    )
+    draft_section_count = int(row.get("draft_section_count", 0))
+    _add_check(
+        checks,
+        paper_id,
+        "draft prose sections populated",
+        draft_section_count >= 5,
+        f"manifest records {draft_section_count} draft prose sections",
+    )
 
     expected_claims = int(row.get("claim_count", 0))
     claim_items = re.findall(r"\\item\s+\\textbf\{", text)
@@ -161,12 +180,13 @@ def _lint_one_skeleton(repo_root: Path, row: pd.Series) -> list[dict[str, object
     )
 
     guardrail_terms = [
-        "single-image proxy",
-        "does not universally beat CLIP",
-        "robustness depends on the transform",
+        ("single-image proxy", ["single-image proxy"]),
+        ("does not universally beat CLIP", ["does not universally beat CLIP", "does not universally beat frozen CLIP"]),
+        ("robustness transform caveat", ["robustness depends on the transform", "transform being tested"]),
     ]
-    for term in guardrail_terms:
-        _add_check(checks, paper_id, f"guardrail term present: {term}", term in text, "present" if term in text else "missing")
+    for label, alternatives in guardrail_terms:
+        found = any(term in text for term in alternatives)
+        _add_check(checks, paper_id, f"guardrail term present: {label}", found, "present" if found else "missing")
     return checks
 
 

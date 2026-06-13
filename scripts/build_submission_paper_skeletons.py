@@ -80,6 +80,11 @@ def parse_args() -> argparse.Namespace:
         help="Generated literature map used to seed related-work citations.",
     )
     parser.add_argument(
+        "--section-drafts",
+        default="reports/paper_section_drafts_2026_06_14.md",
+        help="Generated paper section draft report used to populate manuscript prose.",
+    )
+    parser.add_argument(
         "--report-out",
         default="reports/submission_paper_skeletons_2026_06_14.md",
         help="Markdown report listing generated paper skeletons.",
@@ -216,7 +221,30 @@ def _related_work_block(literature: pd.DataFrame) -> list[str]:
     ]
 
 
-def _paper_tex(spec: dict[str, str], abstract: str, claims: pd.DataFrame, literature: pd.DataFrame) -> str:
+def _section_draft_map(section_drafts: Path) -> dict[str, str]:
+    text = section_drafts.read_text(encoding="utf-8")
+    headers = [
+        "WIFS Introduction Draft",
+        "WIFS Data And Audit Draft",
+        "WIFS Methods Draft",
+        "WIFS Results Draft",
+        "DFF Expansion Draft",
+        "Limitations And Reproducibility Draft",
+    ]
+    return {header: _extract_section(text, header) for header in headers}
+
+
+def _draft_lines(drafts: dict[str, str], header: str) -> list[str]:
+    return [_latex_escape(drafts[header]), ""]
+
+
+def _paper_tex(
+    spec: dict[str, str],
+    abstract: str,
+    claims: pd.DataFrame,
+    literature: pd.DataFrame,
+    drafts: dict[str, str],
+) -> str:
     lines = [
         "% Auto-generated draft skeleton. Replace the document class with the official venue template before submission.",
         spec["documentclass"],
@@ -234,35 +262,36 @@ def _paper_tex(spec: dict[str, str], abstract: str, claims: pd.DataFrame, litera
         r"\end{abstract}",
         "",
         r"\section{Introduction}",
-        _latex_escape(
-            "TODO: Motivate source-heldout AI-generated image forensics and explain why ranking, "
-            "calibration, fake-call rate, and triage coverage should be reported separately."
-        ),
-        "",
     ]
+    lines.extend(_draft_lines(drafts, "WIFS Introduction Draft"))
     lines.extend(_related_work_block(literature))
     lines.extend(
         [
             r"\section{Data and Audit}",
-            _latex_escape(
-                "TODO: Describe Ishu AI-vs-real, source-balanced MS COCOAI, generator source labels, "
-                "dataset export commands, and duplicate/leakage audit assumptions."
-            ),
-            "",
+        ]
+    )
+    lines.extend(_draft_lines(drafts, "WIFS Data And Audit Draft"))
+    lines.extend(
+        [
             r"\section{Methods}",
-            _latex_escape(
-                "TODO: Define combined_v3/v4 physical-signal features, ResNet-18, physics-guided "
-                "ResNet fusion, frozen ConvNeXt/DINOv2/CLIP probes, SCP-Fusion, source-heldout "
-                "thresholding, and high-confidence triage."
-            ),
-            "",
+        ]
+    )
+    lines.extend(_draft_lines(drafts, "WIFS Methods Draft"))
+    lines.extend(
+        [
             r"\section{Experiments}",
             _latex_escape(
-                "TODO: State repeated seeds, same-domain and transfer splits, source-heldout "
-                "generator validation, calibration metrics, and robustness transforms."
+                "Experiments are organized around repeated seeds, same-domain anchors, cross-domain transfer, "
+                "source-heldout generator validation, calibration metrics, high-confidence triage, and robustness "
+                "transforms. Tables below are generated from the checked-in result assets."
             ),
             "",
             r"\section{Results}",
+        ]
+    )
+    lines.extend(_draft_lines(drafts, "WIFS Results Draft"))
+    lines.extend(
+        [
             _latex_escape(
                 "The following generated table fragments are checked into the repository and can be edited for space."
             ),
@@ -274,26 +303,34 @@ def _paper_tex(spec: dict[str, str], abstract: str, claims: pd.DataFrame, litera
     lines.extend(
         [
             r"\section{Figures and Failure Analysis}",
-            _latex_escape("TODO: Select two to three figures for the main paper and move the rest to an appendix."),
+            _latex_escape(
+                "The figure package emphasizes transfer ranking, high-confidence triage, reverse operating "
+                "points, and generated-image misses. The final venue draft should keep two or three main figures "
+                "and move the rest to an appendix if space is tight."
+            ),
             "",
         ]
     )
     for index, (path, caption) in enumerate(FIGURE_INPUTS, start=1):
         lines.extend(_figure_block(path, caption, f"submission-figure-{index}"))
+    if spec["paper_id"] == "dff_2026":
+        lines.extend([r"\section{DFF Workshop Expansion}"])
+        lines.extend(_draft_lines(drafts, "DFF Expansion Draft"))
     lines.extend(_claim_checklist_block(claims))
     lines.extend(
         [
             r"\section{Limitations}",
-            _latex_escape(
-                "TODO: Keep these caveats explicit: the physical branch is a single-image proxy, "
-                "SCP-Fusion does not universally beat CLIP, native tiling only changes the conventional "
-                "target branch in the current fused diagnostic, and robustness depends on the transform."
-            ),
-            "",
+        ]
+    )
+    lines.extend(_draft_lines(drafts, "Limitations And Reproducibility Draft"))
+    lines.extend(
+        [
             r"\section{Reproducibility}",
             _latex_escape(
-                "TODO: Cite the public repository, submission packet manifest, lint report, dataset "
-                "export commands, and generated table/figure builders."
+                "The public repository includes the submission packet manifest, paper-section draft manifest, "
+                "lint reports, dataset/export commands, generated tables, figure builders, and draft bibliography. "
+                "Before submission, replace this scaffold with the official venue template and verify all BibTeX "
+                "metadata."
             ),
             "",
             r"\bibliographystyle{" + spec["bibliography_style"] + "}",
@@ -309,19 +346,22 @@ def build_paper_skeletons(
     text_drafts: Path,
     claim_matrix_path: Path,
     literature_map_path: Path,
+    section_drafts_path: Path,
     out_dir: Path,
 ) -> pd.DataFrame:
     text = text_drafts.read_text(encoding="utf-8")
     claim_matrix = pd.read_csv(claim_matrix_path)
     literature = pd.read_csv(literature_map_path)
+    drafts = _section_draft_map(section_drafts_path)
     out_dir.mkdir(parents=True, exist_ok=True)
     rows = []
     for spec in PAPER_SPECS:
         abstract = _extract_section(text, spec["abstract_header"])
         claims = _paper_claims(claim_matrix, spec["claim_filter"])
-        tex = _paper_tex(spec, abstract, claims, literature)
+        tex = _paper_tex(spec, abstract, claims, literature, drafts)
         out_path = out_dir / spec["filename"]
         out_path.write_text(tex, encoding="utf-8")
+        draft_section_count = 5 + int(spec["paper_id"] == "dff_2026")
         rows.append(
             {
                 "paper_id": spec["paper_id"],
@@ -332,6 +372,8 @@ def build_paper_skeletons(
                 "abstract_header": spec["abstract_header"],
                 "claim_count": len(claims),
                 "citation_count": len(re.findall(r"\\cite\{", tex)),
+                "draft_section_count": draft_section_count,
+                "todo_count": len(re.findall(r"\bTODO\b", tex)),
             }
         )
     manifest = pd.DataFrame(rows)
@@ -356,7 +398,7 @@ def write_report(manifest: pd.DataFrame, report_out: Path) -> None:
         "",
         "Run date: 2026-06-14",
         "",
-        "Generated by `scripts/build_submission_paper_skeletons.py` from generated submission text, LaTeX table fragments, the claim-evidence matrix, and the literature map.",
+        "Generated by `scripts/build_submission_paper_skeletons.py` from generated submission text, section drafts, LaTeX table fragments, the claim-evidence matrix, and the literature map.",
         "",
         "These files are draft scaffolds, not official venue templates. Replace the document class and formatting with the final WIFS/DFF instructions before submission.",
         "",
@@ -373,6 +415,7 @@ def main() -> None:
         Path(args.text_drafts),
         Path(args.claim_matrix),
         Path(args.literature_map),
+        Path(args.section_drafts),
         Path(args.out_dir),
     )
     write_report(manifest, Path(args.report_out))

@@ -14,6 +14,7 @@ def test_submission_paper_skeleton_builder_writes_wifs_and_dff_tex(tmp_path: Pat
     text_drafts = tmp_path / "submission_text_drafts.md"
     claim_matrix = tmp_path / "claim_evidence_matrix.csv"
     literature_map = tmp_path / "literature_map.csv"
+    section_drafts = tmp_path / "paper_section_drafts.md"
     out_dir = tmp_path / "paper_skeletons"
     report_out = tmp_path / "paper_skeletons.md"
     text_drafts.write_text(
@@ -78,6 +79,39 @@ def test_submission_paper_skeleton_builder_writes_wifs_and_dff_tex(tmp_path: Pat
             ]
         }
     ).to_csv(literature_map, index=False)
+    section_drafts.write_text(
+        "\n".join(
+            [
+                "# Paper Section Drafts",
+                "",
+                "## WIFS Introduction Draft",
+                "",
+                "Custom introduction with 0.8450 accuracy.",
+                "",
+                "## WIFS Data And Audit Draft",
+                "",
+                "Custom data and audit paragraph.",
+                "",
+                "## WIFS Methods Draft",
+                "",
+                "Custom methods paragraph with single-image physical proxy.",
+                "",
+                "## WIFS Results Draft",
+                "",
+                "Custom results paragraph with 0.8641 AUC.",
+                "",
+                "## DFF Expansion Draft",
+                "",
+                "Custom DFF expansion paragraph.",
+                "",
+                "## Limitations And Reproducibility Draft",
+                "",
+                "Custom limitations paragraph; SCP-Fusion does not universally beat frozen CLIP.",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
 
     subprocess.run(
         [
@@ -89,6 +123,8 @@ def test_submission_paper_skeleton_builder_writes_wifs_and_dff_tex(tmp_path: Pat
             str(claim_matrix),
             "--literature-map",
             str(literature_map),
+            "--section-drafts",
+            str(section_drafts),
             "--out-dir",
             str(out_dir),
             "--report-out",
@@ -107,12 +143,17 @@ def test_submission_paper_skeleton_builder_writes_wifs_and_dff_tex(tmp_path: Pat
     assert "\\documentclass[conference]{IEEEtran}" in wifs
     assert "\\documentclass[sigconf,review,anonymous]{acmart}" in dff
     assert "\\input{reports/assets/latex_tables/robustness_stress.tex}" in wifs
+    assert "Custom introduction with 0.8450 accuracy." in wifs
+    assert "Custom DFF expansion paragraph." in dff
+    assert "TODO" not in wifs
     assert "\\cite{universal_fake_detectors_2023" in wifs
     assert "\\cite{photometric_faces_2023,light2lie_2026}" in dff
     assert "Claim-Evidence Checklist" in wifs
     assert "physics\\_guided\\_branch\\_helps" in wifs
     assert "poster\\_only\\_claim" not in wifs
-    assert "single-image proxy" in dff
+    assert "single-image physical proxy" in dff
     assert set(manifest["claim_count"]) == {1}
     assert set(manifest["citation_count"]) == {3}
+    assert set(manifest["todo_count"]) == {0}
+    assert set(manifest["draft_section_count"]) == {5, 6}
     assert "Submission Paper Skeletons" in report

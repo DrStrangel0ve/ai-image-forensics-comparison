@@ -90,6 +90,8 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
                 "abstract_header": "WIFS Compact Abstract",
                 "claim_count": 1,
                 "citation_count": 1,
+                "draft_section_count": 5,
+                "todo_count": 0,
             }
         ]
     ).to_csv(manifest, index=False)
@@ -119,3 +121,4 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
     assert checks["passed"].all()
     assert "claim count matches manifest" in checks["check"].str.cat(sep=" ")
     assert "citation keys exist in references.bib" in checks["check"].str.cat(sep=" ")
+    assert "no TODO placeholders" in checks["check"].str.cat(sep=" ")

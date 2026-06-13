@@ -14,7 +14,7 @@ AI-generated image detection is commonly reported as closed-set accuracy, yet fo
 \end{abstract}
 
 \section{Introduction}
-TODO: Motivate source-heldout AI-generated image forensics and explain why ranking, calibration, fake-call rate, and triage coverage should be reported separately.
+AI-generated image detection is often summarized by a single accuracy number on a familiar benchmark, but that framing hides the decision problem faced by forensic reviewers. A useful detector must keep ranking, calibration, threshold behavior, and high-confidence triage stable when the generator source or image processing pipeline changes. This project therefore treats real-vs-generated image detection as a source-heldout evaluation problem. The current evidence starts with a same-domain anchor where 'combined\_v3' and ResNet-18 both reach 0.8246 accuracy on Ishu, while physics-guided ResNet fusion improves to 0.8450 accuracy and 0.9177 AUC. The transfer results then separate ranking strength from deployable decisions: frozen CLIP is the strongest Ishu to MS COCOAI ranker at 0.8641 AUC, while source-aware reverse tuned fusion gives a more usable operating point at 0.7632 accuracy with a 0.5175 target fake-call rate.
 
 \section{Related Work}
 Generalization studies and large benchmarks motivate source-heldout evaluation rather than closed-set detector reporting alone \cite{universal_fake_detectors_2023,genimage_2023,aide_chameleon_2025,realhd_2026,bias_free_training_2025}.
@@ -24,15 +24,17 @@ Reconstruction, spectral, high-resolution, and compression-bias studies motivate
 Physics-informed generated-image work motivates keeping the single-image physical/signal branch while avoiding claims of true multi-light photometric stereo or reflectance-law estimation \cite{photometric_faces_2023,light2lie_2026}.
 
 \section{Data and Audit}
-TODO: Describe Ishu AI-vs-real, source-balanced MS COCOAI, generator source labels, dataset export commands, and duplicate/leakage audit assumptions.
+The current submission package centers on two audited evaluation directions. Ishu AI-vs-real provides repeated same-domain splits for comparing 'combined\_v3', ResNet-18, physics-guided fusion, frozen encoders, and saved-score fusion. Source-balanced MS COCOAI provides generator source labels for cross-domain and source-aware validation with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney-style generated subsets represented in the exported metadata. Dataset commands, audits, and artifact manifests are part of the public repo so that results can be traced back to specific exports rather than opaque benchmark names. The paper should state that raw datasets and large model artifacts are external, while reports, prediction-derived tables, figures, manifests, and reproduction commands are checked in.
 
 \section{Methods}
-TODO: Define combined\_v3/v4 physical-signal features, ResNet-18, physics-guided ResNet fusion, frozen ConvNeXt/DINOv2/CLIP probes, SCP-Fusion, source-heldout thresholding, and high-confidence triage.
+The compared methods are intentionally heterogeneous. 'combined\_v3' measures single-image physical/signal features such as pseudo-normal consistency, noise residuals, JPEG/block cues, frequency balance, and chroma consistency. ResNet-18 is the conventional neural baseline. The physics-guided model fuses a ResNet image embedding with standardized 'combined\_v3' features, which is the practical physics-informed route for single-image datasets. Frozen ConvNeXt, DINOv2, and CLIP encoders test whether broad pretrained representations transfer better than task-trained detectors. SCP-Fusion combines saved branch scores and evaluates source-aware calibration, branch constraints, and threshold policies, reporting AUC, accuracy, Brier score, ECE, fake-call rate, and partial triage coverage instead of a single headline metric.
 
 \section{Experiments}
-TODO: State repeated seeds, same-domain and transfer splits, source-heldout generator validation, calibration metrics, and robustness transforms.
+Experiments are organized around repeated seeds, same-domain anchors, cross-domain transfer, source-heldout generator validation, calibration metrics, high-confidence triage, and robustness transforms. Tables below are generated from the checked-in result assets.
 
 \section{Results}
+Same-domain Ishu results show why the physical branch is worth keeping: physics-guided fusion improves from the tied 'combined\_v3'/ResNet-18 accuracy of 0.8246 to 0.8450 accuracy and 0.9177 AUC. Cross-domain transfer changes the ranking: frozen CLIP reaches 0.6363 accuracy and 0.8641 AUC on Ishu to source-balanced MS COCOAI, ahead of all-foundation SCP-Fusion at 0.6163 accuracy and 0.7995 AUC. The triage result is more operationally useful than a forced threshold: CLIP decides 0.4747 of target images at 0.9261 decided-case accuracy. In the reverse direction, source-capped tuned fusion reaches 0.7632 accuracy and 0.8361 AUC, and the bounded native-tiled conventional branch diagnostic improves that to 0.7749 accuracy and 0.8472 AUC. Robustness remains mixed: social-style 720p processing is comparatively stable at 0.7602 accuracy and 0.8506 AUC, while JPEG30 and blur expose weaker operating points at 0.7076 and 0.7105 accuracy.
+
 The following generated table fragments are checked into the repository and can be edited for space.
 
 % same-domain anchor table
@@ -48,7 +50,7 @@ The following generated table fragments are checked into the repository and can 
 \input{reports/assets/latex_tables/robustness_stress.tex}
 
 \section{Figures and Failure Analysis}
-TODO: Select two to three figures for the main paper and move the rest to an appendix.
+The figure package emphasizes transfer ranking, high-confidence triage, reverse operating points, and generated-image misses. The final venue draft should keep two or three main figures and move the rest to an appendix if space is tight.
 
 \begin{figure}[t]
 \centering
@@ -91,10 +93,10 @@ This generated checklist mirrors the repository claim-evidence matrix so paper c
 \end{itemize}
 
 \section{Limitations}
-TODO: Keep these caveats explicit: the physical branch is a single-image proxy, SCP-Fusion does not universally beat CLIP, native tiling only changes the conventional target branch in the current fused diagnostic, and robustness depends on the transform.
+The manuscript should preserve all 7 ready or caveated claim guardrails from the claim-evidence matrix. Most importantly, the physical branch is a single-image proxy rather than classic photometric stereo, SCP-Fusion does not universally beat frozen CLIP, native tiling is currently bounded to the conventional target branch in the fused diagnostic, and robustness claims must name the transform being tested. The repo is public and contains generated result tables, LaTeX fragments, paper skeletons, lint reports, literature maps, draft BibTeX, and reproduction commands. The final paper still needs official venue templates, verified bibliography metadata, and, if time allows, broader source-balanced data or a true reconstruction branch.
 
 \section{Reproducibility}
-TODO: Cite the public repository, submission packet manifest, lint report, dataset export commands, and generated table/figure builders.
+The public repository includes the submission packet manifest, paper-section draft manifest, lint reports, dataset/export commands, generated tables, figure builders, and draft bibliography. Before submission, replace this scaffold with the official venue template and verify all BibTeX metadata.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}
