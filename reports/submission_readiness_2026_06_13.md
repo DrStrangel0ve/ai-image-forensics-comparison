@@ -88,6 +88,12 @@ Editable poster draft:
 - PowerPoint: `reports/assets/dfrws_poster_draft_2026_06_13.pptx`
 - PNG preview: `reports/assets/dfrws_poster_draft_2026_06_13.png`
 
+Updated poster draft v2:
+
+- Report: `reports/dfrws_poster_draft_v2_2026_06_13.md`
+- PowerPoint: `reports/assets/dfrws_poster_draft_v2_2026_06_13.pptx`
+- PNG preview: `reports/assets/dfrws_poster_draft_v2_2026_06_13.png`
+
 Poster-native figure pack:
 
 - Report: `reports/dfrws_poster_native_figures_2026_06_13.md`
@@ -137,7 +143,7 @@ Priority order:
 1. Extend tuned-fusion robustness to native-resolution and stronger in-the-wild perturbations. JPEG70, JPEG50, noise3, and social_square are comparatively stable, but JPEG30, blur1, resize_half, and screenshot-style roundtrips expose real transform weaknesses; the next gap is native-resolution tiling, stronger social-media processing, or a larger source split before calling the 0.40 reverse frontier contest-ready.
 2. Run `combined_v4` full repeated-seed transfer and decide whether it belongs in the main method or stays an ablation.
 3. Add another qualitative grid from a second seed or reverse transfer.
-4. Rev the one-slide DFRWS poster PPTX to swap in the new poster-native transfer and robustness panels.
+4. If the final DFRWS format requires fully editable charts, rebuild the two v2 embedded raster panels as native PowerPoint primitives using the checked-in SVG/CSV panel sources.
 
 ## Suggested Next Experiment
 
