@@ -50,6 +50,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/literature_map_2026_06_14.md",
+        "type": "literature",
+        "venues": "WIFS,DFF",
+        "purpose": "Paper-facing map from related-work references to method claims, paper sections, and caveats.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/literature_map.csv",
+        "type": "literature",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable literature map for WIFS/DFF related-work drafting.",
+        "required": True,
+    },
+    {
         "path": "reports/assets/publication_core_results.csv",
         "type": "table",
         "venues": "DFRWS,WIFS,DFF",
@@ -423,6 +437,7 @@ VENUES = [
 
 REGEN_COMMANDS = [
     ("claim matrix", "python scripts/build_claim_evidence_matrix.py"),
+    ("literature map", "python scripts/build_literature_map.py"),
     ("publication tables", "python scripts/build_publication_tables.py"),
     ("submission result tables", "python scripts/build_submission_result_tables.py"),
     ("submission LaTeX tables", "python scripts/build_submission_latex_tables.py"),
