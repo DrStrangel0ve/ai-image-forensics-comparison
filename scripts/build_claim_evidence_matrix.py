@@ -34,6 +34,7 @@ CLAIMS = [
             "ishu_to_ms_scp_fusion_v0",
             "ms_to_ishu_branch_dropout_auc",
             "ms_to_ishu_source_cap_accuracy",
+            "ms_to_ishu_source_holdout_tuned_fusion",
         ],
         "primary_artifact": "reports/assets/publication_core_results.md",
         "risk_or_caveat": "Do not frame this as state of the art; frame it as a source-heldout diagnostic benchmark.",
@@ -95,12 +96,13 @@ CLAIMS = [
             "ms_to_ishu_branch_dropout_auc",
             "ms_to_ishu_source_utility_unconstrained",
             "ms_to_ishu_source_holdout_mean_utility_unconstrained",
+            "ms_to_ishu_source_holdout_tuned_fusion",
         ],
         "primary_artifact": "reports/assets/publication_reverse_fusion_tradeoff.png",
         "risk_or_caveat": "Current score fusion can suppress the best branch and can inherit source-threshold bias.",
         "next_action": (
-            "Threshold-only, model-side, and source-heldout source utility did not beat the capped threshold baseline; "
-            "prioritize held-out-generator utility training or validation selection before claiming SCP-Fusion v1."
+            "The first source-heldout tuned fusion result beats capped thresholding but still over-calls generated images; "
+            "prioritize false-positive-constrained training before claiming SCP-Fusion v1."
         ),
     },
     {
@@ -117,12 +119,12 @@ CLAIMS = [
             "ms_to_ishu_source_cap_accuracy",
             "ms_to_ishu_source_utility_cap_0p48",
             "ms_to_ishu_source_holdout_mean_utility_cap_0p48",
+            "ms_to_ishu_source_holdout_tuned_fusion",
         ],
         "primary_artifact": "reports/assets/publication_reverse_operating_points.png",
         "risk_or_caveat": "The capped source-threshold result is an operating point, not a learned general solution.",
         "next_action": (
-            "The source-utility threshold sweep, model-selection follow-up, and source-heldout selector did not improve beyond cap_0p48; "
-            "move utility into held-out-generator validation or fusion training."
+            "Source-heldout tuned fusion improves accuracy/AUC beyond cap_0p48; next reduce the remaining target fake-call bias."
         ),
     },
     {

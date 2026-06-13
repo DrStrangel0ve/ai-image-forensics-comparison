@@ -39,6 +39,7 @@ METHOD_LABELS = {
     "source_utility_cap_0p48": "Reverse capped source-utility model selection",
     "source_holdout_mean_utility_unconstrained": "Reverse source-heldout utility selection",
     "source_holdout_mean_utility_cap_0p48": "Reverse capped source-heldout utility selection",
+    "source_holdout_tuned_fusion": "Reverse source-heldout tuned fusion",
 }
 
 SAME_DOMAIN_IDS = {
@@ -107,6 +108,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--reverse-source-holdout-selection",
         default="reports/assets/ms_cocoai_to_ishu_source_holdout_model_selection_summary.csv",
+    )
+    parser.add_argument(
+        "--reverse-source-holdout-tuned-fusion",
+        default="reports/assets/ms_cocoai_to_ishu_source_holdout_tuned_fusion_summary.csv",
     )
     parser.add_argument("--out-dir", default="reports/assets")
     return parser.parse_args()
@@ -389,6 +394,23 @@ def _reverse_source_holdout_rows(path: Path) -> list[dict[str, object]]:
     return rows
 
 
+def _reverse_source_holdout_tuned_fusion_row(path: Path) -> dict[str, object]:
+    frame = pd.read_csv(path)
+    source_row = _single_row(frame, "selection_policy", "source_holdout_tuned_fusion")
+    return _blank_row(
+        "ms_to_ishu_source_holdout_tuned_fusion",
+        "MS COCOAI -> Ishu source-heldout tuned fusion",
+        METHOD_LABELS["source_holdout_tuned_fusion"],
+        path,
+        "First training-side constrained source-heldout utility fusion result; improves reverse accuracy/AUC over fixed capped thresholding.",
+        accuracy=float(source_row["target_accuracy_mean"]),
+        auc=float(source_row["target_roc_auc_mean"]),
+        brier=float(source_row["target_brier_score_mean"]),
+        ece=float(source_row["target_expected_calibration_error_mean"]),
+        predicted_fake_rate=float(source_row["target_predicted_positive_rate_mean"]),
+    )
+
+
 def build_core_results_table(
     physics_guided_report: Path,
     calibration_summary: Path,
@@ -399,6 +421,7 @@ def build_core_results_table(
     reverse_threshold_cap: Path,
     reverse_model_utility_selection: Path,
     reverse_source_holdout_selection: Path,
+    reverse_source_holdout_tuned_fusion: Path,
 ) -> pd.DataFrame:
     rows = []
     rows.extend(_same_domain_rows(physics_guided_report))
@@ -409,6 +432,7 @@ def build_core_results_table(
     rows.append(_reverse_threshold_cap_row(reverse_threshold_cap))
     rows.extend(_reverse_model_utility_rows(reverse_model_utility_selection))
     rows.extend(_reverse_source_holdout_rows(reverse_source_holdout_selection))
+    rows.append(_reverse_source_holdout_tuned_fusion_row(reverse_source_holdout_tuned_fusion))
     return pd.DataFrame(rows, columns=CORE_COLUMNS)
 
 
@@ -454,6 +478,7 @@ def main() -> None:
         Path(args.reverse_threshold_cap),
         Path(args.reverse_model_utility_selection),
         Path(args.reverse_source_holdout_selection),
+        Path(args.reverse_source_holdout_tuned_fusion),
     )
     csv_path = out_dir / "publication_core_results.csv"
     markdown_path = out_dir / "publication_core_results.md"

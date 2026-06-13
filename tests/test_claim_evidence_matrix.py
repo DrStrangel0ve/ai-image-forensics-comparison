@@ -33,6 +33,7 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
         "ms_to_ishu_source_utility_cap_0p48",
         "ms_to_ishu_source_holdout_mean_utility_unconstrained",
         "ms_to_ishu_source_holdout_mean_utility_cap_0p48",
+        "ms_to_ishu_source_holdout_tuned_fusion",
     ]
     pd.DataFrame(
         {
