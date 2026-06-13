@@ -69,7 +69,15 @@ Caption draft:
 
 Frozen CLIP ViT-B/32 is currently the strongest standalone transfer and source-heldout triage model in the benchmark. Adding CLIP improves the saved-score fusion family, with all-foundation SCP-Fusion reaching 0.7995 mean transfer AUC, but score-level fusion still trails standalone CLIP ranking and decided-case triage. This suggests the next SCP-Fusion step should improve calibration-aware fusion training rather than only adding more frozen branches.
 
-## Figure 7: Qualitative Failure Cases
+## Figure 7: Reverse Fusion Tradeoff
+
+![Reverse fusion ranking and calibration tradeoff](assets/publication_reverse_fusion_tradeoff.png)
+
+Caption draft:
+
+MS-COCOAI-to-Ishu reverse transfer shows the central SCP-Fusion tradeoff. Branch dropout gives the best reverse fusion AUC, while stronger regularization improves Brier score and source-threshold accuracy. No score-fusion setting fully recovers the physics-guided branch's default operating-point behavior, so the next method step is utility-aware fusion training rather than simply adding more branches.
+
+## Figure 8: Qualitative Failure Cases
 
 ![SCP-Fusion seed-17 false negatives](assets/qualitative_seed17_scp_fusion_false_negatives.png)
 
@@ -97,4 +105,5 @@ Generated files:
 - `reports\assets\publication_score_fusion_dinov2_gain.png`
 - `reports\assets\publication_score_fusion_tuned_triage.png`
 - `reports\assets\publication_score_fusion_clip_frontier.png`
+- `reports\assets\publication_reverse_fusion_tradeoff.png`
 - `reports\assets\qualitative_seed17_scp_fusion_false_negatives.png`

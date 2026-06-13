@@ -29,6 +29,8 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     clip_calibration = tmp_path / "clip_calibration.csv"
     clip_triage_5 = tmp_path / "clip_triage_5.csv"
     clip_triage_10 = tmp_path / "clip_triage_10.csv"
+    reverse_fusion = tmp_path / "reverse_fusion.csv"
+    reverse_thresholds = tmp_path / "reverse_thresholds.csv"
     out_dir = tmp_path / "assets"
 
     pd.DataFrame(
@@ -157,6 +159,36 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
             }
         ).to_csv(path, index=False)
 
+    reverse_configs = [
+        "score_fusion_all6",
+        "score_fusion_all6_temp_balanced",
+        "score_fusion_all6_c01",
+        "score_fusion_all6_c01_temp_balanced",
+        "score_fusion_all6_c003",
+        "score_fusion_all6_dropout_mean_r35x8",
+        "score_fusion_all6_dropout_mean_r35x8_temp_balanced",
+    ]
+    pd.DataFrame(
+        {
+            "config": reverse_configs * 2,
+            "split": ["ms_cocoai_validation"] * len(reverse_configs)
+            + ["ms_cocoai_to_ishu_test"] * len(reverse_configs),
+            "accuracy": [0.95] * len(reverse_configs)
+            + [0.652, 0.658, 0.649, 0.658, 0.661, 0.652, 0.652],
+            "auc": [0.99] * len(reverse_configs)
+            + [0.827, 0.829, 0.837, 0.832, 0.831, 0.841, 0.840],
+            "brier": [0.03] * len(reverse_configs)
+            + [0.294, 0.307, 0.247, 0.279, 0.221, 0.306, 0.294],
+        }
+    ).to_csv(reverse_fusion, index=False)
+    pd.DataFrame(
+        {
+            "config": reverse_configs,
+            "default_accuracy": [0.652, 0.658, 0.649, 0.658, 0.661, 0.652, 0.652],
+            "clean_threshold_accuracy": [0.664, 0.664, 0.675, 0.684, 0.667, 0.658, 0.643],
+        }
+    ).to_csv(reverse_thresholds, index=False)
+
     subprocess.run(
         [
             sys.executable,
@@ -183,6 +215,10 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
             str(clip_triage_5),
             "--score-fusion-clip-triage-10pct",
             str(clip_triage_10),
+            "--reverse-fusion-regularization",
+            str(reverse_fusion),
+            "--reverse-fusion-thresholds",
+            str(reverse_thresholds),
             "--out-dir",
             str(out_dir),
             "--dpi",
@@ -198,3 +234,4 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     assert (out_dir / "publication_score_fusion_tuned_triage.png").exists()
     assert (out_dir / "publication_score_fusion_dinov2_gain.png").exists()
     assert (out_dir / "publication_score_fusion_clip_frontier.png").exists()
+    assert (out_dir / "publication_reverse_fusion_tradeoff.png").exists()

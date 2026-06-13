@@ -45,6 +45,7 @@ Core numbers to lead with:
 | source-heldout triage | `reports/assets/publication_triage_operating_points.png` | operational forensic framing |
 | DINOv2 fusion upgrade | `reports/assets/publication_score_fusion_dinov2_gain.png` | branch-complementarity evidence |
 | CLIP frontier | `reports/assets/publication_score_fusion_clip_frontier.png` | newest headline result |
+| reverse fusion tradeoff | `reports/assets/publication_reverse_fusion_tradeoff.png` | utility-aware fusion motivation |
 | qualitative misses | `reports/assets/qualitative_seed17_scp_fusion_false_negatives.png` | failure-mode/explainability panel |
 
 ## DFRWS Poster Draft Plan

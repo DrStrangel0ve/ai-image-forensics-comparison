@@ -88,6 +88,33 @@ CLIP_FRONTIER_COLORS = {
     "scp_fusion_all_foundation": "#B279A2",
     "clip_standalone": "#4C78A8",
 }
+REVERSE_FUSION_ORDER = [
+    "score_fusion_all6",
+    "score_fusion_all6_temp_balanced",
+    "score_fusion_all6_c01",
+    "score_fusion_all6_c01_temp_balanced",
+    "score_fusion_all6_c003",
+    "score_fusion_all6_dropout_mean_r35x8",
+    "score_fusion_all6_dropout_mean_r35x8_temp_balanced",
+]
+REVERSE_FUSION_LABELS = {
+    "score_fusion_all6": "baseline",
+    "score_fusion_all6_temp_balanced": "baseline + temp",
+    "score_fusion_all6_c01": "C=.1",
+    "score_fusion_all6_c01_temp_balanced": "C=.1 + temp",
+    "score_fusion_all6_c003": "C=.03",
+    "score_fusion_all6_dropout_mean_r35x8": "dropout",
+    "score_fusion_all6_dropout_mean_r35x8_temp_balanced": "dropout + temp",
+}
+REVERSE_FUSION_COLORS = {
+    "score_fusion_all6": "#9E9E9E",
+    "score_fusion_all6_temp_balanced": "#B279A2",
+    "score_fusion_all6_c01": "#F58518",
+    "score_fusion_all6_c01_temp_balanced": "#FFBF79",
+    "score_fusion_all6_c003": "#54A24B",
+    "score_fusion_all6_dropout_mean_r35x8": "#4C78A8",
+    "score_fusion_all6_dropout_mean_r35x8_temp_balanced": "#72B7B2",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -137,6 +164,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--score-fusion-clip-triage-10pct",
         default="reports/assets/score_fusion_clip_source_holdout_triage_10pct.csv",
+    )
+    parser.add_argument(
+        "--reverse-fusion-regularization",
+        default="reports/assets/ms_cocoai_to_ishu_reverse_fusion_regularization_mean_metrics.csv",
+    )
+    parser.add_argument(
+        "--reverse-fusion-thresholds",
+        default="reports/assets/ms_cocoai_to_ishu_reverse_fusion_regularization_threshold_means.csv",
     )
     parser.add_argument("--out-dir", default="reports/assets")
     parser.add_argument("--dpi", type=int, default=180)
@@ -542,6 +577,99 @@ def build_score_fusion_clip_frontier(
     return out_path
 
 
+def _reverse_fusion_ordered(frame: pd.DataFrame) -> pd.DataFrame:
+    ordered_configs = [config for config in REVERSE_FUSION_ORDER if config in set(frame["config"])]
+    return frame.set_index("config").loc[ordered_configs].reset_index()
+
+
+def _reverse_fusion_labels(frame: pd.DataFrame) -> list[str]:
+    return [REVERSE_FUSION_LABELS.get(config, config) for config in frame["config"]]
+
+
+def build_reverse_fusion_tradeoff(
+    mean_metrics_path: Path,
+    threshold_means_path: Path,
+    out_dir: Path,
+    dpi: int,
+) -> Path:
+    metrics = pd.read_csv(mean_metrics_path)
+    metrics = metrics[metrics["split"] == "ms_cocoai_to_ishu_test"].copy()
+    metrics = _reverse_fusion_ordered(metrics)
+    thresholds = _reverse_fusion_ordered(pd.read_csv(threshold_means_path))
+    labels = _reverse_fusion_labels(metrics)
+    colors = [REVERSE_FUSION_COLORS.get(config, "#777777") for config in metrics["config"]]
+
+    fig, axes = plt.subplots(1, 2, figsize=(12.0, 4.8), dpi=dpi)
+    ax = axes[0]
+    sizes = 1200.0 * metrics["accuracy"].astype(float).to_numpy()
+    ax.scatter(
+        metrics["brier"],
+        metrics["auc"],
+        s=sizes,
+        c=colors,
+        edgecolor="#222222",
+        linewidth=0.5,
+        alpha=0.92,
+    )
+    annotation_offsets = {
+        "score_fusion_all6_dropout_mean_r35x8": (10, 8),
+        "score_fusion_all6_dropout_mean_r35x8_temp_balanced": (-62, -10),
+        "score_fusion_all6_temp_balanced": (8, 4),
+        "score_fusion_all6": (8, 4),
+    }
+    for _, row in metrics.iterrows():
+        offset = annotation_offsets.get(row["config"], (5, 4))
+        ax.annotate(
+            REVERSE_FUSION_LABELS.get(row["config"], row["config"]),
+            (float(row["brier"]), float(row["auc"])),
+            xytext=offset,
+            textcoords="offset points",
+            fontsize=8,
+        )
+    ax.set_title("Reverse transfer fusion tradeoff", fontsize=10, pad=8)
+    ax.set_xlabel("Brier score (lower is better)")
+    ax.set_ylabel("AUC (higher is better)")
+    ax.set_xlim(float(metrics["brier"].min()) - 0.004, float(metrics["brier"].max()) + 0.008)
+    ax.set_ylim(float(metrics["auc"].min()) - 0.001, float(metrics["auc"].max()) + 0.001)
+    ax.grid(alpha=0.25)
+
+    ax = axes[1]
+    x = np.arange(len(thresholds))
+    width = 0.35
+    ax.bar(
+        x - width / 2,
+        thresholds["default_accuracy"].astype(float),
+        width,
+        label="default",
+        color="#9E9E9E",
+        edgecolor="#222222",
+        linewidth=0.4,
+    )
+    ax.bar(
+        x + width / 2,
+        thresholds["clean_threshold_accuracy"].astype(float),
+        width,
+        label="source threshold",
+        color="#4C78A8",
+        edgecolor="#222222",
+        linewidth=0.4,
+    )
+    ax.set_title("Thresholded decision quality", fontsize=10, pad=8)
+    ax.set_ylabel("accuracy")
+    ax.set_xticks(x)
+    ax.set_xticklabels(_reverse_fusion_labels(thresholds), rotation=28, ha="right")
+    ax.set_ylim(0.60, 0.70)
+    ax.grid(axis="y", alpha=0.25)
+    ax.legend(fontsize=8)
+
+    fig.suptitle("MS COCOAI to Ishu: fusion ranking vs calibration", fontsize=13)
+    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.93))
+    out_path = out_dir / "publication_reverse_fusion_tradeoff.png"
+    fig.savefig(out_path)
+    plt.close(fig)
+    return out_path
+
+
 def main() -> None:
     args = parse_args()
     out_dir = ensure_dir(args.out_dir)
@@ -561,6 +689,12 @@ def main() -> None:
             Path(args.score_fusion_clip_calibration),
             Path(args.score_fusion_clip_triage_5pct),
             Path(args.score_fusion_clip_triage_10pct),
+            out_dir,
+            args.dpi,
+        ),
+        build_reverse_fusion_tradeoff(
+            Path(args.reverse_fusion_regularization),
+            Path(args.reverse_fusion_thresholds),
             out_dir,
             args.dpi,
         ),
