@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\small
+\caption{MS COCOAI to Ishu reverse-transfer operating points.}
+\label{tab:reverse-operating-points}
+\begin{tabular}{l r r r r r}
+\toprule
+Method & Acc. & AUC & Brier & ECE & Fake \\
+\midrule
+Physics-guided & 0.687 & 0.742 & 0.244 & 0.190 & 0.529 \\
+CLIP & 0.623 & 0.824 & 0.332 & 0.357 & 0.863 \\
+All-branch fusion & 0.658 & 0.829 & 0.307 & 0.330 & 0.810 \\
+Branch-dropout fusion & 0.652 & 0.841 & 0.306 & 0.328 & 0.816 \\
+Source-threshold cap & 0.722 & 0.829 & 0.219 & 0.206 & 0.623 \\
+Source-heldout tuned & 0.734 & 0.834 & 0.275 & 0.295 & 0.681 \\
+Clean cap 0.40 & 0.763 & 0.836 & 0.285 & 0.304 & 0.518 \\
+Native-tiled v3 & 0.775 & 0.847 & 0.298 & 0.319 & 0.547 \\
+\bottomrule
+\end{tabular}
+\end{table}

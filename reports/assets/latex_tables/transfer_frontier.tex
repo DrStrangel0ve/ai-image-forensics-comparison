@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Ishu to source-balanced MS COCOAI transfer and triage frontier.}
+\label{tab:transfer-frontier}
+\begin{tabular}{l r r r r r r r}
+\toprule
+Method & Acc. & AUC & Brier & ECE & Fake & Cov. & Dec. \\
+\midrule
+combined\_v3 & 0.547 & 0.580 & 0.342 & 0.291 & 0.174 & -- & -- \\
+ResNet-18 & 0.580 & 0.649 & 0.355 & 0.335 & 0.245 & -- & -- \\
+Physics-guided & 0.606 & 0.664 & 0.337 & 0.309 & 0.271 & -- & -- \\
+ConvNeXt & 0.616 & 0.714 & 0.330 & 0.318 & 0.187 & -- & -- \\
+SCP-Fusion v0 & 0.591 & 0.728 & 0.319 & 0.309 & 0.138 & -- & -- \\
+SCP-Fusion + DINOv2 & 0.598 & 0.750 & 0.314 & 0.307 & 0.144 & -- & -- \\
+SCP-Fusion + CLIP + DINOv2 & 0.616 & 0.799 & 0.312 & 0.326 & 0.132 & -- & -- \\
+CLIP & 0.636 & 0.864 & 0.315 & 0.333 & 0.163 & -- & -- \\
+CLIP triage & -- & -- & -- & -- & -- & 0.475 & 0.926 \\
+\bottomrule
+\end{tabular}
+\end{table}

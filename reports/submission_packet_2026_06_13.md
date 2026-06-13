@@ -95,6 +95,12 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/submission_table_transfer_frontier.csv | Compact Ishu-to-MS-COCOAI transfer frontier table. |
 | table | reports/assets/submission_table_reverse_operating_points.csv | Compact MS-COCOAI-to-Ishu reverse operating point table. |
 | table | reports/assets/submission_table_robustness_stress.csv | Compact reverse tuned-fusion robustness stress table with clean-baseline deltas. |
+| table | reports/submission_latex_tables_2026_06_14.md | Report listing generated LaTeX table fragments for paper drafting. |
+| table | reports/assets/latex_tables/submission_latex_table_manifest.csv | Machine-readable manifest for generated LaTeX table fragments. |
+| table | reports/assets/latex_tables/same_domain_anchor.tex | LaTeX fragment for the same-domain anchor table. |
+| table | reports/assets/latex_tables/transfer_frontier.tex | LaTeX fragment for the Ishu-to-MS-COCOAI transfer frontier table. |
+| table | reports/assets/latex_tables/reverse_operating_points.tex | LaTeX fragment for the reverse operating point table. |
+| table | reports/assets/latex_tables/robustness_stress.tex | LaTeX fragment for the robustness stress table. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
@@ -131,6 +137,12 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/submission_table_transfer_frontier.csv | Compact Ishu-to-MS-COCOAI transfer frontier table. |
 | table | reports/assets/submission_table_reverse_operating_points.csv | Compact MS-COCOAI-to-Ishu reverse operating point table. |
 | table | reports/assets/submission_table_robustness_stress.csv | Compact reverse tuned-fusion robustness stress table with clean-baseline deltas. |
+| table | reports/submission_latex_tables_2026_06_14.md | Report listing generated LaTeX table fragments for paper drafting. |
+| table | reports/assets/latex_tables/submission_latex_table_manifest.csv | Machine-readable manifest for generated LaTeX table fragments. |
+| table | reports/assets/latex_tables/same_domain_anchor.tex | LaTeX fragment for the same-domain anchor table. |
+| table | reports/assets/latex_tables/transfer_frontier.tex | LaTeX fragment for the Ishu-to-MS-COCOAI transfer frontier table. |
+| table | reports/assets/latex_tables/reverse_operating_points.tex | LaTeX fragment for the reverse operating point table. |
+| table | reports/assets/latex_tables/robustness_stress.tex | LaTeX fragment for the robustness stress table. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
@@ -158,6 +170,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | claim matrix | python scripts/build_claim_evidence_matrix.py |
 | publication tables | python scripts/build_publication_tables.py |
 | submission result tables | python scripts/build_submission_result_tables.py |
+| submission LaTeX tables | python scripts/build_submission_latex_tables.py |
 | publication figures | python scripts/build_publication_assets.py |
 | DFRWS poster brief | python scripts/build_dfrws_poster_brief.py |
 | DFRWS poster panels | python scripts/build_dfrws_poster_figures.py |
