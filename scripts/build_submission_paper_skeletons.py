@@ -75,6 +75,11 @@ def parse_args() -> argparse.Namespace:
         help="Generated claim/evidence matrix used to add paper-facing claim guardrails.",
     )
     parser.add_argument(
+        "--literature-map",
+        default="reports/assets/literature_map.csv",
+        help="Generated literature map used to seed related-work citations.",
+    )
+    parser.add_argument(
         "--report-out",
         default="reports/submission_paper_skeletons_2026_06_14.md",
         help="Markdown report listing generated paper skeletons.",
@@ -153,7 +158,65 @@ def _claim_checklist_block(claims: pd.DataFrame) -> list[str]:
     return lines
 
 
-def _paper_tex(spec: dict[str, str], abstract: str, claims: pd.DataFrame) -> str:
+def _require_literature_keys(literature: pd.DataFrame, keys: list[str]) -> None:
+    available = set(literature["key"].astype(str))
+    missing = [key for key in keys if key not in available]
+    if missing:
+        raise ValueError(f"Literature map is missing citation keys: {missing}")
+
+
+def _cite(keys: list[str]) -> str:
+    return r"\cite{" + ",".join(keys) + "}"
+
+
+def _related_work_block(literature: pd.DataFrame) -> list[str]:
+    foundation_keys = [
+        "universal_fake_detectors_2023",
+        "genimage_2023",
+        "aide_chameleon_2025",
+        "realhd_2026",
+        "bias_free_training_2025",
+    ]
+    reconstruction_keys = [
+        "dire_2023",
+        "aeroblade_2024",
+        "fire_2025",
+        "spectral_any_resolution_2025",
+        "no_pixel_left_behind_2025",
+        "fake_or_jpeg_2024",
+    ]
+    physics_keys = ["photometric_faces_2023", "light2lie_2026"]
+    _require_literature_keys(literature, foundation_keys + reconstruction_keys + physics_keys)
+    return [
+        r"\section{Related Work}",
+        _latex_escape(
+            "Generalization studies and large benchmarks motivate source-heldout evaluation rather than "
+            "closed-set detector reporting alone"
+        )
+        + " "
+        + _cite(foundation_keys)
+        + ".",
+        "",
+        _latex_escape(
+            "Reconstruction, spectral, high-resolution, and compression-bias studies motivate the "
+            "combined_v4/AEROBLADE-lite roadmap, transform stress tests, and bounded native-tiling diagnostics"
+        )
+        + " "
+        + _cite(reconstruction_keys)
+        + ".",
+        "",
+        _latex_escape(
+            "Physics-informed generated-image work motivates keeping the single-image physical/signal branch "
+            "while avoiding claims of true multi-light photometric stereo or reflectance-law estimation"
+        )
+        + " "
+        + _cite(physics_keys)
+        + ".",
+        "",
+    ]
+
+
+def _paper_tex(spec: dict[str, str], abstract: str, claims: pd.DataFrame, literature: pd.DataFrame) -> str:
     lines = [
         "% Auto-generated draft skeleton. Replace the document class with the official venue template before submission.",
         spec["documentclass"],
@@ -176,37 +239,36 @@ def _paper_tex(spec: dict[str, str], abstract: str, claims: pd.DataFrame) -> str
             "calibration, fake-call rate, and triage coverage should be reported separately."
         ),
         "",
-        r"\section{Related Work}",
-        _latex_escape(
-            "TODO: Cover AI-generated image detection, single-image physical/signal forensics, "
-            "frozen foundation encoders, score fusion, calibration, and forensic triage."
-        ),
-        "",
-        r"\section{Data and Audit}",
-        _latex_escape(
-            "TODO: Describe Ishu AI-vs-real, source-balanced MS COCOAI, generator source labels, "
-            "dataset export commands, and duplicate/leakage audit assumptions."
-        ),
-        "",
-        r"\section{Methods}",
-        _latex_escape(
-            "TODO: Define combined_v3/v4 physical-signal features, ResNet-18, physics-guided "
-            "ResNet fusion, frozen ConvNeXt/DINOv2/CLIP probes, SCP-Fusion, source-heldout "
-            "thresholding, and high-confidence triage."
-        ),
-        "",
-        r"\section{Experiments}",
-        _latex_escape(
-            "TODO: State repeated seeds, same-domain and transfer splits, source-heldout "
-            "generator validation, calibration metrics, and robustness transforms."
-        ),
-        "",
-        r"\section{Results}",
-        _latex_escape(
-            "The following generated table fragments are checked into the repository and can be edited for space."
-        ),
-        "",
     ]
+    lines.extend(_related_work_block(literature))
+    lines.extend(
+        [
+            r"\section{Data and Audit}",
+            _latex_escape(
+                "TODO: Describe Ishu AI-vs-real, source-balanced MS COCOAI, generator source labels, "
+                "dataset export commands, and duplicate/leakage audit assumptions."
+            ),
+            "",
+            r"\section{Methods}",
+            _latex_escape(
+                "TODO: Define combined_v3/v4 physical-signal features, ResNet-18, physics-guided "
+                "ResNet fusion, frozen ConvNeXt/DINOv2/CLIP probes, SCP-Fusion, source-heldout "
+                "thresholding, and high-confidence triage."
+            ),
+            "",
+            r"\section{Experiments}",
+            _latex_escape(
+                "TODO: State repeated seeds, same-domain and transfer splits, source-heldout "
+                "generator validation, calibration metrics, and robustness transforms."
+            ),
+            "",
+            r"\section{Results}",
+            _latex_escape(
+                "The following generated table fragments are checked into the repository and can be edited for space."
+            ),
+            "",
+        ]
+    )
     for path, description in TABLE_INPUTS:
         lines.extend([f"% {description}", rf"\input{{{path}}}", ""])
     lines.extend(
@@ -243,15 +305,21 @@ def _paper_tex(spec: dict[str, str], abstract: str, claims: pd.DataFrame) -> str
     return "\n".join(lines)
 
 
-def build_paper_skeletons(text_drafts: Path, claim_matrix_path: Path, out_dir: Path) -> pd.DataFrame:
+def build_paper_skeletons(
+    text_drafts: Path,
+    claim_matrix_path: Path,
+    literature_map_path: Path,
+    out_dir: Path,
+) -> pd.DataFrame:
     text = text_drafts.read_text(encoding="utf-8")
     claim_matrix = pd.read_csv(claim_matrix_path)
+    literature = pd.read_csv(literature_map_path)
     out_dir.mkdir(parents=True, exist_ok=True)
     rows = []
     for spec in PAPER_SPECS:
         abstract = _extract_section(text, spec["abstract_header"])
         claims = _paper_claims(claim_matrix, spec["claim_filter"])
-        tex = _paper_tex(spec, abstract, claims)
+        tex = _paper_tex(spec, abstract, claims, literature)
         out_path = out_dir / spec["filename"]
         out_path.write_text(tex, encoding="utf-8")
         rows.append(
@@ -263,6 +331,7 @@ def build_paper_skeletons(text_drafts: Path, claim_matrix_path: Path, out_dir: P
                 "template_hint": spec["template_hint"],
                 "abstract_header": spec["abstract_header"],
                 "claim_count": len(claims),
+                "citation_count": len(re.findall(r"\\cite\{", tex)),
             }
         )
     manifest = pd.DataFrame(rows)
@@ -287,7 +356,7 @@ def write_report(manifest: pd.DataFrame, report_out: Path) -> None:
         "",
         "Run date: 2026-06-14",
         "",
-        "Generated by `scripts/build_submission_paper_skeletons.py` from generated submission text, LaTeX table fragments, and the claim-evidence matrix.",
+        "Generated by `scripts/build_submission_paper_skeletons.py` from generated submission text, LaTeX table fragments, the claim-evidence matrix, and the literature map.",
         "",
         "These files are draft scaffolds, not official venue templates. Replace the document class and formatting with the final WIFS/DFF instructions before submission.",
         "",
@@ -300,7 +369,12 @@ def write_report(manifest: pd.DataFrame, report_out: Path) -> None:
 
 def main() -> None:
     args = parse_args()
-    manifest = build_paper_skeletons(Path(args.text_drafts), Path(args.claim_matrix), Path(args.out_dir))
+    manifest = build_paper_skeletons(
+        Path(args.text_drafts),
+        Path(args.claim_matrix),
+        Path(args.literature_map),
+        Path(args.out_dir),
+    )
     write_report(manifest, Path(args.report_out))
     print(Path(args.report_out).resolve())
     print((Path(args.out_dir) / "submission_paper_skeleton_manifest.csv").resolve())

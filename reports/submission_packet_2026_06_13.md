@@ -89,6 +89,9 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/submission_readiness_2026_06_13.md | Current readiness snapshot, lead results, figure package, and remaining gaps. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
+| bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
+| bibliography | reports/references_bib_2026_06_14.md | Report listing draft BibTeX entries and metadata-verification caveats. |
+| bibliography | reports/assets/references_bib_manifest.csv | Machine-readable manifest for draft BibTeX entries. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
 | table | reports/submission_result_tables_2026_06_14.md | Copy-ready compact result tables for poster and paper drafting. |
@@ -138,6 +141,9 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/submission_readiness_2026_06_13.md | Current readiness snapshot, lead results, figure package, and remaining gaps. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
+| bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
+| bibliography | reports/references_bib_2026_06_14.md | Report listing draft BibTeX entries and metadata-verification caveats. |
+| bibliography | reports/assets/references_bib_manifest.csv | Machine-readable manifest for draft BibTeX entries. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
 | table | reports/submission_result_tables_2026_06_14.md | Copy-ready compact result tables for poster and paper drafting. |
@@ -183,6 +189,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | --- | --- |
 | claim matrix | python scripts/build_claim_evidence_matrix.py |
 | literature map | python scripts/build_literature_map.py |
+| draft BibTeX references | python scripts/build_references_bib.py |
 | publication tables | python scripts/build_publication_tables.py |
 | submission result tables | python scripts/build_submission_result_tables.py |
 | submission LaTeX tables | python scripts/build_submission_latex_tables.py |

@@ -20,6 +20,7 @@ REQUIRED_COLUMNS = {
     "template_hint",
     "abstract_header",
     "claim_count",
+    "citation_count",
 }
 
 
@@ -61,6 +62,13 @@ def _paths_exist(repo_root: Path, paths: list[str]) -> tuple[bool, str]:
     return True, f"{len(paths)} paths present"
 
 
+def _bib_keys(bib_path: Path) -> set[str]:
+    if not bib_path.exists():
+        return set()
+    text = bib_path.read_text(encoding="utf-8")
+    return set(re.findall(r"@\w+\{([^,\s]+)", text))
+
+
 def _lint_one_skeleton(repo_root: Path, row: pd.Series) -> list[dict[str, object]]:
     checks: list[dict[str, object]] = []
     paper_id = str(row["paper_id"])
@@ -96,6 +104,35 @@ def _lint_one_skeleton(repo_root: Path, row: pd.Series) -> list[dict[str, object
     figures_ok, figures_detail = _paths_exist(repo_root, graphics_paths)
     _add_check(checks, paper_id, "table input paths exist", inputs_ok and len(input_paths) >= 4, inputs_detail)
     _add_check(checks, paper_id, "figure paths exist", figures_ok and len(graphics_paths) >= 4, figures_detail)
+
+    references_bib = repo_root / "references.bib"
+    references_exist = references_bib.exists()
+    _add_check(
+        checks,
+        paper_id,
+        "references.bib exists",
+        references_exist,
+        "references.bib present" if references_exist else "references.bib missing",
+    )
+    cite_commands = _extract_paths(r"\\cite\{([^}]+)\}", text)
+    cited_keys = [key.strip() for command in cite_commands for key in command.split(",") if key.strip()]
+    expected_citations = int(row.get("citation_count", 0))
+    _add_check(
+        checks,
+        paper_id,
+        "citation count matches manifest",
+        len(cite_commands) == expected_citations,
+        f"{len(cite_commands)} cite commands; manifest expects {expected_citations}",
+    )
+    available_bib_keys = _bib_keys(references_bib)
+    missing_bib_keys = sorted(set(cited_keys) - available_bib_keys)
+    _add_check(
+        checks,
+        paper_id,
+        "citation keys exist in references.bib",
+        not missing_bib_keys and bool(cited_keys),
+        f"{len(cited_keys)} cited keys found" if not missing_bib_keys else ", ".join(missing_bib_keys),
+    )
 
     expected_claims = int(row.get("claim_count", 0))
     claim_items = re.findall(r"\\item\s+\\textbf\{", text)

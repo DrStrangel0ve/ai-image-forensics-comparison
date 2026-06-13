@@ -1,10 +1,13 @@
 path,type,venues,purpose,required,exists,size_bytes
-README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,44893
+README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,45075
 CITATION.cff,repo,"DFRWS,WIFS,DFF",Citation metadata for public release and reproducibility review.,True,True,788
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF","Reviewer-facing map of included artifacts, external datasets, and commands.",True,True,16823
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
 reports/literature_map_2026_06_14.md,literature,"WIFS,DFF","Paper-facing map from related-work references to method claims, paper sections, and caveats.",True,True,6270
 reports/assets/literature_map.csv,literature,"WIFS,DFF",Machine-readable literature map for WIFS/DFF related-work drafting.,True,True,5116
+references.bib,bibliography,"WIFS,DFF",Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations.,True,True,4612
+reports/references_bib_2026_06_14.md,bibliography,"WIFS,DFF",Report listing draft BibTeX entries and metadata-verification caveats.,True,True,3027
+reports/assets/references_bib_manifest.csv,bibliography,"WIFS,DFF",Machine-readable manifest for draft BibTeX entries.,True,True,2430
 reports/assets/publication_core_results.csv,table,"DFRWS,WIFS,DFF",Canonical machine-readable result rows used by claim and figure builders.,True,True,15007
 reports/assets/publication_core_results.md,table,"DFRWS,WIFS,DFF",Readable core result table for paper drafting.,True,True,14189
 reports/submission_result_tables_2026_06_14.md,table,"DFRWS,WIFS,DFF",Copy-ready compact result tables for poster and paper drafting.,True,True,8633
@@ -19,10 +22,10 @@ reports/assets/latex_tables/same_domain_anchor.tex,table,"WIFS,DFF",LaTeX fragme
 reports/assets/latex_tables/transfer_frontier.tex,table,"WIFS,DFF",LaTeX fragment for the Ishu-to-MS-COCOAI transfer frontier table.,True,True,900
 reports/assets/latex_tables/reverse_operating_points.tex,table,"WIFS,DFF",LaTeX fragment for the reverse operating point table.,True,True,761
 reports/assets/latex_tables/robustness_stress.tex,table,"WIFS,DFF",LaTeX fragment for the robustness stress table.,True,True,999
-reports/submission_paper_skeletons_2026_06_14.md,paper-draft,"WIFS,DFF",Report listing generated WIFS/DFF paper skeletons.,True,True,1151
-reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv,paper-draft,"WIFS,DFF",Machine-readable manifest for generated WIFS/DFF paper skeletons.,True,True,692
-reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex,paper-draft,WIFS,"IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures.",True,True,7364
-reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex,paper-draft,DFF,"ACM-style DFF workshop skeleton with generated abstract, tables, and figures.",True,True,8116
+reports/submission_paper_skeletons_2026_06_14.md,paper-draft,"WIFS,DFF",Report listing generated WIFS/DFF paper skeletons.,True,True,1202
+reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv,paper-draft,"WIFS,DFF",Machine-readable manifest for generated WIFS/DFF paper skeletons.,True,True,711
+reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex,paper-draft,WIFS,"IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures.",True,True,7980
+reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex,paper-draft,DFF,"ACM-style DFF workshop skeleton with generated abstract, tables, and figures.",True,True,8732
 reports/paper_skeleton_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF paper skeleton structure, referenced assets, and claim guardrails.",False,True,2788
 reports/assets/paper_skeleton_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF paper skeleton lint checks.,False,True,2222
 reports/assets/claim_evidence_matrix.csv,claim-audit,"DFRWS,WIFS,DFF",Machine-readable claim-to-evidence map with caveats and next actions.,True,True,16847

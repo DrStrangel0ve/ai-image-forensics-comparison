@@ -18,6 +18,18 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
     skeleton_dir.mkdir(parents=True)
     table_dir.mkdir(parents=True)
     asset_dir.mkdir(parents=True, exist_ok=True)
+    (repo_root / "references.bib").write_text(
+        "\n".join(
+            [
+                "@misc{universal_fake_detectors_2023,",
+                "  title = {Universal Fake Detectors},",
+                "  year = {2023},",
+                "}",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
 
     table_paths = [
         "reports/assets/latex_tables/same_domain_anchor.tex",
@@ -47,6 +59,7 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
                 r"\begin{abstract}",
                 "Abstract.",
                 r"\end{abstract}",
+                r"Related work seed \cite{universal_fake_detectors_2023}.",
                 *[rf"\input{{{path}}}" for path in table_paths],
                 *[rf"\includegraphics[width=\linewidth]{{{path}}}" for path in figure_paths],
                 r"\section{Claim-Evidence Checklist}",
@@ -76,6 +89,7 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
                 "template_hint": "IEEEtran",
                 "abstract_header": "WIFS Compact Abstract",
                 "claim_count": 1,
+                "citation_count": 1,
             }
         ]
     ).to_csv(manifest, index=False)
@@ -104,3 +118,4 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
     assert "Status: **PASS**" in report
     assert checks["passed"].all()
     assert "claim count matches manifest" in checks["check"].str.cat(sep=" ")
+    assert "citation keys exist in references.bib" in checks["check"].str.cat(sep=" ")

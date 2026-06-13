@@ -17,7 +17,11 @@ Robust detection of AI-generated images is not only a model-selection problem: d
 TODO: Motivate source-heldout AI-generated image forensics and explain why ranking, calibration, fake-call rate, and triage coverage should be reported separately.
 
 \section{Related Work}
-TODO: Cover AI-generated image detection, single-image physical/signal forensics, frozen foundation encoders, score fusion, calibration, and forensic triage.
+Generalization studies and large benchmarks motivate source-heldout evaluation rather than closed-set detector reporting alone \cite{universal_fake_detectors_2023,genimage_2023,aide_chameleon_2025,realhd_2026,bias_free_training_2025}.
+
+Reconstruction, spectral, high-resolution, and compression-bias studies motivate the combined\_v4/AEROBLADE-lite roadmap, transform stress tests, and bounded native-tiling diagnostics \cite{dire_2023,aeroblade_2024,fire_2025,spectral_any_resolution_2025,no_pixel_left_behind_2025,fake_or_jpeg_2024}.
+
+Physics-informed generated-image work motivates keeping the single-image physical/signal branch while avoiding claims of true multi-light photometric stereo or reflectance-law estimation \cite{photometric_faces_2023,light2lie_2026}.
 
 \section{Data and Audit}
 TODO: Describe Ishu AI-vs-real, source-balanced MS COCOAI, generator source labels, dataset export commands, and duplicate/leakage audit assumptions.

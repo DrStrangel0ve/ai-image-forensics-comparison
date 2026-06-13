@@ -64,6 +64,27 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "references.bib",
+        "type": "bibliography",
+        "venues": "WIFS,DFF",
+        "purpose": "Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations.",
+        "required": True,
+    },
+    {
+        "path": "reports/references_bib_2026_06_14.md",
+        "type": "bibliography",
+        "venues": "WIFS,DFF",
+        "purpose": "Report listing draft BibTeX entries and metadata-verification caveats.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/references_bib_manifest.csv",
+        "type": "bibliography",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable manifest for draft BibTeX entries.",
+        "required": True,
+    },
+    {
         "path": "reports/assets/publication_core_results.csv",
         "type": "table",
         "venues": "DFRWS,WIFS,DFF",
@@ -438,6 +459,7 @@ VENUES = [
 REGEN_COMMANDS = [
     ("claim matrix", "python scripts/build_claim_evidence_matrix.py"),
     ("literature map", "python scripts/build_literature_map.py"),
+    ("draft BibTeX references", "python scripts/build_references_bib.py"),
     ("publication tables", "python scripts/build_publication_tables.py"),
     ("submission result tables", "python scripts/build_submission_result_tables.py"),
     ("submission LaTeX tables", "python scripts/build_submission_latex_tables.py"),
