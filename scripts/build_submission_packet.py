@@ -141,6 +141,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/submission_result_tables_lint_2026_06_14.md",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Generated lint report proving compact result tables match canonical metrics, robustness deltas, and claim-evidence IDs.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/submission_result_tables_lint.csv",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable compact result-table consistency checks.",
+        "required": False,
+    },
+    {
         "path": "reports/submission_latex_tables_2026_06_14.md",
         "type": "table",
         "venues": "WIFS,DFF",
@@ -490,6 +504,7 @@ REGEN_COMMANDS = [
     ("draft BibTeX references", "python scripts/build_references_bib.py"),
     ("publication tables", "python scripts/build_publication_tables.py"),
     ("submission result tables", "python scripts/build_submission_result_tables.py"),
+    ("submission result table lint", "python scripts/lint_submission_result_tables.py"),
     ("submission LaTeX tables", "python scripts/build_submission_latex_tables.py"),
     ("submission paper skeletons", "python scripts/build_submission_paper_skeletons.py"),
     ("paper skeleton lint", "python scripts/lint_paper_skeletons.py"),

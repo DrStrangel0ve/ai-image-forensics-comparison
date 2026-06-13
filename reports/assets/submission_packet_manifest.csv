@@ -1,5 +1,5 @@
 path,type,venues,purpose,required,exists,size_bytes
-README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,45397
+README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,45598
 CITATION.cff,repo,"DFRWS,WIFS,DFF",Citation metadata for public release and reproducibility review.,True,True,788
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF","Reviewer-facing map of included artifacts, external datasets, and commands.",True,True,16823
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
@@ -16,6 +16,8 @@ reports/assets/submission_table_same_domain_anchor.csv,table,"DFRWS,WIFS,DFF",Co
 reports/assets/submission_table_transfer_frontier.csv,table,"DFRWS,WIFS,DFF",Compact Ishu-to-MS-COCOAI transfer frontier table.,True,True,2983
 reports/assets/submission_table_reverse_operating_points.csv,table,"WIFS,DFF",Compact MS-COCOAI-to-Ishu reverse operating point table.,True,True,3283
 reports/assets/submission_table_robustness_stress.csv,table,"DFRWS,WIFS,DFF",Compact reverse tuned-fusion robustness stress table with clean-baseline deltas.,True,True,6105
+reports/submission_result_tables_lint_2026_06_14.md,quality-control,"DFRWS,WIFS,DFF","Generated lint report proving compact result tables match canonical metrics, robustness deltas, and claim-evidence IDs.",False,True,5792
+reports/assets/submission_result_tables_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable compact result-table consistency checks.,False,True,5279
 reports/submission_latex_tables_2026_06_14.md,table,"WIFS,DFF",Report listing generated LaTeX table fragments for paper drafting.,True,True,1269
 reports/assets/latex_tables/submission_latex_table_manifest.csv,table,"WIFS,DFF",Machine-readable manifest for generated LaTeX table fragments.,True,True,824
 reports/assets/latex_tables/same_domain_anchor.tex,table,"WIFS,DFF",LaTeX fragment for the same-domain anchor table.,True,True,331
