@@ -158,7 +158,8 @@ CLAIMS = [
         "primary_artifact": "reports/assets/publication_reverse_operating_points.png",
         "risk_or_caveat": "The capped source-threshold result is an operating point, not a learned general solution.",
         "next_action": (
-            "Add native-resolution tiling and larger source splits before calling the cap frontier contest-ready."
+            "Use the branch-level native-tiling diagnostic as a calibration caveat; add full fused-model tiling "
+            "or larger source splits before calling the cap frontier contest-ready."
         ),
     },
     {

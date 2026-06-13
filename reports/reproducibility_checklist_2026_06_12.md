@@ -71,6 +71,7 @@ This checklist is meant for reviewers, poster visitors, and collaborators who wa
 | MS COCOAI to Ishu tuned-fusion screenshot robustness | `reports/ms_cocoai_to_ishu_tuned_fusion_screenshot_robustness_2026_06_13.md` |
 | MS COCOAI to Ishu tuned-fusion social-square robustness | `reports/ms_cocoai_to_ishu_tuned_fusion_social_square_robustness_2026_06_13.md` |
 | MS COCOAI to Ishu tuned-fusion social-720p robustness | `reports/ms_cocoai_to_ishu_tuned_fusion_social_720p_robustness_2026_06_13.md` |
+| MS COCOAI to Ishu `combined_v3` native-tiling diagnostic | `reports/ms_cocoai_to_ishu_combined_v3_native_tiling_2026_06_13.md` |
 | Ishu to MS threshold objective sensitivity | `reports/ishu_to_ms_threshold_objective_sweep_2026_06_13.md` |
 | SCP-Fusion branch-dropout probe | `reports/score_fusion_branch_dropout_probe_2026_06_12.md` |
 | SCP-Fusion source-calibration probe | `reports/score_fusion_source_calibration_probe_2026_06_13.md` |
@@ -148,6 +149,7 @@ python scripts\build_dfrws_poster_figures.py
 python scripts\build_combined_v4_transfer_readiness.py
 python scripts\summarize_combined_v4_transfer.py
 python scripts\analyze_combined_v4_source_slices.py
+python scripts\evaluate_tiled_feature_model.py
 ```
 
 ## Current Result Snapshot
@@ -167,6 +169,7 @@ python scripts\analyze_combined_v4_source_slices.py
 - Source-heldout tuned fusion is the first training-side constrained utility win: 0.7339 accuracy / 0.8341 AUC / 0.2748 Brier on MS-COCOAI-to-Ishu, with remaining target fake-call bias at 0.6813.
 - Sweeping tuned-fusion source fake-rate caps gives the best reverse operating point so far: cap 0.40 reaches 0.7632 accuracy / 0.8361 AUC and cuts the target fake-call rate to 0.5175.
 - The tuned-fusion cap_0p4 operating point is stable under JPEG70 target recompression at 0.7661 accuracy / 0.8485 AUC, JPEG50 at 0.7515 / 0.8309, noise3 at 0.7690 / 0.8704, social_square at 0.7778 / 0.8474, and social_720p at 0.7602 / 0.8506; it is weaker under JPEG30 at 0.7076 / 0.8167, blur1 at 0.7105 / 0.7872, resize_half at 0.7164 / 0.7816, crop85 at 0.7251 / 0.8227, and screenshot-style roundtrip at 0.7310 / 0.7965.
+- A branch-level native-tiling diagnostic for reverse `combined_v3` shows a small ranking gain but a worse operating point: global resized scoring is 0.5468 accuracy / 0.5772 AUC, while top-2 tile averaging is 0.5468 accuracy / 0.5936 AUC with a 0.8275 fake-call rate.
 - The opposite-direction Ishu-to-MS threshold objective sweep improves all-foundation SCP-Fusion accuracy from 0.6163 to 0.6470 on saved scores, but still under-calls generated images with a 0.1863 target fake-call rate.
 - All-foundation SCP-Fusion with CLIP and DINOv2 reaches 0.7995 transfer AUC, improving the fusion family while still trailing standalone CLIP.
 - SCP-Fusion branch dropout is implemented with coefficient export, but the first probe is negative/mixed: default accuracy is essentially flat while AUC/Brier/ECE worsen.
@@ -185,6 +188,7 @@ python scripts\analyze_combined_v4_source_slices.py
 - Most reported experiments are practical repeated-seed probes, not exhaustive full-dataset training sweeps.
 - External datasets must be downloaded under their own licenses and may change or disappear.
 - Some reported source-heldout diagnostics use saved prediction scores rather than full leave-one-generator-out retraining.
+- Native-resolution tiling is currently checked for the `combined_v3` conventional branch, not for the full fused SCP-Fusion stack.
 - Calibration and threshold transfer remain open problems; strong AUC does not guarantee good default-threshold behavior.
 
 ## Public Sharing Notes

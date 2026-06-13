@@ -45,6 +45,7 @@ Core numbers to lead with:
 | tuned fusion cap_0p4 under screenshot | 0.7310 accuracy / 0.7965 AUC / 0.5263 fake-call rate | screenshot-style resize plus recompression is a realistic stressor |
 | tuned fusion cap_0p4 under social_square | 0.7778 accuracy / 0.8474 AUC / 0.5088 fake-call rate | centered social crop plus recompression is stable in this bounded check |
 | tuned fusion cap_0p4 under social_720p | 0.7602 accuracy / 0.8506 AUC / 0.4678 fake-call rate | long-edge social downscale plus recompression is stable in this bounded check |
+| `combined_v3` native tiling on MS COCOAI -> Ishu | top-2 tile mean 0.5468 accuracy / 0.5936 AUC / 0.8275 fake-call rate | branch-level diagnostic: native crops slightly improve ranking but worsen operating-point bias |
 | physics-guided ResNet on MS COCOAI -> Ishu | 0.6871 default accuracy / 0.6813 source-threshold accuracy | best default-threshold single-model operating point and ECE anchor |
 | CLIP source-heldout triage, strict 5% budget | 0.4747 coverage / 0.9261 decided-case accuracy | best current forensic triage operating point |
 | DINOv2-enhanced source-calibrated fusion | 0.6127 accuracy / 0.3062 Brier / 0.2938 ECE | best calibrated fusion-family operating point before CLIP |
@@ -56,7 +57,7 @@ The current submission claims are audited in a generated claim-evidence matrix:
 - Markdown: `reports/assets/claim_evidence_matrix.md`
 - CSV: `reports/assets/claim_evidence_matrix.csv`
 
-The matrix marks each claim as `ready`, `ready_with_caveat`, or `needs_more_evidence`, cites the exact rows from `reports/assets/publication_core_results.csv`, and names the paper/poster artifact that should carry the claim. The important editorial outcome is that the CLIP transfer frontier, source-shift split, and high-confidence triage claims are ready now; the physics-guided, SCP-Fusion, and `combined_v4` claims are ready only with caveats. The completed v4 gate is summarized in `reports/combined_v4_full_transfer_summary_2026_06_13.md`, and the source-slice caveat is decomposed in `reports/combined_v4_source_slice_diagnostics_2026_06_13.md`.
+The matrix marks each claim as `ready`, `ready_with_caveat`, or `needs_more_evidence`, cites the exact rows from `reports/assets/publication_core_results.csv`, and names the paper/poster artifact that should carry the claim. The important editorial outcome is that the CLIP transfer frontier, source-shift split, and high-confidence triage claims are ready now; the physics-guided, SCP-Fusion, and `combined_v4` claims are ready only with caveats. The completed v4 gate is summarized in `reports/combined_v4_full_transfer_summary_2026_06_13.md`, the source-slice caveat is decomposed in `reports/combined_v4_source_slice_diagnostics_2026_06_13.md`, and the branch-level native-tiling caveat is summarized in `reports/ms_cocoai_to_ishu_combined_v3_native_tiling_2026_06_13.md`.
 
 ## Checked-In Figure Package
 
@@ -143,7 +144,7 @@ The results show that ranking, probability calibration, and binary decision qual
 
 Priority order:
 
-1. Extend tuned-fusion robustness to native-resolution tiling or larger source splits. JPEG70, JPEG50, noise3, social_square, and social_720p are comparatively stable, but JPEG30, blur1, resize_half, and screenshot-style roundtrips expose real transform weaknesses; the next gap is native-resolution tiling or a larger source split before calling the 0.40 reverse frontier contest-ready.
+1. Extend tuned-fusion robustness to full fused-model native-resolution tiling or larger source splits. JPEG70, JPEG50, noise3, social_square, and social_720p are comparatively stable, but JPEG30, blur1, resize_half, and screenshot-style roundtrips expose real transform weaknesses; a branch-level `combined_v3` native-tiling diagnostic is now complete and shows slight AUC gain but worse fake-call bias, so the remaining gap is fused tiling or a larger source split before calling the 0.40 reverse frontier contest-ready.
 2. Try source-aware feature selection or a stronger regularized classifier for `combined_v4` only if the paper needs another ablation; the current gate keeps `combined_v3` as the main conventional baseline.
 3. Use the seed-17 and seed-29 qualitative grids in the failure-analysis section; add a reverse-transfer grid only if the final paper layout has room.
 4. If the final DFRWS format requires fully editable charts, rebuild the two v2 embedded raster panels as native PowerPoint primitives using the checked-in SVG/CSV panel sources.
@@ -153,7 +154,7 @@ Priority order:
 The best next technical experiment is **source-heldout utility-aware reverse fusion**:
 
 - use the checked-in `--threshold-strategy source_utility` implementation and the model-selection selector as fixed operating-point evaluators;
-- extend the 0.40 source-cap tuned fusion robustness check from JPEG/blur/resize/crop/noise/screenshot/social processing to native-resolution tiling or a larger source split;
+- extend the 0.40 source-cap tuned fusion robustness check from JPEG/blur/resize/crop/noise/screenshot/social processing to full fused-model native-resolution tiling or a larger source split;
 - combine the branch-dropout AUC gain with the strong-regularization Brier/ECE gain;
 - preserve the current reverse suite as the fixed comparison table.
 
