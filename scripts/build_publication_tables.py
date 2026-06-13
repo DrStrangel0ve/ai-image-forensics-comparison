@@ -35,6 +35,8 @@ METHOD_LABELS = {
     "score_fusion_all6_dropout_mean_r35x8": "Reverse all-branch dropout fusion",
     "score_fusion_all6_temp_balanced": "Reverse all-branch fusion + balanced temperature",
     "cap_0p48": "Reverse source-threshold capped fusion",
+    "source_utility_unconstrained": "Reverse source-utility model selection",
+    "source_utility_cap_0p48": "Reverse capped source-utility model selection",
 }
 
 SAME_DOMAIN_IDS = {
@@ -95,6 +97,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--reverse-threshold-cap",
         default="reports/assets/ms_cocoai_to_ishu_threshold_cap_mean_metrics.csv",
+    )
+    parser.add_argument(
+        "--reverse-model-utility-selection",
+        default="reports/assets/ms_cocoai_to_ishu_model_utility_selection_summary.csv",
     )
     parser.add_argument("--out-dir", default="reports/assets")
     return parser.parse_args()
@@ -322,6 +328,32 @@ def _reverse_threshold_cap_row(path: Path) -> dict[str, object]:
     )
 
 
+def _reverse_model_utility_rows(path: Path) -> list[dict[str, object]]:
+    frame = pd.read_csv(path)
+    rows = []
+    for policy in ["source_utility_unconstrained", "source_utility_cap_0p48"]:
+        source_row = _single_row(frame, "selection_policy", policy)
+        rows.append(
+            _blank_row(
+                f"ms_to_ishu_{policy}",
+                "MS COCOAI -> Ishu source-utility model selection",
+                METHOD_LABELS[policy],
+                path,
+                (
+                    "Source-train utility alone selects over-firing reverse fusion heads."
+                    if policy == "source_utility_unconstrained"
+                    else "Adding a source fake-rate cap improves the selected operating point but still trails the fixed capped threshold family."
+                ),
+                accuracy=float(source_row["target_accuracy_mean"]),
+                auc=float(source_row["target_roc_auc_mean"]),
+                brier=float(source_row["target_brier_score_mean"]),
+                ece=float(source_row["target_expected_calibration_error_mean"]),
+                predicted_fake_rate=float(source_row["target_predicted_positive_rate_mean"]),
+            )
+        )
+    return rows
+
+
 def build_core_results_table(
     physics_guided_report: Path,
     calibration_summary: Path,
@@ -330,6 +362,7 @@ def build_core_results_table(
     reverse_all_methods: Path,
     reverse_fusion_regularization: Path,
     reverse_threshold_cap: Path,
+    reverse_model_utility_selection: Path,
 ) -> pd.DataFrame:
     rows = []
     rows.extend(_same_domain_rows(physics_guided_report))
@@ -338,6 +371,7 @@ def build_core_results_table(
     rows.extend(_triage_rows(clip_triage_5pct))
     rows.extend(_reverse_transfer_rows(reverse_all_methods, reverse_fusion_regularization))
     rows.append(_reverse_threshold_cap_row(reverse_threshold_cap))
+    rows.extend(_reverse_model_utility_rows(reverse_model_utility_selection))
     return pd.DataFrame(rows, columns=CORE_COLUMNS)
 
 
@@ -381,6 +415,7 @@ def main() -> None:
         Path(args.reverse_all_methods),
         Path(args.reverse_fusion_regularization),
         Path(args.reverse_threshold_cap),
+        Path(args.reverse_model_utility_selection),
     )
     csv_path = out_dir / "publication_core_results.csv"
     markdown_path = out_dir / "publication_core_results.md"

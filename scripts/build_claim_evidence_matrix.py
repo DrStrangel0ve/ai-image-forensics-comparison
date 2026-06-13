@@ -93,12 +93,13 @@ CLAIMS = [
             "ishu_to_ms_clip_standalone",
             "ms_to_ishu_score_fusion_all6_temp_balanced",
             "ms_to_ishu_branch_dropout_auc",
+            "ms_to_ishu_source_utility_unconstrained",
         ],
         "primary_artifact": "reports/assets/publication_reverse_fusion_tradeoff.png",
         "risk_or_caveat": "Current score fusion can suppress the best branch and can inherit source-threshold bias.",
         "next_action": (
-            "Threshold-only source utility matched the capped threshold baseline; "
-            "prioritize utility-aware fusion training or validation selection before claiming SCP-Fusion v1."
+            "Threshold-only and model-side source utility did not beat the capped threshold baseline; "
+            "prioritize held-out-generator utility training or validation selection before claiming SCP-Fusion v1."
         ),
     },
     {
@@ -113,12 +114,13 @@ CLAIMS = [
             "ms_to_ishu_branch_dropout_auc",
             "ms_to_ishu_score_fusion_all6_temp_balanced",
             "ms_to_ishu_source_cap_accuracy",
+            "ms_to_ishu_source_utility_cap_0p48",
         ],
         "primary_artifact": "reports/assets/publication_reverse_operating_points.png",
         "risk_or_caveat": "The capped source-threshold result is an operating point, not a learned general solution.",
         "next_action": (
-            "The source-utility threshold sweep matched cap_0p48 but did not improve beyond it; "
-            "move utility into model selection or fusion training."
+            "The source-utility threshold sweep and model-selection follow-up did not improve beyond cap_0p48; "
+            "move utility into held-out-generator validation or fusion training."
         ),
     },
     {

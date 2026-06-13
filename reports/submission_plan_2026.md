@@ -29,6 +29,7 @@ Current evidence:
 - A reverse fusion-regularization probe improves the AUC frontier to 0.8406 with branch dropout and improves fusion Brier/ECE to 0.2213 / 0.2091 with strong regularization, making utility-aware fusion the next method-development target.
 - A source-utility threshold strategy is now implemented in `scripts/fuse_prediction_scores.py`. It can tune fused-score thresholds using asymmetric fake-detection, real-clearance, real-FPR, and fake-miss weights, while preserving the existing source calibration split and fake-rate cap machinery.
 - The first source-utility reverse sweep confirms that threshold-only utility selection does not beat the previous capped source-accuracy operating point: the best result is still 0.7222 accuracy / 0.8291 AUC with a 0.48 source fake-rate cap, while uncapped utility reaches 0.7193 accuracy with a higher target fake-call rate.
+- The first source-utility model-selection follow-up is also negative/useful: full source-train utility selects over-firing fusion heads at 0.6520 accuracy with a 0.8216 target fake-call rate, while a 0.48 source fake-rate cap recovers 0.7193 accuracy but still trails the fixed capped threshold family.
 - Adding CLIP to saved-score fusion improves the fusion family, with all-foundation SCP-Fusion reaching 0.7995 transfer AUC, but it still trails standalone CLIP; this motivates calibration-aware or source-heldout fusion training rather than only adding more branches.
 - On Ishu -> source-balanced MS COCOAI, frozen ConvNeXt-Tiny has the best three-seed AUC at 0.7139, while physics-guided fusion has the best source-threshold accuracy at 0.6070.
 - SCP-Fusion v0 score fusion over `combined_v3`, ResNet-18, physics-guided fusion, and frozen ConvNeXt-Tiny improves Ishu -> MS COCOAI mean AUC to 0.7282, with oracle accuracy 0.6793 but default accuracy only 0.5910.
@@ -40,7 +41,7 @@ Current evidence:
 - Source-heldout triage mode shows frozen ConvNeXt and SCP-Fusion can make high-confidence decisions on about 21-24% of target images with roughly 75% triage accuracy at a strict 5% calibration error budget.
 - Source-heldout calibration and triage summary assets now include 95% deterministic bootstrap confidence intervals over held-out source/seed rows, so poster/paper tables can report uncertainty without recomputing predictions.
 - Publication assets now include six generated diagnostic figures, captions, a pipeline diagram, and a DFRWS-style abstract draft.
-- A submission-readiness snapshot now maps the current assets and gaps to DFRWS, WIFS, and DFF; reverse-direction foundation, neural, physics-guided, score-fusion, and regularization baselines are now checked in, and the next paper-critical gap is utility-aware fusion training.
+- A submission-readiness snapshot now maps the current assets and gaps to DFRWS, WIFS, and DFF; reverse-direction foundation, neural, physics-guided, score-fusion, and regularization baselines are now checked in, and the next paper-critical gap is held-out-generator utility-aware fusion training.
 - Public sharing assets now include `CITATION.cff` and a reproducibility checklist that separates checked-in code/reports from external datasets and ignored model artifacts.
 - Qualitative failure grids now show seed-17 false positives, false negatives, and branch disagreements for SCP-Fusion on Ishu -> MS COCOAI.
 - Source-heldout diagnostics show that naive source-threshold transfer can produce extreme real-image false-positive rates, so calibration and source-aware validation are first-class research questions.
@@ -141,7 +142,7 @@ Best target for a full workshop paper. It gives room for the repo's practical en
    - held-out source-domain temperature scaling improves default accuracy and Brier/ECE, so next step is source-heldout calibration rather than merely adding more branches.
    - source-heldout stress testing shows calibration and triage prefer different score geometry, so next step is joint calibration/triage tuning.
    - utility-tuned source-heldout triage is now implemented; it selects raw SCP-Fusion v0 scores in all 15 folds and beats the calibrated variants on target utility, so the paper should report calibration quality and triage utility as separate objectives.
-   - utility-aware binary source-threshold selection is now implemented and tested; the first reverse grid matched the capped source-accuracy baseline rather than exceeding it, so the next step is model-side utility selection/training rather than more threshold-only tuning.
+   - utility-aware binary source-threshold selection and model-side selection are now implemented and tested; both point to the same conclusion that source fake-rate constraints help, while full source-train utility alone overfits source behavior, so the next step is held-out-generator utility selection/training rather than more threshold-only tuning.
 
 2. Validate `combined_v4`:
    - implementation is checked in with reconstruction, multiring FFT, chroma, and JPEG features;

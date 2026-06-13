@@ -29,6 +29,8 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
         "ms_to_ishu_score_fusion_all6_temp_balanced",
         "ms_to_ishu_branch_dropout_auc",
         "ms_to_ishu_source_cap_accuracy",
+        "ms_to_ishu_source_utility_unconstrained",
+        "ms_to_ishu_source_utility_cap_0p48",
     ]
     pd.DataFrame(
         {
