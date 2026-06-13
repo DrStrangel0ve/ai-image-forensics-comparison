@@ -36,6 +36,9 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     reverse_source_threshold_fusion = tmp_path / "reverse_source_threshold_fusion.csv"
     reverse_threshold_tiebreak = tmp_path / "reverse_threshold_tiebreak.csv"
     reverse_threshold_cap = tmp_path / "reverse_threshold_cap.csv"
+    reverse_tuned_clean = tmp_path / "reverse_tuned_clean.csv"
+    reverse_tuned_jpeg = tmp_path / "reverse_tuned_jpeg.csv"
+    reverse_tuned_blur = tmp_path / "reverse_tuned_blur.csv"
     out_dir = tmp_path / "assets"
 
     pd.DataFrame(
@@ -261,6 +264,27 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
             "predicted_fake_rate": [0.623],
         }
     ).to_csv(reverse_threshold_cap, index=False)
+    pd.DataFrame(
+        {
+            "constraint_policy": ["cap_0p4"],
+            "target_accuracy_mean": [0.763],
+            "target_roc_auc_mean": [0.836],
+            "target_predicted_positive_rate_mean": [0.518],
+        }
+    ).to_csv(reverse_tuned_clean, index=False)
+    for path, variant, accuracy, auc, fake_rate in [
+        (reverse_tuned_jpeg, "jpeg70", 0.766, 0.849, 0.468),
+        (reverse_tuned_blur, "blur1", 0.711, 0.787, 0.558),
+    ]:
+        pd.DataFrame(
+            {
+                "variant": [variant],
+                "variant_policy": ["cap_0p4"],
+                "target_accuracy_mean": [accuracy],
+                "target_roc_auc_mean": [auc],
+                "target_predicted_positive_rate_mean": [fake_rate],
+            }
+        ).to_csv(path, index=False)
 
     subprocess.run(
         [
@@ -302,6 +326,11 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
             str(reverse_threshold_tiebreak),
             "--reverse-threshold-cap",
             str(reverse_threshold_cap),
+            "--reverse-tuned-fusion-clean",
+            str(reverse_tuned_clean),
+            "--reverse-tuned-fusion-robustness-summaries",
+            str(reverse_tuned_jpeg),
+            str(reverse_tuned_blur),
             "--out-dir",
             str(out_dir),
             "--dpi",
@@ -319,3 +348,4 @@ def test_publication_asset_builder_writes_expected_figures(tmp_path: Path) -> No
     assert (out_dir / "publication_score_fusion_clip_frontier.png").exists()
     assert (out_dir / "publication_reverse_fusion_tradeoff.png").exists()
     assert (out_dir / "publication_reverse_operating_points.png").exists()
+    assert (out_dir / "publication_reverse_transform_robustness.png").exists()

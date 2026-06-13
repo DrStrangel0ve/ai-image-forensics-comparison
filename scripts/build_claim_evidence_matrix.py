@@ -37,6 +37,9 @@ CLAIMS = [
             "ms_to_ishu_source_holdout_tuned_fusion",
             "ms_to_ishu_tuned_fusion_constraint_sweep_best",
             "ms_to_ishu_tuned_fusion_jpeg70",
+            "ms_to_ishu_tuned_fusion_blur1",
+            "ms_to_ishu_tuned_fusion_resize_half",
+            "ms_to_ishu_tuned_fusion_crop85",
         ],
         "primary_artifact": "reports/assets/publication_core_results.md",
         "risk_or_caveat": "Do not frame this as state of the art; frame it as a source-heldout diagnostic benchmark.",
@@ -101,12 +104,15 @@ CLAIMS = [
             "ms_to_ishu_source_holdout_tuned_fusion",
             "ms_to_ishu_tuned_fusion_constraint_sweep_best",
             "ms_to_ishu_tuned_fusion_jpeg70",
+            "ms_to_ishu_tuned_fusion_blur1",
+            "ms_to_ishu_tuned_fusion_resize_half",
+            "ms_to_ishu_tuned_fusion_crop85",
         ],
         "primary_artifact": "reports/assets/publication_reverse_fusion_tradeoff.png",
         "risk_or_caveat": "Current score fusion can suppress the best branch and can inherit source-threshold bias.",
         "next_action": (
-            "The source fake-rate constraint sweep improves target accuracy and fake-call bias and survives JPEG70; "
-            "verify blur, resize, and crop before claiming SCP-Fusion v1."
+            "The source fake-rate constraint sweep improves target accuracy and fake-call bias; "
+            "JPEG70 and crop are relatively stable, while blur and half-resolution resize expose the next robustness gap."
         ),
     },
     {
@@ -126,11 +132,14 @@ CLAIMS = [
             "ms_to_ishu_source_holdout_tuned_fusion",
             "ms_to_ishu_tuned_fusion_constraint_sweep_best",
             "ms_to_ishu_tuned_fusion_jpeg70",
+            "ms_to_ishu_tuned_fusion_blur1",
+            "ms_to_ishu_tuned_fusion_resize_half",
+            "ms_to_ishu_tuned_fusion_crop85",
         ],
         "primary_artifact": "reports/assets/publication_reverse_operating_points.png",
         "risk_or_caveat": "The capped source-threshold result is an operating point, not a learned general solution.",
         "next_action": (
-            "The cap sweep gives the best current reverse operating point and the first JPEG70 check is stable; next check blur, resize, and crop."
+            "Add JPEG50, screenshot/noise, and native-resolution tile checks before calling the cap frontier contest-ready."
         ),
     },
     {

@@ -122,6 +122,21 @@ REVERSE_OPERATING_COLORS = {
     "score_fusion_all6_temp_balanced": "#9E9E9E",
     "score_fusion_all6_c003_source_acc": "#E45756",
 }
+TRANSFORM_ROBUSTNESS_ORDER = ["clean", "jpeg70", "blur1", "resize_half", "crop85"]
+TRANSFORM_ROBUSTNESS_LABELS = {
+    "clean": "clean",
+    "jpeg70": "JPEG70",
+    "blur1": "blur",
+    "resize_half": "half-resize",
+    "crop85": "crop85",
+}
+TRANSFORM_ROBUSTNESS_COLORS = {
+    "clean": "#333333",
+    "jpeg70": "#4C78A8",
+    "blur1": "#E45756",
+    "resize_half": "#F58518",
+    "crop85": "#54A24B",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -199,6 +214,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--reverse-threshold-cap",
         default="reports/assets/ms_cocoai_to_ishu_threshold_cap_mean_metrics.csv",
+    )
+    parser.add_argument(
+        "--reverse-tuned-fusion-clean",
+        default="reports/assets/ms_cocoai_to_ishu_tuned_fusion_constraint_sweep_summary.csv",
+    )
+    parser.add_argument(
+        "--reverse-tuned-fusion-robustness-summaries",
+        nargs="*",
+        default=[
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_jpeg70_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_blur1_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_resize_half_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_crop85_robustness_summary.csv",
+        ],
     )
     parser.add_argument("--out-dir", default="reports/assets")
     parser.add_argument("--dpi", type=int, default=180)
@@ -869,6 +898,69 @@ def build_reverse_operating_points(
     return out_path
 
 
+def _load_reverse_transform_robustness(clean_path: Path, robustness_paths: list[Path]) -> pd.DataFrame:
+    rows = []
+    clean = pd.read_csv(clean_path)
+    clean_row = _single_row(clean, "constraint_policy", "cap_0p4")
+    rows.append(
+        {
+            "variant": "clean",
+            "accuracy": float(clean_row["target_accuracy_mean"]),
+            "auc": float(clean_row["target_roc_auc_mean"]),
+            "predicted_fake_rate": float(clean_row["target_predicted_positive_rate_mean"]),
+        }
+    )
+    for path in robustness_paths:
+        if not path.exists():
+            continue
+        frame = pd.read_csv(path)
+        row = frame.iloc[0]
+        rows.append(
+            {
+                "variant": str(row["variant"]),
+                "accuracy": float(row["target_accuracy_mean"]),
+                "auc": float(row["target_roc_auc_mean"]),
+                "predicted_fake_rate": float(row["target_predicted_positive_rate_mean"]),
+            }
+        )
+    frame = pd.DataFrame(rows)
+    order = [variant for variant in TRANSFORM_ROBUSTNESS_ORDER if variant in set(frame["variant"])]
+    return frame.set_index("variant").loc[order].reset_index()
+
+
+def build_reverse_transform_robustness(
+    clean_path: Path,
+    robustness_paths: list[Path],
+    out_dir: Path,
+    dpi: int,
+) -> Path:
+    frame = _load_reverse_transform_robustness(clean_path, robustness_paths)
+    labels = [TRANSFORM_ROBUSTNESS_LABELS.get(variant, variant) for variant in frame["variant"]]
+    colors = [TRANSFORM_ROBUSTNESS_COLORS.get(variant, "#777777") for variant in frame["variant"]]
+    x = np.arange(len(frame))
+    fig, axes = plt.subplots(1, 3, figsize=(12.0, 4.2), dpi=dpi)
+    for ax, column, title, ylabel, ylim in [
+        (axes[0], "accuracy", "Decision Accuracy", "accuracy", (0.68, 0.79)),
+        (axes[1], "auc", "Ranking AUC", "AUC", (0.76, 0.86)),
+        (axes[2], "predicted_fake_rate", "Fake-Call Rate", "fraction predicted fake", (0.42, 0.60)),
+    ]:
+        values = frame[column].astype(float)
+        ax.bar(x, values, color=colors, edgecolor="#222222", linewidth=0.4)
+        ax.set_title(title, fontsize=10, pad=8)
+        ax.set_ylabel(ylabel)
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=25, ha="right")
+        ax.set_ylim(*ylim)
+        ax.grid(axis="y", alpha=0.25)
+        _annotate_bars(ax, values, offset=(ylim[1] - ylim[0]) * 0.02)
+    fig.suptitle("MS COCOAI to Ishu: tuned-fusion cap under target transforms", fontsize=13)
+    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.92))
+    out_path = out_dir / "publication_reverse_transform_robustness.png"
+    fig.savefig(out_path)
+    plt.close(fig)
+    return out_path
+
+
 def main() -> None:
     args = parse_args()
     out_dir = ensure_dir(args.out_dir)
@@ -903,6 +995,12 @@ def main() -> None:
             Path(args.reverse_source_threshold_fusion),
             Path(args.reverse_threshold_tiebreak),
             Path(args.reverse_threshold_cap),
+            out_dir,
+            args.dpi,
+        ),
+        build_reverse_transform_robustness(
+            Path(args.reverse_tuned_fusion_clean),
+            [Path(path) for path in args.reverse_tuned_fusion_robustness_summaries],
             out_dir,
             args.dpi,
         ),

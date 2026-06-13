@@ -36,6 +36,9 @@ Core numbers to lead with:
 | source-heldout tuned fusion on MS COCOAI -> Ishu | 0.7339 accuracy / 0.8341 AUC / 0.2748 Brier | first training-side constrained utility win |
 | tuned fusion cap sweep on MS COCOAI -> Ishu | 0.7632 accuracy / 0.8361 AUC / 0.5175 fake-call rate | best reverse SCP-Fusion operating point so far |
 | tuned fusion cap_0p4 under JPEG70 | 0.7661 accuracy / 0.8485 AUC / 0.4678 fake-call rate | first robustness check for the reverse cap frontier |
+| tuned fusion cap_0p4 under blur1 | 0.7105 accuracy / 0.7872 AUC / 0.5585 fake-call rate | blur is the clearest current transform weakness |
+| tuned fusion cap_0p4 under resize_half | 0.7164 accuracy / 0.7816 AUC / 0.5526 fake-call rate | half-resolution resize similarly hurts ranking and calibration |
+| tuned fusion cap_0p4 under crop85 | 0.7251 accuracy / 0.8227 AUC / 0.5205 fake-call rate | crop is weaker than clean but less damaging than blur/resize |
 | physics-guided ResNet on MS COCOAI -> Ishu | 0.6871 default accuracy / 0.6813 source-threshold accuracy | best default-threshold single-model operating point and ECE anchor |
 | CLIP source-heldout triage, strict 5% budget | 0.4747 coverage / 0.9261 decided-case accuracy | best current forensic triage operating point |
 | DINOv2-enhanced source-calibrated fusion | 0.6127 accuracy / 0.3062 Brier / 0.2938 ECE | best calibrated fusion-family operating point before CLIP |
@@ -61,6 +64,7 @@ The matrix marks each claim as `ready`, `ready_with_caveat`, or `needs_more_evid
 | CLIP frontier | `reports/assets/publication_score_fusion_clip_frontier.png` | newest headline result |
 | reverse fusion tradeoff | `reports/assets/publication_reverse_fusion_tradeoff.png` | utility-aware fusion motivation |
 | reverse operating points | `reports/assets/publication_reverse_operating_points.png` | source-threshold fusion headline |
+| reverse transform robustness | `reports/assets/publication_reverse_transform_robustness.png` | tuned-fusion robustness stress panel |
 | qualitative misses | `reports/assets/qualitative_seed17_scp_fusion_false_negatives.png` | failure-mode/explainability panel |
 
 ## DFRWS Poster Draft Plan
@@ -104,18 +108,17 @@ The results show that ranking, probability calibration, and binary decision qual
 
 Priority order:
 
-1. Extend tuned-fusion cap robustness beyond JPEG70. The opposite-direction Ishu -> MS threshold-objective sweep shows the cap lesson is directional, while the first JPEG70 check is stable for MS -> Ishu. The next method gap is blur, resize, crop, or a larger source split before calling the 0.40 reverse frontier robust.
-2. Regenerate publication figures and tables with the reverse all-method result.
-3. Run `combined_v4` full repeated-seed transfer and decide whether it belongs in the main method or stays an ablation.
-4. Add another qualitative grid from a second seed or reverse transfer.
-5. Convert the DFRWS poster draft into a one-page visual artifact after the next experiment.
+1. Extend tuned-fusion robustness to harder in-the-wild perturbations. JPEG70 and crop85 are comparatively stable, but blur1 and resize_half expose a real transform weakness; the next gap is JPEG50, screenshot/noise, native-resolution tiling, or a larger source split before calling the 0.40 reverse frontier contest-ready.
+2. Run `combined_v4` full repeated-seed transfer and decide whether it belongs in the main method or stays an ablation.
+3. Add another qualitative grid from a second seed or reverse transfer.
+4. Convert the DFRWS poster draft into a one-page visual artifact after the next experiment.
 
 ## Suggested Next Experiment
 
 The best next technical experiment is **source-heldout utility-aware reverse fusion**:
 
 - use the checked-in `--threshold-strategy source_utility` implementation and the model-selection selector as fixed operating-point evaluators;
-- extend the 0.40 source-cap tuned fusion robustness check from JPEG70 to blur, resize, crop, or a larger source split;
+- extend the 0.40 source-cap tuned fusion robustness check from basic blur/resize/crop/JPEG70 to JPEG50, screenshot/noise, native-resolution tiling, or a larger source split;
 - combine the branch-dropout AUC gain with the strong-regularization Brier/ECE gain;
 - preserve the current reverse suite as the fixed comparison table.
 

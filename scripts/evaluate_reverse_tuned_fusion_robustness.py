@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -42,7 +43,14 @@ def parse_args() -> argparse.Namespace:
         "--selected-configs",
         default="reports/assets/ms_cocoai_to_ishu_tuned_fusion_constraint_sweep_selected.csv",
     )
-    parser.add_argument("--robust-root", default="runs/ms_cocoai_to_ishu_jpeg70_robustness")
+    parser.add_argument(
+        "--robust-root",
+        default=None,
+        help=(
+            "Root containing seed*/method/predictions.csv folders. Defaults to "
+            "runs/ms_cocoai_to_ishu_{variant}_robustness."
+        ),
+    )
     parser.add_argument("--variant", default="jpeg70")
     parser.add_argument("--constraint-policy", default="cap_0p4")
     parser.add_argument("--seeds", nargs="+", type=int, default=[7, 17, 29])
@@ -67,9 +75,34 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--summary-dir", default="reports/assets")
     parser.add_argument(
         "--report-path",
-        default="reports/ms_cocoai_to_ishu_tuned_fusion_jpeg70_robustness_2026_06_13.md",
+        default=None,
+        help=(
+            "Markdown report path. Defaults to "
+            "reports/ms_cocoai_to_ishu_tuned_fusion_{variant}_robustness_2026_06_13.md."
+        ),
     )
     return parser.parse_args()
+
+
+def variant_slug(variant: str) -> str:
+    slug = re.sub(r"[^A-Za-z0-9]+", "_", variant.strip()).strip("_").lower()
+    if not slug:
+        raise ValueError("Variant slug is empty")
+    return slug
+
+
+def resolved_robust_root(args: argparse.Namespace) -> Path:
+    if args.robust_root:
+        return Path(args.robust_root)
+    return Path(f"runs/ms_cocoai_to_ishu_{variant_slug(args.variant)}_robustness")
+
+
+def resolved_report_path(args: argparse.Namespace) -> Path:
+    if args.report_path:
+        return Path(args.report_path)
+    return Path(
+        f"reports/ms_cocoai_to_ishu_tuned_fusion_{variant_slug(args.variant)}_robustness_2026_06_13.md"
+    )
 
 
 def _robust_target_paths(robust_root: Path, seed: int, methods: list[str]) -> list[tuple[str, Path]]:
@@ -109,7 +142,7 @@ def evaluate_seed(
         list(args.methods),
         seed,
     )
-    robust_target = load_robust_target(Path(args.robust_root), seed, method_order)
+    robust_target = load_robust_target(resolved_robust_root(args), seed, method_order)
     _model, source_scores, robust_scores = fit_scores(
         source,
         robust_target,
@@ -189,6 +222,7 @@ def write_report(summary: pd.DataFrame, detail: pd.DataFrame, clean_selected: pd
     clean_policy = detail["constraint_policy"].iloc[0]
     clean = clean_summary[clean_summary["constraint_policy"] == clean_policy].iloc[0]
     robust = summary.iloc[0]
+    variant = str(detail["variant"].iloc[0])
     summary_columns = [
         "variant",
         "variant_policy",
@@ -211,12 +245,12 @@ def write_report(summary: pd.DataFrame, detail: pd.DataFrame, clean_selected: pd
         "target_predicted_positive_rate",
     ]
     lines = [
-        "# MS COCOAI to Ishu Tuned-Fusion JPEG70 Robustness",
+        f"# MS COCOAI to Ishu Tuned-Fusion {variant} Robustness",
         "",
         (
             "This evaluates the already-selected reverse tuned-fusion operating point on "
-            "JPEG70-transformed Ishu target splits. The fusion configuration and source "
-            "threshold are selected from clean MS source scores only; JPEG70 labels are used "
+            f"`{variant}`-transformed Ishu target splits. The fusion configuration and source "
+            f"threshold are selected from clean MS source scores only; `{variant}` labels are used "
             "only for final evaluation."
         ),
         "",
@@ -236,27 +270,28 @@ def write_report(summary: pd.DataFrame, detail: pd.DataFrame, clean_selected: pd
             f"{clean['target_predicted_positive_rate_mean']:.4f} target fake-call rate."
         ),
         (
-            f"Under JPEG70, the same source-selected policy reaches "
+            f"Under `{variant}`, the same source-selected policy reaches "
             f"{robust['target_accuracy_mean']:.4f} accuracy / {robust['target_roc_auc_mean']:.4f} AUC "
             f"with a {robust['target_predicted_positive_rate_mean']:.4f} target fake-call rate."
         ),
         (
-            "This is a bounded first robustness check for the tuned-fusion cap frontier. "
-            "The next check should add blur, resize, and crop variants before treating the "
-            "0.40 cap as robust rather than clean-target optimized."
+            "This is a bounded robustness check for the tuned-fusion cap frontier. "
+            "Interpret it together with the clean-target result and the other transformed "
+            "target variants before treating the 0.40 cap as robust rather than clean-target optimized."
         ),
         "",
         "## Rebuild",
         "",
         (
             "Prerequisite branch prediction folders are expected under "
-            "`runs/ms_cocoai_to_ishu_jpeg70_robustness/seed*/`. They are produced "
+            f"`{resolved_robust_root(argparse.Namespace(robust_root=None, variant=variant))}/seed*/`. "
+            "They are produced "
             "by evaluating the saved MS-trained `combined_v3`, ResNet-18, physics-guided, "
-            "ConvNeXt, CLIP, and DINOv2 branches on the seed-specific Ishu JPEG70 folders."
+            f"ConvNeXt, CLIP, and DINOv2 branches on the seed-specific Ishu `{variant}` folders."
         ),
         "",
         "```powershell",
-        ".\\.venv\\Scripts\\python.exe scripts\\evaluate_reverse_tuned_fusion_robustness.py",
+        f".\\.venv\\Scripts\\python.exe scripts\\evaluate_reverse_tuned_fusion_robustness.py --variant {variant}",
         "```",
         "",
     ]
@@ -269,15 +304,17 @@ def main() -> None:
     detail, summary = run_robustness(args)
     summary_dir = Path(args.summary_dir)
     summary_dir.mkdir(parents=True, exist_ok=True)
-    detail_path = summary_dir / "ms_cocoai_to_ishu_tuned_fusion_jpeg70_robustness_detail.csv"
-    summary_path = summary_dir / "ms_cocoai_to_ishu_tuned_fusion_jpeg70_robustness_summary.csv"
+    slug = variant_slug(args.variant)
+    detail_path = summary_dir / f"ms_cocoai_to_ishu_tuned_fusion_{slug}_robustness_detail.csv"
+    summary_path = summary_dir / f"ms_cocoai_to_ishu_tuned_fusion_{slug}_robustness_summary.csv"
     detail.to_csv(detail_path, index=False)
     summary.to_csv(summary_path, index=False)
     clean_selected = pd.read_csv(args.selected_configs)
-    write_report(summary, detail, clean_selected, Path(args.report_path))
+    report_path = resolved_report_path(args)
+    write_report(summary, detail, clean_selected, report_path)
     print(detail_path.resolve())
     print(summary_path.resolve())
-    print(Path(args.report_path).resolve())
+    print(report_path.resolve())
 
 
 if __name__ == "__main__":

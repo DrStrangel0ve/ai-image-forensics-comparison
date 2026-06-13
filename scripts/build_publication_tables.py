@@ -42,6 +42,7 @@ METHOD_LABELS = {
     "source_holdout_tuned_fusion": "Reverse source-heldout tuned fusion",
     "tuned_fusion_constraint_sweep_best": "Reverse tuned-fusion constraint sweep best",
     "tuned_fusion_jpeg70": "Reverse tuned-fusion JPEG70 robustness",
+    "tuned_fusion_transform": "Reverse tuned-fusion target-transform robustness",
 }
 
 SAME_DOMAIN_IDS = {
@@ -122,6 +123,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--reverse-tuned-fusion-jpeg70-robustness",
         default="reports/assets/ms_cocoai_to_ishu_tuned_fusion_jpeg70_robustness_summary.csv",
+    )
+    parser.add_argument(
+        "--reverse-tuned-fusion-extra-robustness",
+        nargs="*",
+        default=[
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_blur1_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_resize_half_robustness_summary.csv",
+            "reports/assets/ms_cocoai_to_ishu_tuned_fusion_crop85_robustness_summary.csv",
+        ],
+        help="Additional tuned-fusion target-transform robustness summary CSVs.",
     )
     parser.add_argument("--out-dir", default="reports/assets")
     return parser.parse_args()
@@ -441,21 +452,40 @@ def _reverse_tuned_fusion_constraint_sweep_row(path: Path) -> dict[str, object]:
     )
 
 
-def _reverse_tuned_fusion_jpeg70_row(path: Path) -> dict[str, object]:
+def _reverse_tuned_fusion_robustness_row(path: Path, *, expected_variant: str | None = None) -> dict[str, object]:
     frame = pd.read_csv(path)
-    source_row = _single_row(frame, "variant", "jpeg70")
+    source_row = _single_row(frame, "variant", expected_variant) if expected_variant else frame.iloc[0]
+    variant = str(source_row["variant"])
+    if variant == "jpeg70":
+        finding_id = "ms_to_ishu_tuned_fusion_jpeg70"
+        method = METHOD_LABELS["tuned_fusion_jpeg70"]
+        interpretation = (
+            "Bounded robustness check for the best reverse tuned-fusion cap; "
+            "source-selected policy survives JPEG recompression."
+        )
+    else:
+        finding_id = f"ms_to_ishu_tuned_fusion_{variant}"
+        method = f"{METHOD_LABELS['tuned_fusion_transform']} ({variant})"
+        interpretation = (
+            "Target-transform robustness stress test for the best reverse tuned-fusion cap; "
+            "source-selected policy is evaluated without target tuning."
+        )
     return _blank_row(
-        "ms_to_ishu_tuned_fusion_jpeg70",
-        "MS COCOAI -> Ishu tuned-fusion JPEG70 robustness",
-        METHOD_LABELS["tuned_fusion_jpeg70"],
+        finding_id,
+        f"MS COCOAI -> Ishu tuned-fusion {variant} robustness",
+        method,
         path,
-        "Bounded robustness check for the best reverse tuned-fusion cap; source-selected policy survives JPEG recompression.",
+        interpretation,
         accuracy=float(source_row["target_accuracy_mean"]),
         auc=float(source_row["target_roc_auc_mean"]),
         brier=float(source_row["target_brier_score_mean"]),
         ece=float(source_row["target_expected_calibration_error_mean"]),
         predicted_fake_rate=float(source_row["target_predicted_positive_rate_mean"]),
     )
+
+
+def _reverse_tuned_fusion_jpeg70_row(path: Path) -> dict[str, object]:
+    return _reverse_tuned_fusion_robustness_row(path, expected_variant="jpeg70")
 
 
 def build_core_results_table(
@@ -471,6 +501,7 @@ def build_core_results_table(
     reverse_source_holdout_tuned_fusion: Path,
     reverse_tuned_fusion_constraint_sweep: Path,
     reverse_tuned_fusion_jpeg70_robustness: Path,
+    reverse_tuned_fusion_extra_robustness: list[Path] | None = None,
 ) -> pd.DataFrame:
     rows = []
     rows.extend(_same_domain_rows(physics_guided_report))
@@ -484,6 +515,9 @@ def build_core_results_table(
     rows.append(_reverse_source_holdout_tuned_fusion_row(reverse_source_holdout_tuned_fusion))
     rows.append(_reverse_tuned_fusion_constraint_sweep_row(reverse_tuned_fusion_constraint_sweep))
     rows.append(_reverse_tuned_fusion_jpeg70_row(reverse_tuned_fusion_jpeg70_robustness))
+    for robustness_path in reverse_tuned_fusion_extra_robustness or []:
+        if robustness_path.exists():
+            rows.append(_reverse_tuned_fusion_robustness_row(robustness_path))
     return pd.DataFrame(rows, columns=CORE_COLUMNS)
 
 
@@ -532,6 +566,7 @@ def main() -> None:
         Path(args.reverse_source_holdout_tuned_fusion),
         Path(args.reverse_tuned_fusion_constraint_sweep),
         Path(args.reverse_tuned_fusion_jpeg70_robustness),
+        [Path(path) for path in args.reverse_tuned_fusion_extra_robustness],
     )
     csv_path = out_dir / "publication_core_results.csv"
     markdown_path = out_dir / "publication_core_results.md"
