@@ -52,6 +52,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/submission_readiness_2026_06_13.md | Current readiness snapshot, lead results, figure package, and remaining gaps. |
 | planning | reports/submission_scorecard_2026_06_14.md | Venue-level readiness scorecard aggregating packet artifacts, lint reports, claim caveats, deadlines, and next actions. |
 | planning | reports/assets/submission_scorecard.csv | Machine-readable venue-level readiness scorecard. |
+| planning | reports/submission_upload_checklist_2026_06_14.md | Venue upload checklist separating ready assets from final export, writing, and decision tasks. |
+| planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
 | table | reports/submission_result_tables_2026_06_14.md | Copy-ready compact result tables for poster and paper drafting. |
@@ -95,6 +97,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/submission_readiness_2026_06_13.md | Current readiness snapshot, lead results, figure package, and remaining gaps. |
 | planning | reports/submission_scorecard_2026_06_14.md | Venue-level readiness scorecard aggregating packet artifacts, lint reports, claim caveats, deadlines, and next actions. |
 | planning | reports/assets/submission_scorecard.csv | Machine-readable venue-level readiness scorecard. |
+| planning | reports/submission_upload_checklist_2026_06_14.md | Venue upload checklist separating ready assets from final export, writing, and decision tasks. |
+| planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -155,6 +159,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/submission_readiness_2026_06_13.md | Current readiness snapshot, lead results, figure package, and remaining gaps. |
 | planning | reports/submission_scorecard_2026_06_14.md | Venue-level readiness scorecard aggregating packet artifacts, lint reports, claim caveats, deadlines, and next actions. |
 | planning | reports/assets/submission_scorecard.csv | Machine-readable venue-level readiness scorecard. |
+| planning | reports/submission_upload_checklist_2026_06_14.md | Venue upload checklist separating ready assets from final export, writing, and decision tasks. |
+| planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -228,6 +234,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |
 | submission scorecard | python scripts/build_submission_scorecard.py |
+| submission upload checklist | python scripts/build_submission_upload_checklist.py |
 
 ## Current Editorial Guardrails
 

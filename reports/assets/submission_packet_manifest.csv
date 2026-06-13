@@ -1,10 +1,12 @@
 path,type,venues,purpose,required,exists,size_bytes
-README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,46059
+README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,46216
 CITATION.cff,repo,"DFRWS,WIFS,DFF",Citation metadata for public release and reproducibility review.,True,True,788
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF","Reviewer-facing map of included artifacts, external datasets, and commands.",True,True,16823
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
 reports/submission_scorecard_2026_06_14.md,planning,"DFRWS,WIFS,DFF","Venue-level readiness scorecard aggregating packet artifacts, lint reports, claim caveats, deadlines, and next actions.",False,True,3001
 reports/assets/submission_scorecard.csv,planning,"DFRWS,WIFS,DFF",Machine-readable venue-level readiness scorecard.,False,True,1326
+reports/submission_upload_checklist_2026_06_14.md,planning,"DFRWS,WIFS,DFF","Venue upload checklist separating ready assets from final export, writing, and decision tasks.",False,True,6396
+reports/assets/submission_upload_checklist.csv,planning,"DFRWS,WIFS,DFF",Machine-readable venue upload checklist.,False,True,5502
 reports/literature_map_2026_06_14.md,literature,"WIFS,DFF","Paper-facing map from related-work references to method claims, paper sections, and caveats.",True,True,6270
 reports/assets/literature_map.csv,literature,"WIFS,DFF",Machine-readable literature map for WIFS/DFF related-work drafting.,True,True,5116
 references.bib,bibliography,"WIFS,DFF",Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations.,True,True,4612

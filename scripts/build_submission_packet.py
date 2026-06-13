@@ -64,6 +64,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/submission_upload_checklist_2026_06_14.md",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Venue upload checklist separating ready assets from final export, writing, and decision tasks.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/submission_upload_checklist.csv",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable venue upload checklist.",
+        "required": False,
+    },
+    {
         "path": "reports/literature_map_2026_06_14.md",
         "type": "literature",
         "venues": "WIFS,DFF",
@@ -546,6 +560,7 @@ REGEN_COMMANDS = [
     ("submission packet", "python scripts/build_submission_packet.py"),
     ("submission package lint", "python scripts/lint_submission_package.py"),
     ("submission scorecard", "python scripts/build_submission_scorecard.py"),
+    ("submission upload checklist", "python scripts/build_submission_upload_checklist.py"),
 ]
 
 
