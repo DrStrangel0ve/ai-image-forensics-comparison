@@ -1,0 +1,26 @@
+order,asset,command,status,returncode,elapsed_seconds
+1,literature map,python scripts/build_literature_map.py,planned,0,0.0
+2,draft BibTeX references,python scripts/build_references_bib.py,planned,0,0.0
+3,publication tables,python scripts/build_publication_tables.py,planned,0,0.0
+4,robustness failure ranking,python scripts/build_robustness_failure_ranking.py,planned,0,0.0
+5,claim matrix,python scripts/build_claim_evidence_matrix.py,planned,0,0.0
+6,submission result tables,python scripts/build_submission_result_tables.py,planned,0,0.0
+7,submission result table lint,python scripts/lint_submission_result_tables.py,planned,0,0.0
+8,submission LaTeX tables,python scripts/build_submission_latex_tables.py,planned,0,0.0
+9,submission text drafts,python scripts/build_submission_text_drafts.py,planned,0,0.0
+10,paper section drafts,python scripts/build_paper_section_drafts.py,planned,0,0.0
+11,paper section draft lint,python scripts/lint_paper_section_drafts.py,planned,0,0.0
+12,submission paper skeletons,python scripts/build_submission_paper_skeletons.py,planned,0,0.0
+13,paper skeleton lint,python scripts/lint_paper_skeletons.py,planned,0,0.0
+14,publication figures,python scripts/build_publication_assets.py,planned,0,0.0
+15,DFRWS poster brief,python scripts/build_dfrws_poster_brief.py,planned,0,0.0
+16,DFRWS poster panels,python scripts/build_dfrws_poster_figures.py,planned,0,0.0
+17,DFRWS poster package lint,python scripts/lint_dfrws_poster_package.py,planned,0,0.0
+18,opportunity watchlist,python scripts/build_opportunity_watchlist.py,planned,0,0.0
+19,external benchmark readiness,python scripts/build_external_benchmark_readiness.py,planned,0,0.0
+20,external benchmark claim lint,python scripts/lint_external_benchmark_claims.py,planned,0,0.0
+21,publication control suite dry run,python scripts/run_publication_control_suite.py --dry-run,planned,0,0.0
+22,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
+23,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
+24,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
+25,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0

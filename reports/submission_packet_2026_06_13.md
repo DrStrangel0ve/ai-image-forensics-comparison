@@ -55,6 +55,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_scorecard.csv | Machine-readable venue-level readiness scorecard. |
 | planning | reports/submission_upload_checklist_2026_06_14.md | Venue upload checklist separating ready assets from final export, writing, and decision tasks. |
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
+| planning | reports/publication_control_suite_2026_06_14.md | Ordered dry-run command plan for regenerating publication artifacts and lints. |
+| planning | reports/assets/publication_control_suite.csv | Machine-readable publication-control command plan. |
 | planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
 | planning | reports/assets/opportunity_watchlist.csv | Machine-readable opportunity and benchmark watchlist. |
 | planning | reports/external_benchmark_readiness_2026_06_14.md | Official-vs-proxy readiness audit for NTIRE/ImageCLEF-style external benchmark claims. |
@@ -109,6 +111,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_scorecard.csv | Machine-readable venue-level readiness scorecard. |
 | planning | reports/submission_upload_checklist_2026_06_14.md | Venue upload checklist separating ready assets from final export, writing, and decision tasks. |
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
+| planning | reports/publication_control_suite_2026_06_14.md | Ordered dry-run command plan for regenerating publication artifacts and lints. |
+| planning | reports/assets/publication_control_suite.csv | Machine-readable publication-control command plan. |
 | planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
 | planning | reports/assets/opportunity_watchlist.csv | Machine-readable opportunity and benchmark watchlist. |
 | planning | reports/external_benchmark_readiness_2026_06_14.md | Official-vs-proxy readiness audit for NTIRE/ImageCLEF-style external benchmark claims. |
@@ -180,6 +184,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_scorecard.csv | Machine-readable venue-level readiness scorecard. |
 | planning | reports/submission_upload_checklist_2026_06_14.md | Venue upload checklist separating ready assets from final export, writing, and decision tasks. |
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
+| planning | reports/publication_control_suite_2026_06_14.md | Ordered dry-run command plan for regenerating publication artifacts and lints. |
+| planning | reports/assets/publication_control_suite.csv | Machine-readable publication-control command plan. |
 | planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
 | planning | reports/assets/opportunity_watchlist.csv | Machine-readable opportunity and benchmark watchlist. |
 | planning | reports/external_benchmark_readiness_2026_06_14.md | Official-vs-proxy readiness audit for NTIRE/ImageCLEF-style external benchmark claims. |
@@ -243,30 +249,31 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 
 | asset | command |
 | --- | --- |
-| claim matrix | python scripts/build_claim_evidence_matrix.py |
 | literature map | python scripts/build_literature_map.py |
 | draft BibTeX references | python scripts/build_references_bib.py |
 | publication tables | python scripts/build_publication_tables.py |
+| robustness failure ranking | python scripts/build_robustness_failure_ranking.py |
+| claim matrix | python scripts/build_claim_evidence_matrix.py |
 | submission result tables | python scripts/build_submission_result_tables.py |
 | submission result table lint | python scripts/lint_submission_result_tables.py |
 | submission LaTeX tables | python scripts/build_submission_latex_tables.py |
+| submission text drafts | python scripts/build_submission_text_drafts.py |
+| paper section drafts | python scripts/build_paper_section_drafts.py |
+| paper section draft lint | python scripts/lint_paper_section_drafts.py |
 | submission paper skeletons | python scripts/build_submission_paper_skeletons.py |
 | paper skeleton lint | python scripts/lint_paper_skeletons.py |
 | publication figures | python scripts/build_publication_assets.py |
 | DFRWS poster brief | python scripts/build_dfrws_poster_brief.py |
 | DFRWS poster panels | python scripts/build_dfrws_poster_figures.py |
 | DFRWS poster package lint | python scripts/lint_dfrws_poster_package.py |
-| submission text drafts | python scripts/build_submission_text_drafts.py |
-| paper section drafts | python scripts/build_paper_section_drafts.py |
-| paper section draft lint | python scripts/lint_paper_section_drafts.py |
+| opportunity watchlist | python scripts/build_opportunity_watchlist.py |
+| external benchmark readiness | python scripts/build_external_benchmark_readiness.py |
+| external benchmark claim lint | python scripts/lint_external_benchmark_claims.py |
+| publication control suite dry run | python scripts/run_publication_control_suite.py --dry-run |
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |
 | submission scorecard | python scripts/build_submission_scorecard.py |
 | submission upload checklist | python scripts/build_submission_upload_checklist.py |
-| opportunity watchlist | python scripts/build_opportunity_watchlist.py |
-| external benchmark readiness | python scripts/build_external_benchmark_readiness.py |
-| external benchmark claim lint | python scripts/lint_external_benchmark_claims.py |
-| robustness failure ranking | python scripts/build_robustness_failure_ranking.py |
 
 ## Current Editorial Guardrails
 
