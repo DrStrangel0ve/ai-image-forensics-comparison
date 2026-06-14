@@ -79,6 +79,11 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | result-data | reports/assets/reconstruction_lite_transfer_probe_seed_summary.csv | Seed-level transfer metrics for reconstruction_lite and combined_v3 bounded probes. |
 | result-data | reports/assets/reconstruction_lite_transfer_probe_mean_summary.csv | Mean transfer metrics for reconstruction_lite and combined_v3 bounded probes. |
 | result-data | reports/assets/reconstruction_lite_transfer_probe_delta_summary.csv | Transfer delta summary for reconstruction_lite against combined_v3. |
+| result-note | reports/reconstruction_lite_fusion_probe_2026_06_14.md | Bounded Ishu to MS COCOAI reconstruction_lite plus combined_v3 score-fusion diagnostic. |
+| result-data | reports/assets/reconstruction_lite_fusion_probe_seed_summary.csv | Seed-level transfer metrics for reconstruction_lite, combined_v3, and bounded score-fusion candidates. |
+| result-data | reports/assets/reconstruction_lite_fusion_probe_mean_summary.csv | Mean transfer metrics for reconstruction_lite, combined_v3, and bounded score-fusion candidates. |
+| result-data | reports/assets/reconstruction_lite_fusion_probe_delta_summary.csv | Transfer delta summary for bounded reconstruction_lite fusion candidates against combined_v3. |
+| result-data | reports/assets/reconstruction_lite_fusion_probe_coefficients.csv | Source-fitted two-branch fusion coefficients for the bounded reconstruction_lite diagnostic. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
 | result-note | reports/source_holdout_generator_stress_2026_06_14.md | Readable held-out-generator stress figure note for the capped source-holdout policy. |
@@ -156,6 +161,11 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | result-data | reports/assets/reconstruction_lite_transfer_probe_seed_summary.csv | Seed-level transfer metrics for reconstruction_lite and combined_v3 bounded probes. |
 | result-data | reports/assets/reconstruction_lite_transfer_probe_mean_summary.csv | Mean transfer metrics for reconstruction_lite and combined_v3 bounded probes. |
 | result-data | reports/assets/reconstruction_lite_transfer_probe_delta_summary.csv | Transfer delta summary for reconstruction_lite against combined_v3. |
+| result-note | reports/reconstruction_lite_fusion_probe_2026_06_14.md | Bounded Ishu to MS COCOAI reconstruction_lite plus combined_v3 score-fusion diagnostic. |
+| result-data | reports/assets/reconstruction_lite_fusion_probe_seed_summary.csv | Seed-level transfer metrics for reconstruction_lite, combined_v3, and bounded score-fusion candidates. |
+| result-data | reports/assets/reconstruction_lite_fusion_probe_mean_summary.csv | Mean transfer metrics for reconstruction_lite, combined_v3, and bounded score-fusion candidates. |
+| result-data | reports/assets/reconstruction_lite_fusion_probe_delta_summary.csv | Transfer delta summary for bounded reconstruction_lite fusion candidates against combined_v3. |
+| result-data | reports/assets/reconstruction_lite_fusion_probe_coefficients.csv | Source-fitted two-branch fusion coefficients for the bounded reconstruction_lite diagnostic. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -312,6 +322,11 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | result-data | reports/assets/reconstruction_lite_transfer_probe_seed_summary.csv | Seed-level transfer metrics for reconstruction_lite and combined_v3 bounded probes. |
 | result-data | reports/assets/reconstruction_lite_transfer_probe_mean_summary.csv | Mean transfer metrics for reconstruction_lite and combined_v3 bounded probes. |
 | result-data | reports/assets/reconstruction_lite_transfer_probe_delta_summary.csv | Transfer delta summary for reconstruction_lite against combined_v3. |
+| result-note | reports/reconstruction_lite_fusion_probe_2026_06_14.md | Bounded Ishu to MS COCOAI reconstruction_lite plus combined_v3 score-fusion diagnostic. |
+| result-data | reports/assets/reconstruction_lite_fusion_probe_seed_summary.csv | Seed-level transfer metrics for reconstruction_lite, combined_v3, and bounded score-fusion candidates. |
+| result-data | reports/assets/reconstruction_lite_fusion_probe_mean_summary.csv | Mean transfer metrics for reconstruction_lite, combined_v3, and bounded score-fusion candidates. |
+| result-data | reports/assets/reconstruction_lite_fusion_probe_delta_summary.csv | Transfer delta summary for bounded reconstruction_lite fusion candidates against combined_v3. |
+| result-data | reports/assets/reconstruction_lite_fusion_probe_coefficients.csv | Source-fitted two-branch fusion coefficients for the bounded reconstruction_lite diagnostic. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -452,6 +467,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | reconstruction-lite feature report | python scripts/build_reconstruction_lite_feature_report.py |
 | reconstruction-lite bounded probe | python scripts/summarize_reconstruction_lite_probe.py |
 | reconstruction-lite transfer probe | python scripts/summarize_reconstruction_lite_transfer_probe.py |
+| reconstruction-lite fusion probe | python scripts/summarize_reconstruction_lite_fusion_probe.py |
 | tiled foundation comparison | python scripts/build_tiled_foundation_comparison.py |
 | tiled foundation fusion comparison | python scripts/build_tiled_foundation_fusion_comparison.py |
 | tiled DINO resize-half fusion robustness | python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant resize_half --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_resize_half_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_2026_06_14.md |

@@ -51,6 +51,8 @@ A bounded three-seed Ishu probe is summarized in [reports/reconstruction_lite_pr
 
 The matching bounded Ishu -> source-balanced MS COCOAI transfer probe is summarized in [reports/reconstruction_lite_transfer_probe_2026_06_14.md](reports/reconstruction_lite_transfer_probe_2026_06_14.md). In that diagnostic, `reconstruction_lite` beats the bounded `combined_v3` model on mean transfer accuracy/AUC and calibration, supporting reconstruction residuals as a transfer/fusion branch rather than a standalone same-domain replacement.
 
+A bounded two-branch reconstruction fusion diagnostic is summarized in [reports/reconstruction_lite_fusion_probe_2026_06_14.md](reports/reconstruction_lite_fusion_probe_2026_06_14.md). Naive mean fusion and source-logistic fusion improve over bounded `combined_v3`, but neither beats `reconstruction_lite` alone on the Ishu -> MS COCOAI slice, so the reconstruction signal should be carried forward with validation-aware weighting rather than folded into the headline SCP-Fusion result yet.
+
 ## Setup
 
 From this repo root:
