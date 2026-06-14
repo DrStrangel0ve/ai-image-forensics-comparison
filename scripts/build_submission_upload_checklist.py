@@ -87,7 +87,7 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-15",
         "item": "LaTeX tables and bibliography",
         "status": "ready_asset",
-        "paths": "reports/assets/latex_tables/method_family_comparison.tex; reports/assets/latex_tables/same_domain_anchor.tex; reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/latex_tables/robustness_stress.tex; reports/assets/latex_tables/source_holdout_stress.tex; references.bib",
+        "paths": "reports/assets/latex_tables/method_family_comparison.tex; reports/assets/latex_tables/same_domain_anchor.tex; reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/latex_tables/robustness_stress.tex; reports/assets/latex_tables/source_holdout_stress.tex; reports/assets/latex_tables/reconstruction_ablation.tex; references.bib",
         "action": "Pull compact tables and references into the paper template; verify final citation metadata before submission.",
     },
     {
@@ -152,6 +152,15 @@ UPLOAD_ITEMS = [
         "status": "ready_asset",
         "paths": "reports/assets/submission_table_robustness_stress.csv; reports/assets/latex_tables/robustness_stress.tex; reports/assets/publication_reverse_transform_robustness.png",
         "action": "Use the transform stress table as the DFF robustness anchor.",
+    },
+    {
+        "venue_key": "DFF",
+        "venue": "DFF-2026 ACM Multimedia workshop",
+        "deadline": "2026-07-16",
+        "item": "reconstruction ablation table",
+        "status": "ready_asset",
+        "paths": "reports/assets/submission_table_reconstruction_ablation.csv; reports/assets/latex_tables/reconstruction_ablation.tex; reports/reconstruction_v2_probe_2026_06_14.md",
+        "action": "Use the reconstruction residual table as an ablation caveat: v2 helps same-domain ranking but hurts transfer versus reconstruction_lite.",
     },
     {
         "venue_key": "DFF",

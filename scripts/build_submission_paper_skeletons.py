@@ -39,6 +39,7 @@ TABLE_INPUTS = [
     ("reports/assets/latex_tables/reverse_operating_points.tex", "reverse operating point table"),
     ("reports/assets/latex_tables/robustness_stress.tex", "robustness stress table"),
     ("reports/assets/latex_tables/source_holdout_stress.tex", "held-out generator stress table"),
+    ("reports/assets/latex_tables/reconstruction_ablation.tex", "reconstruction residual ablation table"),
 ]
 
 FIGURE_INPUTS = [

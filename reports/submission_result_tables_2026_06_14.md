@@ -15,6 +15,7 @@ These are compact, copy-ready tables for DFRWS, WIFS, and DFF drafting. They int
 | reverse_operating_points | MS COCOAI -> Ishu Reverse Operating Points | reports/assets/submission_table_reverse_operating_points.csv | WIFS,DFF | Compact reverse-direction ranking/calibration/threshold comparison. | 8 |
 | robustness_stress | Reverse Tuned-Fusion Robustness Stress | reports/assets/submission_table_robustness_stress.csv | DFRWS,WIFS,DFF | Stress table with deltas relative to the clean source-capped reverse tuned-fusion operating point. | 12 |
 | source_holdout_stress | Held-Out Generator Stress | reports/assets/submission_table_source_holdout_stress.csv | DFRWS,WIFS,DFF | Compact per-generator source-holdout stress table for the capped reverse tuned-fusion policy. | 5 |
+| reconstruction_ablation | Reconstruction Residual Ablation | reports/assets/submission_table_reconstruction_ablation.csv | WIFS,DFF | Compact reconstruction_lite/reconstruction_v2 ablation showing same-domain gain and transfer source sensitivity. | 6 |
 
 ## Same-Domain Anchors
 
@@ -87,3 +88,16 @@ Use: Compact per-generator source-holdout stress table for the capped reverse tu
 | sd21 | 0.8981 | 0.1019 | 0.1721 | 1.6787 | Per-generator held-out stress under the capped source-holdout policy; lower utility and higher fake-miss rate indicate a weaker source slice. |
 | sdxl | 0.9848 | 0.0152 | 0.1818 | 1.8955 | Per-generator held-out stress under the capped source-holdout policy; lower utility and higher fake-miss rate indicate a weaker source slice. |
 | dalle3 | 0.9848 | 0.0152 | 0.1690 | 1.8955 | Per-generator held-out stress under the capped source-holdout policy; lower utility and higher fake-miss rate indicate a weaker source slice. |
+
+## Reconstruction Residual Ablation
+
+Use: Compact reconstruction_lite/reconstruction_v2 ablation showing same-domain gain and transfer source sensitivity.
+
+| setting_label | method | accuracy | auc | delta_auc_vs_reconstruction_lite | brier | ece | paper_use |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Ishu same-domain | combined_v3 | 0.7500 | 0.8117 | 0.0781 | 0.1833 | 0.1402 | Bounded reconstruction residual ablation; reconstruction_v2 improves same-domain ranking over reconstruction_lite but is less transferable, so treat it as source-sensitive. |
+| Ishu same-domain | reconstruction_lite | 0.6875 | 0.7335 | 0.0000 | 0.2104 | 0.1053 | Bounded reconstruction residual ablation; reconstruction_v2 improves same-domain ranking over reconstruction_lite but is less transferable, so treat it as source-sensitive. |
+| Ishu same-domain | reconstruction_v2 | 0.7125 | 0.7550 | 0.0215 | 0.1962 | 0.1194 | Bounded reconstruction residual ablation; reconstruction_v2 improves same-domain ranking over reconstruction_lite but is less transferable, so treat it as source-sensitive. |
+| Ishu to MS COCOAI | combined_v3 | 0.5470 | 0.5834 | -0.0528 | 0.3339 | 0.2751 | Bounded reconstruction residual ablation; reconstruction_v2 improves same-domain ranking over reconstruction_lite but is less transferable, so treat it as source-sensitive. |
+| Ishu to MS COCOAI | reconstruction_lite | 0.5950 | 0.6362 | 0.0000 | 0.2377 | 0.0430 | Bounded reconstruction residual ablation; reconstruction_v2 improves same-domain ranking over reconstruction_lite but is less transferable, so treat it as source-sensitive. |
+| Ishu to MS COCOAI | reconstruction_v2 | 0.5720 | 0.5954 | -0.0408 | 0.2602 | 0.1044 | Bounded reconstruction residual ablation; reconstruction_v2 improves same-domain ranking over reconstruction_lite but is less transferable, so treat it as source-sensitive. |

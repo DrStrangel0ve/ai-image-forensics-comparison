@@ -132,6 +132,77 @@ def _lint_source_stress_table(rows: list[dict[str, object]], table: pd.DataFrame
     )
 
 
+def _lint_reconstruction_ablation_table(rows: list[dict[str, object]], table: pd.DataFrame) -> None:
+    required_columns = {
+        "setting",
+        "setting_label",
+        "candidate",
+        "method",
+        "accuracy",
+        "auc",
+        "delta_auc_vs_reconstruction_lite",
+        "brier",
+        "ece",
+        "paper_use",
+    }
+    missing = required_columns - set(table.columns)
+    _add_check(
+        rows,
+        "reconstruction_ablation required columns present",
+        not missing,
+        "all reconstruction columns present" if not missing else ", ".join(sorted(missing)),
+    )
+    if missing:
+        return
+    expected_methods = [
+        "combined_v3",
+        "reconstruction_lite",
+        "reconstruction_v2",
+        "combined_v3",
+        "reconstruction_lite",
+        "reconstruction_v2",
+    ]
+    _add_check(
+        rows,
+        "reconstruction_ablation has expected methods",
+        table["method"].tolist() == expected_methods,
+        f"found {table['method'].tolist()}",
+    )
+    delta_mismatches = []
+    for setting, group in table.groupby("setting", sort=False):
+        lite = group[group["method"] == "reconstruction_lite"]
+        if lite.empty:
+            delta_mismatches.append(f"{setting}:missing_lite")
+            continue
+        lite_auc = float(lite.iloc[0]["auc"])
+        for row in group.itertuples(index=False):
+            expected_delta = float(row.auc) - lite_auc
+            if not _values_match(row.delta_auc_vs_reconstruction_lite, expected_delta, tolerance=1e-9):
+                delta_mismatches.append(f"{setting}:{row.method}")
+    _add_check(
+        rows,
+        "reconstruction_ablation deltas recompute from reconstruction_lite",
+        not delta_mismatches,
+        "all reconstruction deltas match reconstruction_lite"
+        if not delta_mismatches
+        else ", ".join(delta_mismatches),
+    )
+    v2_rows = table[table["method"] == "reconstruction_v2"]
+    sign_by_setting = {
+        row.setting: float(row.delta_auc_vs_reconstruction_lite) for row in v2_rows.itertuples(index=False)
+    }
+    expected_signs = (
+        sign_by_setting.get("ishu_same_bounded", 0.0) > 0
+        and sign_by_setting.get("ishu_to_ms_cocoai_bounded", 0.0) < 0
+    )
+    _add_check(
+        rows,
+        "reconstruction_ablation captures source-sensitivity sign",
+        expected_signs,
+        f"v2 deltas by setting: {sign_by_setting}",
+    )
+
+
 def lint_submission_result_tables(
     repo_root: Path,
     core_results_path: Path,
@@ -205,6 +276,8 @@ def lint_submission_result_tables(
         if "finding_ids" not in spec:
             if table_id == "source_holdout_stress":
                 _lint_source_stress_table(rows, table)
+            elif table_id == "reconstruction_ablation":
+                _lint_reconstruction_ablation_table(rows, table)
             continue
 
         expected_ids = list(spec["finding_ids"])

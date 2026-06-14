@@ -1,5 +1,5 @@
 check,passed,detail
-manifest table ids match builder specs,True,"expected ['reverse_operating_points', 'robustness_stress', 'same_domain_anchor', 'source_holdout_stress', 'transfer_frontier'], found ['reverse_operating_points', 'robustness_stress', 'same_domain_anchor', 'source_holdout_stress', 'transfer_frontier']"
+manifest table ids match builder specs,True,"expected ['reconstruction_ablation', 'reverse_operating_points', 'robustness_stress', 'same_domain_anchor', 'source_holdout_stress', 'transfer_frontier'], found ['reconstruction_ablation', 'reverse_operating_points', 'robustness_stress', 'same_domain_anchor', 'source_holdout_stress', 'transfer_frontier']"
 claim evidence ids resolve to core results,True,all claim evidence IDs resolve
 same_domain_anchor CSV exists,True,reports/assets/submission_table_same_domain_anchor.csv
 same_domain_anchor manifest row is current,True,path and n_rows match generated CSV
@@ -38,3 +38,11 @@ source_holdout_stress required columns present,True,all source-stress columns pr
 source_holdout_stress sorted by utility,True,weakest source appears first
 source_holdout_stress miss rate matches recall,True,all miss rates equal 1 - recall
 source_holdout_stress has named sources,True,5 source rows
+reconstruction_ablation CSV exists,True,reports/assets/submission_table_reconstruction_ablation.csv
+reconstruction_ablation manifest row is current,True,path and n_rows match generated CSV
+reconstruction_ablation report includes Reconstruction Residual Ablation,True,present
+reconstruction_ablation report includes Compact reconstruction_lite/reconstruction_v2 ablation showing same-domain gain and transfer source sensitivity.,True,present
+reconstruction_ablation required columns present,True,all reconstruction columns present
+reconstruction_ablation has expected methods,True,"found ['combined_v3', 'reconstruction_lite', 'reconstruction_v2', 'combined_v3', 'reconstruction_lite', 'reconstruction_v2']"
+reconstruction_ablation deltas recompute from reconstruction_lite,True,all reconstruction deltas match reconstruction_lite
+reconstruction_ablation captures source-sensitivity sign,True,"v2 deltas by setting: {'ishu_same_bounded': 0.0214583333333333, 'ishu_to_ms_cocoai_bounded': -0.0407933333333332}"

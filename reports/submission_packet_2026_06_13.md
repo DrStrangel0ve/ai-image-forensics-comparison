@@ -199,6 +199,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/submission_table_reverse_operating_points.csv | Compact MS-COCOAI-to-Ishu reverse operating point table. |
 | table | reports/assets/submission_table_robustness_stress.csv | Compact reverse tuned-fusion robustness stress table with clean-baseline deltas. |
 | table | reports/assets/submission_table_source_holdout_stress.csv | Compact held-out-generator stress table for the capped source-holdout policy. |
+| table | reports/assets/submission_table_reconstruction_ablation.csv | Compact reconstruction residual ablation table showing same-domain gain and transfer source sensitivity. |
 | quality-control | reports/submission_result_tables_lint_2026_06_14.md | Generated lint report proving compact result tables match canonical metrics, robustness deltas, and claim-evidence IDs. |
 | quality-control | reports/assets/submission_result_tables_lint.csv | Machine-readable compact result-table consistency checks. |
 | table | reports/submission_latex_tables_2026_06_14.md | Report listing generated LaTeX table fragments for paper drafting. |
@@ -209,6 +210,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/latex_tables/robustness_stress.tex | LaTeX fragment for the robustness stress table. |
 | table | reports/assets/latex_tables/method_family_comparison.tex | LaTeX fragment for the method-family comparison table. |
 | table | reports/assets/latex_tables/source_holdout_stress.tex | LaTeX fragment for the held-out generator stress table. |
+| table | reports/assets/latex_tables/reconstruction_ablation.tex | LaTeX fragment for the reconstruction residual ablation table. |
 | paper-draft | reports/submission_paper_skeletons_2026_06_14.md | Report listing generated WIFS/DFF paper skeletons. |
 | paper-draft | reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv | Machine-readable manifest for generated WIFS/DFF paper skeletons. |
 | paper-draft | reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex | IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures. |
@@ -366,6 +368,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/submission_table_reverse_operating_points.csv | Compact MS-COCOAI-to-Ishu reverse operating point table. |
 | table | reports/assets/submission_table_robustness_stress.csv | Compact reverse tuned-fusion robustness stress table with clean-baseline deltas. |
 | table | reports/assets/submission_table_source_holdout_stress.csv | Compact held-out-generator stress table for the capped source-holdout policy. |
+| table | reports/assets/submission_table_reconstruction_ablation.csv | Compact reconstruction residual ablation table showing same-domain gain and transfer source sensitivity. |
 | quality-control | reports/submission_result_tables_lint_2026_06_14.md | Generated lint report proving compact result tables match canonical metrics, robustness deltas, and claim-evidence IDs. |
 | quality-control | reports/assets/submission_result_tables_lint.csv | Machine-readable compact result-table consistency checks. |
 | table | reports/submission_latex_tables_2026_06_14.md | Report listing generated LaTeX table fragments for paper drafting. |
@@ -376,6 +379,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/latex_tables/robustness_stress.tex | LaTeX fragment for the robustness stress table. |
 | table | reports/assets/latex_tables/method_family_comparison.tex | LaTeX fragment for the method-family comparison table. |
 | table | reports/assets/latex_tables/source_holdout_stress.tex | LaTeX fragment for the held-out generator stress table. |
+| table | reports/assets/latex_tables/reconstruction_ablation.tex | LaTeX fragment for the reconstruction residual ablation table. |
 | paper-draft | reports/submission_paper_skeletons_2026_06_14.md | Report listing generated WIFS/DFF paper skeletons. |
 | paper-draft | reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv | Machine-readable manifest for generated WIFS/DFF paper skeletons. |
 | paper-draft | reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex | ACM-style DFF workshop skeleton with generated abstract, tables, and figures. |

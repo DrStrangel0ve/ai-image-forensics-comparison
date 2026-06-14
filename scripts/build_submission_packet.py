@@ -456,6 +456,13 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/assets/submission_table_reconstruction_ablation.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Compact reconstruction residual ablation table showing same-domain gain and transfer source sensitivity.",
+        "required": True,
+    },
+    {
         "path": "reports/submission_result_tables_lint_2026_06_14.md",
         "type": "quality-control",
         "venues": "DFRWS,WIFS,DFF",
@@ -523,6 +530,13 @@ ARTIFACTS = [
         "type": "table",
         "venues": "WIFS,DFF",
         "purpose": "LaTeX fragment for the held-out generator stress table.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/latex_tables/reconstruction_ablation.tex",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "LaTeX fragment for the reconstruction residual ablation table.",
         "required": True,
     },
     {

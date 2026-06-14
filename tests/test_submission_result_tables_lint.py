@@ -99,6 +99,58 @@ def test_submission_result_table_lint_validates_generated_tables(tmp_path: Path)
             },
         ]
     ).to_csv(assets_dir / "source_holdout_generator_stress.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "setting": "ishu_same_bounded",
+                "candidate": "combined_v3_logreg",
+                "accuracy_mean": 0.75,
+                "roc_auc_mean": 0.81,
+                "brier_score_mean": 0.18,
+                "expected_calibration_error_mean": 0.14,
+            },
+            {
+                "setting": "ishu_same_bounded",
+                "candidate": "reconstruction_lite_logreg",
+                "accuracy_mean": 0.69,
+                "roc_auc_mean": 0.73,
+                "brier_score_mean": 0.21,
+                "expected_calibration_error_mean": 0.10,
+            },
+            {
+                "setting": "ishu_same_bounded",
+                "candidate": "reconstruction_v2_logreg",
+                "accuracy_mean": 0.71,
+                "roc_auc_mean": 0.76,
+                "brier_score_mean": 0.20,
+                "expected_calibration_error_mean": 0.12,
+            },
+            {
+                "setting": "ishu_to_ms_cocoai_bounded",
+                "candidate": "combined_v3_logreg",
+                "accuracy_mean": 0.55,
+                "roc_auc_mean": 0.58,
+                "brier_score_mean": 0.33,
+                "expected_calibration_error_mean": 0.28,
+            },
+            {
+                "setting": "ishu_to_ms_cocoai_bounded",
+                "candidate": "reconstruction_lite_logreg",
+                "accuracy_mean": 0.60,
+                "roc_auc_mean": 0.64,
+                "brier_score_mean": 0.24,
+                "expected_calibration_error_mean": 0.04,
+            },
+            {
+                "setting": "ishu_to_ms_cocoai_bounded",
+                "candidate": "reconstruction_v2_logreg",
+                "accuracy_mean": 0.57,
+                "roc_auc_mean": 0.60,
+                "brier_score_mean": 0.26,
+                "expected_calibration_error_mean": 0.10,
+            },
+        ]
+    ).to_csv(assets_dir / "reconstruction_v2_probe_mean_summary.csv", index=False)
 
     report_out = repo_root / "reports" / "submission_result_tables_2026_06_14.md"
     subprocess.run(
@@ -147,3 +199,4 @@ def test_submission_result_table_lint_validates_generated_tables(tmp_path: Path)
     assert checks["passed"].all()
     assert "robustness deltas recompute from clean baseline" in checks["check"].tolist()
     assert "source_holdout_stress sorted by utility" in checks["check"].tolist()
+    assert "reconstruction_ablation has expected methods" in checks["check"].tolist()

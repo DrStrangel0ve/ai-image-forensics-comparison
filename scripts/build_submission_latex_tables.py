@@ -71,6 +71,20 @@ TABLE_SPECS = [
         ],
     },
     {
+        "table_id": "reconstruction_ablation",
+        "caption": "Bounded reconstruction residual ablation.",
+        "label": "tab:reconstruction-ablation",
+        "columns": [
+            ("setting_label", "Setting", "l"),
+            ("row_label", "Branch", "l"),
+            ("accuracy", "Acc.", "r"),
+            ("auc", "AUC", "r"),
+            ("delta_auc_vs_reconstruction_lite", "$\\Delta$AUC vs lite", "r"),
+            ("brier", "Brier", "r"),
+            ("ece", "ECE", "r"),
+        ],
+    },
+    {
         "table_id": "method_family_comparison",
         "caption": "Method-family winners by local scenario and criterion.",
         "label": "tab:method-family-comparison",

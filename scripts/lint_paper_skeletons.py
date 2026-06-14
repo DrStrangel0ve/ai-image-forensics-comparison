@@ -121,6 +121,14 @@ def _lint_one_skeleton(repo_root: Path, row: pd.Series) -> list[dict[str, object
         source_stress_table in input_paths,
         "source stress LaTeX table input present" if source_stress_table in input_paths else "missing",
     )
+    reconstruction_table = "reports/assets/latex_tables/reconstruction_ablation.tex"
+    _add_check(
+        checks,
+        paper_id,
+        "reconstruction ablation table referenced",
+        reconstruction_table in input_paths,
+        "reconstruction ablation LaTeX table input present" if reconstruction_table in input_paths else "missing",
+    )
     _add_check(checks, paper_id, "figure paths exist", figures_ok and len(graphics_paths) >= 5, figures_detail)
     source_stress_path = "reports/assets/source_holdout_generator_stress.png"
     source_stress_present = (

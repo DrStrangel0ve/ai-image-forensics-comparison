@@ -23,6 +23,7 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
         "reverse_operating_points",
         "robustness_stress",
         "source_holdout_stress",
+        "reconstruction_ablation",
     ]
     source_paths = []
     for table_id in table_ids:
@@ -37,6 +38,21 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
                     "fake_miss_rate": [0.20322],
                     "predicted_fake_rate": [0.13254],
                     "paper_use": ["paper use"],
+                }
+            ).to_csv(path, index=False)
+        elif table_id == "reconstruction_ablation":
+            pd.DataFrame(
+                {
+                    "setting": ["ishu_same_bounded", "ishu_same_bounded"],
+                    "setting_label": ["Ishu same-domain", "Ishu same-domain"],
+                    "candidate": ["reconstruction_lite_logreg", "reconstruction_v2_logreg"],
+                    "method": ["reconstruction_lite", "reconstruction_v2"],
+                    "accuracy": [0.69, 0.71],
+                    "auc": [0.73, 0.76],
+                    "delta_auc_vs_reconstruction_lite": [0.0, 0.03],
+                    "brier": [0.21, 0.20],
+                    "ece": [0.10, 0.12],
+                    "paper_use": ["paper use", "paper use"],
                 }
             ).to_csv(path, index=False)
         else:
@@ -99,6 +115,7 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     same_tex = (out_dir / "same_domain_anchor.tex").read_text(encoding="utf-8")
     robustness_tex = (out_dir / "robustness_stress.tex").read_text(encoding="utf-8")
     source_tex = (out_dir / "source_holdout_stress.tex").read_text(encoding="utf-8")
+    reconstruction_tex = (out_dir / "reconstruction_ablation.tex").read_text(encoding="utf-8")
     family_tex = (out_dir / "method_family_comparison.tex").read_text(encoding="utf-8")
     report = report_out.read_text(encoding="utf-8")
 
@@ -110,6 +127,9 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     assert "-0.010" in robustness_tex
     assert "sd3" in source_tex
     assert "tab:source-holdout-stress" in source_tex
+    assert "tab:reconstruction-ablation" in reconstruction_tex
+    assert "reconstruction\\_v2" in reconstruction_tex
+    assert "+0.030" in reconstruction_tex
     assert "tab:method-family-comparison" in family_tex
     assert "CLIP" in family_tex
     assert "Submission LaTeX Tables" in report
