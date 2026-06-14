@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) -> None:
     core_results = tmp_path / "publication_core_results.csv"
     tiled_dino_tradeoff = tmp_path / "tiled_dinov2_calibration_tradeoff.csv"
+    reconstruction_v2_probe = tmp_path / "reconstruction_v2_probe_mean_summary.csv"
     out_dir = tmp_path / "assets"
     finding_ids = [
         "ishu_same_combined_v3",
@@ -86,6 +87,46 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
             ]
         ]
     ).to_csv(tiled_dino_tradeoff, index=False)
+    pd.DataFrame(
+        [
+            {
+                "setting": "ishu_same_bounded",
+                "candidate": "combined_v3_logreg",
+                "accuracy_mean": 0.75,
+                "roc_auc_mean": 0.81,
+            },
+            {
+                "setting": "ishu_same_bounded",
+                "candidate": "reconstruction_lite_logreg",
+                "accuracy_mean": 0.69,
+                "roc_auc_mean": 0.73,
+            },
+            {
+                "setting": "ishu_same_bounded",
+                "candidate": "reconstruction_v2_logreg",
+                "accuracy_mean": 0.71,
+                "roc_auc_mean": 0.76,
+            },
+            {
+                "setting": "ishu_to_ms_cocoai_bounded",
+                "candidate": "combined_v3_logreg",
+                "accuracy_mean": 0.55,
+                "roc_auc_mean": 0.58,
+            },
+            {
+                "setting": "ishu_to_ms_cocoai_bounded",
+                "candidate": "reconstruction_lite_logreg",
+                "accuracy_mean": 0.60,
+                "roc_auc_mean": 0.64,
+            },
+            {
+                "setting": "ishu_to_ms_cocoai_bounded",
+                "candidate": "reconstruction_v2_logreg",
+                "accuracy_mean": 0.57,
+                "roc_auc_mean": 0.60,
+            },
+        ]
+    ).to_csv(reconstruction_v2_probe, index=False)
 
     subprocess.run(
         [
@@ -95,6 +136,8 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
             str(core_results),
             "--tiled-dino-tradeoff",
             str(tiled_dino_tradeoff),
+            "--reconstruction-v2-probe",
+            str(reconstruction_v2_probe),
             "--out-dir",
             str(out_dir),
         ],
@@ -110,6 +153,7 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
     frame = pd.read_csv(csv_path)
     assert "clip_transfer_frontier" in set(frame["claim_id"])
     assert "combined_v4_is_ablation_candidate" in set(frame["claim_id"])
+    assert "reconstruction_residuals_are_source_sensitive" in set(frame["claim_id"])
     assert "transform_stress_exposes_failure_modes" in set(frame["claim_id"])
     assert "tiled_dino_mode_tradeoff" in set(frame["claim_id"])
     v4_row = frame[frame["claim_id"] == "combined_v4_is_ablation_candidate"].iloc[0]
@@ -122,6 +166,10 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
     assert tiled_row["primary_artifact"] == "reports/tiled_dinov2_calibration_tradeoff_2026_06_14.md"
     assert "tile_max: mean acc_delta=+0.0140" in tiled_row["evidence_summary"]
     assert "tile_mean: Brier improves on 2/2" in tiled_row["evidence_summary"]
+    recon_row = frame[frame["claim_id"] == "reconstruction_residuals_are_source_sensitive"].iloc[0]
+    assert recon_row["primary_artifact"] == "reports/reconstruction_v2_probe_2026_06_14.md"
+    assert "same-domain AUC 0.7600 vs reconstruction_lite 0.7300" in recon_row["evidence_summary"]
+    assert "Ishu to MS COCOAI AUC 0.6000 vs reconstruction_lite 0.6400" in recon_row["evidence_summary"]
     assert "ms_to_ishu_source_cap_accuracy" in frame["evidence_finding_ids"].str.cat(sep=",")
     assert "ms_to_ishu_tuned_fusion_native_tiling_best" in frame["evidence_finding_ids"].str.cat(sep=",")
     assert "Claim Evidence Matrix" in markdown_path.read_text(encoding="utf-8")

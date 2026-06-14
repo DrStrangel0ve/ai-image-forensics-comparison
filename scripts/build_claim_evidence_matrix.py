@@ -258,6 +258,26 @@ CLAIMS = [
             "Try source-aware feature selection or a stronger regularized classifier before any main-method promotion."
         ),
     },
+    {
+        "claim_id": "reconstruction_residuals_are_source_sensitive",
+        "claim": (
+            "Deterministic reconstruction residuals are useful ablation branches, but richer FFT/SVD residuals "
+            "improve same-domain ranking at the cost of worse source transfer."
+        ),
+        "submission_use": "DFF/WIFS reconstruction-ablation caveat; DFRWS methods appendix if space allows.",
+        "status": "ready_with_caveat",
+        "evidence_finding_ids": [],
+        "evidence_summary_source": "reconstruction_v2_probe",
+        "primary_artifact": "reports/reconstruction_v2_probe_2026_06_14.md",
+        "risk_or_caveat": (
+            "This is a bounded 160/80 Ishu probe plus Ishu to source-balanced MS COCOAI transfer; "
+            "do not promote reconstruction_v2 without source-aware validation."
+        ),
+        "next_action": (
+            "Keep reconstruction_v2 in the ablation appendix and prioritize a cached pretrained autoencoder "
+            "or diffusion reconstruction branch for the next learned-reconstruction test."
+        ),
+    },
 ]
 
 
@@ -274,6 +294,11 @@ def parse_args() -> argparse.Namespace:
         "--tiled-dino-tradeoff",
         default="reports/assets/tiled_dinov2_calibration_tradeoff.csv",
         help="Tiled-DINO calibration tradeoff table used for artifact-backed claim evidence.",
+    )
+    parser.add_argument(
+        "--reconstruction-v2-probe",
+        default="reports/assets/reconstruction_v2_probe_mean_summary.csv",
+        help="Mean reconstruction_v2 probe metrics used for reconstruction-ablation claim evidence.",
     )
     parser.add_argument("--out-dir", default="reports/assets")
     return parser.parse_args()
@@ -309,7 +334,48 @@ def _evidence_summary(core_results: pd.DataFrame, finding_ids: list[str]) -> str
     return "; ".join(rows)
 
 
-def build_claim_matrix(core_results: Path, tiled_dino_tradeoff: Path) -> pd.DataFrame:
+def _load_reconstruction_v2_probe_summary(path: Path) -> pd.DataFrame:
+    if not path.exists():
+        raise ValueError(f"Missing reconstruction_v2 probe summary: {path}")
+    frame = pd.read_csv(path)
+    required = {"setting", "candidate", "roc_auc_mean", "accuracy_mean"}
+    missing = required.difference(frame.columns)
+    if missing:
+        raise ValueError(f"reconstruction_v2 probe summary missing columns: {sorted(missing)}")
+    return frame
+
+
+def _reconstruction_v2_evidence_summary(path: Path) -> str:
+    frame = _load_reconstruction_v2_probe_summary(path)
+
+    def metric(setting: str, candidate: str, column: str) -> float:
+        rows = frame[(frame["setting"] == setting) & (frame["candidate"] == candidate)]
+        if rows.empty:
+            raise ValueError(
+                f"Missing reconstruction_v2 probe row setting={setting!r}, candidate={candidate!r}"
+            )
+        return float(rows.iloc[0][column])
+
+    same_v2_auc = metric("ishu_same_bounded", "reconstruction_v2_logreg", "roc_auc_mean")
+    same_lite_auc = metric("ishu_same_bounded", "reconstruction_lite_logreg", "roc_auc_mean")
+    transfer_v2_auc = metric("ishu_to_ms_cocoai_bounded", "reconstruction_v2_logreg", "roc_auc_mean")
+    transfer_lite_auc = metric("ishu_to_ms_cocoai_bounded", "reconstruction_lite_logreg", "roc_auc_mean")
+    transfer_combined_auc = metric("ishu_to_ms_cocoai_bounded", "combined_v3_logreg", "roc_auc_mean")
+    return (
+        "reconstruction_v2_probe "
+        f"(same-domain AUC {same_v2_auc:.4f} vs reconstruction_lite {same_lite_auc:.4f}, "
+        f"delta {same_v2_auc - same_lite_auc:+.4f}; "
+        f"Ishu to MS COCOAI AUC {transfer_v2_auc:.4f} vs reconstruction_lite {transfer_lite_auc:.4f}, "
+        f"delta {transfer_v2_auc - transfer_lite_auc:+.4f}; "
+        f"transfer delta vs bounded combined_v3 {transfer_v2_auc - transfer_combined_auc:+.4f})"
+    )
+
+
+def build_claim_matrix(
+    core_results: Path,
+    tiled_dino_tradeoff: Path,
+    reconstruction_v2_probe: Path,
+) -> pd.DataFrame:
     core = pd.read_csv(core_results)
     rows = []
     for claim in CLAIMS:
@@ -319,6 +385,8 @@ def build_claim_matrix(core_results: Path, tiled_dino_tradeoff: Path) -> pd.Data
             if tiled_dino is None:
                 raise ValueError("Missing tiled-DINO tradeoff summary")
             evidence_summary = tiled_dino_evidence_summary(tiled_dino)
+        elif claim.get("evidence_summary_source") == "reconstruction_v2_probe":
+            evidence_summary = _reconstruction_v2_evidence_summary(reconstruction_v2_probe)
         else:
             evidence_summary = _evidence_summary(core, finding_ids)
         rows.append(
@@ -357,7 +425,11 @@ def main() -> None:
     args = parse_args()
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    frame = build_claim_matrix(Path(args.core_results), Path(args.tiled_dino_tradeoff))
+    frame = build_claim_matrix(
+        Path(args.core_results),
+        Path(args.tiled_dino_tradeoff),
+        Path(args.reconstruction_v2_probe),
+    )
     csv_path = out_dir / "claim_evidence_matrix.csv"
     markdown_path = out_dir / "claim_evidence_matrix.md"
     frame.to_csv(csv_path, index=False)

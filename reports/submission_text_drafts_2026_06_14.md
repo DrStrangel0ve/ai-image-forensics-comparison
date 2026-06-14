@@ -74,6 +74,7 @@ For the paper-facing `source_holdout_mean_utility_cap_0p48` policy, the weakest 
 | tiled_dino_mode_tradeoff | ready_with_caveat | DFRWS poster follow-up; WIFS/DFF robustness and calibration section. | This is derived from source-selected proxy transform stress, not an official external benchmark; do not claim tiled-DINO improves calibration universally. |
 | high_confidence_triage_is_viable | ready | DFRWS poster workflow; DFF real-world processing discussion. | Coverage is intentionally partial; this is an investigative triage mode, not full automation. |
 | combined_v4_is_ablation_candidate | ready_with_caveat | WIFS/DFF ablation roadmap; appendix feature-family caveat. | Raw v4 mainly helps transfer accuracy, while select-k60 helps transfer AUC/calibration but loses same-domain Ishu accuracy; source-slice diagnostics show the gains and losses are generator/category uneven, so keep it as an ablation rather than a headline method. |
+| reconstruction_residuals_are_source_sensitive | ready_with_caveat | DFF/WIFS reconstruction-ablation caveat; DFRWS methods appendix if space allows. | This is a bounded 160/80 Ishu probe plus Ishu to source-balanced MS COCOAI transfer; do not promote reconstruction_v2 without source-aware validation. |
 
 ## WIFS Six-Page Skeleton
 
