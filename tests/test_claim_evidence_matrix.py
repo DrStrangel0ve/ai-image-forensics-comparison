@@ -14,6 +14,7 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
     core_results = tmp_path / "publication_core_results.csv"
     tiled_dino_tradeoff = tmp_path / "tiled_dinov2_calibration_tradeoff.csv"
     reconstruction_v2_probe = tmp_path / "reconstruction_v2_probe_mean_summary.csv"
+    calibration_operating_modes = tmp_path / "calibration_operating_modes.csv"
     out_dir = tmp_path / "assets"
     finding_ids = [
         "ishu_same_combined_v3",
@@ -127,6 +128,73 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
             },
         ]
     ).to_csv(reconstruction_v2_probe, index=False)
+    pd.DataFrame(
+        [
+            {
+                "objective": "threshold_accuracy",
+                "selected_method": "Frozen CLIP ViT-B/32",
+                "selected_mode": "default_score",
+                "metric": "accuracy",
+                "metric_value": 0.6363,
+            },
+            {
+                "objective": "ranking_auc",
+                "selected_method": "Frozen CLIP ViT-B/32",
+                "selected_mode": "default_score",
+                "metric": "auc",
+                "metric_value": 0.8641,
+            },
+            {
+                "objective": "probability_brier",
+                "selected_method": "SCP-Fusion + CLIP",
+                "selected_mode": "default_score",
+                "metric": "brier",
+                "metric_value": 0.3112,
+            },
+            {
+                "objective": "reliability_ece",
+                "selected_method": "combined_v4 select-k60",
+                "selected_mode": "default_score",
+                "metric": "ece",
+                "metric_value": 0.2663,
+            },
+            {
+                "objective": "source_holdout_accuracy",
+                "selected_method": "branch_dropout",
+                "selected_mode": "temperature_balanced",
+                "metric": "mean_calibrated_accuracy",
+                "metric_value": 0.7446,
+            },
+            {
+                "objective": "source_holdout_brier",
+                "selected_method": "source_calibrated",
+                "selected_mode": "temperature_balanced",
+                "metric": "mean_calibrated_brier_score",
+                "metric_value": 0.1977,
+            },
+            {
+                "objective": "source_holdout_ece",
+                "selected_method": "source_calibrated",
+                "selected_mode": "temperature_balanced",
+                "metric": "mean_calibrated_ece",
+                "metric_value": 0.1268,
+            },
+            {
+                "objective": "tiled_dino_accuracy",
+                "selected_method": "tiled DINOv2 reverse fusion",
+                "selected_mode": "tile_max",
+                "metric": "best_accuracy_delta",
+                "metric_value": 0.0139,
+            },
+            {
+                "objective": "tiled_dino_brier",
+                "selected_method": "tiled DINOv2 reverse fusion",
+                "selected_mode": "tile_mean",
+                "metric": "best_brier_delta",
+                "metric_value": -0.0058,
+            },
+        ]
+    ).to_csv(calibration_operating_modes, index=False)
 
     subprocess.run(
         [
@@ -138,6 +206,8 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
             str(tiled_dino_tradeoff),
             "--reconstruction-v2-probe",
             str(reconstruction_v2_probe),
+            "--calibration-operating-modes",
+            str(calibration_operating_modes),
             "--out-dir",
             str(out_dir),
         ],
@@ -154,6 +224,7 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
     assert "clip_transfer_frontier" in set(frame["claim_id"])
     assert "combined_v4_is_ablation_candidate" in set(frame["claim_id"])
     assert "reconstruction_residuals_are_source_sensitive" in set(frame["claim_id"])
+    assert "operating_modes_are_objective_specific" in set(frame["claim_id"])
     assert "transform_stress_exposes_failure_modes" in set(frame["claim_id"])
     assert "tiled_dino_mode_tradeoff" in set(frame["claim_id"])
     v4_row = frame[frame["claim_id"] == "combined_v4_is_ablation_candidate"].iloc[0]
@@ -170,6 +241,11 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
     assert recon_row["primary_artifact"] == "reports/reconstruction_v2_probe_2026_06_14.md"
     assert "same-domain AUC 0.7600 vs reconstruction_lite 0.7300" in recon_row["evidence_summary"]
     assert "Ishu to MS COCOAI AUC 0.6000 vs reconstruction_lite 0.6400" in recon_row["evidence_summary"]
+    operating_row = frame[frame["claim_id"] == "operating_modes_are_objective_specific"].iloc[0]
+    assert operating_row["primary_artifact"] == "reports/calibration_operating_modes_2026_06_14.md"
+    assert "threshold_accuracy: Frozen CLIP ViT-B/32 / default_score" in operating_row["evidence_summary"]
+    assert "probability_brier: SCP-Fusion + CLIP / default_score" in operating_row["evidence_summary"]
+    assert "tiled_dino_brier: tiled DINOv2 reverse fusion / tile_mean" in operating_row["evidence_summary"]
     assert "ms_to_ishu_source_cap_accuracy" in frame["evidence_finding_ids"].str.cat(sep=",")
     assert "ms_to_ishu_tuned_fusion_native_tiling_best" in frame["evidence_finding_ids"].str.cat(sep=",")
     assert "Claim Evidence Matrix" in markdown_path.read_text(encoding="utf-8")

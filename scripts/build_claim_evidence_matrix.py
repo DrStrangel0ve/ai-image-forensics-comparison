@@ -169,6 +169,26 @@ CLAIMS = [
         ),
     },
     {
+        "claim_id": "operating_modes_are_objective_specific",
+        "claim": (
+            "No single SCP-Fusion operating mode dominates every metric: transfer ranking, threshold accuracy, "
+            "Brier score, ECE, source-heldout decisions, and tiled-DINO stress tests select different modes."
+        ),
+        "submission_use": "WIFS calibration subsection; DFF diagnostic-protocol framing; DFRWS caveat panel.",
+        "status": "ready_with_caveat",
+        "evidence_finding_ids": [],
+        "evidence_summary_source": "calibration_operating_modes",
+        "primary_artifact": "reports/calibration_operating_modes_2026_06_14.md",
+        "risk_or_caveat": (
+            "This is a synthesis of checked-in proxy and source-heldout evidence; do not turn it into a "
+            "leaderboard or universal-detector claim."
+        ),
+        "next_action": (
+            "Use frozen CLIP for transfer ranking/accuracy wording, SCP-Fusion + CLIP for probability-error "
+            "wording, combined_v4 select-k60 for ECE caveats, and source-heldout calibration for decision policy."
+        ),
+    },
+    {
         "claim_id": "transform_stress_exposes_failure_modes",
         "claim": (
             "Reverse tuned-fusion SCP-Fusion has identifiable transform failure modes: half-resolution resize and "
@@ -300,6 +320,11 @@ def parse_args() -> argparse.Namespace:
         default="reports/assets/reconstruction_v2_probe_mean_summary.csv",
         help="Mean reconstruction_v2 probe metrics used for reconstruction-ablation claim evidence.",
     )
+    parser.add_argument(
+        "--calibration-operating-modes",
+        default="reports/assets/calibration_operating_modes.csv",
+        help="Calibration operating-mode selector table used for objective-specific claim evidence.",
+    )
     parser.add_argument("--out-dir", default="reports/assets")
     return parser.parse_args()
 
@@ -371,10 +396,54 @@ def _reconstruction_v2_evidence_summary(path: Path) -> str:
     )
 
 
+def _load_calibration_operating_modes(path: Path) -> pd.DataFrame:
+    if not path.exists():
+        raise ValueError(f"Missing calibration operating modes table: {path}")
+    frame = pd.read_csv(path)
+    required = {
+        "objective",
+        "selected_method",
+        "selected_mode",
+        "metric",
+        "metric_value",
+    }
+    missing = required.difference(frame.columns)
+    if missing:
+        raise ValueError(f"calibration operating modes table missing columns: {sorted(missing)}")
+    return frame
+
+
+def _calibration_operating_modes_evidence_summary(path: Path) -> str:
+    frame = _load_calibration_operating_modes(path)
+    ordered_objectives = [
+        "threshold_accuracy",
+        "ranking_auc",
+        "probability_brier",
+        "reliability_ece",
+        "source_holdout_accuracy",
+        "source_holdout_brier",
+        "source_holdout_ece",
+        "tiled_dino_accuracy",
+        "tiled_dino_brier",
+    ]
+    parts = []
+    by_objective = frame.set_index("objective")
+    for objective in ordered_objectives:
+        if objective not in by_objective.index:
+            raise ValueError(f"Missing calibration operating-mode objective={objective!r}")
+        row = by_objective.loc[objective]
+        parts.append(
+            f"{objective}: {row['selected_method']} / {row['selected_mode']} "
+            f"({row['metric']}={float(row['metric_value']):.4f})"
+        )
+    return "calibration_operating_modes (" + "; ".join(parts) + ")"
+
+
 def build_claim_matrix(
     core_results: Path,
     tiled_dino_tradeoff: Path,
     reconstruction_v2_probe: Path,
+    calibration_operating_modes: Path,
 ) -> pd.DataFrame:
     core = pd.read_csv(core_results)
     rows = []
@@ -387,6 +456,8 @@ def build_claim_matrix(
             evidence_summary = tiled_dino_evidence_summary(tiled_dino)
         elif claim.get("evidence_summary_source") == "reconstruction_v2_probe":
             evidence_summary = _reconstruction_v2_evidence_summary(reconstruction_v2_probe)
+        elif claim.get("evidence_summary_source") == "calibration_operating_modes":
+            evidence_summary = _calibration_operating_modes_evidence_summary(calibration_operating_modes)
         else:
             evidence_summary = _evidence_summary(core, finding_ids)
         rows.append(
@@ -429,6 +500,7 @@ def main() -> None:
         Path(args.core_results),
         Path(args.tiled_dino_tradeoff),
         Path(args.reconstruction_v2_probe),
+        Path(args.calibration_operating_modes),
     )
     csv_path = out_dir / "claim_evidence_matrix.csv"
     markdown_path = out_dir / "claim_evidence_matrix.md"
