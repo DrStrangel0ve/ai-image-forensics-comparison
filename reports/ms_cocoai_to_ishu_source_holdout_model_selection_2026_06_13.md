@@ -55,10 +55,48 @@ The target Ishu labels are used only after source-side selection has chosen a ru
 | score_fusion_all6_c01_temp_balanced | 3 | 1.6764 | 1.5113 | 0.5000 | 0.6579 | 0.8323 | 0.7924 |
 | score_fusion_all6_c003 | 3 | 1.6598 | 1.4946 | 0.5017 | 0.6608 | 0.8315 | 0.7895 |
 
+## Held-Out Generator Stress
+
+The table below keeps the selected candidate for each seed fixed, then groups those selected folds by held-out generator. Lower utility and higher fake-miss rate mark the source family that stresses the policy.
+
+| selection_policy | heldout_source_name | n_seeds | source_holdout_utility_mean | source_holdout_utility_min | source_holdout_accuracy_mean | source_holdout_recall_mean | source_holdout_fake_miss_rate_mean | source_holdout_predicted_positive_rate_mean |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| source_holdout_mean_utility_cap_0p48 | sd3 | 3 | 1.4235 | 1.3500 | 0.9578 | 0.7961 | 0.2039 | 0.1325 |
+| source_holdout_mean_utility_cap_0p48 | midjourney6 | 3 | 1.6315 | 1.5652 | 0.9695 | 0.8793 | 0.1207 | 0.1551 |
+| source_holdout_mean_utility_cap_0p48 | sd21 | 3 | 1.6787 | 1.5333 | 0.9699 | 0.8981 | 0.1019 | 0.1721 |
+| source_holdout_mean_utility_cap_0p48 | sdxl | 3 | 1.8955 | 1.8364 | 0.9861 | 0.9848 | 0.0152 | 0.1818 |
+| source_holdout_mean_utility_cap_0p48 | dalle3 | 3 | 1.8955 | 1.7364 | 0.9864 | 0.9848 | 0.0152 | 0.1690 |
+| source_holdout_mean_utility_cap_0p5 | sd3 | 3 | 1.7436 | 1.7250 | 0.9718 | 0.9441 | 0.0559 | 0.1637 |
+| source_holdout_mean_utility_cap_0p5 | sd21 | 3 | 1.7792 | 1.6917 | 0.9727 | 0.9583 | 0.0417 | 0.1910 |
+| source_holdout_mean_utility_cap_0p5 | midjourney6 | 3 | 1.8092 | 1.7364 | 0.9751 | 0.9704 | 0.0296 | 0.1774 |
+| source_holdout_mean_utility_cap_0p5 | dalle3 | 3 | 1.8455 | 1.7364 | 0.9778 | 0.9848 | 0.0152 | 0.1776 |
+| source_holdout_mean_utility_cap_0p5 | sdxl | 3 | 1.8833 | 1.8500 | 0.9806 | 1.0000 | 0.0000 | 0.1926 |
+| source_holdout_mean_utility_unconstrained | sd3 | 3 | 1.7436 | 1.7250 | 0.9718 | 0.9441 | 0.0559 | 0.1637 |
+| source_holdout_mean_utility_unconstrained | sd21 | 3 | 1.7792 | 1.6917 | 0.9727 | 0.9583 | 0.0417 | 0.1910 |
+| source_holdout_mean_utility_unconstrained | midjourney6 | 3 | 1.8092 | 1.7364 | 0.9751 | 0.9704 | 0.0296 | 0.1774 |
+| source_holdout_mean_utility_unconstrained | dalle3 | 3 | 1.8455 | 1.7364 | 0.9778 | 0.9848 | 0.0152 | 0.1776 |
+| source_holdout_mean_utility_unconstrained | sdxl | 3 | 1.8833 | 1.8500 | 0.9806 | 1.0000 | 0.0000 | 0.1926 |
+| source_holdout_min_utility_cap_0p48 | sd3 | 3 | 1.4235 | 1.3500 | 0.9578 | 0.7961 | 0.2039 | 0.1325 |
+| source_holdout_min_utility_cap_0p48 | midjourney6 | 3 | 1.5952 | 1.4565 | 0.9667 | 0.8648 | 0.1352 | 0.1524 |
+| source_holdout_min_utility_cap_0p48 | sd21 | 3 | 1.6787 | 1.5333 | 0.9699 | 0.8981 | 0.1019 | 0.1721 |
+| source_holdout_min_utility_cap_0p48 | sdxl | 3 | 1.8955 | 1.8364 | 0.9861 | 0.9848 | 0.0152 | 0.1818 |
+| source_holdout_min_utility_cap_0p48 | dalle3 | 3 | 1.8955 | 1.7364 | 0.9864 | 0.9848 | 0.0152 | 0.1690 |
+| source_holdout_min_utility_cap_0p5 | sd3 | 3 | 1.7436 | 1.7250 | 0.9718 | 0.9441 | 0.0559 | 0.1637 |
+| source_holdout_min_utility_cap_0p5 | sd21 | 3 | 1.7792 | 1.6917 | 0.9727 | 0.9583 | 0.0417 | 0.1910 |
+| source_holdout_min_utility_cap_0p5 | midjourney6 | 3 | 1.8092 | 1.7364 | 0.9751 | 0.9704 | 0.0296 | 0.1774 |
+| source_holdout_min_utility_cap_0p5 | dalle3 | 3 | 1.8455 | 1.7364 | 0.9778 | 0.9848 | 0.0152 | 0.1776 |
+| source_holdout_min_utility_cap_0p5 | sdxl | 3 | 1.8833 | 1.8500 | 0.9806 | 1.0000 | 0.0000 | 0.1926 |
+| source_holdout_min_utility_unconstrained | sd3 | 3 | 1.7436 | 1.7250 | 0.9718 | 0.9441 | 0.0559 | 0.1637 |
+| source_holdout_min_utility_unconstrained | sd21 | 3 | 1.7792 | 1.6917 | 0.9727 | 0.9583 | 0.0417 | 0.1910 |
+| source_holdout_min_utility_unconstrained | midjourney6 | 3 | 1.8092 | 1.7364 | 0.9751 | 0.9704 | 0.0296 | 0.1774 |
+| source_holdout_min_utility_unconstrained | dalle3 | 3 | 1.8455 | 1.7364 | 0.9778 | 0.9848 | 0.0152 | 0.1776 |
+| source_holdout_min_utility_unconstrained | sdxl | 3 | 1.8833 | 1.8500 | 0.9806 | 1.0000 | 0.0000 | 0.1926 |
+
 ## Read
 
 Leave-one-generator-out source utility without a fake-rate cap still selects over-firing fusion heads, reaching 0.6520 target accuracy with a 0.8216 target fake-call rate.
 Adding the 0.48 source fake-rate cap recovers 0.7193 accuracy and lowers the target fake-call rate to 0.6199, but it still does not exceed the fixed capped source-threshold family.
+For the paper-facing `source_holdout_mean_utility_cap_0p48` policy, the weakest held-out generator is `sd3` with mean utility 1.4235, mean recall 0.7961, and mean fake-miss rate 0.2039.
 The best target-labeled candidate remains `score_fusion_all6_c003_source_acc_cap_0p48` at 0.7222 accuracy, but target labels are not allowed for model selection.
 The paper-facing conclusion is now sharper: source-heldout generator utility is necessary as a diagnostic, but not sufficient as a selector unless it also controls the source fake-call rate. SCP-Fusion v1 should therefore train or select against held-out-generator utility with an explicit real-image false-positive/fake-rate constraint.
 

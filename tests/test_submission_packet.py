@@ -95,6 +95,7 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "ms_to_ishu_tuned_fusion_native_tiling_best" in text
     assert "classic multi-light photometric stereo" in text
     assert "publication control suite dry run" in text
+    assert "source-heldout model selection" in text
     assert "opportunity watchlist" in text
     assert "external benchmark readiness" in text
     assert "external benchmark claim lint" in text
@@ -114,6 +115,8 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "reports/assets/sota_gap_report.csv" in set(manifest["path"])
     assert "reports/sota_gap_closure_plan_2026_06_14.md" in set(manifest["path"])
     assert "reports/assets/sota_gap_closure_plan.csv" in set(manifest["path"])
+    assert "reports/ms_cocoai_to_ishu_source_holdout_model_selection_2026_06_13.md" in set(manifest["path"])
+    assert "reports/assets/ms_cocoai_to_ishu_source_holdout_model_selection_source_summary.csv" in set(manifest["path"])
     assert "reports/robustness_failure_ranking_2026_06_14.md" in set(manifest["path"])
     assert "reports/tiled_clip_reverse_transfer_2026_06_14.md" in set(manifest["path"])
     assert "reports/assets/tiled_clip_reverse_transfer_summary.csv" in set(manifest["path"])

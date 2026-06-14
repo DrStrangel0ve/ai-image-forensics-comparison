@@ -15,6 +15,7 @@ from select_reverse_fusion_by_source_holdout import (  # noqa: E402
     load_source_metadata,
     select_candidates,
     source_decision_metrics_from_frame,
+    summarize_policy_source_holdouts,
     summarize_selection,
 )
 from select_reverse_fusion_by_source_utility import concat_selection_frames  # noqa: E402
@@ -113,6 +114,9 @@ def test_source_holdout_selection_uses_generator_folds_and_cap(tmp_path: Path) -
     unconstrained = select_candidates(folds, score_mode="mean", cap=None)
     capped = select_candidates(folds, score_mode="mean", cap=0.4)
     summary = summarize_selection(concat_selection_frames([unconstrained, capped]))
+    source_summary = summarize_policy_source_holdouts(
+        folds, concat_selection_frames([unconstrained, capped])
+    )
 
     assert len(folds["heldout_source_label"].unique()) == 2
     assert unconstrained.iloc[0]["candidate"] == "source_pretty_overfires"
@@ -122,6 +126,12 @@ def test_source_holdout_selection_uses_generator_folds_and_cap(tmp_path: Path) -
     ].iloc[0]
     assert capped_summary["target_accuracy_mean"] == 0.80
     assert capped_summary["target_predicted_positive_rate_mean"] == 0.50
+    capped_source_summary = source_summary[
+        source_summary["selection_policy"] == "source_holdout_mean_utility_cap_0p4"
+    ]
+    assert capped_source_summary["heldout_source_name"].tolist() == ["sd21", "sdxl"]
+    assert capped_source_summary["source_holdout_recall_mean"].tolist() == [0.5, 0.5]
+    assert capped_source_summary["source_holdout_fake_miss_rate_mean"].tolist() == [0.5, 0.5]
 
 
 def test_source_decision_metrics_from_frame_scores_subsets() -> None:

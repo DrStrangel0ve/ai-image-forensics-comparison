@@ -136,6 +136,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | bibliography | reports/assets/references_bib_manifest.csv | Machine-readable manifest for draft BibTeX entries. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
+| result-note | reports/ms_cocoai_to_ishu_source_holdout_model_selection_2026_06_13.md | Reverse-transfer source-heldout model-selection report with per-generator stress diagnostics. |
+| table | reports/assets/ms_cocoai_to_ishu_source_holdout_model_selection_source_summary.csv | Machine-readable held-out-generator stress summary for selected source-holdout policies. |
 | table | reports/submission_result_tables_2026_06_14.md | Copy-ready compact result tables for poster and paper drafting. |
 | table | reports/assets/submission_result_table_manifest.csv | Machine-readable manifest for compact submission result tables. |
 | table | reports/assets/submission_table_same_domain_anchor.csv | Compact same-domain anchor table. |
@@ -271,6 +273,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | bibliography | reports/assets/references_bib_manifest.csv | Machine-readable manifest for draft BibTeX entries. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
+| result-note | reports/ms_cocoai_to_ishu_source_holdout_model_selection_2026_06_13.md | Reverse-transfer source-heldout model-selection report with per-generator stress diagnostics. |
+| table | reports/assets/ms_cocoai_to_ishu_source_holdout_model_selection_source_summary.csv | Machine-readable held-out-generator stress summary for selected source-holdout policies. |
 | table | reports/submission_result_tables_2026_06_14.md | Copy-ready compact result tables for poster and paper drafting. |
 | table | reports/assets/submission_result_table_manifest.csv | Machine-readable manifest for compact submission result tables. |
 | table | reports/assets/submission_table_same_domain_anchor.csv | Compact same-domain anchor table. |
@@ -380,6 +384,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | --- | --- |
 | literature map | python scripts/build_literature_map.py |
 | draft BibTeX references | python scripts/build_references_bib.py |
+| source-heldout model selection | python scripts/select_reverse_fusion_by_source_holdout.py |
 | publication tables | python scripts/build_publication_tables.py |
 | robustness failure ranking | python scripts/build_robustness_failure_ranking.py |
 | publication figures | python scripts/build_publication_assets.py |

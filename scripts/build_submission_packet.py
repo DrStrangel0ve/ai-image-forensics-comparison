@@ -218,6 +218,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/ms_cocoai_to_ishu_source_holdout_model_selection_2026_06_13.md",
+        "type": "result-note",
+        "venues": "WIFS,DFF",
+        "purpose": "Reverse-transfer source-heldout model-selection report with per-generator stress diagnostics.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/ms_cocoai_to_ishu_source_holdout_model_selection_source_summary.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable held-out-generator stress summary for selected source-holdout policies.",
+        "required": False,
+    },
+    {
         "path": "reports/submission_result_tables_2026_06_14.md",
         "type": "table",
         "venues": "DFRWS,WIFS,DFF",
@@ -1054,6 +1068,7 @@ VENUES = [
 REGEN_COMMANDS = [
     ("literature map", "python scripts/build_literature_map.py"),
     ("draft BibTeX references", "python scripts/build_references_bib.py"),
+    ("source-heldout model selection", "python scripts/select_reverse_fusion_by_source_holdout.py"),
     ("publication tables", "python scripts/build_publication_tables.py"),
     ("robustness failure ranking", "python scripts/build_robustness_failure_ranking.py"),
     ("publication figures", "python scripts/build_publication_assets.py"),

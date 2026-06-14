@@ -31,6 +31,15 @@ SOURCE_HOLDOUT_METRICS = [
     "source_predicted_positive_rate",
 ]
 
+SOURCE_LABEL_NAMES = {
+    0: "real",
+    1: "sd21",
+    2: "sdxl",
+    3: "sd3",
+    4: "dalle3",
+    5: "midjourney6",
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -418,6 +427,70 @@ def summarize_selection(selected: pd.DataFrame) -> pd.DataFrame:
     )
 
 
+def source_label_name(source_label: int | float | str) -> str:
+    cleaned = int(source_label)
+    return SOURCE_LABEL_NAMES.get(cleaned, f"source_{cleaned}")
+
+
+def summarize_policy_source_holdouts(
+    folds: pd.DataFrame, selected: pd.DataFrame
+) -> pd.DataFrame:
+    required_folds = {
+        "candidate",
+        "seed",
+        "heldout_source_label",
+        "source_holdout_utility",
+        "source_holdout_accuracy",
+        "source_holdout_recall",
+        "source_holdout_specificity",
+        "source_holdout_fake_miss_rate",
+        "source_holdout_predicted_positive_rate",
+        "source_holdout_n_samples",
+    }
+    required_selected = {"selection_policy", "candidate", "seed"}
+    missing_folds = required_folds - set(folds.columns)
+    missing_selected = required_selected - set(selected.columns)
+    if missing_folds:
+        raise ValueError(f"Fold table is missing columns: {sorted(missing_folds)}")
+    if missing_selected:
+        raise ValueError(f"Selected table is missing columns: {sorted(missing_selected)}")
+    selected_keys = selected[["selection_policy", "candidate", "seed"]].drop_duplicates()
+    joined = folds.merge(selected_keys, on=["candidate", "seed"], how="inner")
+    rows = []
+    for (policy, source_label), group in joined.groupby(
+        ["selection_policy", "heldout_source_label"], sort=False
+    ):
+        row: dict[str, object] = {
+            "selection_policy": policy,
+            "heldout_source_label": int(source_label),
+            "heldout_source_name": source_label_name(source_label),
+            "n_seeds": int(group["seed"].nunique()),
+            "n_fold_rows": int(len(group)),
+            "selected_candidates": "; ".join(group.sort_values("seed")["candidate"].astype(str)),
+        }
+        for column in [
+            "source_holdout_utility",
+            "source_holdout_accuracy",
+            "source_holdout_recall",
+            "source_holdout_specificity",
+            "source_holdout_fake_miss_rate",
+            "source_holdout_predicted_positive_rate",
+            "source_holdout_n_samples",
+        ]:
+            values = pd.to_numeric(group[column], errors="coerce")
+            row[f"{column}_mean"] = float(values.mean())
+            row[f"{column}_std"] = float(values.std(ddof=1)) if len(values.dropna()) > 1 else 0.0
+            row[f"{column}_min"] = float(values.min())
+            row[f"{column}_max"] = float(values.max())
+        rows.append(row)
+    if not rows:
+        raise ValueError("No selected policy source-holdout rows were collected")
+    return pd.DataFrame(rows).sort_values(
+        ["selection_policy", "source_holdout_utility_mean", "heldout_source_label"],
+        ascending=[True, True, True],
+    )
+
+
 def _aggregate(frame: pd.DataFrame, group_columns: list[str], value_columns: list[str]) -> pd.DataFrame:
     rows = []
     for keys, group in frame.groupby(group_columns, dropna=False, sort=False):
@@ -442,10 +515,18 @@ def _metric_from_policy(summary: pd.DataFrame, policy: str, metric: str) -> floa
     return float(match.iloc[0][metric])
 
 
+def _worst_source_from_policy(summary: pd.DataFrame, policy: str) -> pd.Series | None:
+    match = summary[summary["selection_policy"] == policy]
+    if match.empty:
+        return None
+    return match.sort_values("source_holdout_utility_mean", ascending=True).iloc[0]
+
+
 def write_report(
     candidate_summary: pd.DataFrame,
     selected: pd.DataFrame,
     selection_summary: pd.DataFrame,
+    policy_source_summary: pd.DataFrame,
     out_path: Path,
 ) -> None:
     selection_columns = [
@@ -482,6 +563,17 @@ def write_report(
         "target_roc_auc_mean",
         "target_predicted_positive_rate_mean",
     ]
+    policy_source_columns = [
+        "selection_policy",
+        "heldout_source_name",
+        "n_seeds",
+        "source_holdout_utility_mean",
+        "source_holdout_utility_min",
+        "source_holdout_accuracy_mean",
+        "source_holdout_recall_mean",
+        "source_holdout_fake_miss_rate_mean",
+        "source_holdout_predicted_positive_rate_mean",
+    ]
     unconstrained_acc = _metric_from_policy(
         selection_summary,
         "source_holdout_mean_utility_unconstrained",
@@ -506,6 +598,9 @@ def write_report(
         ["target_accuracy_mean", "target_predicted_positive_rate_mean"],
         ascending=[False, True],
     ).iloc[0]
+    cap48_worst_source = _worst_source_from_policy(
+        policy_source_summary, "source_holdout_mean_utility_cap_0p48"
+    )
     lines = [
         "# MS COCOAI to Ishu Source-Holdout Model Selection",
         "",
@@ -530,6 +625,16 @@ def write_report(
         "",
         _markdown_table(candidate_summary.head(12), candidate_columns),
         "",
+        "## Held-Out Generator Stress",
+        "",
+        (
+            "The table below keeps the selected candidate for each seed fixed, then "
+            "groups those selected folds by held-out generator. Lower utility and "
+            "higher fake-miss rate mark the source family that stresses the policy."
+        ),
+        "",
+        _markdown_table(policy_source_summary, policy_source_columns),
+        "",
         "## Read",
         "",
     ]
@@ -547,6 +652,17 @@ def write_report(
                 f"Adding the 0.48 source fake-rate cap recovers {cap48_acc:.4f} "
                 f"accuracy and lowers the target fake-call rate to {cap48_fake_rate:.4f}, "
                 "but it still does not exceed the fixed capped source-threshold family."
+            )
+        )
+    if cap48_worst_source is not None:
+        lines.append(
+            (
+                "For the paper-facing `source_holdout_mean_utility_cap_0p48` policy, "
+                f"the weakest held-out generator is `{cap48_worst_source['heldout_source_name']}` "
+                f"with mean utility {cap48_worst_source['source_holdout_utility_mean']:.4f}, "
+                f"mean recall {cap48_worst_source['source_holdout_recall_mean']:.4f}, "
+                "and mean fake-miss rate "
+                f"{cap48_worst_source['source_holdout_fake_miss_rate_mean']:.4f}."
             )
         )
     lines.extend(
@@ -610,6 +726,7 @@ def main() -> None:
     selected = concat_selection_frames(selected_frames)
     candidate_summary = summarize_candidate_holdouts(folds)
     selection_summary = summarize_selection(selected)
+    policy_source_summary = summarize_policy_source_holdouts(folds, selected)
 
     summary_dir = Path(args.summary_dir)
     summary_dir.mkdir(parents=True, exist_ok=True)
@@ -617,16 +734,27 @@ def main() -> None:
     selected_path = summary_dir / "ms_cocoai_to_ishu_source_holdout_model_selection_selected.csv"
     summary_path = summary_dir / "ms_cocoai_to_ishu_source_holdout_model_selection_summary.csv"
     candidate_path = summary_dir / "ms_cocoai_to_ishu_source_holdout_model_selection_candidates.csv"
+    source_summary_path = (
+        summary_dir / "ms_cocoai_to_ishu_source_holdout_model_selection_source_summary.csv"
+    )
     folds.to_csv(folds_path, index=False)
     selected.to_csv(selected_path, index=False)
     selection_summary.to_csv(summary_path, index=False)
     candidate_summary.to_csv(candidate_path, index=False)
+    policy_source_summary.to_csv(source_summary_path, index=False)
     report_path = Path(args.report_path)
-    write_report(candidate_summary, selected, selection_summary, report_path)
+    write_report(
+        candidate_summary,
+        selected,
+        selection_summary,
+        policy_source_summary,
+        report_path,
+    )
     print(folds_path.resolve())
     print(selected_path.resolve())
     print(summary_path.resolve())
     print(candidate_path.resolve())
+    print(source_summary_path.resolve())
     print(report_path.resolve())
 
 
