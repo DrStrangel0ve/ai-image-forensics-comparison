@@ -183,6 +183,16 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/tiled_clip_reverse_transfer_summary.csv | Machine-readable three-seed summary for tiled CLIP reverse-transfer score modes. |
 | table | reports/assets/tiled_clip_reverse_transfer_seed_metrics.csv | Per-seed metrics for tiled CLIP reverse-transfer score modes. |
 | table | reports/assets/tiled_clip_reverse_transfer_detail.csv | Per-image scores for tiled CLIP reverse-transfer diagnostics. |
+| result-note | reports/tiled_dinov2_reverse_transfer_2026_06_14.md | Three-seed reverse-transfer diagnostic comparing global DINOv2 scores with native-tile mean/max/top-2 aggregation. |
+| table | reports/assets/tiled_dinov2_reverse_transfer_summary.csv | Machine-readable three-seed summary for tiled DINOv2 reverse-transfer score modes. |
+| table | reports/assets/tiled_dinov2_reverse_transfer_seed_metrics.csv | Per-seed metrics for tiled DINOv2 reverse-transfer score modes. |
+| table | reports/assets/tiled_dinov2_reverse_transfer_detail.csv | Per-image scores for tiled DINOv2 reverse-transfer diagnostics. |
+| result-note | reports/tiled_convnext_reverse_transfer_2026_06_14.md | Three-seed reverse-transfer diagnostic comparing global ConvNeXt scores with native-tile mean/max/top-2 aggregation. |
+| table | reports/assets/tiled_convnext_reverse_transfer_summary.csv | Machine-readable three-seed summary for tiled ConvNeXt reverse-transfer score modes. |
+| table | reports/assets/tiled_convnext_reverse_transfer_seed_metrics.csv | Per-seed metrics for tiled ConvNeXt reverse-transfer score modes. |
+| table | reports/assets/tiled_convnext_reverse_transfer_detail.csv | Per-image scores for tiled ConvNeXt reverse-transfer diagnostics. |
+| result-note | reports/tiled_foundation_reverse_transfer_comparison_2026_06_14.md | Cross-encoder tiled foundation comparison identifying the strongest accuracy and ranking aggregation modes. |
+| table | reports/assets/tiled_foundation_reverse_transfer_comparison.csv | Machine-readable CLIP/DINOv2/ConvNeXt tiled reverse-transfer comparison. |
 
 ## DFF Packet
 
@@ -264,6 +274,16 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/tiled_clip_reverse_transfer_summary.csv | Machine-readable three-seed summary for tiled CLIP reverse-transfer score modes. |
 | table | reports/assets/tiled_clip_reverse_transfer_seed_metrics.csv | Per-seed metrics for tiled CLIP reverse-transfer score modes. |
 | table | reports/assets/tiled_clip_reverse_transfer_detail.csv | Per-image scores for tiled CLIP reverse-transfer diagnostics. |
+| result-note | reports/tiled_dinov2_reverse_transfer_2026_06_14.md | Three-seed reverse-transfer diagnostic comparing global DINOv2 scores with native-tile mean/max/top-2 aggregation. |
+| table | reports/assets/tiled_dinov2_reverse_transfer_summary.csv | Machine-readable three-seed summary for tiled DINOv2 reverse-transfer score modes. |
+| table | reports/assets/tiled_dinov2_reverse_transfer_seed_metrics.csv | Per-seed metrics for tiled DINOv2 reverse-transfer score modes. |
+| table | reports/assets/tiled_dinov2_reverse_transfer_detail.csv | Per-image scores for tiled DINOv2 reverse-transfer diagnostics. |
+| result-note | reports/tiled_convnext_reverse_transfer_2026_06_14.md | Three-seed reverse-transfer diagnostic comparing global ConvNeXt scores with native-tile mean/max/top-2 aggregation. |
+| table | reports/assets/tiled_convnext_reverse_transfer_summary.csv | Machine-readable three-seed summary for tiled ConvNeXt reverse-transfer score modes. |
+| table | reports/assets/tiled_convnext_reverse_transfer_seed_metrics.csv | Per-seed metrics for tiled ConvNeXt reverse-transfer score modes. |
+| table | reports/assets/tiled_convnext_reverse_transfer_detail.csv | Per-image scores for tiled ConvNeXt reverse-transfer diagnostics. |
+| result-note | reports/tiled_foundation_reverse_transfer_comparison_2026_06_14.md | Cross-encoder tiled foundation comparison identifying the strongest accuracy and ranking aggregation modes. |
+| table | reports/assets/tiled_foundation_reverse_transfer_comparison.csv | Machine-readable CLIP/DINOv2/ConvNeXt tiled reverse-transfer comparison. |
 
 ## Regeneration Commands
 
@@ -291,6 +311,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | external benchmark claim lint | python scripts/lint_external_benchmark_claims.py |
 | SOTA gap report | python scripts/build_sota_gap_report.py |
 | SOTA gap closure plan | python scripts/build_sota_gap_closure_plan.py |
+| tiled foundation comparison | python scripts/build_tiled_foundation_comparison.py |
 | publication control suite dry run | python scripts/run_publication_control_suite.py --dry-run |
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |

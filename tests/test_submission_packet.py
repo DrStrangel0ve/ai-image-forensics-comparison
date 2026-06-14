@@ -102,6 +102,7 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "SOTA gap closure plan" in text
     assert "Do not claim SOTA" in text
     assert "robustness failure ranking" in text
+    assert "tiled foundation comparison" in text
     assert manifest["exists"].all()
     assert "reports/assets/dfrws_poster_robustness_panel.png" in set(manifest["path"])
     assert "reports/publication_control_suite_2026_06_14.md" in set(manifest["path"])
@@ -115,6 +116,12 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "reports/robustness_failure_ranking_2026_06_14.md" in set(manifest["path"])
     assert "reports/tiled_clip_reverse_transfer_2026_06_14.md" in set(manifest["path"])
     assert "reports/assets/tiled_clip_reverse_transfer_summary.csv" in set(manifest["path"])
+    assert "reports/tiled_dinov2_reverse_transfer_2026_06_14.md" in set(manifest["path"])
+    assert "reports/assets/tiled_dinov2_reverse_transfer_summary.csv" in set(manifest["path"])
+    assert "reports/tiled_convnext_reverse_transfer_2026_06_14.md" in set(manifest["path"])
+    assert "reports/assets/tiled_convnext_reverse_transfer_summary.csv" in set(manifest["path"])
+    assert "reports/tiled_foundation_reverse_transfer_comparison_2026_06_14.md" in set(manifest["path"])
+    assert "reports/assets/tiled_foundation_reverse_transfer_comparison.csv" in set(manifest["path"])
     assert "DFF" in manifest["venues"].str.cat(sep=",")
 
 

@@ -39,4 +39,10 @@ def test_sota_gap_closure_plan_prioritizes_official_benchmark_runs(tmp_path: Pat
     assert plan.iloc[0]["task_id"] == "genimage_official_split_eval"
     assert plan["rank"].is_monotonic_increasing
     assert "ntire_released_protocol_replay" in set(plan["task_id"])
+    assert (
+        plan.loc[
+            plan["task_id"] == "high_res_tiled_foundation_eval", "status"
+        ].item()
+        == "reverse_foundation_passes_complete"
+    )
     assert set(plan["status"]) >= {"implementation_next", "ready_when_data_available"}
