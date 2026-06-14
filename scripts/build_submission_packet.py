@@ -1001,6 +1001,27 @@ ARTIFACTS = [
         "purpose": "Machine-readable blur1, JPEG30, resize-half, and screenshot-style tiled-DINO fusion stress deltas.",
         "required": False,
     },
+    {
+        "path": "reports/tiled_dinov2_calibration_tradeoff_2026_06_14.md",
+        "type": "result-note",
+        "venues": "WIFS,DFF",
+        "purpose": "Calibration tradeoff report separating tiled-DINO decision/ranking gains from Brier/ECE behavior.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_dinov2_calibration_tradeoff.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable all-mode calibration deltas for tiled-DINO transform probes.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_dinov2_calibration_tradeoff_choices.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable per-transform mode choices for tiled-DINO accuracy, AUC, Brier, and ECE.",
+        "required": False,
+    },
 ]
 
 VENUES = [
@@ -1074,6 +1095,10 @@ REGEN_COMMANDS = [
     (
         "tiled DINO transform stress comparison",
         "python scripts/build_tiled_dinov2_transform_stress_comparison.py",
+    ),
+    (
+        "tiled DINO calibration tradeoff",
+        "python scripts/build_tiled_dinov2_calibration_tradeoff.py",
     ),
     ("publication control suite dry run", "python scripts/run_publication_control_suite.py --dry-run"),
     ("submission packet", "python scripts/build_submission_packet.py"),

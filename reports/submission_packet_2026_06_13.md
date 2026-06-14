@@ -234,6 +234,9 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_detail.csv | Per-seed fixed-fusion screenshot-style detail for tiled DINOv2 branch replacement. |
 | result-note | reports/tiled_dinov2_transform_stress_comparison_2026_06_14.md | Core-transform comparison of blur1, JPEG30, resize-half, and screenshot-style tiled-DINO fusion stress probes. |
 | table | reports/assets/tiled_dinov2_transform_stress_comparison.csv | Machine-readable blur1, JPEG30, resize-half, and screenshot-style tiled-DINO fusion stress deltas. |
+| result-note | reports/tiled_dinov2_calibration_tradeoff_2026_06_14.md | Calibration tradeoff report separating tiled-DINO decision/ranking gains from Brier/ECE behavior. |
+| table | reports/assets/tiled_dinov2_calibration_tradeoff.csv | Machine-readable all-mode calibration deltas for tiled-DINO transform probes. |
+| table | reports/assets/tiled_dinov2_calibration_tradeoff_choices.csv | Machine-readable per-transform mode choices for tiled-DINO accuracy, AUC, Brier, and ECE. |
 
 ## DFF Packet
 
@@ -366,6 +369,9 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_detail.csv | Per-seed fixed-fusion screenshot-style detail for tiled DINOv2 branch replacement. |
 | result-note | reports/tiled_dinov2_transform_stress_comparison_2026_06_14.md | Core-transform comparison of blur1, JPEG30, resize-half, and screenshot-style tiled-DINO fusion stress probes. |
 | table | reports/assets/tiled_dinov2_transform_stress_comparison.csv | Machine-readable blur1, JPEG30, resize-half, and screenshot-style tiled-DINO fusion stress deltas. |
+| result-note | reports/tiled_dinov2_calibration_tradeoff_2026_06_14.md | Calibration tradeoff report separating tiled-DINO decision/ranking gains from Brier/ECE behavior. |
+| table | reports/assets/tiled_dinov2_calibration_tradeoff.csv | Machine-readable all-mode calibration deltas for tiled-DINO transform probes. |
+| table | reports/assets/tiled_dinov2_calibration_tradeoff_choices.csv | Machine-readable per-transform mode choices for tiled-DINO accuracy, AUC, Brier, and ECE. |
 
 ## Regeneration Commands
 
@@ -400,6 +406,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | tiled DINO JPEG30 fusion robustness | python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant jpeg30 --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_jpeg30_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2_2026_06_14.md |
 | tiled DINO screenshot fusion robustness | python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant screenshot --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_screenshot_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_2026_06_14.md |
 | tiled DINO transform stress comparison | python scripts/build_tiled_dinov2_transform_stress_comparison.py |
+| tiled DINO calibration tradeoff | python scripts/build_tiled_dinov2_calibration_tradeoff.py |
 | publication control suite dry run | python scripts/run_publication_control_suite.py --dry-run |
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |
