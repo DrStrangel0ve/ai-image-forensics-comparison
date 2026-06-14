@@ -59,6 +59,11 @@ FIGURE_PACKAGE = [
         "Target transforms separate ranking robustness from fake-call-rate stability.",
     ),
     (
+        "Held-out generator stress",
+        "reports/assets/source_holdout_generator_stress.png",
+        "The capped source-heldout policy is weakest on the SD3 source family.",
+    ),
+    (
         "Failure cases seed 17",
         "reports/assets/qualitative_seed17_scp_fusion_false_negatives.png",
         "Qualitative misses for forensic discussion.",

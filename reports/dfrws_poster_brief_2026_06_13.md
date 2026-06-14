@@ -64,6 +64,7 @@ For the paper-facing `source_holdout_mean_utility_cap_0p48` policy, the weakest 
 | Calibration and triage | reports/assets/publication_triage_operating_points.png | High-confidence triage is more defensible than forcing every image into a binary decision. |
 | Reverse transfer | reports/assets/publication_reverse_operating_points.png | Source-aware operating points improve binary decisions under generator shift. |
 | Robustness stress panel | reports/assets/publication_reverse_transform_robustness.png | Target transforms separate ranking robustness from fake-call-rate stability. |
+| Held-out generator stress | reports/assets/source_holdout_generator_stress.png | The capped source-heldout policy is weakest on the SD3 source family. |
 | Failure cases seed 17 | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Qualitative misses for forensic discussion. |
 | Failure cases seed 29 | reports/assets/qualitative_seed29_scp_fusion_false_negatives.png | Second-seed repeatability check for confident generated-image misses. |
 

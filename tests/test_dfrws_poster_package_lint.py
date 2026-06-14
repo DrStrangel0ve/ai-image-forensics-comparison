@@ -22,6 +22,7 @@ def test_dfrws_poster_package_lint_passes_generated_fixture(tmp_path: Path) -> N
     for script in [
         "build_dfrws_poster_brief.py",
         "build_dfrws_poster_figures.py",
+        "build_source_stress_figure.py",
         "source_stress_utils.py",
         "tiled_dino_tradeoff_utils.py",
     ]:
@@ -103,6 +104,27 @@ def test_dfrws_poster_package_lint_passes_generated_fixture(tmp_path: Path) -> N
             ]
         ]
     ).to_csv(tiled_dino_tradeoff, index=False)
+    source_stress_summary = assets_dir / "ms_cocoai_to_ishu_source_holdout_model_selection_source_summary.csv"
+    pd.DataFrame(
+        [
+            {
+                "selection_policy": "source_holdout_mean_utility_cap_0p48",
+                "heldout_source_name": "sd3",
+                "source_holdout_utility_mean": 1.42,
+                "source_holdout_recall_mean": 0.7961,
+                "source_holdout_fake_miss_rate_mean": 0.2039,
+                "source_holdout_predicted_positive_rate_mean": 0.13,
+            },
+            {
+                "selection_policy": "source_holdout_mean_utility_cap_0p48",
+                "heldout_source_name": "sdxl",
+                "source_holdout_utility_mean": 1.89,
+                "source_holdout_recall_mean": 0.98,
+                "source_holdout_fake_miss_rate_mean": 0.02,
+                "source_holdout_predicted_positive_rate_mean": 0.21,
+            },
+        ]
+    ).to_csv(source_stress_summary, index=False)
 
     for relative in [
         "reports/assets/publication_score_fusion_clip_frontier.png",
@@ -114,6 +136,22 @@ def test_dfrws_poster_package_lint_passes_generated_fixture(tmp_path: Path) -> N
     ]:
         _write_image(repo_root / relative, (160, 100))
 
+    subprocess.run(
+        [
+            sys.executable,
+            str(scripts_dir / "build_source_stress_figure.py"),
+            "--source-summary",
+            "reports/assets/ms_cocoai_to_ishu_source_holdout_model_selection_source_summary.csv",
+            "--out-dir",
+            "reports/assets",
+            "--report-out",
+            "reports/source_holdout_generator_stress_2026_06_14.md",
+            "--dpi",
+            "90",
+        ],
+        cwd=repo_root,
+        check=True,
+    )
     subprocess.run(
         [
             sys.executable,
@@ -199,6 +237,7 @@ def test_dfrws_poster_package_lint_passes_generated_fixture(tmp_path: Path) -> N
     assert "poster key numbers match canonical results" in checks["check"].tolist()
     assert "transfer panel CSV matches canonical results" in checks["check"].tolist()
     assert "brief tiled-DINO phrase present: tile_max" in checks["check"].tolist()
+    assert "brief figure package files exist" in checks["check"].tolist()
     assert "poster draft PPTX is nontrivial" in checks["check"].tolist()
 
 
