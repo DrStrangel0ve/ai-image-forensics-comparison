@@ -49,6 +49,8 @@ The AEROBLADE-lite reconstruction proxy is also exposed as a standalone `reconst
 
 A bounded three-seed Ishu probe is summarized in [reports/reconstruction_lite_probe_2026_06_14.md](reports/reconstruction_lite_probe_2026_06_14.md). In that small 160/80 split sanity check, `reconstruction_lite` trails `combined_v3` on mean accuracy/AUC but remains useful as an auxiliary reconstruction-signal branch to test in transfer and fusion.
 
+The matching bounded Ishu -> source-balanced MS COCOAI transfer probe is summarized in [reports/reconstruction_lite_transfer_probe_2026_06_14.md](reports/reconstruction_lite_transfer_probe_2026_06_14.md). In that diagnostic, `reconstruction_lite` beats the bounded `combined_v3` model on mean transfer accuracy/AUC and calibration, supporting reconstruction residuals as a transfer/fusion branch rather than a standalone same-domain replacement.
+
 ## Setup
 
 From this repo root:
