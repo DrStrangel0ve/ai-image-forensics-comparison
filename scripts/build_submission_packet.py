@@ -365,6 +365,13 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/assets/latex_tables/method_family_comparison.tex",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "LaTeX fragment for the method-family comparison table.",
+        "required": True,
+    },
+    {
         "path": "reports/assets/latex_tables/source_holdout_stress.tex",
         "type": "table",
         "venues": "WIFS,DFF",

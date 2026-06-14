@@ -16,6 +16,7 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     source_dir = tmp_path / "assets"
     source_dir.mkdir()
     manifest_path = source_dir / "submission_result_table_manifest.csv"
+    method_family_path = source_dir / "method_family_comparison.csv"
     table_ids = [
         "same_domain_anchor",
         "transfer_frontier",
@@ -65,6 +66,17 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
             "n_rows": [2] * len(table_ids),
         }
     ).to_csv(manifest_path, index=False)
+    pd.DataFrame(
+        {
+            "scenario_id": ["forward_transfer_ishu_to_ms"],
+            "scenario": ["Ishu -> MS COCOAI Transfer"],
+            "criterion": ["best_auc"],
+            "criterion_label": ["Best AUC"],
+            "winner_family": ["frozen foundation"],
+            "finding_id": ["ishu_to_ms_clip_standalone"],
+            "method": ["Frozen CLIP ViT-B/32"],
+        }
+    ).to_csv(method_family_path, index=False)
 
     subprocess.run(
         [
@@ -72,6 +84,8 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
             str(ROOT / "scripts" / "build_submission_latex_tables.py"),
             "--table-manifest",
             str(manifest_path),
+            "--method-family-comparison",
+            str(method_family_path),
             "--out-dir",
             str(out_dir),
             "--report-out",
@@ -85,9 +99,10 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     same_tex = (out_dir / "same_domain_anchor.tex").read_text(encoding="utf-8")
     robustness_tex = (out_dir / "robustness_stress.tex").read_text(encoding="utf-8")
     source_tex = (out_dir / "source_holdout_stress.tex").read_text(encoding="utf-8")
+    family_tex = (out_dir / "method_family_comparison.tex").read_text(encoding="utf-8")
     report = report_out.read_text(encoding="utf-8")
 
-    assert set(latex_manifest["table_id"]) == set(table_ids)
+    assert set(latex_manifest["table_id"]) == set(table_ids) | {"method_family_comparison"}
     assert "\\begin{table}[t]" in same_tex
     assert "\\toprule" in same_tex
     assert "combined\\_v3" in same_tex
@@ -95,4 +110,6 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     assert "-0.010" in robustness_tex
     assert "sd3" in source_tex
     assert "tab:source-holdout-stress" in source_tex
+    assert "tab:method-family-comparison" in family_tex
+    assert "CLIP" in family_tex
     assert "Submission LaTeX Tables" in report

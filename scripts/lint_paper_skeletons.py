@@ -104,7 +104,15 @@ def _lint_one_skeleton(repo_root: Path, row: pd.Series) -> list[dict[str, object
     graphics_paths = _extract_paths(r"\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}", text)
     inputs_ok, inputs_detail = _paths_exist(repo_root, input_paths)
     figures_ok, figures_detail = _paths_exist(repo_root, graphics_paths)
-    _add_check(checks, paper_id, "table input paths exist", inputs_ok and len(input_paths) >= 5, inputs_detail)
+    _add_check(checks, paper_id, "table input paths exist", inputs_ok and len(input_paths) >= 6, inputs_detail)
+    method_family_table = "reports/assets/latex_tables/method_family_comparison.tex"
+    _add_check(
+        checks,
+        paper_id,
+        "method family table referenced",
+        method_family_table in input_paths,
+        "method-family LaTeX table input present" if method_family_table in input_paths else "missing",
+    )
     source_stress_table = "reports/assets/latex_tables/source_holdout_stress.tex"
     _add_check(
         checks,

@@ -32,6 +32,7 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
     )
 
     table_paths = [
+        "reports/assets/latex_tables/method_family_comparison.tex",
         "reports/assets/latex_tables/same_domain_anchor.tex",
         "reports/assets/latex_tables/transfer_frontier.tex",
         "reports/assets/latex_tables/reverse_operating_points.tex",
@@ -126,5 +127,6 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
     assert "claim count matches manifest" in checks["check"].str.cat(sep=" ")
     assert "citation keys exist in references.bib" in checks["check"].str.cat(sep=" ")
     assert "no TODO placeholders" in checks["check"].str.cat(sep=" ")
+    assert "method family table referenced" in checks["check"].str.cat(sep=" ")
     assert "source stress table referenced" in checks["check"].str.cat(sep=" ")
     assert "source stress figure referenced" in checks["check"].str.cat(sep=" ")

@@ -87,7 +87,7 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-15",
         "item": "LaTeX tables and bibliography",
         "status": "ready_asset",
-        "paths": "reports/assets/latex_tables/same_domain_anchor.tex; reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/latex_tables/robustness_stress.tex; reports/assets/latex_tables/source_holdout_stress.tex; references.bib",
+        "paths": "reports/assets/latex_tables/method_family_comparison.tex; reports/assets/latex_tables/same_domain_anchor.tex; reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/latex_tables/robustness_stress.tex; reports/assets/latex_tables/source_holdout_stress.tex; references.bib",
         "action": "Pull compact tables and references into the paper template; verify final citation metadata before submission.",
     },
     {
@@ -132,7 +132,7 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-16",
         "item": "SCP-Fusion diagnostic framing",
         "status": "writing_needed",
-        "paths": "reports/paper_section_drafts_2026_06_14.md; reports/submission_text_drafts_2026_06_14.md; reports/method_family_comparison_2026_06_14.md",
+        "paths": "reports/paper_section_drafts_2026_06_14.md; reports/submission_text_drafts_2026_06_14.md; reports/method_family_comparison_2026_06_14.md; reports/assets/latex_tables/method_family_comparison.tex",
         "action": "Keep SCP-Fusion framed as a diagnostic protocol, not as a universal replacement for frozen CLIP.",
     },
     {

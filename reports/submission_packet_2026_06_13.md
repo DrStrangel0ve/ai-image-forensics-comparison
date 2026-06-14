@@ -164,6 +164,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/latex_tables/transfer_frontier.tex | LaTeX fragment for the Ishu-to-MS-COCOAI transfer frontier table. |
 | table | reports/assets/latex_tables/reverse_operating_points.tex | LaTeX fragment for the reverse operating point table. |
 | table | reports/assets/latex_tables/robustness_stress.tex | LaTeX fragment for the robustness stress table. |
+| table | reports/assets/latex_tables/method_family_comparison.tex | LaTeX fragment for the method-family comparison table. |
 | table | reports/assets/latex_tables/source_holdout_stress.tex | LaTeX fragment for the held-out generator stress table. |
 | paper-draft | reports/submission_paper_skeletons_2026_06_14.md | Report listing generated WIFS/DFF paper skeletons. |
 | paper-draft | reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv | Machine-readable manifest for generated WIFS/DFF paper skeletons. |
@@ -309,6 +310,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/latex_tables/transfer_frontier.tex | LaTeX fragment for the Ishu-to-MS-COCOAI transfer frontier table. |
 | table | reports/assets/latex_tables/reverse_operating_points.tex | LaTeX fragment for the reverse operating point table. |
 | table | reports/assets/latex_tables/robustness_stress.tex | LaTeX fragment for the robustness stress table. |
+| table | reports/assets/latex_tables/method_family_comparison.tex | LaTeX fragment for the method-family comparison table. |
 | table | reports/assets/latex_tables/source_holdout_stress.tex | LaTeX fragment for the held-out generator stress table. |
 | paper-draft | reports/submission_paper_skeletons_2026_06_14.md | Report listing generated WIFS/DFF paper skeletons. |
 | paper-draft | reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv | Machine-readable manifest for generated WIFS/DFF paper skeletons. |

@@ -1,0 +1,26 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Method-family winners by local scenario and criterion.}
+\label{tab:method-family-comparison}
+\begin{tabular}{p{0.20\linewidth} p{0.18\linewidth} p{0.19\linewidth} p{0.30\linewidth}}
+\toprule
+Scenario & Criterion & Family & Winner \\
+\midrule
+Same-domain & Accuracy & physics-guided neural & Physics-guided \\
+Same-domain & AUC & physics-guided neural & Physics-guided \\
+Forward transfer & Accuracy & frozen foundation & CLIP \\
+Forward transfer & AUC & frozen foundation & CLIP \\
+Forward transfer & Brier & score/source fusion & SCP-Fusion + CLIP \\
+Forward transfer & ECE & physical/signal conventional & combined\_v4 k60 \\
+Forward transfer & Fake gap & physics-guided neural & Physics-guided \\
+Forward triage & Decided acc. & frozen foundation & CLIP triage \\
+Forward triage & Coverage & frozen foundation & CLIP triage \\
+Reverse transfer & Accuracy & score/source fusion & Native-tiled v3 \\
+Reverse transfer & AUC & score/source fusion & Native-tiled v3 \\
+Reverse transfer & Brier & score/source fusion & Source-utility cap \\
+Reverse transfer & ECE & physics-guided neural & Physics-guided \\
+Reverse transfer & Fake gap & score/source fusion & Clean cap 0.40 \\
+\bottomrule
+\end{tabular}
+\end{table}

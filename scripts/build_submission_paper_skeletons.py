@@ -33,6 +33,7 @@ PAPER_SPECS = [
 ]
 
 TABLE_INPUTS = [
+    ("reports/assets/latex_tables/method_family_comparison.tex", "method-family comparison table"),
     ("reports/assets/latex_tables/same_domain_anchor.tex", "same-domain anchor table"),
     ("reports/assets/latex_tables/transfer_frontier.tex", "transfer frontier table"),
     ("reports/assets/latex_tables/reverse_operating_points.tex", "reverse operating point table"),
