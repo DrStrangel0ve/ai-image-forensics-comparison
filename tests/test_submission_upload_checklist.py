@@ -51,6 +51,8 @@ def test_submission_upload_checklist_writes_status_summary(tmp_path: Path) -> No
     assert "seed-29 false-negative grid" in text
     assert "paper-critical breadth stance" in text
     assert "Freeze the WIFS experimental scope" in text
+    assert "Use the WIFS assembly map" in text
+    assert "Use the DFF assembly map" in text
 
 
 def _write_all_referenced_files(repo_root: Path) -> None:

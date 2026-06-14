@@ -78,8 +78,8 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-15",
         "item": "paper prose sections",
         "status": "writing_needed",
-        "paths": "reports/paper_section_drafts_2026_06_14.md; reports/paper_section_drafts_lint_2026_06_14.md; reports/method_family_comparison_2026_06_14.md",
-        "action": "Merge generated sections into a compact WIFS draft; keep caveats about CLIP, single-image physics, and native tiling.",
+        "paths": "reports/manuscript_assembly_map_2026_06_14.md; reports/assets/manuscript_assembly_map.csv; reports/paper_section_drafts_2026_06_14.md; reports/paper_section_drafts_lint_2026_06_14.md; reports/method_family_comparison_2026_06_14.md",
+        "action": "Use the WIFS assembly map to merge generated sections into a compact draft; keep caveats about CLIP, single-image physics, and native tiling.",
     },
     {
         "venue_key": "WIFS",
@@ -132,8 +132,8 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-16",
         "item": "SCP-Fusion diagnostic framing",
         "status": "writing_needed",
-        "paths": "reports/paper_section_drafts_2026_06_14.md; reports/submission_text_drafts_2026_06_14.md; reports/method_family_comparison_2026_06_14.md; reports/assets/latex_tables/method_family_comparison.tex",
-        "action": "Keep SCP-Fusion framed as a diagnostic protocol, not as a universal replacement for frozen CLIP.",
+        "paths": "reports/manuscript_assembly_map_2026_06_14.md; reports/assets/manuscript_assembly_map.csv; reports/paper_section_drafts_2026_06_14.md; reports/submission_text_drafts_2026_06_14.md; reports/method_family_comparison_2026_06_14.md; reports/assets/latex_tables/method_family_comparison.tex",
+        "action": "Use the DFF assembly map to expand SCP-Fusion as a diagnostic protocol, not as a universal replacement for frozen CLIP.",
     },
     {
         "venue_key": "DFF",

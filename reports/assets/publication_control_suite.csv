@@ -40,8 +40,9 @@ order,asset,command,status,returncode,elapsed_seconds
 39,DFRWS poster panels,python scripts/build_dfrws_poster_figures.py,planned,0,0.0
 40,DFRWS poster package lint,python scripts/lint_dfrws_poster_package.py,planned,0,0.0
 41,WIFS breadth decision,python scripts/build_wifs_breadth_decision.py,planned,0,0.0
-42,publication control suite dry run,python scripts/run_publication_control_suite.py --dry-run,planned,0,0.0
-43,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
-44,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
-45,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
-46,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0
+42,manuscript assembly map,python scripts/build_manuscript_assembly_map.py,planned,0,0.0
+43,publication control suite dry run,python scripts/run_publication_control_suite.py --dry-run,planned,0,0.0
+44,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
+45,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
+46,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
+47,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0

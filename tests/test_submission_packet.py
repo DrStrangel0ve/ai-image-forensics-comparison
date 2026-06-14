@@ -109,6 +109,7 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "tiled foundation fusion comparison" in text
     assert "dfrws_qualitative_grid_selection" in text
     assert "wifs_breadth_decision" in text
+    assert "manuscript_assembly_map" in text
     assert manifest["exists"].all()
     assert "reports/assets/dfrws_poster_robustness_panel.png" in set(manifest["path"])
     assert "reports/publication_control_suite_2026_06_14.md" in set(manifest["path"])
@@ -165,6 +166,8 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "reports/assets/dfrws_qualitative_grid_selection.csv" in set(manifest["path"])
     assert "reports/wifs_breadth_decision_2026_06_14.md" in set(manifest["path"])
     assert "reports/assets/wifs_breadth_decision.csv" in set(manifest["path"])
+    assert "reports/manuscript_assembly_map_2026_06_14.md" in set(manifest["path"])
+    assert "reports/assets/manuscript_assembly_map.csv" in set(manifest["path"])
     assert "DFF" in manifest["venues"].str.cat(sep=",")
 
 
