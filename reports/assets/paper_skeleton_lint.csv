@@ -17,8 +17,8 @@ wifs_2026,citation keys exist in references.bib,True,13 cited keys found
 wifs_2026,no TODO placeholders,True,0 TODO markers in tex; manifest records 0
 wifs_2026,draft prose sections populated,True,manifest records 5 draft prose sections
 wifs_2026,claim checklist present,True,present
-wifs_2026,claim count matches manifest,True,6 items; manifest expects 6
-wifs_2026,claim items include evidence and caveats,True,"6 evidence markers, 6 caveat markers"
+wifs_2026,claim count matches manifest,True,7 items; manifest expects 7
+wifs_2026,claim items include evidence and caveats,True,"7 evidence markers, 7 caveat markers"
 wifs_2026,guardrail term present: single-image proxy,True,present
 wifs_2026,guardrail term present: does not universally beat CLIP,True,present
 wifs_2026,guardrail term present: robustness transform caveat,True,present
@@ -39,8 +39,8 @@ dff_2026,citation keys exist in references.bib,True,13 cited keys found
 dff_2026,no TODO placeholders,True,0 TODO markers in tex; manifest records 0
 dff_2026,draft prose sections populated,True,manifest records 6 draft prose sections
 dff_2026,claim checklist present,True,present
-dff_2026,claim count matches manifest,True,7 items; manifest expects 7
-dff_2026,claim items include evidence and caveats,True,"7 evidence markers, 7 caveat markers"
+dff_2026,claim count matches manifest,True,8 items; manifest expects 8
+dff_2026,claim items include evidence and caveats,True,"8 evidence markers, 8 caveat markers"
 dff_2026,guardrail term present: single-image proxy,True,present
 dff_2026,guardrail term present: does not universally beat CLIP,True,present
 dff_2026,guardrail term present: robustness transform caveat,True,present

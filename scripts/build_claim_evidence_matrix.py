@@ -167,6 +167,33 @@ CLAIMS = [
         ),
     },
     {
+        "claim_id": "transform_stress_exposes_failure_modes",
+        "claim": (
+            "Reverse tuned-fusion SCP-Fusion has identifiable transform failure modes: half-resolution resize and "
+            "blur hurt ranking most, while harsh JPEG hurts default decisions most."
+        ),
+        "submission_use": "DFRWS robustness panel; WIFS/DFF robustness and failure-analysis section.",
+        "status": "ready_with_caveat",
+        "evidence_finding_ids": [
+            "ms_to_ishu_tuned_fusion_constraint_sweep_best",
+            "ms_to_ishu_tuned_fusion_resize_half",
+            "ms_to_ishu_tuned_fusion_blur1",
+            "ms_to_ishu_tuned_fusion_screenshot",
+            "ms_to_ishu_tuned_fusion_jpeg30",
+            "ms_to_ishu_tuned_fusion_noise3",
+            "ms_to_ishu_tuned_fusion_social_square",
+        ],
+        "primary_artifact": "reports/robustness_failure_ranking_2026_06_14.md",
+        "risk_or_caveat": (
+            "This is source-selected proxy transform stress, not an official NTIRE/ImageCLEF challenge score or "
+            "a universal robustness claim."
+        ),
+        "next_action": (
+            "Use resize, blur, screenshot, and JPEG30 as failure examples; write noise/social gains as bounded "
+            "proxy observations only."
+        ),
+    },
+    {
         "claim_id": "high_confidence_triage_is_viable",
         "claim": (
             "Strict source-heldout two-threshold triage can provide high-accuracy decisions on a subset of target images "

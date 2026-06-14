@@ -10,9 +10,9 @@ This scorecard is deliberately conservative: `ready_to_polish` means the checked
 
 | venue | deadline | days_left | packet_status | artifacts | lint_reports | lint_checks | claims | next_action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DFRWS-USA 2026 poster/demo | 2026-07-07 | 23 | ready_to_polish | 30/30 | 3/3 | 83/83 | ready 3, caveated 3, needs 0 | Finalize poster layout, choose one qualitative grid, and export the final PDF/poster image. |
-| IEEE WIFS 2026 paper | 2026-07-15 | 31 | ready_to_polish | 45/45 | 4/4 | 166/166 | ready 2, caveated 4, needs 0 | Draft the 6-page paper, keep claims conservative, and add only one paper-critical breadth check. |
-| DFF-2026 ACM Multimedia workshop | 2026-07-16 | 32 | ready_to_polish | 45/45 | 4/4 | 166/166 | ready 3, caveated 4, needs 0 | Turn failure grids and source-slice diagnostics into a short explainability/failure-analysis section. |
+| DFRWS-USA 2026 poster/demo | 2026-07-07 | 23 | ready_to_polish | 30/30 | 3/3 | 83/83 | ready 3, caveated 4, needs 0 | Finalize poster layout, choose one qualitative grid, and export the final PDF/poster image. |
+| IEEE WIFS 2026 paper | 2026-07-15 | 31 | ready_to_polish | 45/45 | 4/4 | 166/166 | ready 2, caveated 5, needs 0 | Draft the 6-page paper, keep claims conservative, and add only one paper-critical breadth check. |
+| DFF-2026 ACM Multimedia workshop | 2026-07-16 | 32 | ready_to_polish | 45/45 | 4/4 | 166/166 | ready 3, caveated 5, needs 0 | Turn failure grids and source-slice diagnostics into a short explainability/failure-analysis section. |
 
 ## Quality-Control Reports
 

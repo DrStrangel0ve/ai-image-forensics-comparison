@@ -89,9 +89,13 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
     frame = pd.read_csv(csv_path)
     assert "clip_transfer_frontier" in set(frame["claim_id"])
     assert "combined_v4_is_ablation_candidate" in set(frame["claim_id"])
+    assert "transform_stress_exposes_failure_modes" in set(frame["claim_id"])
     v4_row = frame[frame["claim_id"] == "combined_v4_is_ablation_candidate"].iloc[0]
     assert v4_row["status"] == "ready_with_caveat"
     assert "ishu_to_ms_combined_v4_selectk60" in v4_row["evidence_finding_ids"]
+    stress_row = frame[frame["claim_id"] == "transform_stress_exposes_failure_modes"].iloc[0]
+    assert stress_row["primary_artifact"] == "reports/robustness_failure_ranking_2026_06_14.md"
+    assert "ms_to_ishu_tuned_fusion_resize_half" in stress_row["evidence_finding_ids"]
     assert "ms_to_ishu_source_cap_accuracy" in frame["evidence_finding_ids"].str.cat(sep=",")
     assert "ms_to_ishu_tuned_fusion_native_tiling_best" in frame["evidence_finding_ids"].str.cat(sep=",")
     assert "Claim Evidence Matrix" in markdown_path.read_text(encoding="utf-8")
