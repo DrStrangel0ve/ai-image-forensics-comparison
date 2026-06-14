@@ -194,6 +194,26 @@ CLAIMS = [
         ),
     },
     {
+        "claim_id": "tiled_dino_mode_tradeoff",
+        "claim": (
+            "Tiled-DINO branch replacement is mode-sensitive: `tile_max` improves fused decision/ranking under "
+            "core transform stress, while `tile_mean` is safer for calibration diagnostics."
+        ),
+        "submission_use": "DFRWS poster follow-up; WIFS/DFF robustness and calibration section.",
+        "status": "ready_with_caveat",
+        "evidence_finding_ids": [],
+        "evidence_summary_source": "tiled_dino_tradeoff",
+        "primary_artifact": "reports/tiled_dinov2_calibration_tradeoff_2026_06_14.md",
+        "risk_or_caveat": (
+            "This is derived from source-selected proxy transform stress, not an official external benchmark; "
+            "do not claim tiled-DINO improves calibration universally."
+        ),
+        "next_action": (
+            "Use `tile_max` for decision/ranking robustness headlines, use `tile_mean` for Brier/ECE discussion, "
+            "and keep official benchmark claims separate."
+        ),
+    },
+    {
         "claim_id": "high_confidence_triage_is_viable",
         "claim": (
             "Strict source-heldout two-threshold triage can provide high-accuracy decisions on a subset of target images "
@@ -248,6 +268,11 @@ def parse_args() -> argparse.Namespace:
         default="reports/assets/publication_core_results.csv",
         help="Generated core result table with finding_id rows.",
     )
+    parser.add_argument(
+        "--tiled-dino-tradeoff",
+        default="reports/assets/tiled_dinov2_calibration_tradeoff.csv",
+        help="Tiled-DINO calibration tradeoff table used for artifact-backed claim evidence.",
+    )
     parser.add_argument("--out-dir", default="reports/assets")
     return parser.parse_args()
 
@@ -270,6 +295,49 @@ def _format_metric(row: pd.Series) -> str:
     return f"{row['finding_id']} ({row['method']}: {metrics})"
 
 
+def _bool_count(series: pd.Series) -> int:
+    return int(series.astype(str).str.lower().isin(["true", "1", "yes"]).sum())
+
+
+def _signed_metric(value: float) -> str:
+    return f"{float(value):+.4f}"
+
+
+def _tiled_dino_evidence_summary(tradeoff_path: Path) -> str:
+    tradeoff = pd.read_csv(tradeoff_path)
+    required = {
+        "variant",
+        "score_mode",
+        "target_accuracy_mean_delta_vs_global",
+        "target_roc_auc_mean_delta_vs_global",
+        "target_brier_score_mean_improved_vs_global",
+        "target_expected_calibration_error_mean_improved_vs_global",
+    }
+    missing = required - set(tradeoff.columns)
+    if missing:
+        raise ValueError(f"Missing tiled-DINO tradeoff columns: {sorted(missing)}")
+    n_transforms = int(tradeoff["variant"].nunique())
+    mode_means = (
+        tradeoff.groupby("score_mode", as_index=True)[
+            ["target_accuracy_mean_delta_vs_global", "target_roc_auc_mean_delta_vs_global"]
+        ]
+        .mean()
+        .to_dict("index")
+    )
+    for mode in ["tile_max", "tile_mean"]:
+        if mode not in mode_means:
+            raise ValueError(f"Missing tiled-DINO score_mode={mode!r}")
+    tile_mean = tradeoff[tradeoff["score_mode"].eq("tile_mean")]
+    return (
+        "tiled_dinov2_calibration_tradeoff "
+        f"(tile_max: mean acc_delta={_signed_metric(mode_means['tile_max']['target_accuracy_mean_delta_vs_global'])}, "
+        f"mean AUC_delta={_signed_metric(mode_means['tile_max']['target_roc_auc_mean_delta_vs_global'])} "
+        f"across {n_transforms} transform-stress probes; "
+        f"tile_mean: Brier improves on {_bool_count(tile_mean['target_brier_score_mean_improved_vs_global'])}/{n_transforms}, "
+        f"ECE improves on {_bool_count(tile_mean['target_expected_calibration_error_mean_improved_vs_global'])}/{n_transforms})"
+    )
+
+
 def _evidence_summary(core_results: pd.DataFrame, finding_ids: list[str]) -> str:
     if not finding_ids:
         return "Tracked outside the generated core result table."
@@ -282,16 +350,20 @@ def _evidence_summary(core_results: pd.DataFrame, finding_ids: list[str]) -> str
     return "; ".join(rows)
 
 
-def build_claim_matrix(core_results: Path) -> pd.DataFrame:
+def build_claim_matrix(core_results: Path, tiled_dino_tradeoff: Path) -> pd.DataFrame:
     core = pd.read_csv(core_results)
     rows = []
     for claim in CLAIMS:
         finding_ids = claim["evidence_finding_ids"]
+        if claim.get("evidence_summary_source") == "tiled_dino_tradeoff":
+            evidence_summary = _tiled_dino_evidence_summary(tiled_dino_tradeoff)
+        else:
+            evidence_summary = _evidence_summary(core, finding_ids)
         rows.append(
             {
                 **claim,
                 "evidence_finding_ids": ",".join(finding_ids),
-                "evidence_summary": _evidence_summary(core, finding_ids),
+                "evidence_summary": evidence_summary,
             }
         )
     return pd.DataFrame(rows, columns=COLUMNS)
@@ -308,7 +380,7 @@ def write_markdown(frame: pd.DataFrame, path: Path) -> None:
     lines = [
         "# Claim Evidence Matrix",
         "",
-        "Generated by `scripts/build_claim_evidence_matrix.py` from `reports/assets/publication_core_results.csv`.",
+        "Generated by `scripts/build_claim_evidence_matrix.py` from `reports/assets/publication_core_results.csv` and artifact-backed diagnostic tables.",
         "",
         "| " + " | ".join(headers) + " |",
         "| " + " | ".join(["---"] * len(headers)) + " |",
@@ -323,7 +395,7 @@ def main() -> None:
     args = parse_args()
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    frame = build_claim_matrix(Path(args.core_results))
+    frame = build_claim_matrix(Path(args.core_results), Path(args.tiled_dino_tradeoff))
     csv_path = out_dir / "claim_evidence_matrix.csv"
     markdown_path = out_dir / "claim_evidence_matrix.md"
     frame.to_csv(csv_path, index=False)

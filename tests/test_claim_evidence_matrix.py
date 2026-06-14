@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) -> None:
     core_results = tmp_path / "publication_core_results.csv"
+    tiled_dino_tradeoff = tmp_path / "tiled_dinov2_calibration_tradeoff.csv"
     out_dir = tmp_path / "assets"
     finding_ids = [
         "ishu_same_combined_v3",
@@ -67,6 +68,24 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
             "interpretation": ["interpretation"] * len(finding_ids),
         }
     ).to_csv(core_results, index=False)
+    pd.DataFrame(
+        [
+            {
+                "variant": variant,
+                "score_mode": score_mode,
+                "target_accuracy_mean_delta_vs_global": acc_delta,
+                "target_roc_auc_mean_delta_vs_global": auc_delta,
+                "target_brier_score_mean_improved_vs_global": brier_improved,
+                "target_expected_calibration_error_mean_improved_vs_global": ece_improved,
+            }
+            for variant in ["blur1", "jpeg30"]
+            for score_mode, acc_delta, auc_delta, brier_improved, ece_improved in [
+                ("global", 0.0, 0.0, False, False),
+                ("tile_mean", 0.002, 0.004, True, True),
+                ("tile_max", 0.014, 0.016, False, False),
+            ]
+        ]
+    ).to_csv(tiled_dino_tradeoff, index=False)
 
     subprocess.run(
         [
@@ -74,6 +93,8 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
             str(ROOT / "scripts" / "build_claim_evidence_matrix.py"),
             "--core-results",
             str(core_results),
+            "--tiled-dino-tradeoff",
+            str(tiled_dino_tradeoff),
             "--out-dir",
             str(out_dir),
         ],
@@ -90,12 +111,17 @@ def test_claim_evidence_matrix_validates_and_writes_artifacts(tmp_path: Path) ->
     assert "clip_transfer_frontier" in set(frame["claim_id"])
     assert "combined_v4_is_ablation_candidate" in set(frame["claim_id"])
     assert "transform_stress_exposes_failure_modes" in set(frame["claim_id"])
+    assert "tiled_dino_mode_tradeoff" in set(frame["claim_id"])
     v4_row = frame[frame["claim_id"] == "combined_v4_is_ablation_candidate"].iloc[0]
     assert v4_row["status"] == "ready_with_caveat"
     assert "ishu_to_ms_combined_v4_selectk60" in v4_row["evidence_finding_ids"]
     stress_row = frame[frame["claim_id"] == "transform_stress_exposes_failure_modes"].iloc[0]
     assert stress_row["primary_artifact"] == "reports/robustness_failure_ranking_2026_06_14.md"
     assert "ms_to_ishu_tuned_fusion_resize_half" in stress_row["evidence_finding_ids"]
+    tiled_row = frame[frame["claim_id"] == "tiled_dino_mode_tradeoff"].iloc[0]
+    assert tiled_row["primary_artifact"] == "reports/tiled_dinov2_calibration_tradeoff_2026_06_14.md"
+    assert "tile_max: mean acc_delta=+0.0140" in tiled_row["evidence_summary"]
+    assert "tile_mean: Brier improves on 2/2" in tiled_row["evidence_summary"]
     assert "ms_to_ishu_source_cap_accuracy" in frame["evidence_finding_ids"].str.cat(sep=",")
     assert "ms_to_ishu_tuned_fusion_native_tiling_best" in frame["evidence_finding_ids"].str.cat(sep=",")
     assert "Claim Evidence Matrix" in markdown_path.read_text(encoding="utf-8")

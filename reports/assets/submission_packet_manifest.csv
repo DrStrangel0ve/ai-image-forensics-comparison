@@ -43,13 +43,13 @@ reports/assets/latex_tables/reverse_operating_points.tex,table,"WIFS,DFF",LaTeX 
 reports/assets/latex_tables/robustness_stress.tex,table,"WIFS,DFF",LaTeX fragment for the robustness stress table.,True,True,999
 reports/submission_paper_skeletons_2026_06_14.md,paper-draft,"WIFS,DFF",Report listing generated WIFS/DFF paper skeletons.,True,True,1281
 reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv,paper-draft,"WIFS,DFF",Machine-readable manifest for generated WIFS/DFF paper skeletons.,True,True,750
-reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex,paper-draft,WIFS,"IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures.",True,True,12727
-reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex,paper-draft,DFF,"ACM-style DFF workshop skeleton with generated abstract, tables, and figures.",True,True,14554
+reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex,paper-draft,WIFS,"IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures.",True,True,13214
+reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex,paper-draft,DFF,"ACM-style DFF workshop skeleton with generated abstract, tables, and figures.",True,True,15041
 reports/paper_skeleton_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF paper skeleton structure, referenced assets, and claim guardrails.",False,True,3637
 reports/assets/paper_skeleton_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF paper skeleton lint checks.,False,True,2971
-reports/assets/claim_evidence_matrix.csv,claim-audit,"DFRWS,WIFS,DFF",Machine-readable claim-to-evidence map with caveats and next actions.,True,True,18858
-reports/assets/claim_evidence_matrix.md,claim-audit,"DFRWS,WIFS,DFF",Readable claim-to-evidence map for authoring and review.,True,True,19177
-reports/submission_text_drafts_2026_06_14.md,writing,"DFRWS,WIFS,DFF","Venue-specific abstracts, contribution wording, result sentences, and paper skeletons.",True,True,13617
+reports/assets/claim_evidence_matrix.csv,claim-audit,"DFRWS,WIFS,DFF",Machine-readable claim-to-evidence map with caveats and next actions.,True,True,19694
+reports/assets/claim_evidence_matrix.md,claim-audit,"DFRWS,WIFS,DFF",Readable claim-to-evidence map for authoring and review.,True,True,20063
+reports/submission_text_drafts_2026_06_14.md,writing,"DFRWS,WIFS,DFF","Venue-specific abstracts, contribution wording, result sentences, and paper skeletons.",True,True,13895
 reports/assets/submission_text_drafts_word_counts.csv,writing,"DFRWS,WIFS,DFF","Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts.",True,True,99
 reports/paper_section_drafts_2026_06_14.md,writing,"WIFS,DFF","Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats.",True,True,7490
 reports/assets/paper_section_draft_manifest.csv,writing,"WIFS,DFF",Machine-readable section word counts and caveat/metric flags for generated paper prose drafts.,True,True,325
@@ -57,7 +57,7 @@ reports/paper_section_drafts_lint_2026_06_14.md,quality-control,"WIFS,DFF","Gene
 reports/assets/paper_section_drafts_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF section prose lint checks.,False,True,4448
 reports/submission_package_lint_2026_06_14.md,quality-control,"DFRWS,WIFS,DFF","Generated lint report for missing packet assets, abstract word counts, and overclaim language.",False,True,2609
 reports/assets/submission_package_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable submission package lint checks.,False,True,2126
-reports/dfrws_poster_brief_2026_06_13.md,poster,DFRWS,"Poster spine, key numbers, figure package, and overclaim warnings.",True,True,11831
+reports/dfrws_poster_brief_2026_06_13.md,poster,DFRWS,"Poster spine, key numbers, figure package, and overclaim warnings.",True,True,12109
 reports/assets/dfrws_poster_key_numbers.csv,poster,DFRWS,Compact poster-leading key number table.,True,True,5972
 reports/dfrws_poster_native_figures_2026_06_13.md,poster,DFRWS,Large-label poster figure pack with transfer and robustness panels.,True,True,1523
 reports/assets/dfrws_poster_transfer_panel.png,figure,DFRWS,Poster-native transfer headline panel.,True,True,216751
