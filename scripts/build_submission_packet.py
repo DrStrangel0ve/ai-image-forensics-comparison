@@ -939,17 +939,66 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/tiled_dinov2_screenshot_reverse_transfer_2026_06_14.md",
+        "type": "result-note",
+        "venues": "WIFS,DFF",
+        "purpose": "Screenshot-style robustness probe for tiled DINOv2 reverse-transfer score aggregation.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_dinov2_screenshot_reverse_transfer_summary.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable summary for screenshot-style tiled DINOv2 reverse-transfer score modes.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_dinov2_screenshot_reverse_transfer_seed_metrics.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Per-seed metrics for screenshot-style tiled DINOv2 reverse-transfer score modes.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_dinov2_screenshot_reverse_transfer_detail.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Per-image screenshot-style tiled DINOv2 scores for robustness diagnostics.",
+        "required": False,
+    },
+    {
+        "path": "reports/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_2026_06_14.md",
+        "type": "result-note",
+        "venues": "WIFS,DFF",
+        "purpose": "Fixed reverse SCP-Fusion screenshot-style robustness diagnostic after replacing the DINOv2 target branch with tiled target scores.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_summary.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable fixed-fusion screenshot-style summary for tiled DINOv2 branch replacement.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_detail.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Per-seed fixed-fusion screenshot-style detail for tiled DINOv2 branch replacement.",
+        "required": False,
+    },
+    {
         "path": "reports/tiled_dinov2_transform_stress_comparison_2026_06_14.md",
         "type": "result-note",
         "venues": "WIFS,DFF",
-        "purpose": "Two-transform comparison of blur1 and resize-half tiled-DINO fusion stress probes.",
+        "purpose": "Core-transform comparison of blur1, JPEG30, resize-half, and screenshot-style tiled-DINO fusion stress probes.",
         "required": False,
     },
     {
         "path": "reports/assets/tiled_dinov2_transform_stress_comparison.csv",
         "type": "table",
         "venues": "WIFS,DFF",
-        "purpose": "Machine-readable blur1 and resize-half tiled-DINO fusion stress deltas.",
+        "purpose": "Machine-readable blur1, JPEG30, resize-half, and screenshot-style tiled-DINO fusion stress deltas.",
         "required": False,
     },
 ]
@@ -1017,6 +1066,10 @@ REGEN_COMMANDS = [
     (
         "tiled DINO JPEG30 fusion robustness",
         "python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant jpeg30 --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_jpeg30_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2_2026_06_14.md",
+    ),
+    (
+        "tiled DINO screenshot fusion robustness",
+        "python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant screenshot --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_screenshot_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_2026_06_14.md",
     ),
     (
         "tiled DINO transform stress comparison",
@@ -1195,7 +1248,7 @@ def build_submission_packet(repo_root: Path, core_results: Path, claim_matrix: P
         "- Do not claim classic multi-light photometric stereo; the current physical branch is a single-image proxy.",
         "- Do not claim SCP-Fusion universally beats frozen CLIP; CLIP is still the transfer-ranking frontier in the current evidence.",
         "- Do not claim SOTA or NTIRE/ImageCLEF leaderboard placement; the checked SOTA-gap report separates official results from local proxy evidence.",
-        "- Treat native/foundation tiling as bounded diagnostic evidence; clean, blur, JPEG30, and resize-half stress gains are small and transform coverage is still incomplete.",
+        "- Treat native/foundation tiling as bounded diagnostic evidence; clean and core-transform stress gains are small and external benchmark coverage is still incomplete.",
         "- Keep `combined_v4` as an ablation unless source-aware feature selection or stronger regularization changes the transfer gate.",
         "",
     ]

@@ -225,8 +225,15 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | result-note | reports/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_2026_06_14.md | Fixed reverse SCP-Fusion resize-half robustness diagnostic after replacing the DINOv2 target branch with tiled target scores. |
 | table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_summary.csv | Machine-readable fixed-fusion resize-half summary for tiled DINOv2 branch replacement. |
 | table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_detail.csv | Per-seed fixed-fusion resize-half detail for tiled DINOv2 branch replacement. |
-| result-note | reports/tiled_dinov2_transform_stress_comparison_2026_06_14.md | Two-transform comparison of blur1 and resize-half tiled-DINO fusion stress probes. |
-| table | reports/assets/tiled_dinov2_transform_stress_comparison.csv | Machine-readable blur1 and resize-half tiled-DINO fusion stress deltas. |
+| result-note | reports/tiled_dinov2_screenshot_reverse_transfer_2026_06_14.md | Screenshot-style robustness probe for tiled DINOv2 reverse-transfer score aggregation. |
+| table | reports/assets/tiled_dinov2_screenshot_reverse_transfer_summary.csv | Machine-readable summary for screenshot-style tiled DINOv2 reverse-transfer score modes. |
+| table | reports/assets/tiled_dinov2_screenshot_reverse_transfer_seed_metrics.csv | Per-seed metrics for screenshot-style tiled DINOv2 reverse-transfer score modes. |
+| table | reports/assets/tiled_dinov2_screenshot_reverse_transfer_detail.csv | Per-image screenshot-style tiled DINOv2 scores for robustness diagnostics. |
+| result-note | reports/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_2026_06_14.md | Fixed reverse SCP-Fusion screenshot-style robustness diagnostic after replacing the DINOv2 target branch with tiled target scores. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_summary.csv | Machine-readable fixed-fusion screenshot-style summary for tiled DINOv2 branch replacement. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_detail.csv | Per-seed fixed-fusion screenshot-style detail for tiled DINOv2 branch replacement. |
+| result-note | reports/tiled_dinov2_transform_stress_comparison_2026_06_14.md | Core-transform comparison of blur1, JPEG30, resize-half, and screenshot-style tiled-DINO fusion stress probes. |
+| table | reports/assets/tiled_dinov2_transform_stress_comparison.csv | Machine-readable blur1, JPEG30, resize-half, and screenshot-style tiled-DINO fusion stress deltas. |
 
 ## DFF Packet
 
@@ -350,8 +357,15 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | result-note | reports/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_2026_06_14.md | Fixed reverse SCP-Fusion resize-half robustness diagnostic after replacing the DINOv2 target branch with tiled target scores. |
 | table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_summary.csv | Machine-readable fixed-fusion resize-half summary for tiled DINOv2 branch replacement. |
 | table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_detail.csv | Per-seed fixed-fusion resize-half detail for tiled DINOv2 branch replacement. |
-| result-note | reports/tiled_dinov2_transform_stress_comparison_2026_06_14.md | Two-transform comparison of blur1 and resize-half tiled-DINO fusion stress probes. |
-| table | reports/assets/tiled_dinov2_transform_stress_comparison.csv | Machine-readable blur1 and resize-half tiled-DINO fusion stress deltas. |
+| result-note | reports/tiled_dinov2_screenshot_reverse_transfer_2026_06_14.md | Screenshot-style robustness probe for tiled DINOv2 reverse-transfer score aggregation. |
+| table | reports/assets/tiled_dinov2_screenshot_reverse_transfer_summary.csv | Machine-readable summary for screenshot-style tiled DINOv2 reverse-transfer score modes. |
+| table | reports/assets/tiled_dinov2_screenshot_reverse_transfer_seed_metrics.csv | Per-seed metrics for screenshot-style tiled DINOv2 reverse-transfer score modes. |
+| table | reports/assets/tiled_dinov2_screenshot_reverse_transfer_detail.csv | Per-image screenshot-style tiled DINOv2 scores for robustness diagnostics. |
+| result-note | reports/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_2026_06_14.md | Fixed reverse SCP-Fusion screenshot-style robustness diagnostic after replacing the DINOv2 target branch with tiled target scores. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_summary.csv | Machine-readable fixed-fusion screenshot-style summary for tiled DINOv2 branch replacement. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_detail.csv | Per-seed fixed-fusion screenshot-style detail for tiled DINOv2 branch replacement. |
+| result-note | reports/tiled_dinov2_transform_stress_comparison_2026_06_14.md | Core-transform comparison of blur1, JPEG30, resize-half, and screenshot-style tiled-DINO fusion stress probes. |
+| table | reports/assets/tiled_dinov2_transform_stress_comparison.csv | Machine-readable blur1, JPEG30, resize-half, and screenshot-style tiled-DINO fusion stress deltas. |
 
 ## Regeneration Commands
 
@@ -384,6 +398,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | tiled DINO resize-half fusion robustness | python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant resize_half --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_resize_half_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_2026_06_14.md |
 | tiled DINO blur1 fusion robustness | python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant blur1 --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_blur1_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_blur1_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_blur1_tiled_dinov2_2026_06_14.md |
 | tiled DINO JPEG30 fusion robustness | python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant jpeg30 --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_jpeg30_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2_2026_06_14.md |
+| tiled DINO screenshot fusion robustness | python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant screenshot --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_screenshot_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_2026_06_14.md |
 | tiled DINO transform stress comparison | python scripts/build_tiled_dinov2_transform_stress_comparison.py |
 | publication control suite dry run | python scripts/run_publication_control_suite.py --dry-run |
 | submission packet | python scripts/build_submission_packet.py |
@@ -396,5 +411,5 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 - Do not claim classic multi-light photometric stereo; the current physical branch is a single-image proxy.
 - Do not claim SCP-Fusion universally beats frozen CLIP; CLIP is still the transfer-ranking frontier in the current evidence.
 - Do not claim SOTA or NTIRE/ImageCLEF leaderboard placement; the checked SOTA-gap report separates official results from local proxy evidence.
-- Treat native/foundation tiling as bounded diagnostic evidence; clean, blur, JPEG30, and resize-half stress gains are small and transform coverage is still incomplete.
+- Treat native/foundation tiling as bounded diagnostic evidence; clean and core-transform stress gains are small and external benchmark coverage is still incomplete.
 - Keep `combined_v4` as an ablation unless source-aware feature selection or stronger regularization changes the transfer gate.

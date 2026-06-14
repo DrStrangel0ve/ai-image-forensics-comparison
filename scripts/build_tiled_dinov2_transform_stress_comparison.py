@@ -8,7 +8,7 @@ import pandas as pd
 
 RUN_DATE = "2026-06-14"
 
-DEFAULT_VARIANTS = ["blur1", "jpeg30", "resize_half"]
+DEFAULT_VARIANTS = ["blur1", "jpeg30", "resize_half", "screenshot"]
 
 
 def parse_args() -> argparse.Namespace:
@@ -179,7 +179,7 @@ def build_report(comparison: pd.DataFrame) -> str:
             f"{best_auc['accuracy_delta_for_best_auc']:+.4f} accuracy)."
         ),
         "",
-        "Checked transforms show modest accuracy/AUC improvements from tiled-DINO fusion, but calibration is mixed: Brier improves for blur1 and JPEG30 `tile_mean`, while the best accuracy/AUC modes can increase ECE or fake-call rate. Treat this as robustness support for the ranking/decision branch, not a calibration upgrade.",
+        "Checked transforms show modest accuracy/AUC improvements from tiled-DINO fusion, but calibration is mixed: Brier usually improves for `tile_mean`, while the best accuracy/AUC modes can increase ECE or fake-call rate. Treat this as robustness support for the ranking/decision branch, not a calibration upgrade.",
         "",
         "## Comparison",
         "",
@@ -187,9 +187,9 @@ def build_report(comparison: pd.DataFrame) -> str:
         "",
         "## Interpretation",
         "",
-        "- `tile_max` is currently the strongest transformed-target fusion mode for all three checked transforms.",
-        "- Standalone tiled DINO remains weak under all three checked transforms; the gain appears only when DINO is fused with physical/conventional and other neural/foundation branches.",
-        "- Screenshot-style transformed tiled-DINO probes are still needed before promoting this beyond a three-transform diagnostic.",
+        "- `tile_max` is currently the strongest transformed-target fusion mode for all checked transforms.",
+        "- Standalone tiled DINO remains weak under the checked transforms; the gain appears only when DINO is fused with physical/conventional and other neural/foundation branches.",
+        "- The remaining high-resolution tiling gap is no longer these proxy transforms; it is official or paper-compatible external high-resolution benchmark evidence.",
         "",
     ]
     return "\n".join(lines)
