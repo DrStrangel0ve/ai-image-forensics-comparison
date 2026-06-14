@@ -39,6 +39,7 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
     ]
     figure_paths = [
         "reports/assets/publication_score_fusion_clip_frontier.png",
+        "reports/assets/source_holdout_generator_stress.png",
         "reports/assets/publication_triage_operating_points.png",
         "reports/assets/publication_reverse_operating_points.png",
         "reports/assets/qualitative_seed17_scp_fusion_false_negatives.png",
@@ -60,8 +61,10 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
                 "Abstract.",
                 r"\end{abstract}",
                 r"Related work seed \cite{universal_fake_detectors_2023}.",
+                r"Figure~\ref{fig:source-stress} shows the held-out generator stress view.",
                 *[rf"\input{{{path}}}" for path in table_paths],
                 *[rf"\includegraphics[width=\linewidth]{{{path}}}" for path in figure_paths],
+                r"\label{fig:source-stress}",
                 r"\section{Claim-Evidence Checklist}",
                 r"\begin{itemize}",
                 (
@@ -122,3 +125,4 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
     assert "claim count matches manifest" in checks["check"].str.cat(sep=" ")
     assert "citation keys exist in references.bib" in checks["check"].str.cat(sep=" ")
     assert "no TODO placeholders" in checks["check"].str.cat(sep=" ")
+    assert "source stress figure referenced" in checks["check"].str.cat(sep=" ")

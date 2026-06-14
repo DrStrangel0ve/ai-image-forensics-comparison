@@ -10,7 +10,7 @@
 \maketitle
 
 \begin{abstract}
-AI-generated image detection is commonly reported as closed-set accuracy, yet forensic deployment requires stable ranking, calibration, and operating points under generator shift. We evaluate this gap with a repeated-seed benchmark spanning conventional physical/signal features, ResNet-18, physics-guided feature fusion, frozen foundation encoders, and score-level SCP-Fusion. On Ishu same-domain splits, 'combined\_v3' and ResNet-18 tie at 0.8246 and 0.8246 accuracy, while physics-guided fusion improves to 0.8450 accuracy and 0.9177 AUC. Under Ishu to source-balanced MS COCOAI transfer, frozen CLIP is the strongest standalone ranker at 0.8641 AUC, whereas fusion variants expose calibration and fake-call-rate shifts. In the reverse direction, source-capped tuned fusion reaches 0.7632 accuracy and 0.8361 AUC with a 0.5175 target fake-call rate. A tiled-DINO probe adds a mode-specific robustness rule: 'tile\_max' gives +0.0139 accuracy and +0.0147 AUC average deltas, while 'tile\_mean' is the safer Brier/ECE diagnostic. These results support reporting AI-image forensics as a source-heldout evaluation problem with separate ranking, calibration, thresholding, and triage evidence.
+AI-generated image detection is commonly reported as closed-set accuracy, yet forensic deployment requires stable ranking, calibration, and operating points under generator shift. We evaluate this gap with a repeated-seed benchmark spanning conventional physical/signal features, ResNet-18, physics-guided feature fusion, frozen foundation encoders, and score-level SCP-Fusion. On Ishu same-domain splits, 'combined\_v3' and ResNet-18 tie at 0.8246 and 0.8246 accuracy, while physics-guided fusion improves to 0.8450 accuracy and 0.9177 AUC. Under Ishu to source-balanced MS COCOAI transfer, frozen CLIP is the strongest standalone ranker at 0.8641 AUC, whereas fusion variants expose calibration and fake-call-rate shifts. In the reverse direction, source-capped tuned fusion reaches 0.7632 accuracy and 0.8361 AUC with a 0.5175 target fake-call rate. Per-generator source stress flags 'sd3' as the weakest held-out generator for the capped policy, with 0.7961 recall and 0.2039 fake-miss rate. A tiled-DINO probe adds a mode-specific robustness rule: 'tile\_max' gives +0.0139 accuracy and +0.0147 AUC average deltas, while 'tile\_mean' is the safer Brier/ECE diagnostic. These results support reporting AI-image forensics as a source-heldout evaluation problem with separate ranking, calibration, thresholding, and triage evidence.
 \end{abstract}
 
 \section{Introduction}
@@ -24,7 +24,7 @@ Reconstruction, spectral, high-resolution, and compression-bias studies motivate
 Physics-informed generated-image work motivates keeping the single-image physical/signal branch while avoiding claims of true multi-light photometric stereo or reflectance-law estimation \cite{photometric_faces_2023,light2lie_2026}.
 
 \section{Data and Audit}
-The current submission package centers on two audited evaluation directions. Ishu AI-vs-real provides repeated same-domain splits for comparing 'combined\_v3', ResNet-18, physics-guided fusion, frozen encoders, and saved-score fusion. Source-balanced MS COCOAI provides generator source labels for cross-domain and source-aware validation with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney-style generated subsets represented in the exported metadata. Dataset commands, audits, and artifact manifests are part of the public repo so that results can be traced back to specific exports rather than opaque benchmark names. The paper should state that raw datasets and large model artifacts are external, while reports, prediction-derived tables, figures, manifests, and reproduction commands are checked in.
+The current submission package centers on two audited evaluation directions. Ishu AI-vs-real provides repeated same-domain splits for comparing 'combined\_v3', ResNet-18, physics-guided fusion, frozen encoders, and saved-score fusion. Source-balanced MS COCOAI provides generator source labels for cross-domain and source-aware validation with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney-style generated subsets represented in the exported metadata. Dataset commands, audits, and artifact manifests are part of the public repo so that results can be traced back to specific exports rather than opaque benchmark names. The paper should state that raw datasets and large model artifacts are external, while reports, prediction-derived tables, figures, manifests, and reproduction commands are checked in. The source-holdout stress table adds a generator-level audit: for the paper-facing capped policy, 'sd3' is currently the weakest held-out generator, with 0.7961 recall and 0.2039 fake-miss rate.
 
 \section{Methods}
 The compared methods are intentionally heterogeneous. 'combined\_v3' measures single-image physical/signal features such as pseudo-normal consistency, noise residuals, JPEG/block cues, frequency balance, and chroma consistency. ResNet-18 is the conventional neural baseline. The physics-guided model fuses a ResNet image embedding with standardized 'combined\_v3' features, which is the practical physics-informed route for single-image datasets. Frozen ConvNeXt, DINOv2, and CLIP encoders test whether broad pretrained representations transfer better than task-trained detectors. SCP-Fusion combines saved branch scores and evaluates source-aware calibration, branch constraints, and threshold policies, reporting AUC, accuracy, Brier score, ECE, fake-call rate, and partial triage coverage instead of a single headline metric.
@@ -33,7 +33,7 @@ The compared methods are intentionally heterogeneous. 'combined\_v3' measures si
 Experiments are organized around repeated seeds, same-domain anchors, cross-domain transfer, source-heldout generator validation, calibration metrics, high-confidence triage, and robustness transforms. Tables below are generated from the checked-in result assets.
 
 \section{Results}
-Same-domain Ishu results show why the physical branch is worth keeping: physics-guided fusion improves from the tied 'combined\_v3'/ResNet-18 accuracy of 0.8246 to 0.8450 accuracy and 0.9177 AUC. Cross-domain transfer changes the ranking: frozen CLIP reaches 0.6363 accuracy and 0.8641 AUC on Ishu to source-balanced MS COCOAI, ahead of all-foundation SCP-Fusion at 0.6163 accuracy and 0.7995 AUC. The triage result is more operationally useful than a forced threshold: CLIP decides 0.4747 of target images at 0.9261 decided-case accuracy. In the reverse direction, source-capped tuned fusion reaches 0.7632 accuracy and 0.8361 AUC, and the bounded native-tiled conventional branch diagnostic improves that to 0.7749 accuracy and 0.8472 AUC. Robustness remains mixed: social-style 720p processing is comparatively stable at 0.7602 accuracy and 0.8506 AUC, while JPEG30 and blur expose weaker operating points at 0.7076 and 0.7105 accuracy. A tiled-DINO follow-up gives 'tile\_max' average deltas of +0.0139 accuracy and +0.0147 AUC across 4 stress probes, while 'tile\_mean' improves Brier on 4/4 and ECE on 3/4 probes.
+Same-domain Ishu results show why the physical branch is worth keeping: physics-guided fusion improves from the tied 'combined\_v3'/ResNet-18 accuracy of 0.8246 to 0.8450 accuracy and 0.9177 AUC. Cross-domain transfer changes the ranking: frozen CLIP reaches 0.6363 accuracy and 0.8641 AUC on Ishu to source-balanced MS COCOAI, ahead of all-foundation SCP-Fusion at 0.6163 accuracy and 0.7995 AUC. The triage result is more operationally useful than a forced threshold: CLIP decides 0.4747 of target images at 0.9261 decided-case accuracy. In the reverse direction, source-capped tuned fusion reaches 0.7632 accuracy and 0.8361 AUC, and the bounded native-tiled conventional branch diagnostic improves that to 0.7749 accuracy and 0.8472 AUC. Robustness remains mixed: social-style 720p processing is comparatively stable at 0.7602 accuracy and 0.8506 AUC, while JPEG30 and blur expose weaker operating points at 0.7076 and 0.7105 accuracy. Held-out-generator stress adds a source-specific failure handle: 'sd3' is the weakest capped source-holdout generator at 0.7961 recall and 0.2039 fake-miss rate. A tiled-DINO follow-up gives 'tile\_max' average deltas of +0.0139 accuracy and +0.0147 AUC across 4 stress probes, while 'tile\_mean' improves Brier on 4/4 and ECE on 3/4 probes.
 
 The following generated table fragments are checked into the repository and can be edited for space.
 
@@ -50,34 +50,43 @@ The following generated table fragments are checked into the repository and can 
 \input{reports/assets/latex_tables/robustness_stress.tex}
 
 \section{Figures and Failure Analysis}
-The figure package emphasizes transfer ranking, high-confidence triage, reverse operating points, and generated-image misses. The final venue draft should keep two or three main figures and move the rest to an appendix if space is tight.
+The figure package emphasizes transfer ranking, high-confidence triage, reverse operating points, held-out generator stress, and generated-image misses. The final venue draft should keep two or three main figures and move the rest to an appendix if space is tight.
+
+Figure~\ref{fig:source-stress} turns the source-holdout audit into a manuscript-facing stress view, making the SD3 weak point visible beside aggregate transfer and robustness numbers.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{reports/assets/publication_score_fusion_clip_frontier.png}
 \caption{CLIP transfer frontier and all-foundation SCP-Fusion comparison.}
-\label{fig:submission-figure-1}
+\label{fig:clip-frontier}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{reports/assets/source_holdout_generator_stress.png}
+\caption{Held-out-generator stress for the source-capped policy; SD3 is currently the weakest source family.}
+\label{fig:source-stress}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{reports/assets/publication_triage_operating_points.png}
 \caption{High-confidence source-heldout triage operating points.}
-\label{fig:submission-figure-2}
+\label{fig:triage-operating-points}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{reports/assets/publication_reverse_operating_points.png}
 \caption{Reverse-direction source-aware operating points.}
-\label{fig:submission-figure-3}
+\label{fig:reverse-operating-points}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{reports/assets/qualitative_seed17_scp_fusion_false_negatives.png}
 \caption{Representative generated-image misses for failure analysis.}
-\label{fig:submission-figure-4}
+\label{fig:false-negative-grid}
 \end{figure}
 
 \section{Claim-Evidence Checklist}

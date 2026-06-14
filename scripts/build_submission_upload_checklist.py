@@ -96,7 +96,7 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-15",
         "item": "figures",
         "status": "ready_asset",
-        "paths": "reports/assets/publication_score_fusion_clip_frontier.png; reports/assets/publication_triage_operating_points.png; reports/assets/publication_reverse_operating_points.png; reports/assets/publication_reverse_transform_robustness.png",
+        "paths": "reports/assets/publication_score_fusion_clip_frontier.png; reports/assets/source_holdout_generator_stress.png; reports/assets/publication_triage_operating_points.png; reports/assets/publication_reverse_operating_points.png; reports/assets/publication_reverse_transform_robustness.png",
         "action": "Use a compact figure set; avoid overcrowding the 6-page paper.",
     },
     {
@@ -141,7 +141,7 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-16",
         "item": "failure-analysis material",
         "status": "ready_asset",
-        "paths": "reports/assets/qualitative_seed17_scp_fusion_false_negatives.png; reports/assets/qualitative_seed29_scp_fusion_false_negatives.png; reports/combined_v4_source_slice_diagnostics_2026_06_13.md",
+        "paths": "reports/assets/qualitative_seed17_scp_fusion_false_negatives.png; reports/assets/qualitative_seed29_scp_fusion_false_negatives.png; reports/combined_v4_source_slice_diagnostics_2026_06_13.md; reports/source_holdout_generator_stress_2026_06_14.md; reports/assets/source_holdout_generator_stress.png",
         "action": "Use qualitative grids and source-slice diagnostics for the workshop failure-analysis section.",
     },
     {

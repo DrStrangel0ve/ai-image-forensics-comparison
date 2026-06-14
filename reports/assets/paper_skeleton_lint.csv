@@ -10,7 +10,8 @@ wifs_2026,contains \end{abstract},True,present
 wifs_2026,contains \end{document},True,present
 wifs_2026,contains \bibliography{references},True,present
 wifs_2026,table input paths exist,True,4 paths present
-wifs_2026,figure paths exist,True,4 paths present
+wifs_2026,figure paths exist,True,5 paths present
+wifs_2026,source stress figure referenced,True,"source stress figure path, label, and text reference present"
 wifs_2026,references.bib exists,True,references.bib present
 wifs_2026,citation count matches manifest,True,3 cite commands; manifest expects 3
 wifs_2026,citation keys exist in references.bib,True,13 cited keys found
@@ -32,7 +33,8 @@ dff_2026,contains \end{abstract},True,present
 dff_2026,contains \end{document},True,present
 dff_2026,contains \bibliography{references},True,present
 dff_2026,table input paths exist,True,4 paths present
-dff_2026,figure paths exist,True,4 paths present
+dff_2026,figure paths exist,True,5 paths present
+dff_2026,source stress figure referenced,True,"source stress figure path, label, and text reference present"
 dff_2026,references.bib exists,True,references.bib present
 dff_2026,citation count matches manifest,True,3 cite commands; manifest expects 3
 dff_2026,citation keys exist in references.bib,True,13 cited keys found

@@ -11,8 +11,8 @@ This scorecard is deliberately conservative: `ready_to_polish` means the checked
 | venue | deadline | days_left | packet_status | artifacts | lint_reports | lint_checks | claims | next_action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | DFRWS-USA 2026 poster/demo | 2026-07-07 | 23 | ready_to_polish | 30/30 | 3/3 | 88/88 | ready 3, caveated 5, needs 0 | Finalize poster layout, choose one qualitative grid, and export the final PDF/poster image. |
-| IEEE WIFS 2026 paper | 2026-07-15 | 31 | ready_to_polish | 45/45 | 4/4 | 166/166 | ready 2, caveated 6, needs 0 | Draft the 6-page paper, keep claims conservative, and add only one paper-critical breadth check. |
-| DFF-2026 ACM Multimedia workshop | 2026-07-16 | 32 | ready_to_polish | 45/45 | 4/4 | 166/166 | ready 3, caveated 6, needs 0 | Turn failure grids and source-slice diagnostics into a short explainability/failure-analysis section. |
+| IEEE WIFS 2026 paper | 2026-07-15 | 31 | ready_to_polish | 45/45 | 4/4 | 168/168 | ready 2, caveated 6, needs 0 | Draft the 6-page paper, keep claims conservative, and add only one paper-critical breadth check. |
+| DFF-2026 ACM Multimedia workshop | 2026-07-16 | 32 | ready_to_polish | 45/45 | 4/4 | 168/168 | ready 3, caveated 6, needs 0 | Turn failure grids and source-slice diagnostics into a short explainability/failure-analysis section. |
 
 ## Quality-Control Reports
 
@@ -21,7 +21,7 @@ This scorecard is deliberately conservative: `ready_to_polish` means the checked
 | DFRWS poster package | DFRWS | PASS | 26 | 26 | reports/dfrws_poster_package_lint_2026_06_14.md | Poster asset, key-number, dimension, and caution checks. |
 | submission result tables | DFRWS,WIFS,DFF | PASS | 31 | 31 | reports/submission_result_tables_lint_2026_06_14.md | Compact table consistency against canonical result rows. |
 | paper section drafts | WIFS,DFF | PASS | 59 | 59 | reports/paper_section_drafts_lint_2026_06_14.md | Paper prose metric anchors, caveats, and overclaim checks. |
-| paper skeletons | WIFS,DFF | PASS | 45 | 45 | reports/paper_skeleton_lint_2026_06_14.md | WIFS/DFF skeleton structure, referenced assets, and guardrails. |
+| paper skeletons | WIFS,DFF | PASS | 47 | 47 | reports/paper_skeleton_lint_2026_06_14.md | WIFS/DFF skeleton structure, referenced assets, and guardrails. |
 | submission package | DFRWS,WIFS,DFF | PASS | 31 | 31 | reports/submission_package_lint_2026_06_14.md | Packet assets, abstract word counts, and abstract overclaims. |
 
 ## Reading The Status

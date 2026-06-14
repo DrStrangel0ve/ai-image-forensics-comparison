@@ -43,18 +43,27 @@ FIGURE_INPUTS = [
     (
         "reports/assets/publication_score_fusion_clip_frontier.png",
         "CLIP transfer frontier and all-foundation SCP-Fusion comparison.",
+        "clip-frontier",
+    ),
+    (
+        "reports/assets/source_holdout_generator_stress.png",
+        "Held-out-generator stress for the source-capped policy; SD3 is currently the weakest source family.",
+        "source-stress",
     ),
     (
         "reports/assets/publication_triage_operating_points.png",
         "High-confidence source-heldout triage operating points.",
+        "triage-operating-points",
     ),
     (
         "reports/assets/publication_reverse_operating_points.png",
         "Reverse-direction source-aware operating points.",
+        "reverse-operating-points",
     ),
     (
         "reports/assets/qualitative_seed17_scp_fusion_false_negatives.png",
         "Representative generated-image misses for failure analysis.",
+        "false-negative-grid",
     ),
 ]
 
@@ -305,14 +314,20 @@ def _paper_tex(
             r"\section{Figures and Failure Analysis}",
             _latex_escape(
                 "The figure package emphasizes transfer ranking, high-confidence triage, reverse operating "
-                "points, and generated-image misses. The final venue draft should keep two or three main figures "
-                "and move the rest to an appendix if space is tight."
+                "points, held-out generator stress, and generated-image misses. The final venue draft should keep "
+                "two or three main figures and move the rest to an appendix if space is tight."
+            ),
+            "",
+            r"Figure~\ref{fig:source-stress} "
+            + _latex_escape(
+                "turns the source-holdout audit into a manuscript-facing stress view, making the SD3 weak point "
+                "visible beside aggregate transfer and robustness numbers."
             ),
             "",
         ]
     )
-    for index, (path, caption) in enumerate(FIGURE_INPUTS, start=1):
-        lines.extend(_figure_block(path, caption, f"submission-figure-{index}"))
+    for path, caption, label_suffix in FIGURE_INPUTS:
+        lines.extend(_figure_block(path, caption, label_suffix))
     if spec["paper_id"] == "dff_2026":
         lines.extend([r"\section{DFF Workshop Expansion}"])
         lines.extend(_draft_lines(drafts, "DFF Expansion Draft"))
