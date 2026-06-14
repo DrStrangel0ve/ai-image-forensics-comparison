@@ -560,6 +560,20 @@ ARTIFACTS = [
         "purpose": "Bounded fused native-tiling diagnostic.",
         "required": True,
     },
+    {
+        "path": "reports/robustness_failure_ranking_2026_06_14.md",
+        "type": "result-note",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Ranked target-transform failure summary for reverse tuned-fusion SCP-Fusion.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/robustness_failure_ranking.csv",
+        "type": "table",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable ranked robustness stress table.",
+        "required": False,
+    },
 ]
 
 VENUES = [
@@ -613,6 +627,7 @@ REGEN_COMMANDS = [
     ("opportunity watchlist", "python scripts/build_opportunity_watchlist.py"),
     ("external benchmark readiness", "python scripts/build_external_benchmark_readiness.py"),
     ("external benchmark claim lint", "python scripts/lint_external_benchmark_claims.py"),
+    ("robustness failure ranking", "python scripts/build_robustness_failure_ranking.py"),
 ]
 
 

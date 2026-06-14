@@ -93,6 +93,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | qualitative | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Failure-case grid for generated-image misses. |
 | result-note | reports/physics_guided_vs_resnet_2026_06_12.md | Conservative physics-guided ResNet versus vanilla ResNet framing. |
 | result-note | reports/ms_cocoai_to_ishu_tuned_fusion_native_tiling_2026_06_13.md | Bounded fused native-tiling diagnostic. |
+| result-note | reports/robustness_failure_ranking_2026_06_14.md | Ranked target-transform failure summary for reverse tuned-fusion SCP-Fusion. |
+| table | reports/assets/robustness_failure_ranking.csv | Machine-readable ranked robustness stress table. |
 
 ## WIFS Packet
 
@@ -162,6 +164,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | result-note | reports/combined_v4_full_transfer_summary_2026_06_13.md | combined_v4 transfer gate and ablation caveat. |
 | result-note | reports/combined_v4_source_slice_diagnostics_2026_06_13.md | Generator/category slice analysis for combined_v4 caveats. |
 | result-note | reports/ms_cocoai_to_ishu_tuned_fusion_native_tiling_2026_06_13.md | Bounded fused native-tiling diagnostic. |
+| result-note | reports/robustness_failure_ranking_2026_06_14.md | Ranked target-transform failure summary for reverse tuned-fusion SCP-Fusion. |
+| table | reports/assets/robustness_failure_ranking.csv | Machine-readable ranked robustness stress table. |
 
 ## DFF Packet
 
@@ -231,6 +235,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | result-note | reports/combined_v4_full_transfer_summary_2026_06_13.md | combined_v4 transfer gate and ablation caveat. |
 | result-note | reports/combined_v4_source_slice_diagnostics_2026_06_13.md | Generator/category slice analysis for combined_v4 caveats. |
 | result-note | reports/ms_cocoai_to_ishu_tuned_fusion_native_tiling_2026_06_13.md | Bounded fused native-tiling diagnostic. |
+| result-note | reports/robustness_failure_ranking_2026_06_14.md | Ranked target-transform failure summary for reverse tuned-fusion SCP-Fusion. |
+| table | reports/assets/robustness_failure_ranking.csv | Machine-readable ranked robustness stress table. |
 
 ## Regeneration Commands
 
@@ -259,6 +265,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | opportunity watchlist | python scripts/build_opportunity_watchlist.py |
 | external benchmark readiness | python scripts/build_external_benchmark_readiness.py |
 | external benchmark claim lint | python scripts/lint_external_benchmark_claims.py |
+| robustness failure ranking | python scripts/build_robustness_failure_ranking.py |
 
 ## Current Editorial Guardrails
 

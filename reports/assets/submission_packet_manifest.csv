@@ -1,5 +1,5 @@
 path,type,venues,purpose,required,exists,size_bytes
-README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,47108
+README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,47558
 CITATION.cff,repo,"DFRWS,WIFS,DFF",Citation metadata for public release and reproducibility review.,True,True,788
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF","Reviewer-facing map of included artifacts, external datasets, and commands.",True,True,16823
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
@@ -76,3 +76,5 @@ reports/physics_guided_vs_resnet_2026_06_12.md,result-note,"DFRWS,WIFS,DFF",Cons
 reports/combined_v4_full_transfer_summary_2026_06_13.md,result-note,"WIFS,DFF",combined_v4 transfer gate and ablation caveat.,True,True,5456
 reports/combined_v4_source_slice_diagnostics_2026_06_13.md,result-note,"WIFS,DFF",Generator/category slice analysis for combined_v4 caveats.,True,True,6939
 reports/ms_cocoai_to_ishu_tuned_fusion_native_tiling_2026_06_13.md,result-note,"DFRWS,WIFS,DFF",Bounded fused native-tiling diagnostic.,True,True,2692
+reports/robustness_failure_ranking_2026_06_14.md,result-note,"DFRWS,WIFS,DFF",Ranked target-transform failure summary for reverse tuned-fusion SCP-Fusion.,False,True,3232
+reports/assets/robustness_failure_ranking.csv,table,"DFRWS,WIFS,DFF",Machine-readable ranked robustness stress table.,False,True,4290
