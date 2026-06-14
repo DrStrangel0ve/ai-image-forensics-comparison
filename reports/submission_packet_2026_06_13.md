@@ -193,6 +193,17 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/tiled_convnext_reverse_transfer_detail.csv | Per-image scores for tiled ConvNeXt reverse-transfer diagnostics. |
 | result-note | reports/tiled_foundation_reverse_transfer_comparison_2026_06_14.md | Cross-encoder tiled foundation comparison identifying the strongest accuracy and ranking aggregation modes. |
 | table | reports/assets/tiled_foundation_reverse_transfer_comparison.csv | Machine-readable CLIP/DINOv2/ConvNeXt tiled reverse-transfer comparison. |
+| result-note | reports/ms_cocoai_to_ishu_tuned_fusion_tiled_clip_2026_06_14.md | Fixed reverse SCP-Fusion diagnostic after replacing the CLIP target branch with tiled target scores. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_tiled_clip_summary.csv | Machine-readable fixed-fusion summary for tiled CLIP branch replacement. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_tiled_clip_detail.csv | Per-seed fixed-fusion detail for tiled CLIP branch replacement. |
+| result-note | reports/ms_cocoai_to_ishu_tuned_fusion_tiled_dinov2_2026_06_14.md | Fixed reverse SCP-Fusion diagnostic after replacing the DINOv2 target branch with tiled target scores. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_tiled_dinov2_summary.csv | Machine-readable fixed-fusion summary for tiled DINOv2 branch replacement. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_tiled_dinov2_detail.csv | Per-seed fixed-fusion detail for tiled DINOv2 branch replacement. |
+| result-note | reports/ms_cocoai_to_ishu_tuned_fusion_tiled_convnext_2026_06_14.md | Fixed reverse SCP-Fusion diagnostic after replacing the ConvNeXt target branch with tiled target scores. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_tiled_convnext_summary.csv | Machine-readable fixed-fusion summary for tiled ConvNeXt branch replacement. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_tiled_convnext_detail.csv | Per-seed fixed-fusion detail for tiled ConvNeXt branch replacement. |
+| result-note | reports/ms_cocoai_to_ishu_tiled_foundation_fusion_comparison_2026_06_14.md | Cross-branch fixed-fusion comparison for tiled foundation target replacements. |
+| table | reports/assets/ms_cocoai_to_ishu_tiled_foundation_fusion_comparison.csv | Machine-readable fixed-fusion comparison for tiled foundation target replacements. |
 
 ## DFF Packet
 
@@ -284,6 +295,17 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/tiled_convnext_reverse_transfer_detail.csv | Per-image scores for tiled ConvNeXt reverse-transfer diagnostics. |
 | result-note | reports/tiled_foundation_reverse_transfer_comparison_2026_06_14.md | Cross-encoder tiled foundation comparison identifying the strongest accuracy and ranking aggregation modes. |
 | table | reports/assets/tiled_foundation_reverse_transfer_comparison.csv | Machine-readable CLIP/DINOv2/ConvNeXt tiled reverse-transfer comparison. |
+| result-note | reports/ms_cocoai_to_ishu_tuned_fusion_tiled_clip_2026_06_14.md | Fixed reverse SCP-Fusion diagnostic after replacing the CLIP target branch with tiled target scores. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_tiled_clip_summary.csv | Machine-readable fixed-fusion summary for tiled CLIP branch replacement. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_tiled_clip_detail.csv | Per-seed fixed-fusion detail for tiled CLIP branch replacement. |
+| result-note | reports/ms_cocoai_to_ishu_tuned_fusion_tiled_dinov2_2026_06_14.md | Fixed reverse SCP-Fusion diagnostic after replacing the DINOv2 target branch with tiled target scores. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_tiled_dinov2_summary.csv | Machine-readable fixed-fusion summary for tiled DINOv2 branch replacement. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_tiled_dinov2_detail.csv | Per-seed fixed-fusion detail for tiled DINOv2 branch replacement. |
+| result-note | reports/ms_cocoai_to_ishu_tuned_fusion_tiled_convnext_2026_06_14.md | Fixed reverse SCP-Fusion diagnostic after replacing the ConvNeXt target branch with tiled target scores. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_tiled_convnext_summary.csv | Machine-readable fixed-fusion summary for tiled ConvNeXt branch replacement. |
+| table | reports/assets/ms_cocoai_to_ishu_tuned_fusion_tiled_convnext_detail.csv | Per-seed fixed-fusion detail for tiled ConvNeXt branch replacement. |
+| result-note | reports/ms_cocoai_to_ishu_tiled_foundation_fusion_comparison_2026_06_14.md | Cross-branch fixed-fusion comparison for tiled foundation target replacements. |
+| table | reports/assets/ms_cocoai_to_ishu_tiled_foundation_fusion_comparison.csv | Machine-readable fixed-fusion comparison for tiled foundation target replacements. |
 
 ## Regeneration Commands
 
@@ -312,6 +334,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | SOTA gap report | python scripts/build_sota_gap_report.py |
 | SOTA gap closure plan | python scripts/build_sota_gap_closure_plan.py |
 | tiled foundation comparison | python scripts/build_tiled_foundation_comparison.py |
+| tiled foundation fusion comparison | python scripts/build_tiled_foundation_fusion_comparison.py |
 | publication control suite dry run | python scripts/run_publication_control_suite.py --dry-run |
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |

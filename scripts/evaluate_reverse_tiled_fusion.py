@@ -62,6 +62,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--alignment-tolerance", type=float, default=1e-5)
     parser.add_argument("--summary-dir", default="reports/assets")
     parser.add_argument(
+        "--asset-prefix",
+        default="ms_cocoai_to_ishu_tuned_fusion_native_tiling",
+        help="Prefix for detail and summary CSV assets written under --summary-dir.",
+    )
+    parser.add_argument(
         "--report-path",
         default="reports/ms_cocoai_to_ishu_tuned_fusion_native_tiling_2026_06_13.md",
     )
@@ -277,6 +282,7 @@ def write_report(
     detail: pd.DataFrame,
     clean_selected: pd.DataFrame,
     out_path: Path,
+    rebuild_command: str,
 ) -> None:
     clean_policy = detail["constraint_policy"].iloc[0]
     clean_summary = summarize_by_cap(clean_selected)
@@ -333,8 +339,8 @@ def write_report(
         ),
         (
             "This is a fused-stack diagnostic, not retraining of every visual branch on tiles. "
-            "It tests whether local physical/signal crop evidence helps after score fusion when "
-            "the neural and foundation branches remain at their normal global-image scores."
+            "It tests whether local crop evidence helps after score fusion when the other "
+            "branches remain at their normal global-image scores."
         ),
         "",
         "## Per-Seed Detail",
@@ -344,7 +350,7 @@ def write_report(
         "## Rebuild",
         "",
         "```powershell",
-        ".\\.venv\\Scripts\\python.exe scripts\\evaluate_reverse_tiled_fusion.py",
+        rebuild_command,
         "```",
         "",
     ]
@@ -357,13 +363,22 @@ def main() -> None:
     detail, summary = run_tiled_fusion(args)
     summary_dir = Path(args.summary_dir)
     summary_dir.mkdir(parents=True, exist_ok=True)
-    detail_path = summary_dir / "ms_cocoai_to_ishu_tuned_fusion_native_tiling_detail.csv"
-    summary_path = summary_dir / "ms_cocoai_to_ishu_tuned_fusion_native_tiling_summary.csv"
+    detail_path = summary_dir / f"{args.asset_prefix}_detail.csv"
+    summary_path = summary_dir / f"{args.asset_prefix}_summary.csv"
     detail.to_csv(detail_path, index=False)
     summary.to_csv(summary_path, index=False)
     selected = pd.read_csv(args.selected_configs)
     report_path = Path(args.report_path)
-    write_report(summary, detail, selected, report_path)
+    rebuild_command = (
+        ".\\.venv\\Scripts\\python.exe scripts\\evaluate_reverse_tiled_fusion.py "
+        f"--tile-branch {args.tile_branch} "
+        f"--tile-detail {args.tile_detail} "
+        f"--asset-prefix {args.asset_prefix} "
+        f"--report-path {args.report_path}"
+    )
+    if float(args.alignment_tolerance) != 1e-5:
+        rebuild_command += f" --alignment-tolerance {args.alignment_tolerance:g}"
+    write_report(summary, detail, selected, report_path, rebuild_command)
     print(detail_path.resolve())
     print(summary_path.resolve())
     print(report_path.resolve())

@@ -15,7 +15,7 @@ This evaluates the selected reverse tuned-fusion operating point after replacing
 
 The clean `cap_0p4` tuned-fusion result was 0.7632 accuracy / 0.8361 AUC with a 0.5175 target fake-call rate.
 The best native-tiling accuracy mode is `tile_mean` at 0.7749; the best ranking mode is `tile_max` at 0.8472 AUC.
-This is a fused-stack diagnostic, not retraining of every visual branch on tiles. It tests whether local physical/signal crop evidence helps after score fusion when the neural and foundation branches remain at their normal global-image scores.
+This is a fused-stack diagnostic, not retraining of every visual branch on tiles. It tests whether local crop evidence helps after score fusion when the other branches remain at their normal global-image scores.
 
 ## Per-Seed Detail
 
@@ -37,5 +37,5 @@ This is a fused-stack diagnostic, not retraining of every visual branch on tiles
 ## Rebuild
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\evaluate_reverse_tiled_fusion.py
+.\.venv\Scripts\python.exe scripts\evaluate_reverse_tiled_fusion.py --tile-branch combined_v3 --tile-detail reports/assets/ms_cocoai_to_ishu_combined_v3_native_tiling_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_native_tiling --report-path reports/ms_cocoai_to_ishu_tuned_fusion_native_tiling_2026_06_13.md
 ```
