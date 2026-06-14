@@ -25,27 +25,28 @@ order,asset,command,status,returncode,elapsed_seconds
 24,tiled DINO screenshot fusion robustness,python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant screenshot --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_screenshot_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_2026_06_14.md,planned,0,0.0
 25,tiled DINO transform stress comparison,python scripts/build_tiled_dinov2_transform_stress_comparison.py,planned,0,0.0
 26,tiled DINO calibration tradeoff,python scripts/build_tiled_dinov2_calibration_tradeoff.py,planned,0,0.0
-27,claim matrix,python scripts/build_claim_evidence_matrix.py,planned,0,0.0
-28,method family comparison,python scripts/build_method_family_comparison.py,planned,0,0.0
-29,submission result tables,python scripts/build_submission_result_tables.py,planned,0,0.0
-30,submission result table lint,python scripts/lint_submission_result_tables.py,planned,0,0.0
-31,submission LaTeX tables,python scripts/build_submission_latex_tables.py,planned,0,0.0
-32,submission text drafts,python scripts/build_submission_text_drafts.py,planned,0,0.0
-33,paper section drafts,python scripts/build_paper_section_drafts.py,planned,0,0.0
-34,paper section draft lint,python scripts/lint_paper_section_drafts.py,planned,0,0.0
-35,submission paper skeletons,python scripts/build_submission_paper_skeletons.py,planned,0,0.0
-36,paper skeleton lint,python scripts/lint_paper_skeletons.py,planned,0,0.0
-37,DFRWS qualitative grid selection,python scripts/build_dfrws_qualitative_grid_selection.py,planned,0,0.0
-38,DFRWS poster brief,python scripts/build_dfrws_poster_brief.py,planned,0,0.0
-39,DFRWS poster panels,python scripts/build_dfrws_poster_figures.py,planned,0,0.0
-40,DFRWS poster package lint,python scripts/lint_dfrws_poster_package.py,planned,0,0.0
-41,WIFS breadth decision,python scripts/build_wifs_breadth_decision.py,planned,0,0.0
-42,manuscript assembly map,python scripts/build_manuscript_assembly_map.py,planned,0,0.0
-43,manuscript drafts,python scripts/build_manuscript_drafts.py,planned,0,0.0
-44,manuscript draft lint,python scripts/lint_manuscript_drafts.py,planned,0,0.0
-45,publication control suite dry run,python scripts/run_publication_control_suite.py --dry-run,planned,0,0.0
-46,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
-47,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
-48,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
-49,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0
-50,submission critical path,python scripts/build_submission_critical_path.py,planned,0,0.0
+27,calibration operating modes,python scripts/build_calibration_operating_modes.py,planned,0,0.0
+28,claim matrix,python scripts/build_claim_evidence_matrix.py,planned,0,0.0
+29,method family comparison,python scripts/build_method_family_comparison.py,planned,0,0.0
+30,submission result tables,python scripts/build_submission_result_tables.py,planned,0,0.0
+31,submission result table lint,python scripts/lint_submission_result_tables.py,planned,0,0.0
+32,submission LaTeX tables,python scripts/build_submission_latex_tables.py,planned,0,0.0
+33,submission text drafts,python scripts/build_submission_text_drafts.py,planned,0,0.0
+34,paper section drafts,python scripts/build_paper_section_drafts.py,planned,0,0.0
+35,paper section draft lint,python scripts/lint_paper_section_drafts.py,planned,0,0.0
+36,submission paper skeletons,python scripts/build_submission_paper_skeletons.py,planned,0,0.0
+37,paper skeleton lint,python scripts/lint_paper_skeletons.py,planned,0,0.0
+38,DFRWS qualitative grid selection,python scripts/build_dfrws_qualitative_grid_selection.py,planned,0,0.0
+39,DFRWS poster brief,python scripts/build_dfrws_poster_brief.py,planned,0,0.0
+40,DFRWS poster panels,python scripts/build_dfrws_poster_figures.py,planned,0,0.0
+41,DFRWS poster package lint,python scripts/lint_dfrws_poster_package.py,planned,0,0.0
+42,WIFS breadth decision,python scripts/build_wifs_breadth_decision.py,planned,0,0.0
+43,manuscript assembly map,python scripts/build_manuscript_assembly_map.py,planned,0,0.0
+44,manuscript drafts,python scripts/build_manuscript_drafts.py,planned,0,0.0
+45,manuscript draft lint,python scripts/lint_manuscript_drafts.py,planned,0,0.0
+46,publication control suite dry run,python scripts/run_publication_control_suite.py --dry-run,planned,0,0.0
+47,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
+48,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
+49,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
+50,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0
+51,submission critical path,python scripts/build_submission_critical_path.py,planned,0,0.0

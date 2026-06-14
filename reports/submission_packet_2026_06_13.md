@@ -111,6 +111,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
 | analysis | reports/method_family_comparison_2026_06_14.md | Paper-facing method-family comparison separating ranking, calibration, operating-point, and triage winners. |
 | analysis | reports/assets/method_family_comparison.csv | Machine-readable method-family winner table by scenario and criterion. |
+| analysis | reports/calibration_operating_modes_2026_06_14.md | Paper-facing calibration operating-mode synthesis for ranking, decision, Brier, ECE, and tiled-DINO mode choices. |
+| analysis | reports/assets/calibration_operating_modes.csv | Machine-readable calibration operating-mode selector table. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
 | writing | reports/assets/submission_text_drafts_word_counts.csv | Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts. |
 | quality-control | reports/submission_package_lint_2026_06_14.md | Generated lint report for missing packet assets, abstract word counts, and overclaim language. |
@@ -227,6 +229,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
 | analysis | reports/method_family_comparison_2026_06_14.md | Paper-facing method-family comparison separating ranking, calibration, operating-point, and triage winners. |
 | analysis | reports/assets/method_family_comparison.csv | Machine-readable method-family winner table by scenario and criterion. |
+| analysis | reports/calibration_operating_modes_2026_06_14.md | Paper-facing calibration operating-mode synthesis for ranking, decision, Brier, ECE, and tiled-DINO mode choices. |
+| analysis | reports/assets/calibration_operating_modes.csv | Machine-readable calibration operating-mode selector table. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
 | writing | reports/assets/submission_text_drafts_word_counts.csv | Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts. |
 | writing | reports/paper_section_drafts_2026_06_14.md | Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats. |
@@ -406,6 +410,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
 | analysis | reports/method_family_comparison_2026_06_14.md | Paper-facing method-family comparison separating ranking, calibration, operating-point, and triage winners. |
 | analysis | reports/assets/method_family_comparison.csv | Machine-readable method-family winner table by scenario and criterion. |
+| analysis | reports/calibration_operating_modes_2026_06_14.md | Paper-facing calibration operating-mode synthesis for ranking, decision, Brier, ECE, and tiled-DINO mode choices. |
+| analysis | reports/assets/calibration_operating_modes.csv | Machine-readable calibration operating-mode selector table. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
 | writing | reports/assets/submission_text_drafts_word_counts.csv | Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts. |
 | writing | reports/paper_section_drafts_2026_06_14.md | Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats. |
@@ -528,6 +534,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | tiled DINO screenshot fusion robustness | python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant screenshot --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_screenshot_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_2026_06_14.md |
 | tiled DINO transform stress comparison | python scripts/build_tiled_dinov2_transform_stress_comparison.py |
 | tiled DINO calibration tradeoff | python scripts/build_tiled_dinov2_calibration_tradeoff.py |
+| calibration operating modes | python scripts/build_calibration_operating_modes.py |
 | claim matrix | python scripts/build_claim_evidence_matrix.py |
 | method family comparison | python scripts/build_method_family_comparison.py |
 | submission result tables | python scripts/build_submission_result_tables.py |

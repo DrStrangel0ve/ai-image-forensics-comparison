@@ -624,6 +624,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/calibration_operating_modes_2026_06_14.md",
+        "type": "analysis",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Paper-facing calibration operating-mode synthesis for ranking, decision, Brier, ECE, and tiled-DINO mode choices.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/calibration_operating_modes.csv",
+        "type": "analysis",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable calibration operating-mode selector table.",
+        "required": False,
+    },
+    {
         "path": "reports/submission_text_drafts_2026_06_14.md",
         "type": "writing",
         "venues": "DFRWS,WIFS,DFF",
@@ -1425,6 +1439,7 @@ REGEN_COMMANDS = [
         "tiled DINO calibration tradeoff",
         "python scripts/build_tiled_dinov2_calibration_tradeoff.py",
     ),
+    ("calibration operating modes", "python scripts/build_calibration_operating_modes.py"),
     ("claim matrix", "python scripts/build_claim_evidence_matrix.py"),
     ("method family comparison", "python scripts/build_method_family_comparison.py"),
     ("submission result tables", "python scripts/build_submission_result_tables.py"),
