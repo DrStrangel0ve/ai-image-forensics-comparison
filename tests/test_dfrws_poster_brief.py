@@ -105,6 +105,7 @@ def test_dfrws_poster_brief_builder_writes_markdown_and_key_numbers(tmp_path: Pa
     assert "Held-Out Generator Stress" in text
     assert "sd3" in text
     assert "source_holdout_generator_stress.png" in text
+    assert "seed-29 false-negative grid" in text
     assert "clip_transfer_frontier" in text
     assert "combined_v4_is_ablation_candidate" not in text
     assert "ms_to_ishu_tuned_fusion_social_720p" in set(key_numbers["finding"])

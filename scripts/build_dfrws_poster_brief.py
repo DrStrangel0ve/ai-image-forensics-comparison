@@ -66,12 +66,12 @@ FIGURE_PACKAGE = [
     (
         "Failure cases seed 17",
         "reports/assets/qualitative_seed17_scp_fusion_false_negatives.png",
-        "Qualitative misses for forensic discussion.",
+        "Appendix or backup qualitative grid for repeatability.",
     ),
     (
-        "Failure cases seed 29",
+        "Selected failure cases seed 29",
         "reports/assets/qualitative_seed29_scp_fusion_false_negatives.png",
-        "Second-seed repeatability check for confident generated-image misses.",
+        "Selected poster qualitative panel: readable text/sign, object-label, and compositing misses.",
     ),
 ]
 
@@ -273,7 +273,7 @@ def build_poster_brief(
         "## Immediate Poster TODOs",
         "",
         "- Convert this brief into a one-page visual poster or slide.",
-        "- Choose one seed-17 or seed-29 qualitative grid for the poster, then reserve the companion grids for the paper appendix.",
+        "- Use the seed-29 false-negative grid as the poster qualitative panel; reserve seed 17 for appendix or backup material.",
         "- Keep DFRWS as a reproducibility/demo poster; reserve stronger novelty claims for WIFS/DFF after the next breadth check.",
         "",
     ]

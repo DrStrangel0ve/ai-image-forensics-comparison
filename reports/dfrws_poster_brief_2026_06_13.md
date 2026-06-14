@@ -65,8 +65,8 @@ For the paper-facing `source_holdout_mean_utility_cap_0p48` policy, the weakest 
 | Reverse transfer | reports/assets/publication_reverse_operating_points.png | Source-aware operating points improve binary decisions under generator shift. |
 | Robustness stress panel | reports/assets/publication_reverse_transform_robustness.png | Target transforms separate ranking robustness from fake-call-rate stability. |
 | Held-out generator stress | reports/assets/source_holdout_generator_stress.png | The capped source-heldout policy is weakest on the SD3 source family. |
-| Failure cases seed 17 | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Qualitative misses for forensic discussion. |
-| Failure cases seed 29 | reports/assets/qualitative_seed29_scp_fusion_false_negatives.png | Second-seed repeatability check for confident generated-image misses. |
+| Failure cases seed 17 | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Appendix or backup qualitative grid for repeatability. |
+| Selected failure cases seed 29 | reports/assets/qualitative_seed29_scp_fusion_false_negatives.png | Selected poster qualitative panel: readable text/sign, object-label, and compositing misses. |
 
 ## Claims To Carry
 
@@ -81,6 +81,7 @@ For the paper-facing `source_holdout_mean_utility_cap_0p48` policy, the weakest 
 | tiled_dino_mode_tradeoff | ready_with_caveat | DFRWS poster follow-up; WIFS/DFF robustness and calibration section. | This is derived from source-selected proxy transform stress, not an official external benchmark; do not claim tiled-DINO improves calibration universally. |
 | high_confidence_triage_is_viable | ready | DFRWS poster workflow; DFF real-world processing discussion. | Coverage is intentionally partial; this is an investigative triage mode, not full automation. |
 | combined_v4_is_ablation_candidate | ready_with_caveat | WIFS/DFF ablation roadmap; appendix feature-family caveat. | Raw v4 mainly helps transfer accuracy, while select-k60 helps transfer AUC/calibration but loses same-domain Ishu accuracy; source-slice diagnostics show the gains and losses are generator/category uneven, so keep it as an ablation rather than a headline method. |
+| reconstruction_residuals_are_source_sensitive | ready_with_caveat | DFF/WIFS reconstruction-ablation caveat; DFRWS methods appendix if space allows. | This is a bounded 160/80 Ishu probe plus Ishu to source-balanced MS COCOAI transfer; do not promote reconstruction_v2 without source-aware validation. |
 
 ## Do Not Overclaim
 
@@ -92,5 +93,5 @@ For the paper-facing `source_holdout_mean_utility_cap_0p48` policy, the weakest 
 ## Immediate Poster TODOs
 
 - Convert this brief into a one-page visual poster or slide.
-- Choose one seed-17 or seed-29 qualitative grid for the poster, then reserve the companion grids for the paper appendix.
+- Use the seed-29 false-negative grid as the poster qualitative panel; reserve seed 17 for appendix or backup material.
 - Keep DFRWS as a reproducibility/demo poster; reserve stronger novelty claims for WIFS/DFF after the next breadth check.

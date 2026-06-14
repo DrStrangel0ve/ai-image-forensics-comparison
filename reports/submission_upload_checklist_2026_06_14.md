@@ -10,7 +10,7 @@ This is the practical handoff checklist after the scorecard: it separates checke
 
 | venue | deadline | ready_assets | decision_needed | writing_needed | final_export_needed | missing_assets |
 | --- | --- | --- | --- | --- | --- | --- |
-| DFRWS-USA 2026 poster/demo | 2026-07-07 | 4 | 1 | 0 | 1 | 0 |
+| DFRWS-USA 2026 poster/demo | 2026-07-07 | 5 | 0 | 0 | 1 | 0 |
 | IEEE WIFS 2026 paper | 2026-07-15 | 3 | 1 | 1 | 1 | 0 |
 | DFF-2026 ACM Multimedia workshop | 2026-07-16 | 5 | 0 | 1 | 1 | 0 |
 
@@ -23,7 +23,7 @@ Deadline: 2026-07-07
 | poster abstract | ready_asset | reports/submission_text_drafts_2026_06_14.md; reports/assets/submission_text_drafts_word_counts.csv | Use the DFRWS poster abstract; current generated count is 183 words. |  |
 | editable poster draft | ready_asset | reports/assets/dfrws_poster_draft_v2_2026_06_13.pptx; reports/assets/dfrws_poster_draft_v2_2026_06_13.png | Open the PPTX, make final visual edits, then export the upload PDF/image. |  |
 | poster-native panels | ready_asset | reports/assets/dfrws_poster_transfer_panel.png; reports/assets/dfrws_poster_robustness_panel.png; reports/assets/dfrws_poster_transfer_panel.svg; reports/assets/dfrws_poster_robustness_panel.svg | Use the PNGs directly or edit the SVGs if final poster layout needs native vector text. |  |
-| qualitative grid choice | decision_needed | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png; reports/assets/qualitative_seed29_scp_fusion_false_negatives.png | Choose one false-negative grid for the poster; keep the companion grid for paper appendix material. |  |
+| selected qualitative grid | ready_asset | reports/dfrws_qualitative_grid_selection_2026_06_14.md; reports/assets/dfrws_qualitative_grid_selection.csv; reports/assets/qualitative_seed29_scp_fusion_false_negatives.png; reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Use the seed-29 false-negative grid for the poster; keep seed 17 as appendix or backup material. |  |
 | public repo and citation | ready_asset | README.md; CITATION.cff; reports/reproducibility_checklist_2026_06_12.md | Include the public GitHub link and cite the reproducibility checklist if the submission form allows supplemental links. |  |
 | final upload export | final_export_needed | reports/assets/dfrws_poster_draft_v2_2026_06_13.pptx | Export the final polished poster to the exact DFRWS-required format before upload. |  |
 

@@ -188,6 +188,18 @@ def test_dfrws_poster_package_lint_passes_generated_fixture(tmp_path: Path) -> N
     )
 
     (reports_dir / "dfrws_poster_draft_v2_2026_06_13.md").write_text("poster draft\n", encoding="utf-8")
+    (reports_dir / "dfrws_qualitative_grid_selection_2026_06_14.md").write_text(
+        "selection report\n", encoding="utf-8"
+    )
+    pd.DataFrame(
+        [
+            {
+                "seed": 29,
+                "recommendation": "selected_for_dfrws_poster",
+                "image_path": "reports/assets/qualitative_seed29_scp_fusion_false_negatives.png",
+            }
+        ]
+    ).to_csv(assets_dir / "dfrws_qualitative_grid_selection.csv", index=False)
     _write_image(assets_dir / "dfrws_poster_draft_v2_2026_06_13.png", (320, 180))
     (assets_dir / "dfrws_poster_draft_v2_2026_06_13.pptx").write_bytes(b"x" * 12000)
 

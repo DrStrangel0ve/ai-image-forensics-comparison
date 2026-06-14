@@ -35,11 +35,12 @@ order,asset,command,status,returncode,elapsed_seconds
 34,paper section draft lint,python scripts/lint_paper_section_drafts.py,planned,0,0.0
 35,submission paper skeletons,python scripts/build_submission_paper_skeletons.py,planned,0,0.0
 36,paper skeleton lint,python scripts/lint_paper_skeletons.py,planned,0,0.0
-37,DFRWS poster brief,python scripts/build_dfrws_poster_brief.py,planned,0,0.0
-38,DFRWS poster panels,python scripts/build_dfrws_poster_figures.py,planned,0,0.0
-39,DFRWS poster package lint,python scripts/lint_dfrws_poster_package.py,planned,0,0.0
-40,publication control suite dry run,python scripts/run_publication_control_suite.py --dry-run,planned,0,0.0
-41,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
-42,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
-43,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
-44,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0
+37,DFRWS qualitative grid selection,python scripts/build_dfrws_qualitative_grid_selection.py,planned,0,0.0
+38,DFRWS poster brief,python scripts/build_dfrws_poster_brief.py,planned,0,0.0
+39,DFRWS poster panels,python scripts/build_dfrws_poster_figures.py,planned,0,0.0
+40,DFRWS poster package lint,python scripts/lint_dfrws_poster_package.py,planned,0,0.0
+41,publication control suite dry run,python scripts/run_publication_control_suite.py --dry-run,planned,0,0.0
+42,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
+43,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
+44,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
+45,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0

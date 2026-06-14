@@ -10,7 +10,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 
 | venue | deadline | status | title | claim | next_action |
 | --- | --- | --- | --- | --- | --- |
-| DFRWS-USA 2026 poster/demo | 2026-07-07 | ready to polish | When AI Image Detectors Travel: Source-Heldout Diagnostics for Physical, Neural, and Frozen-Encoder Forensics | Lead with source-heldout diagnostics, CLIP transfer ranking, triage, robustness caveats, and public reproducibility. | Finalize poster layout, choose one qualitative grid, and export the final PDF/poster image. |
+| DFRWS-USA 2026 poster/demo | 2026-07-07 | ready to polish | When AI Image Detectors Travel: Source-Heldout Diagnostics for Physical, Neural, and Frozen-Encoder Forensics | Lead with source-heldout diagnostics, CLIP transfer ranking, triage, robustness caveats, and public reproducibility. | Finalize poster layout with the selected seed-29 qualitative grid and export the final PDF/poster image. |
 | IEEE WIFS 2026 paper | 2026-07-15 | feasible with tighter breadth | Source-Heldout Evaluation of Physical, Neural, and Frozen-Encoder Signals for AI-Generated Image Detection | Use a compact benchmark-paper framing around metric splits: ranking, calibration, fake-call rate, and source-aware decisions. | Draft the 6-page paper, keep claims conservative, and add only one paper-critical breadth check. |
 | DFF-2026 ACM Multimedia workshop | 2026-07-16 | best full-paper fit | SCP-Fusion: Source-Calibrated Physical and Foundation Features for Robust AI-Generated Image Forensics | Frame SCP-Fusion as a diagnostic fusion protocol for robustness, dataset bias, explainability, and real-world processing. | Turn failure grids and source-slice diagnostics into a short explainability/failure-analysis section. |
 
@@ -127,7 +127,10 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/dfrws_poster_package_lint.csv | Machine-readable DFRWS poster package lint checks. |
 | figure | reports/assets/publication_score_fusion_clip_frontier.png | CLIP transfer frontier and all-foundation fusion comparison. |
 | figure | reports/assets/publication_triage_operating_points.png | High-confidence source-heldout triage operating points. |
-| qualitative | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Failure-case grid for generated-image misses. |
+| qualitative | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Appendix or backup failure-case grid for generated-image misses. |
+| qualitative | reports/assets/qualitative_seed29_scp_fusion_false_negatives.png | Selected DFRWS poster failure-case grid and second-seed repeatability grid. |
+| planning | reports/dfrws_qualitative_grid_selection_2026_06_14.md | Generated selection report choosing the seed-29 false-negative grid for the DFRWS poster. |
+| planning | reports/assets/dfrws_qualitative_grid_selection.csv | Machine-readable DFRWS qualitative-grid selection audit. |
 | result-note | reports/physics_guided_vs_resnet_2026_06_12.md | Conservative physics-guided ResNet versus vanilla ResNet framing. |
 | result-note | reports/ms_cocoai_to_ishu_tuned_fusion_native_tiling_2026_06_13.md | Bounded fused native-tiling diagnostic. |
 | result-note | reports/robustness_failure_ranking_2026_06_14.md | Ranked target-transform failure summary for reverse tuned-fusion SCP-Fusion. |
@@ -235,8 +238,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | figure | reports/assets/publication_reverse_fusion_tradeoff.png | Reverse fusion ranking, calibration, and operating-point tradeoff. |
 | figure | reports/assets/publication_score_fusion_dinov2_gain.png | DINOv2 branch-complementarity and fusion gain figure. |
 | figure | reports/assets/publication_source_heldout_calibration.png | Source-heldout calibration evidence. |
-| qualitative | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Failure-case grid for generated-image misses. |
-| qualitative | reports/assets/qualitative_seed29_scp_fusion_false_negatives.png | Second-seed failure-case repeatability grid. |
+| qualitative | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Appendix or backup failure-case grid for generated-image misses. |
+| qualitative | reports/assets/qualitative_seed29_scp_fusion_false_negatives.png | Selected DFRWS poster failure-case grid and second-seed repeatability grid. |
 | result-note | reports/physics_guided_vs_resnet_2026_06_12.md | Conservative physics-guided ResNet versus vanilla ResNet framing. |
 | result-note | reports/combined_v4_full_transfer_summary_2026_06_13.md | combined_v4 transfer gate and ablation caveat. |
 | result-note | reports/combined_v4_source_slice_diagnostics_2026_06_13.md | Generator/category slice analysis for combined_v4 caveats. |
@@ -404,8 +407,10 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | figure | reports/assets/publication_reverse_fusion_tradeoff.png | Reverse fusion ranking, calibration, and operating-point tradeoff. |
 | figure | reports/assets/publication_score_fusion_dinov2_gain.png | DINOv2 branch-complementarity and fusion gain figure. |
 | figure | reports/assets/publication_source_heldout_calibration.png | Source-heldout calibration evidence. |
-| qualitative | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Failure-case grid for generated-image misses. |
-| qualitative | reports/assets/qualitative_seed29_scp_fusion_false_negatives.png | Second-seed failure-case repeatability grid. |
+| qualitative | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Appendix or backup failure-case grid for generated-image misses. |
+| qualitative | reports/assets/qualitative_seed29_scp_fusion_false_negatives.png | Selected DFRWS poster failure-case grid and second-seed repeatability grid. |
+| planning | reports/dfrws_qualitative_grid_selection_2026_06_14.md | Generated selection report choosing the seed-29 false-negative grid for the DFRWS poster. |
+| planning | reports/assets/dfrws_qualitative_grid_selection.csv | Machine-readable DFRWS qualitative-grid selection audit. |
 | result-note | reports/physics_guided_vs_resnet_2026_06_12.md | Conservative physics-guided ResNet versus vanilla ResNet framing. |
 | result-note | reports/combined_v4_full_transfer_summary_2026_06_13.md | combined_v4 transfer gate and ablation caveat. |
 | result-note | reports/combined_v4_source_slice_diagnostics_2026_06_13.md | Generator/category slice analysis for combined_v4 caveats. |
@@ -511,6 +516,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | paper section draft lint | python scripts/lint_paper_section_drafts.py |
 | submission paper skeletons | python scripts/build_submission_paper_skeletons.py |
 | paper skeleton lint | python scripts/lint_paper_skeletons.py |
+| DFRWS qualitative grid selection | python scripts/build_dfrws_qualitative_grid_selection.py |
 | DFRWS poster brief | python scripts/build_dfrws_poster_brief.py |
 | DFRWS poster panels | python scripts/build_dfrws_poster_figures.py |
 | DFRWS poster package lint | python scripts/lint_dfrws_poster_package.py |

@@ -23,6 +23,8 @@ POSTER_PACKAGE_FILES = [
     "reports/assets/source_holdout_generator_stress.csv",
     "reports/assets/source_holdout_generator_stress.png",
     "reports/assets/source_holdout_generator_stress.svg",
+    "reports/dfrws_qualitative_grid_selection_2026_06_14.md",
+    "reports/assets/dfrws_qualitative_grid_selection.csv",
     "reports/dfrws_poster_draft_v2_2026_06_13.md",
     "reports/assets/dfrws_poster_draft_v2_2026_06_13.png",
     "reports/assets/dfrws_poster_draft_v2_2026_06_13.pptx",

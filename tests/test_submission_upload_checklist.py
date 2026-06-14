@@ -45,7 +45,9 @@ def test_submission_upload_checklist_writes_status_summary(tmp_path: Path) -> No
     assert "decision_needed" in set(checklist["status"])
     assert "writing_needed" in set(checklist["status"])
     assert "final_export_needed" in set(checklist["status"])
-    assert "| DFRWS-USA 2026 poster/demo | 2026-07-07 | 4 | 1 | 0 | 1 | 0 |" in summary_text
+    assert "| DFRWS-USA 2026 poster/demo | 2026-07-07 | 5 | 0 | 0 | 1 | 0 |" in summary_text
+    assert "selected qualitative grid" in text
+    assert "seed-29 false-negative grid" in text
 
 
 def _write_all_referenced_files(repo_root: Path) -> None:

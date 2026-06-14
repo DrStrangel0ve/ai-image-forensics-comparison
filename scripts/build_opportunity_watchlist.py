@@ -17,7 +17,7 @@ OPPORTUNITIES = [
         "status": "open",
         "deadline": "2026-07-07",
         "fit": "Best near-term public demo target for the repo, poster, and reproducibility package.",
-        "action": "Submit the DFRWS poster after choosing one qualitative grid and exporting the final poster file.",
+        "action": "Submit the DFRWS poster after using the selected seed-29 qualitative grid and exporting the final poster file.",
         "source_url": "https://dfrws.org/call-for-papers-is-open-for-dfrws-usa-2026/",
         "source_note": "Official DFRWS-USA CFP lists poster submissions on a rolling deadline until July 7, 2026.",
     },
