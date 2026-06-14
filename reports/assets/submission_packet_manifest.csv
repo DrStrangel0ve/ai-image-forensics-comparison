@@ -1,5 +1,5 @@
 path,type,venues,purpose,required,exists,size_bytes
-README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,48468
+README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,48894
 CITATION.cff,repo,"DFRWS,WIFS,DFF",Citation metadata for public release and reproducibility review.,True,True,788
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF","Reviewer-facing map of included artifacts, external datasets, and commands.",True,True,16823
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
@@ -18,8 +18,8 @@ reports/external_benchmark_claim_lint_2026_06_14.md,quality-control,"DFRWS,WIFS,
 reports/assets/external_benchmark_claim_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable external benchmark claim lint checks.,False,True,648
 reports/sota_gap_report_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Guarded comparison between checked-in local proxy results and official/current SOTA benchmark anchors.,False,True,5894
 reports/assets/sota_gap_report.csv,planning,"DFRWS,WIFS,DFF",Machine-readable NTIRE-style SOTA gap rows for local proxy metrics.,False,True,1293
-reports/sota_gap_closure_plan_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Prioritized experiment plan for turning the current proxy SOTA-gap evidence into official or paper-compatible benchmark evidence.,False,True,5992
-reports/assets/sota_gap_closure_plan.csv,planning,"DFRWS,WIFS,DFF","Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria.",False,True,4147
+reports/sota_gap_closure_plan_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Prioritized experiment plan for turning the current proxy SOTA-gap evidence into official or paper-compatible benchmark evidence.,False,True,6161
+reports/assets/sota_gap_closure_plan.csv,planning,"DFRWS,WIFS,DFF","Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria.",False,True,4274
 reports/literature_map_2026_06_14.md,literature,"WIFS,DFF","Paper-facing map from related-work references to method claims, paper sections, and caveats.",True,True,6270
 reports/assets/literature_map.csv,literature,"WIFS,DFF",Machine-readable literature map for WIFS/DFF related-work drafting.,True,True,5116
 references.bib,bibliography,"WIFS,DFF",Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations.,True,True,4612
