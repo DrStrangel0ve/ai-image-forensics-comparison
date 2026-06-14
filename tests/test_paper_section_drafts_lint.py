@@ -44,13 +44,14 @@ def test_paper_section_drafts_lint_passes_required_sections(tmp_path: Path) -> N
             "The results section carries 0.8246, 0.8450, 0.8641, and 0.7749 as required metric anchors. It also "
             "mentions JPEG30 and blur as stressors, explaining that robustness is transform-specific. Extra text "
             "describes CLIP ranking, source-capped reverse decisions, native tiling, social processing, and partial "
-            "triage so the section has realistic manuscript density."
+            "triage so the section has realistic manuscript density. It includes reconstruction_v2 as an ablation "
+            "caveat rather than a headline method."
         ),
         "DFF Expansion Draft": (
             "The DFF expansion frames SCP-Fusion as a diagnostic protocol. It discusses combined_v4 as an ablation "
             "candidate, keeps AEROBLADE/FIRE-style reconstruction as future work, and explains how failure grids can "
             "separate semantic, spectral, compression, and source-threshold artifacts. The paragraph remains cautious "
-            "about what is implemented today."
+            "about what is implemented today and names reconstruction_v2 as a source-sensitive ablation."
         ),
         "Limitations And Reproducibility Draft": (
             "The limitations section says the physical branch is a single-image proxy, SCP-Fusion does not universally "

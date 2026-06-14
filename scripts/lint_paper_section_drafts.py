@@ -25,12 +25,12 @@ REQUIRED_SECTIONS = {
         "phrases": ["combined_v3", "ResNet-18", "SCP-Fusion", "Brier score", "ECE"],
     },
     "WIFS Results Draft": {
-        "word_range": (120, 240),
-        "phrases": ["0.8246", "0.8450", "0.8641", "0.7749", "JPEG30", "blur"],
+        "word_range": (120, 270),
+        "phrases": ["0.8246", "0.8450", "0.8641", "0.7749", "JPEG30", "blur", "reconstruction_v2"],
     },
     "DFF Expansion Draft": {
-        "word_range": (100, 220),
-        "phrases": ["diagnostic protocol", "combined_v4", "AEROBLADE/FIRE-style", "ablation candidate"],
+        "word_range": (100, 250),
+        "phrases": ["diagnostic protocol", "combined_v4", "AEROBLADE/FIRE-style", "ablation candidate", "reconstruction_v2"],
     },
     "Limitations And Reproducibility Draft": {
         "word_range": (80, 180),

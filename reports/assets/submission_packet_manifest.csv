@@ -75,8 +75,8 @@ reports/assets/latex_tables/source_holdout_stress.tex,table,"WIFS,DFF",LaTeX fra
 reports/assets/latex_tables/reconstruction_ablation.tex,table,"WIFS,DFF",LaTeX fragment for the reconstruction residual ablation table.,True,True,784
 reports/submission_paper_skeletons_2026_06_14.md,paper-draft,"WIFS,DFF",Report listing generated WIFS/DFF paper skeletons.,True,True,1282
 reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv,paper-draft,"WIFS,DFF",Machine-readable manifest for generated WIFS/DFF paper skeletons.,True,True,751
-reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex,paper-draft,WIFS,"IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures.",True,True,14995
-reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex,paper-draft,DFF,"ACM-style DFF workshop skeleton with generated abstract, tables, and figures.",True,True,16814
+reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex,paper-draft,WIFS,"IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures.",True,True,15175
+reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex,paper-draft,DFF,"ACM-style DFF workshop skeleton with generated abstract, tables, and figures.",True,True,17149
 reports/paper_skeleton_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF paper skeleton structure, referenced assets, and claim guardrails.",False,True,4497
 reports/assets/paper_skeleton_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF paper skeleton lint checks.,False,True,3755
 reports/assets/claim_evidence_matrix.csv,claim-audit,"DFRWS,WIFS,DFF",Machine-readable claim-to-evidence map with caveats and next actions.,True,True,20594
@@ -85,10 +85,10 @@ reports/method_family_comparison_2026_06_14.md,analysis,"DFRWS,WIFS,DFF","Paper-
 reports/assets/method_family_comparison.csv,analysis,"DFRWS,WIFS,DFF",Machine-readable method-family winner table by scenario and criterion.,False,True,6807
 reports/submission_text_drafts_2026_06_14.md,writing,"DFRWS,WIFS,DFF","Venue-specific abstracts, contribution wording, result sentences, and paper skeletons.",True,True,14831
 reports/assets/submission_text_drafts_word_counts.csv,writing,"DFRWS,WIFS,DFF","Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts.",True,True,99
-reports/paper_section_drafts_2026_06_14.md,writing,"WIFS,DFF","Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats.",True,True,7846
-reports/assets/paper_section_draft_manifest.csv,writing,"WIFS,DFF",Machine-readable section word counts and caveat/metric flags for generated paper prose drafts.,True,True,324
-reports/paper_section_drafts_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF section prose, required metric anchors, caveats, and overclaim checks.",False,True,5267
-reports/assets/paper_section_drafts_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF section prose lint checks.,False,True,4448
+reports/paper_section_drafts_2026_06_14.md,writing,"WIFS,DFF","Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats.",True,True,8177
+reports/assets/paper_section_draft_manifest.csv,writing,"WIFS,DFF",Machine-readable section word counts and caveat/metric flags for generated paper prose drafts.,True,True,323
+reports/paper_section_drafts_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF section prose, required metric anchors, caveats, and overclaim checks.",False,True,5440
+reports/assets/paper_section_drafts_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF section prose lint checks.,False,True,4601
 reports/submission_package_lint_2026_06_14.md,quality-control,"DFRWS,WIFS,DFF","Generated lint report for missing packet assets, abstract word counts, and overclaim language.",False,True,2609
 reports/assets/submission_package_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable submission package lint checks.,False,True,2126
 reports/dfrws_poster_brief_2026_06_13.md,poster,DFRWS,"Poster spine, key numbers, figure package, and overclaim warnings.",True,True,12624

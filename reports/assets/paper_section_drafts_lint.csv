@@ -30,21 +30,23 @@ WIFS Methods Draft,required phrase present: SCP-Fusion,True,present
 WIFS Methods Draft,required phrase present: Brier score,True,present
 WIFS Methods Draft,required phrase present: ECE,True,present
 WIFS Results Draft,section exists,True,present
-WIFS Results Draft,word count in range,True,206 words; allowed 120-240
-WIFS Results Draft,recorded word count matches text,True,"computed 206, recorded 206"
+WIFS Results Draft,word count in range,True,227 words; allowed 120-270
+WIFS Results Draft,recorded word count matches text,True,"computed 227, recorded 227"
 WIFS Results Draft,required phrase present: 0.8246,True,present
 WIFS Results Draft,required phrase present: 0.8450,True,present
 WIFS Results Draft,required phrase present: 0.8641,True,present
 WIFS Results Draft,required phrase present: 0.7749,True,present
 WIFS Results Draft,required phrase present: JPEG30,True,present
 WIFS Results Draft,required phrase present: blur,True,present
+WIFS Results Draft,required phrase present: reconstruction_v2,True,present
 DFF Expansion Draft,section exists,True,present
-DFF Expansion Draft,word count in range,True,147 words; allowed 100-220
-DFF Expansion Draft,recorded word count matches text,True,"computed 147, recorded 147"
+DFF Expansion Draft,word count in range,True,175 words; allowed 100-250
+DFF Expansion Draft,recorded word count matches text,True,"computed 175, recorded 175"
 DFF Expansion Draft,required phrase present: diagnostic protocol,True,present
 DFF Expansion Draft,required phrase present: combined_v4,True,present
 DFF Expansion Draft,required phrase present: AEROBLADE/FIRE-style,True,present
 DFF Expansion Draft,required phrase present: ablation candidate,True,present
+DFF Expansion Draft,required phrase present: reconstruction_v2,True,present
 Limitations And Reproducibility Draft,section exists,True,present
 Limitations And Reproducibility Draft,word count in range,True,105 words; allowed 80-180
 Limitations And Reproducibility Draft,recorded word count matches text,True,"computed 105, recorded 105"

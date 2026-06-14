@@ -15,6 +15,7 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
     claim_matrix = tmp_path / "claim_evidence_matrix.csv"
     literature_map = tmp_path / "literature_map.csv"
     tiled_dino_tradeoff = tmp_path / "tiled_dinov2_calibration_tradeoff.csv"
+    reconstruction_ablation = tmp_path / "submission_table_reconstruction_ablation.csv"
     source_stress_summary = tmp_path / "source_stress.csv"
     out_path = tmp_path / "paper_section_drafts.md"
     manifest_out = tmp_path / "paper_section_draft_manifest.csv"
@@ -106,6 +107,20 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
     pd.DataFrame(
         [
             {
+                "setting": "ishu_same_bounded",
+                "method": "reconstruction_v2",
+                "delta_auc_vs_reconstruction_lite": 0.0215,
+            },
+            {
+                "setting": "ishu_to_ms_cocoai_bounded",
+                "method": "reconstruction_v2",
+                "delta_auc_vs_reconstruction_lite": -0.0408,
+            },
+        ]
+    ).to_csv(reconstruction_ablation, index=False)
+    pd.DataFrame(
+        [
+            {
                 "selection_policy": "source_holdout_mean_utility_cap_0p48",
                 "heldout_source_name": "sd3",
                 "source_holdout_utility_mean": 1.42,
@@ -127,6 +142,8 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
             str(literature_map),
             "--tiled-dino-tradeoff",
             str(tiled_dino_tradeoff),
+            "--reconstruction-ablation",
+            str(reconstruction_ablation),
             "--source-stress-summary",
             str(source_stress_summary),
             "--out-path",
@@ -148,6 +165,9 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
     assert "does not universally beat frozen CLIP" in report
     assert "tile_max" in report
     assert "tile_mean" in report
+    assert "reconstruction_v2" in report
+    assert "+0.0215 same-domain" in report
+    assert "-0.0408 under Ishu-to-MS transfer" in report
     assert "sd3" in report
     assert "0.2039 fake-miss rate" in report
     assert len(manifest) >= 6
