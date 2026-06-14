@@ -20,8 +20,9 @@ order,asset,command,status,returncode,elapsed_seconds
 19,external benchmark readiness,python scripts/build_external_benchmark_readiness.py,planned,0,0.0
 20,external benchmark claim lint,python scripts/lint_external_benchmark_claims.py,planned,0,0.0
 21,SOTA gap report,python scripts/build_sota_gap_report.py,planned,0,0.0
-22,publication control suite dry run,python scripts/run_publication_control_suite.py --dry-run,planned,0,0.0
-23,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
-24,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
-25,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
-26,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0
+22,SOTA gap closure plan,python scripts/build_sota_gap_closure_plan.py,planned,0,0.0
+23,publication control suite dry run,python scripts/run_publication_control_suite.py --dry-run,planned,0,0.0
+24,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
+25,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
+26,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
+27,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0

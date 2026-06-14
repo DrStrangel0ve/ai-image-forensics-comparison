@@ -99,6 +99,7 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "external benchmark readiness" in text
     assert "external benchmark claim lint" in text
     assert "SOTA gap report" in text
+    assert "SOTA gap closure plan" in text
     assert "Do not claim SOTA" in text
     assert "robustness failure ranking" in text
     assert manifest["exists"].all()
@@ -109,6 +110,8 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "reports/external_benchmark_claim_lint_2026_06_14.md" in set(manifest["path"])
     assert "reports/sota_gap_report_2026_06_14.md" in set(manifest["path"])
     assert "reports/assets/sota_gap_report.csv" in set(manifest["path"])
+    assert "reports/sota_gap_closure_plan_2026_06_14.md" in set(manifest["path"])
+    assert "reports/assets/sota_gap_closure_plan.csv" in set(manifest["path"])
     assert "reports/robustness_failure_ranking_2026_06_14.md" in set(manifest["path"])
     assert "DFF" in manifest["venues"].str.cat(sep=",")
 

@@ -155,6 +155,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/sota_gap_closure_plan_2026_06_14.md",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Prioritized experiment plan for turning the current proxy SOTA-gap evidence into official or paper-compatible benchmark evidence.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/sota_gap_closure_plan.csv",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria.",
+        "required": False,
+    },
+    {
         "path": "reports/literature_map_2026_06_14.md",
         "type": "literature",
         "venues": "WIFS,DFF",
@@ -653,6 +667,7 @@ REGEN_COMMANDS = [
     ("external benchmark readiness", "python scripts/build_external_benchmark_readiness.py"),
     ("external benchmark claim lint", "python scripts/lint_external_benchmark_claims.py"),
     ("SOTA gap report", "python scripts/build_sota_gap_report.py"),
+    ("SOTA gap closure plan", "python scripts/build_sota_gap_closure_plan.py"),
     ("publication control suite dry run", "python scripts/run_publication_control_suite.py --dry-run"),
     ("submission packet", "python scripts/build_submission_packet.py"),
     ("submission package lint", "python scripts/lint_submission_package.py"),

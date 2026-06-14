@@ -66,6 +66,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/external_benchmark_claim_lint.csv | Machine-readable external benchmark claim lint checks. |
 | planning | reports/sota_gap_report_2026_06_14.md | Guarded comparison between checked-in local proxy results and official/current SOTA benchmark anchors. |
 | planning | reports/assets/sota_gap_report.csv | Machine-readable NTIRE-style SOTA gap rows for local proxy metrics. |
+| planning | reports/sota_gap_closure_plan_2026_06_14.md | Prioritized experiment plan for turning the current proxy SOTA-gap evidence into official or paper-compatible benchmark evidence. |
+| planning | reports/assets/sota_gap_closure_plan.csv | Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
 | table | reports/submission_result_tables_2026_06_14.md | Copy-ready compact result tables for poster and paper drafting. |
@@ -124,6 +126,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/external_benchmark_claim_lint.csv | Machine-readable external benchmark claim lint checks. |
 | planning | reports/sota_gap_report_2026_06_14.md | Guarded comparison between checked-in local proxy results and official/current SOTA benchmark anchors. |
 | planning | reports/assets/sota_gap_report.csv | Machine-readable NTIRE-style SOTA gap rows for local proxy metrics. |
+| planning | reports/sota_gap_closure_plan_2026_06_14.md | Prioritized experiment plan for turning the current proxy SOTA-gap evidence into official or paper-compatible benchmark evidence. |
+| planning | reports/assets/sota_gap_closure_plan.csv | Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -199,6 +203,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/external_benchmark_claim_lint.csv | Machine-readable external benchmark claim lint checks. |
 | planning | reports/sota_gap_report_2026_06_14.md | Guarded comparison between checked-in local proxy results and official/current SOTA benchmark anchors. |
 | planning | reports/assets/sota_gap_report.csv | Machine-readable NTIRE-style SOTA gap rows for local proxy metrics. |
+| planning | reports/sota_gap_closure_plan_2026_06_14.md | Prioritized experiment plan for turning the current proxy SOTA-gap evidence into official or paper-compatible benchmark evidence. |
+| planning | reports/assets/sota_gap_closure_plan.csv | Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -276,6 +282,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | external benchmark readiness | python scripts/build_external_benchmark_readiness.py |
 | external benchmark claim lint | python scripts/lint_external_benchmark_claims.py |
 | SOTA gap report | python scripts/build_sota_gap_report.py |
+| SOTA gap closure plan | python scripts/build_sota_gap_closure_plan.py |
 | publication control suite dry run | python scripts/run_publication_control_suite.py --dry-run |
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |
