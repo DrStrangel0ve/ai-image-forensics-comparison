@@ -12,3 +12,4 @@ The fragments assume the paper template supports `booktabs` commands (`\toprule`
 | transfer_frontier | reports/assets/submission_table_transfer_frontier.csv | reports/assets/latex_tables/transfer_frontier.tex | Ishu to source-balanced MS COCOAI transfer and triage frontier. | 9 |
 | reverse_operating_points | reports/assets/submission_table_reverse_operating_points.csv | reports/assets/latex_tables/reverse_operating_points.tex | MS COCOAI to Ishu reverse-transfer operating points. | 8 |
 | robustness_stress | reports/assets/submission_table_robustness_stress.csv | reports/assets/latex_tables/robustness_stress.tex | Reverse tuned-fusion robustness deltas relative to the clean source-capped operating point. | 12 |
+| source_holdout_stress | reports/assets/submission_table_source_holdout_stress.csv | reports/assets/latex_tables/source_holdout_stress.tex | Held-out generator stress for the source-capped reverse tuned-fusion policy. | 5 |

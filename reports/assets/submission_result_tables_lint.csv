@@ -1,32 +1,40 @@
 check,passed,detail
-manifest table ids match builder specs,True,"expected ['reverse_operating_points', 'robustness_stress', 'same_domain_anchor', 'transfer_frontier'], found ['reverse_operating_points', 'robustness_stress', 'same_domain_anchor', 'transfer_frontier']"
+manifest table ids match builder specs,True,"expected ['reverse_operating_points', 'robustness_stress', 'same_domain_anchor', 'source_holdout_stress', 'transfer_frontier'], found ['reverse_operating_points', 'robustness_stress', 'same_domain_anchor', 'source_holdout_stress', 'transfer_frontier']"
 claim evidence ids resolve to core results,True,all claim evidence IDs resolve
 same_domain_anchor CSV exists,True,reports/assets/submission_table_same_domain_anchor.csv
-same_domain_anchor finding order matches builder,True,"expected ['ishu_same_combined_v3', 'ishu_same_resnet18', 'ishu_same_physics_guided'], found ['ishu_same_combined_v3', 'ishu_same_resnet18', 'ishu_same_physics_guided']"
 same_domain_anchor manifest row is current,True,path and n_rows match generated CSV
 same_domain_anchor report includes Same-Domain Anchors,True,present
 same_domain_anchor report includes Shows why same-domain accuracy alone is a weak forensic endpoint.,True,present
+same_domain_anchor finding order matches builder,True,"expected ['ishu_same_combined_v3', 'ishu_same_resnet18', 'ishu_same_physics_guided'], found ['ishu_same_combined_v3', 'ishu_same_resnet18', 'ishu_same_physics_guided']"
 same_domain_anchor metrics match core results,True,all displayed metrics match core rows
 same_domain_anchor labels match core results,True,all labels and interpretations match core rows
 transfer_frontier CSV exists,True,reports/assets/submission_table_transfer_frontier.csv
-transfer_frontier finding order matches builder,True,"expected ['ishu_to_ms_combined_v3', 'ishu_to_ms_resnet18', 'ishu_to_ms_physics_guided', 'ishu_to_ms_convnext_tiny_frozen', 'ishu_to_ms_scp_fusion_v0', 'ishu_to_ms_scp_fusion_dinov2', 'ishu_to_ms_scp_fusion_all_foundation', 'ishu_to_ms_clip_standalone', 'ishu_to_ms_triage5_clip_standalone'], found ['ishu_to_ms_combined_v3', 'ishu_to_ms_resnet18', 'ishu_to_ms_physics_guided', 'ishu_to_ms_convnext_tiny_frozen', 'ishu_to_ms_scp_fusion_v0', 'ishu_to_ms_scp_fusion_dinov2', 'ishu_to_ms_scp_fusion_all_foundation', 'ishu_to_ms_clip_standalone', 'ishu_to_ms_triage5_clip_standalone']"
 transfer_frontier manifest row is current,True,path and n_rows match generated CSV
 transfer_frontier report includes Ishu -> MS COCOAI Transfer Frontier,True,present
 "transfer_frontier report includes Main transfer-ranking, calibration, and triage table.",True,present
+transfer_frontier finding order matches builder,True,"expected ['ishu_to_ms_combined_v3', 'ishu_to_ms_resnet18', 'ishu_to_ms_physics_guided', 'ishu_to_ms_convnext_tiny_frozen', 'ishu_to_ms_scp_fusion_v0', 'ishu_to_ms_scp_fusion_dinov2', 'ishu_to_ms_scp_fusion_all_foundation', 'ishu_to_ms_clip_standalone', 'ishu_to_ms_triage5_clip_standalone'], found ['ishu_to_ms_combined_v3', 'ishu_to_ms_resnet18', 'ishu_to_ms_physics_guided', 'ishu_to_ms_convnext_tiny_frozen', 'ishu_to_ms_scp_fusion_v0', 'ishu_to_ms_scp_fusion_dinov2', 'ishu_to_ms_scp_fusion_all_foundation', 'ishu_to_ms_clip_standalone', 'ishu_to_ms_triage5_clip_standalone']"
 transfer_frontier metrics match core results,True,all displayed metrics match core rows
 transfer_frontier labels match core results,True,all labels and interpretations match core rows
 reverse_operating_points CSV exists,True,reports/assets/submission_table_reverse_operating_points.csv
-reverse_operating_points finding order matches builder,True,"expected ['ms_to_ishu_physics_guided', 'ms_to_ishu_clip_vit_b_32', 'ms_to_ishu_score_fusion_all6_temp_balanced', 'ms_to_ishu_branch_dropout_auc', 'ms_to_ishu_source_cap_accuracy', 'ms_to_ishu_source_holdout_tuned_fusion', 'ms_to_ishu_tuned_fusion_constraint_sweep_best', 'ms_to_ishu_tuned_fusion_native_tiling_best'], found ['ms_to_ishu_physics_guided', 'ms_to_ishu_clip_vit_b_32', 'ms_to_ishu_score_fusion_all6_temp_balanced', 'ms_to_ishu_branch_dropout_auc', 'ms_to_ishu_source_cap_accuracy', 'ms_to_ishu_source_holdout_tuned_fusion', 'ms_to_ishu_tuned_fusion_constraint_sweep_best', 'ms_to_ishu_tuned_fusion_native_tiling_best']"
 reverse_operating_points manifest row is current,True,path and n_rows match generated CSV
 reverse_operating_points report includes MS COCOAI -> Ishu Reverse Operating Points,True,present
 reverse_operating_points report includes Compact reverse-direction ranking/calibration/threshold comparison.,True,present
+reverse_operating_points finding order matches builder,True,"expected ['ms_to_ishu_physics_guided', 'ms_to_ishu_clip_vit_b_32', 'ms_to_ishu_score_fusion_all6_temp_balanced', 'ms_to_ishu_branch_dropout_auc', 'ms_to_ishu_source_cap_accuracy', 'ms_to_ishu_source_holdout_tuned_fusion', 'ms_to_ishu_tuned_fusion_constraint_sweep_best', 'ms_to_ishu_tuned_fusion_native_tiling_best'], found ['ms_to_ishu_physics_guided', 'ms_to_ishu_clip_vit_b_32', 'ms_to_ishu_score_fusion_all6_temp_balanced', 'ms_to_ishu_branch_dropout_auc', 'ms_to_ishu_source_cap_accuracy', 'ms_to_ishu_source_holdout_tuned_fusion', 'ms_to_ishu_tuned_fusion_constraint_sweep_best', 'ms_to_ishu_tuned_fusion_native_tiling_best']"
 reverse_operating_points metrics match core results,True,all displayed metrics match core rows
 reverse_operating_points labels match core results,True,all labels and interpretations match core rows
 robustness_stress CSV exists,True,reports/assets/submission_table_robustness_stress.csv
-robustness_stress finding order matches builder,True,"expected ['ms_to_ishu_tuned_fusion_constraint_sweep_best', 'ms_to_ishu_tuned_fusion_native_tiling_best', 'ms_to_ishu_tuned_fusion_jpeg70', 'ms_to_ishu_tuned_fusion_jpeg50', 'ms_to_ishu_tuned_fusion_jpeg30', 'ms_to_ishu_tuned_fusion_noise3', 'ms_to_ishu_tuned_fusion_social_square', 'ms_to_ishu_tuned_fusion_social_720p', 'ms_to_ishu_tuned_fusion_crop85', 'ms_to_ishu_tuned_fusion_screenshot', 'ms_to_ishu_tuned_fusion_blur1', 'ms_to_ishu_tuned_fusion_resize_half'], found ['ms_to_ishu_tuned_fusion_constraint_sweep_best', 'ms_to_ishu_tuned_fusion_native_tiling_best', 'ms_to_ishu_tuned_fusion_jpeg70', 'ms_to_ishu_tuned_fusion_jpeg50', 'ms_to_ishu_tuned_fusion_jpeg30', 'ms_to_ishu_tuned_fusion_noise3', 'ms_to_ishu_tuned_fusion_social_square', 'ms_to_ishu_tuned_fusion_social_720p', 'ms_to_ishu_tuned_fusion_crop85', 'ms_to_ishu_tuned_fusion_screenshot', 'ms_to_ishu_tuned_fusion_blur1', 'ms_to_ishu_tuned_fusion_resize_half']"
 robustness_stress manifest row is current,True,path and n_rows match generated CSV
 robustness_stress report includes Reverse Tuned-Fusion Robustness Stress,True,present
 robustness_stress report includes Stress table with deltas relative to the clean source-capped reverse tuned-fusion operating point.,True,present
+robustness_stress finding order matches builder,True,"expected ['ms_to_ishu_tuned_fusion_constraint_sweep_best', 'ms_to_ishu_tuned_fusion_native_tiling_best', 'ms_to_ishu_tuned_fusion_jpeg70', 'ms_to_ishu_tuned_fusion_jpeg50', 'ms_to_ishu_tuned_fusion_jpeg30', 'ms_to_ishu_tuned_fusion_noise3', 'ms_to_ishu_tuned_fusion_social_square', 'ms_to_ishu_tuned_fusion_social_720p', 'ms_to_ishu_tuned_fusion_crop85', 'ms_to_ishu_tuned_fusion_screenshot', 'ms_to_ishu_tuned_fusion_blur1', 'ms_to_ishu_tuned_fusion_resize_half'], found ['ms_to_ishu_tuned_fusion_constraint_sweep_best', 'ms_to_ishu_tuned_fusion_native_tiling_best', 'ms_to_ishu_tuned_fusion_jpeg70', 'ms_to_ishu_tuned_fusion_jpeg50', 'ms_to_ishu_tuned_fusion_jpeg30', 'ms_to_ishu_tuned_fusion_noise3', 'ms_to_ishu_tuned_fusion_social_square', 'ms_to_ishu_tuned_fusion_social_720p', 'ms_to_ishu_tuned_fusion_crop85', 'ms_to_ishu_tuned_fusion_screenshot', 'ms_to_ishu_tuned_fusion_blur1', 'ms_to_ishu_tuned_fusion_resize_half']"
 robustness_stress metrics match core results,True,all displayed metrics match core rows
 robustness_stress labels match core results,True,all labels and interpretations match core rows
 robustness deltas recompute from clean baseline,True,all deltas match clean baseline
+source_holdout_stress CSV exists,True,reports/assets/submission_table_source_holdout_stress.csv
+source_holdout_stress manifest row is current,True,path and n_rows match generated CSV
+source_holdout_stress report includes Held-Out Generator Stress,True,present
+source_holdout_stress report includes Compact per-generator source-holdout stress table for the capped reverse tuned-fusion policy.,True,present
+source_holdout_stress required columns present,True,all source-stress columns present
+source_holdout_stress sorted by utility,True,weakest source appears first
+source_holdout_stress miss rate matches recall,True,all miss rates equal 1 - recall
+source_holdout_stress has named sources,True,5 source rows

@@ -79,6 +79,26 @@ def test_submission_result_table_lint_validates_generated_tables(tmp_path: Path)
             "evidence_finding_ids": [",".join(finding_ids[:3])],
         }
     ).to_csv(claim_matrix, index=False)
+    pd.DataFrame(
+        [
+            {
+                "selection_policy": "source_holdout_mean_utility_cap_0p48",
+                "heldout_source_name": "sd3",
+                "source_holdout_utility_mean": 1.42,
+                "source_holdout_recall_mean": 0.80,
+                "source_holdout_fake_miss_rate_mean": 0.20,
+                "source_holdout_predicted_positive_rate_mean": 0.13,
+            },
+            {
+                "selection_policy": "source_holdout_mean_utility_cap_0p48",
+                "heldout_source_name": "sdxl",
+                "source_holdout_utility_mean": 1.90,
+                "source_holdout_recall_mean": 0.98,
+                "source_holdout_fake_miss_rate_mean": 0.02,
+                "source_holdout_predicted_positive_rate_mean": 0.18,
+            },
+        ]
+    ).to_csv(assets_dir / "source_holdout_generator_stress.csv", index=False)
 
     report_out = repo_root / "reports" / "submission_result_tables_2026_06_14.md"
     subprocess.run(
@@ -126,3 +146,4 @@ def test_submission_result_table_lint_validates_generated_tables(tmp_path: Path)
     assert "Status: **PASS**" in report
     assert checks["passed"].all()
     assert "robustness deltas recompute from clean baseline" in checks["check"].tolist()
+    assert "source_holdout_stress sorted by utility" in checks["check"].tolist()

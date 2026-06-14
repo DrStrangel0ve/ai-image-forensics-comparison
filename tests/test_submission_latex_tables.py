@@ -21,25 +21,39 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
         "transfer_frontier",
         "reverse_operating_points",
         "robustness_stress",
+        "source_holdout_stress",
     ]
     source_paths = []
     for table_id in table_ids:
         path = source_dir / f"{table_id}.csv"
-        pd.DataFrame(
-            {
-                "finding_id": ["ishu_same_combined_v3", "ms_to_ishu_tuned_fusion_native_tiling_best"],
-                "method": ["combined_v3", "SCP-Fusion + native_v3"],
-                "accuracy": [0.81234, 0.75678],
-                "auc": [0.82345, 0.85678],
-                "brier": [0.2, 0.3],
-                "ece": [0.1, 0.2],
-                "fake_call_rate": [0.4, 0.5],
-                "coverage": [pd.NA, 0.25],
-                "decided_accuracy": [pd.NA, 0.9],
-                "delta_accuracy_vs_clean": [0.0, 0.05],
-                "delta_auc_vs_clean": [0.0, -0.01],
-            }
-        ).to_csv(path, index=False)
+        if table_id == "source_holdout_stress":
+            pd.DataFrame(
+                {
+                    "selection_policy": ["source_holdout_mean_utility_cap_0p48"],
+                    "heldout_source": ["sd3"],
+                    "utility": [1.42345],
+                    "recall": [0.79678],
+                    "fake_miss_rate": [0.20322],
+                    "predicted_fake_rate": [0.13254],
+                    "paper_use": ["paper use"],
+                }
+            ).to_csv(path, index=False)
+        else:
+            pd.DataFrame(
+                {
+                    "finding_id": ["ishu_same_combined_v3", "ms_to_ishu_tuned_fusion_native_tiling_best"],
+                    "method": ["combined_v3", "SCP-Fusion + native_v3"],
+                    "accuracy": [0.81234, 0.75678],
+                    "auc": [0.82345, 0.85678],
+                    "brier": [0.2, 0.3],
+                    "ece": [0.1, 0.2],
+                    "fake_call_rate": [0.4, 0.5],
+                    "coverage": [pd.NA, 0.25],
+                    "decided_accuracy": [pd.NA, 0.9],
+                    "delta_accuracy_vs_clean": [0.0, 0.05],
+                    "delta_auc_vs_clean": [0.0, -0.01],
+                }
+            ).to_csv(path, index=False)
         source_paths.append(path.as_posix())
     pd.DataFrame(
         {
@@ -70,6 +84,7 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     latex_manifest = pd.read_csv(out_dir / "submission_latex_table_manifest.csv")
     same_tex = (out_dir / "same_domain_anchor.tex").read_text(encoding="utf-8")
     robustness_tex = (out_dir / "robustness_stress.tex").read_text(encoding="utf-8")
+    source_tex = (out_dir / "source_holdout_stress.tex").read_text(encoding="utf-8")
     report = report_out.read_text(encoding="utf-8")
 
     assert set(latex_manifest["table_id"]) == set(table_ids)
@@ -78,4 +93,6 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     assert "combined\\_v3" in same_tex
     assert "+0.050" in robustness_tex
     assert "-0.010" in robustness_tex
+    assert "sd3" in source_tex
+    assert "tab:source-holdout-stress" in source_tex
     assert "Submission LaTeX Tables" in report

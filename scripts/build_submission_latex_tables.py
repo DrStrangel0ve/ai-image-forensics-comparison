@@ -58,6 +58,18 @@ TABLE_SPECS = [
             ("fake_call_rate", "Fake", "r"),
         ],
     },
+    {
+        "table_id": "source_holdout_stress",
+        "caption": "Held-out generator stress for the source-capped reverse tuned-fusion policy.",
+        "label": "tab:source-holdout-stress",
+        "columns": [
+            ("row_label", "Held-out", "l"),
+            ("recall", "Recall", "r"),
+            ("fake_miss_rate", "Miss", "r"),
+            ("predicted_fake_rate", "Fake", "r"),
+            ("utility", "Utility", "r"),
+        ],
+    },
 ]
 
 ROW_LABELS = {
@@ -147,8 +159,12 @@ def _table_spec(table_id: str) -> dict[str, object]:
 
 
 def _row_label(row: pd.Series) -> str:
-    finding_id = str(row["finding_id"])
-    return ROW_LABELS.get(finding_id, str(row["method"]))
+    if "finding_id" in row.index and not pd.isna(row["finding_id"]):
+        finding_id = str(row["finding_id"])
+        return ROW_LABELS.get(finding_id, str(row["method"]))
+    if "heldout_source" in row.index and not pd.isna(row["heldout_source"]):
+        return str(row["heldout_source"])
+    return str(row.get("method", "row"))
 
 
 def _tabular_spec(columns: list[tuple[str, str, str]]) -> str:

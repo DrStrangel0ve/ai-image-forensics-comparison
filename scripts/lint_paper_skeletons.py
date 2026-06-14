@@ -104,7 +104,15 @@ def _lint_one_skeleton(repo_root: Path, row: pd.Series) -> list[dict[str, object
     graphics_paths = _extract_paths(r"\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}", text)
     inputs_ok, inputs_detail = _paths_exist(repo_root, input_paths)
     figures_ok, figures_detail = _paths_exist(repo_root, graphics_paths)
-    _add_check(checks, paper_id, "table input paths exist", inputs_ok and len(input_paths) >= 4, inputs_detail)
+    _add_check(checks, paper_id, "table input paths exist", inputs_ok and len(input_paths) >= 5, inputs_detail)
+    source_stress_table = "reports/assets/latex_tables/source_holdout_stress.tex"
+    _add_check(
+        checks,
+        paper_id,
+        "source stress table referenced",
+        source_stress_table in input_paths,
+        "source stress LaTeX table input present" if source_stress_table in input_paths else "missing",
+    )
     _add_check(checks, paper_id, "figure paths exist", figures_ok and len(graphics_paths) >= 5, figures_detail)
     source_stress_path = "reports/assets/source_holdout_generator_stress.png"
     source_stress_present = (

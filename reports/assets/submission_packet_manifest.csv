@@ -5,8 +5,8 @@ reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF"
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
 reports/submission_scorecard_2026_06_14.md,planning,"DFRWS,WIFS,DFF","Venue-level readiness scorecard aggregating packet artifacts, lint reports, claim caveats, deadlines, and next actions.",False,True,3001
 reports/assets/submission_scorecard.csv,planning,"DFRWS,WIFS,DFF",Machine-readable venue-level readiness scorecard.,False,True,1330
-reports/submission_upload_checklist_2026_06_14.md,planning,"DFRWS,WIFS,DFF","Venue upload checklist separating ready assets from final export, writing, and decision tasks.",False,True,6555
-reports/assets/submission_upload_checklist.csv,planning,"DFRWS,WIFS,DFF",Machine-readable venue upload checklist.,False,True,5661
+reports/submission_upload_checklist_2026_06_14.md,planning,"DFRWS,WIFS,DFF","Venue upload checklist separating ready assets from final export, writing, and decision tasks.",False,True,6724
+reports/assets/submission_upload_checklist.csv,planning,"DFRWS,WIFS,DFF",Machine-readable venue upload checklist.,False,True,5830
 reports/publication_control_suite_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Ordered dry-run command plan for regenerating publication artifacts and lints.,False,True,5528
 reports/assets/publication_control_suite.csv,planning,"DFRWS,WIFS,DFF",Machine-readable publication-control command plan.,False,True,4621
 reports/opportunity_watchlist_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Current venue/challenge watchlist separating active submission targets from closed benchmark tracks.,False,True,4047
@@ -33,26 +33,28 @@ reports/source_holdout_generator_stress_2026_06_14.md,result-note,"DFRWS,WIFS,DF
 reports/assets/source_holdout_generator_stress.csv,table,"DFRWS,WIFS,DFF",Machine-readable source-stress figure data sorted by held-out generator utility.,False,True,771
 reports/assets/source_holdout_generator_stress.png,figure,"DFRWS,WIFS,DFF",Held-out-generator stress chart highlighting the weakest source family.,False,True,146652
 reports/assets/source_holdout_generator_stress.svg,figure,"DFRWS,WIFS,DFF",Editable SVG source for the held-out-generator stress chart.,False,True,24677
-reports/submission_result_tables_2026_06_14.md,table,"DFRWS,WIFS,DFF",Copy-ready compact result tables for poster and paper drafting.,True,True,8633
-reports/assets/submission_result_table_manifest.csv,table,"DFRWS,WIFS,DFF",Machine-readable manifest for compact submission result tables.,True,True,852
+reports/submission_result_tables_2026_06_14.md,table,"DFRWS,WIFS,DFF",Copy-ready compact result tables for poster and paper drafting.,True,True,10088
+reports/assets/submission_result_table_manifest.csv,table,"DFRWS,WIFS,DFF",Machine-readable manifest for compact submission result tables.,True,True,1072
 reports/assets/submission_table_same_domain_anchor.csv,table,"DFRWS,WIFS,DFF",Compact same-domain anchor table.,True,True,719
 reports/assets/submission_table_transfer_frontier.csv,table,"DFRWS,WIFS,DFF",Compact Ishu-to-MS-COCOAI transfer frontier table.,True,True,2983
 reports/assets/submission_table_reverse_operating_points.csv,table,"WIFS,DFF",Compact MS-COCOAI-to-Ishu reverse operating point table.,True,True,3283
 reports/assets/submission_table_robustness_stress.csv,table,"DFRWS,WIFS,DFF",Compact reverse tuned-fusion robustness stress table with clean-baseline deltas.,True,True,6105
-reports/submission_result_tables_lint_2026_06_14.md,quality-control,"DFRWS,WIFS,DFF","Generated lint report proving compact result tables match canonical metrics, robustness deltas, and claim-evidence IDs.",False,True,5792
-reports/assets/submission_result_tables_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable compact result-table consistency checks.,False,True,5279
-reports/submission_latex_tables_2026_06_14.md,table,"WIFS,DFF",Report listing generated LaTeX table fragments for paper drafting.,True,True,1269
-reports/assets/latex_tables/submission_latex_table_manifest.csv,table,"WIFS,DFF",Machine-readable manifest for generated LaTeX table fragments.,True,True,824
+reports/assets/submission_table_source_holdout_stress.csv,table,"DFRWS,WIFS,DFF",Compact held-out-generator stress table for the capped source-holdout policy.,True,True,1402
+reports/submission_result_tables_lint_2026_06_14.md,quality-control,"DFRWS,WIFS,DFF","Generated lint report proving compact result tables match canonical metrics, robustness deltas, and claim-evidence IDs.",False,True,6622
+reports/assets/submission_result_tables_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable compact result-table consistency checks.,False,True,6045
+reports/submission_latex_tables_2026_06_14.md,table,"WIFS,DFF",Report listing generated LaTeX table fragments for paper drafting.,True,True,1495
+reports/assets/latex_tables/submission_latex_table_manifest.csv,table,"WIFS,DFF",Machine-readable manifest for generated LaTeX table fragments.,True,True,1038
 reports/assets/latex_tables/same_domain_anchor.tex,table,"WIFS,DFF",LaTeX fragment for the same-domain anchor table.,True,True,331
 reports/assets/latex_tables/transfer_frontier.tex,table,"WIFS,DFF",LaTeX fragment for the Ishu-to-MS-COCOAI transfer frontier table.,True,True,900
 reports/assets/latex_tables/reverse_operating_points.tex,table,"WIFS,DFF",LaTeX fragment for the reverse operating point table.,True,True,761
 reports/assets/latex_tables/robustness_stress.tex,table,"WIFS,DFF",LaTeX fragment for the robustness stress table.,True,True,999
+reports/assets/latex_tables/source_holdout_stress.tex,table,"WIFS,DFF",LaTeX fragment for the held-out generator stress table.,True,True,509
 reports/submission_paper_skeletons_2026_06_14.md,paper-draft,"WIFS,DFF",Report listing generated WIFS/DFF paper skeletons.,True,True,1281
 reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv,paper-draft,"WIFS,DFF",Machine-readable manifest for generated WIFS/DFF paper skeletons.,True,True,750
-reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex,paper-draft,WIFS,"IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures.",True,True,14204
-reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex,paper-draft,DFF,"ACM-style DFF workshop skeleton with generated abstract, tables, and figures.",True,True,16023
-reports/paper_skeleton_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF paper skeleton structure, referenced assets, and claim guardrails.",False,True,3874
-reports/assets/paper_skeleton_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF paper skeleton lint checks.,False,True,3192
+reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex,paper-draft,WIFS,"IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures.",True,True,14304
+reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex,paper-draft,DFF,"ACM-style DFF workshop skeleton with generated abstract, tables, and figures.",True,True,16123
+reports/paper_skeleton_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF paper skeleton structure, referenced assets, and claim guardrails.",False,True,4067
+reports/assets/paper_skeleton_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF paper skeleton lint checks.,False,True,3365
 reports/assets/claim_evidence_matrix.csv,claim-audit,"DFRWS,WIFS,DFF",Machine-readable claim-to-evidence map with caveats and next actions.,True,True,19694
 reports/assets/claim_evidence_matrix.md,claim-audit,"DFRWS,WIFS,DFF",Readable claim-to-evidence map for authoring and review.,True,True,20063
 reports/submission_text_drafts_2026_06_14.md,writing,"DFRWS,WIFS,DFF","Venue-specific abstracts, contribution wording, result sentences, and paper skeletons.",True,True,14524

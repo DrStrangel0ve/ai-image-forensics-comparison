@@ -87,6 +87,51 @@ def _split_evidence_ids(value: object) -> list[str]:
     return [part.strip() for part in str(value).split(",") if part.strip()]
 
 
+def _lint_source_stress_table(rows: list[dict[str, object]], table: pd.DataFrame) -> None:
+    required_columns = {
+        "selection_policy",
+        "heldout_source",
+        "utility",
+        "recall",
+        "fake_miss_rate",
+        "predicted_fake_rate",
+        "paper_use",
+    }
+    missing = required_columns - set(table.columns)
+    _add_check(
+        rows,
+        "source_holdout_stress required columns present",
+        not missing,
+        "all source-stress columns present" if not missing else ", ".join(sorted(missing)),
+    )
+    if missing:
+        return
+    utility_sorted = table["utility"].tolist() == sorted(table["utility"].tolist())
+    _add_check(
+        rows,
+        "source_holdout_stress sorted by utility",
+        utility_sorted,
+        "weakest source appears first" if utility_sorted else "utility order is not ascending",
+    )
+    miss_mismatches = []
+    for row in table.itertuples(index=False):
+        expected_miss = 1.0 - float(row.recall)
+        if not _values_match(row.fake_miss_rate, expected_miss, tolerance=1e-6):
+            miss_mismatches.append(str(row.heldout_source))
+    _add_check(
+        rows,
+        "source_holdout_stress miss rate matches recall",
+        not miss_mismatches,
+        "all miss rates equal 1 - recall" if not miss_mismatches else ", ".join(miss_mismatches),
+    )
+    _add_check(
+        rows,
+        "source_holdout_stress has named sources",
+        table["heldout_source"].astype(str).str.len().gt(0).all(),
+        f"{len(table)} source rows",
+    )
+
+
 def lint_submission_result_tables(
     repo_root: Path,
     core_results_path: Path,
@@ -135,14 +180,6 @@ def lint_submission_result_tables(
             continue
 
         table = pd.read_csv(table_path)
-        expected_ids = list(spec["finding_ids"])
-        actual_ids = table["finding_id"].tolist()
-        _add_check(
-            rows,
-            f"{table_id} finding order matches builder",
-            actual_ids == expected_ids,
-            f"expected {expected_ids}, found {actual_ids}",
-        )
 
         manifest_row = manifest[manifest["table_id"] == table_id]
         manifest_ok = (
@@ -164,6 +201,20 @@ def lint_submission_result_tables(
                 title in report,
                 "present" if title in report else "missing",
             )
+
+        if "finding_ids" not in spec:
+            if table_id == "source_holdout_stress":
+                _lint_source_stress_table(rows, table)
+            continue
+
+        expected_ids = list(spec["finding_ids"])
+        actual_ids = table["finding_id"].tolist()
+        _add_check(
+            rows,
+            f"{table_id} finding order matches builder",
+            actual_ids == expected_ids,
+            f"expected {expected_ids}, found {actual_ids}",
+        )
 
         metric_mismatches = []
         text_mismatches = []

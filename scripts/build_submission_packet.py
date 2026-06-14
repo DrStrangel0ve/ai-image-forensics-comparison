@@ -302,6 +302,13 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/assets/submission_table_source_holdout_stress.csv",
+        "type": "table",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Compact held-out-generator stress table for the capped source-holdout policy.",
+        "required": True,
+    },
+    {
         "path": "reports/submission_result_tables_lint_2026_06_14.md",
         "type": "quality-control",
         "venues": "DFRWS,WIFS,DFF",
@@ -355,6 +362,13 @@ ARTIFACTS = [
         "type": "table",
         "venues": "WIFS,DFF",
         "purpose": "LaTeX fragment for the robustness stress table.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/latex_tables/source_holdout_stress.tex",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "LaTeX fragment for the held-out generator stress table.",
         "required": True,
     },
     {

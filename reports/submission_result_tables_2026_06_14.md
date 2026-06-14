@@ -14,6 +14,7 @@ These are compact, copy-ready tables for DFRWS, WIFS, and DFF drafting. They int
 | transfer_frontier | Ishu -> MS COCOAI Transfer Frontier | reports/assets/submission_table_transfer_frontier.csv | DFRWS,WIFS,DFF | Main transfer-ranking, calibration, and triage table. | 9 |
 | reverse_operating_points | MS COCOAI -> Ishu Reverse Operating Points | reports/assets/submission_table_reverse_operating_points.csv | WIFS,DFF | Compact reverse-direction ranking/calibration/threshold comparison. | 8 |
 | robustness_stress | Reverse Tuned-Fusion Robustness Stress | reports/assets/submission_table_robustness_stress.csv | DFRWS,WIFS,DFF | Stress table with deltas relative to the clean source-capped reverse tuned-fusion operating point. | 12 |
+| source_holdout_stress | Held-Out Generator Stress | reports/assets/submission_table_source_holdout_stress.csv | DFRWS,WIFS,DFF | Compact per-generator source-holdout stress table for the capped reverse tuned-fusion policy. | 5 |
 
 ## Same-Domain Anchors
 
@@ -74,3 +75,15 @@ Use: Stress table with deltas relative to the clean source-capped reverse tuned-
 | Reverse tuned-fusion target-transform robustness (screenshot) | 0.7310 | -0.0322 | 0.7965 | -0.0396 | 0.5263 | Target-transform robustness stress test for the best reverse tuned-fusion cap; source-selected policy is evaluated without target tuning. |
 | Reverse tuned-fusion target-transform robustness (blur1) | 0.7105 | -0.0526 | 0.7872 | -0.0490 | 0.5585 | Target-transform robustness stress test for the best reverse tuned-fusion cap; source-selected policy is evaluated without target tuning. |
 | Reverse tuned-fusion target-transform robustness (resize_half) | 0.7164 | -0.0468 | 0.7816 | -0.0545 | 0.5526 | Target-transform robustness stress test for the best reverse tuned-fusion cap; source-selected policy is evaluated without target tuning. |
+
+## Held-Out Generator Stress
+
+Use: Compact per-generator source-holdout stress table for the capped reverse tuned-fusion policy.
+
+| heldout_source | recall | fake_miss_rate | predicted_fake_rate | utility | paper_use |
+| --- | --- | --- | --- | --- | --- |
+| sd3 | 0.7961 | 0.2039 | 0.1325 | 1.4235 | Per-generator held-out stress under the capped source-holdout policy; lower utility and higher fake-miss rate indicate a weaker source slice. |
+| midjourney6 | 0.8793 | 0.1207 | 0.1551 | 1.6315 | Per-generator held-out stress under the capped source-holdout policy; lower utility and higher fake-miss rate indicate a weaker source slice. |
+| sd21 | 0.8981 | 0.1019 | 0.1721 | 1.6787 | Per-generator held-out stress under the capped source-holdout policy; lower utility and higher fake-miss rate indicate a weaker source slice. |
+| sdxl | 0.9848 | 0.0152 | 0.1818 | 1.8955 | Per-generator held-out stress under the capped source-holdout policy; lower utility and higher fake-miss rate indicate a weaker source slice. |
+| dalle3 | 0.9848 | 0.0152 | 0.1690 | 1.8955 | Per-generator held-out stress under the capped source-holdout policy; lower utility and higher fake-miss rate indicate a weaker source slice. |

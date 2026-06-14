@@ -87,7 +87,7 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-15",
         "item": "LaTeX tables and bibliography",
         "status": "ready_asset",
-        "paths": "reports/assets/latex_tables/same_domain_anchor.tex; reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/latex_tables/robustness_stress.tex; references.bib",
+        "paths": "reports/assets/latex_tables/same_domain_anchor.tex; reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/latex_tables/robustness_stress.tex; reports/assets/latex_tables/source_holdout_stress.tex; references.bib",
         "action": "Pull compact tables and references into the paper template; verify final citation metadata before submission.",
     },
     {
@@ -141,7 +141,7 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-16",
         "item": "failure-analysis material",
         "status": "ready_asset",
-        "paths": "reports/assets/qualitative_seed17_scp_fusion_false_negatives.png; reports/assets/qualitative_seed29_scp_fusion_false_negatives.png; reports/combined_v4_source_slice_diagnostics_2026_06_13.md; reports/source_holdout_generator_stress_2026_06_14.md; reports/assets/source_holdout_generator_stress.png",
+        "paths": "reports/assets/qualitative_seed17_scp_fusion_false_negatives.png; reports/assets/qualitative_seed29_scp_fusion_false_negatives.png; reports/combined_v4_source_slice_diagnostics_2026_06_13.md; reports/source_holdout_generator_stress_2026_06_14.md; reports/assets/source_holdout_generator_stress.png; reports/assets/submission_table_source_holdout_stress.csv; reports/assets/latex_tables/source_holdout_stress.tex",
         "action": "Use qualitative grids and source-slice diagnostics for the workshop failure-analysis section.",
     },
     {

@@ -143,6 +143,7 @@ def test_submission_paper_skeleton_builder_writes_wifs_and_dff_tex(tmp_path: Pat
     assert "\\documentclass[conference]{IEEEtran}" in wifs
     assert "\\documentclass[sigconf,review,anonymous]{acmart}" in dff
     assert "\\input{reports/assets/latex_tables/robustness_stress.tex}" in wifs
+    assert "\\input{reports/assets/latex_tables/source_holdout_stress.tex}" in dff
     assert "reports/assets/source_holdout_generator_stress.png" in wifs
     assert "\\label{fig:source-stress}" in dff
     assert "\\ref{fig:source-stress}" in wifs
