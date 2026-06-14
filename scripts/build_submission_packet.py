@@ -841,6 +841,55 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/tiled_dinov2_jpeg30_reverse_transfer_2026_06_14.md",
+        "type": "result-note",
+        "venues": "WIFS,DFF",
+        "purpose": "JPEG30 robustness probe for tiled DINOv2 reverse-transfer score aggregation.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_dinov2_jpeg30_reverse_transfer_summary.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable summary for JPEG30 tiled DINOv2 reverse-transfer score modes.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_dinov2_jpeg30_reverse_transfer_seed_metrics.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Per-seed metrics for JPEG30 tiled DINOv2 reverse-transfer score modes.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_dinov2_jpeg30_reverse_transfer_detail.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Per-image JPEG30 tiled DINOv2 scores for robustness diagnostics.",
+        "required": False,
+    },
+    {
+        "path": "reports/ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2_2026_06_14.md",
+        "type": "result-note",
+        "venues": "WIFS,DFF",
+        "purpose": "Fixed reverse SCP-Fusion JPEG30 robustness diagnostic after replacing the DINOv2 target branch with tiled target scores.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2_summary.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable fixed-fusion JPEG30 summary for tiled DINOv2 branch replacement.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2_detail.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Per-seed fixed-fusion JPEG30 detail for tiled DINOv2 branch replacement.",
+        "required": False,
+    },
+    {
         "path": "reports/tiled_dinov2_resize_half_reverse_transfer_2026_06_14.md",
         "type": "result-note",
         "venues": "WIFS,DFF",
@@ -964,6 +1013,10 @@ REGEN_COMMANDS = [
     (
         "tiled DINO blur1 fusion robustness",
         "python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant blur1 --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_blur1_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_blur1_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_blur1_tiled_dinov2_2026_06_14.md",
+    ),
+    (
+        "tiled DINO JPEG30 fusion robustness",
+        "python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant jpeg30 --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_jpeg30_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2_2026_06_14.md",
     ),
     (
         "tiled DINO transform stress comparison",
@@ -1142,7 +1195,7 @@ def build_submission_packet(repo_root: Path, core_results: Path, claim_matrix: P
         "- Do not claim classic multi-light photometric stereo; the current physical branch is a single-image proxy.",
         "- Do not claim SCP-Fusion universally beats frozen CLIP; CLIP is still the transfer-ranking frontier in the current evidence.",
         "- Do not claim SOTA or NTIRE/ImageCLEF leaderboard placement; the checked SOTA-gap report separates official results from local proxy evidence.",
-        "- Treat native/foundation tiling as bounded diagnostic evidence; clean, blur, and resize-half stress gains are small and transform coverage is still incomplete.",
+        "- Treat native/foundation tiling as bounded diagnostic evidence; clean, blur, JPEG30, and resize-half stress gains are small and transform coverage is still incomplete.",
         "- Keep `combined_v4` as an ablation unless source-aware feature selection or stronger regularization changes the transfer gate.",
         "",
     ]

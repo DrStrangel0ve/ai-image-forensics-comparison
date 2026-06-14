@@ -33,9 +33,8 @@ def test_tiled_dinov2_transform_stress_comparison_builder_writes_deltas(tmp_path
     assert "Tiled DINO Transform Stress Comparison" in text
     assert "Largest accuracy lift" in text
     assert "tile_max" in text
-    assert {"blur1", "resize_half"} == set(comparison["variant"])
+    assert {"blur1", "jpeg30", "resize_half"} == set(comparison["variant"])
     assert (comparison["accuracy_delta"] > 0).all()
     assert (comparison["auc_delta"] > 0).all()
     assert "standalone_best_auc" in comparison.columns
     assert "source_report" in comparison.columns
-

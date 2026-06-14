@@ -8,7 +8,7 @@ import pandas as pd
 
 RUN_DATE = "2026-06-14"
 
-DEFAULT_VARIANTS = ["blur1", "resize_half"]
+DEFAULT_VARIANTS = ["blur1", "jpeg30", "resize_half"]
 
 
 def parse_args() -> argparse.Namespace:
@@ -179,7 +179,7 @@ def build_report(comparison: pd.DataFrame) -> str:
             f"{best_auc['accuracy_delta_for_best_auc']:+.4f} accuracy)."
         ),
         "",
-        "Both checked transforms show modest accuracy/AUC improvements from tiled-DINO fusion, but calibration is mixed: Brier improves for blur1 `tile_mean`, while the best accuracy/AUC modes increase ECE and fake-call rate. Treat this as robustness support for the ranking/decision branch, not a calibration upgrade.",
+        "Checked transforms show modest accuracy/AUC improvements from tiled-DINO fusion, but calibration is mixed: Brier improves for blur1 and JPEG30 `tile_mean`, while the best accuracy/AUC modes can increase ECE or fake-call rate. Treat this as robustness support for the ranking/decision branch, not a calibration upgrade.",
         "",
         "## Comparison",
         "",
@@ -187,9 +187,9 @@ def build_report(comparison: pd.DataFrame) -> str:
         "",
         "## Interpretation",
         "",
-        "- `tile_max` is currently the strongest transformed-target fusion mode for both blur1 and resize-half.",
-        "- Standalone tiled DINO remains weak under both transforms; the gain appears only when DINO is fused with physical/conventional and other neural/foundation branches.",
-        "- JPEG and screenshot-style transformed tiled-DINO probes are still needed before promoting this beyond a two-transform diagnostic.",
+        "- `tile_max` is currently the strongest transformed-target fusion mode for all three checked transforms.",
+        "- Standalone tiled DINO remains weak under all three checked transforms; the gain appears only when DINO is fused with physical/conventional and other neural/foundation branches.",
+        "- Screenshot-style transformed tiled-DINO probes are still needed before promoting this beyond a three-transform diagnostic.",
         "",
     ]
     return "\n".join(lines)
