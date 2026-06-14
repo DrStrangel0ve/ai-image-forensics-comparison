@@ -78,6 +78,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/opportunity_watchlist_2026_06_14.md",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Current venue/challenge watchlist separating active submission targets from closed benchmark tracks.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/opportunity_watchlist.csv",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable opportunity and benchmark watchlist.",
+        "required": False,
+    },
+    {
         "path": "reports/literature_map_2026_06_14.md",
         "type": "literature",
         "venues": "WIFS,DFF",
@@ -561,6 +575,7 @@ REGEN_COMMANDS = [
     ("submission package lint", "python scripts/lint_submission_package.py"),
     ("submission scorecard", "python scripts/build_submission_scorecard.py"),
     ("submission upload checklist", "python scripts/build_submission_upload_checklist.py"),
+    ("opportunity watchlist", "python scripts/build_opportunity_watchlist.py"),
 ]
 
 

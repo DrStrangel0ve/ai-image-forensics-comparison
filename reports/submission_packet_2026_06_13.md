@@ -54,6 +54,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_scorecard.csv | Machine-readable venue-level readiness scorecard. |
 | planning | reports/submission_upload_checklist_2026_06_14.md | Venue upload checklist separating ready assets from final export, writing, and decision tasks. |
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
+| planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
+| planning | reports/assets/opportunity_watchlist.csv | Machine-readable opportunity and benchmark watchlist. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
 | table | reports/submission_result_tables_2026_06_14.md | Copy-ready compact result tables for poster and paper drafting. |
@@ -99,6 +101,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_scorecard.csv | Machine-readable venue-level readiness scorecard. |
 | planning | reports/submission_upload_checklist_2026_06_14.md | Venue upload checklist separating ready assets from final export, writing, and decision tasks. |
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
+| planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
+| planning | reports/assets/opportunity_watchlist.csv | Machine-readable opportunity and benchmark watchlist. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -161,6 +165,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_scorecard.csv | Machine-readable venue-level readiness scorecard. |
 | planning | reports/submission_upload_checklist_2026_06_14.md | Venue upload checklist separating ready assets from final export, writing, and decision tasks. |
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
+| planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
+| planning | reports/assets/opportunity_watchlist.csv | Machine-readable opportunity and benchmark watchlist. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -235,6 +241,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | submission package lint | python scripts/lint_submission_package.py |
 | submission scorecard | python scripts/build_submission_scorecard.py |
 | submission upload checklist | python scripts/build_submission_upload_checklist.py |
+| opportunity watchlist | python scripts/build_opportunity_watchlist.py |
 
 ## Current Editorial Guardrails
 
