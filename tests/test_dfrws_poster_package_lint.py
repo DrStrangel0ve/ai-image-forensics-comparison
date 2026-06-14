@@ -19,7 +19,11 @@ def test_dfrws_poster_package_lint_passes_generated_fixture(tmp_path: Path) -> N
     assets_dir = reports_dir / "assets"
     scripts_dir.mkdir(parents=True)
     assets_dir.mkdir(parents=True)
-    for script in ["build_dfrws_poster_brief.py", "build_dfrws_poster_figures.py"]:
+    for script in [
+        "build_dfrws_poster_brief.py",
+        "build_dfrws_poster_figures.py",
+        "tiled_dino_tradeoff_utils.py",
+    ]:
         shutil.copyfile(ROOT / "scripts" / script, scripts_dir / script)
 
     rows = [

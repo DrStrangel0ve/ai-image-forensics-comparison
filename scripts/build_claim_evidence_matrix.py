@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from tiled_dino_tradeoff_utils import load_tiled_dino_tradeoff_summary, tiled_dino_evidence_summary
+
 
 COLUMNS = [
     "claim_id",
@@ -295,49 +297,6 @@ def _format_metric(row: pd.Series) -> str:
     return f"{row['finding_id']} ({row['method']}: {metrics})"
 
 
-def _bool_count(series: pd.Series) -> int:
-    return int(series.astype(str).str.lower().isin(["true", "1", "yes"]).sum())
-
-
-def _signed_metric(value: float) -> str:
-    return f"{float(value):+.4f}"
-
-
-def _tiled_dino_evidence_summary(tradeoff_path: Path) -> str:
-    tradeoff = pd.read_csv(tradeoff_path)
-    required = {
-        "variant",
-        "score_mode",
-        "target_accuracy_mean_delta_vs_global",
-        "target_roc_auc_mean_delta_vs_global",
-        "target_brier_score_mean_improved_vs_global",
-        "target_expected_calibration_error_mean_improved_vs_global",
-    }
-    missing = required - set(tradeoff.columns)
-    if missing:
-        raise ValueError(f"Missing tiled-DINO tradeoff columns: {sorted(missing)}")
-    n_transforms = int(tradeoff["variant"].nunique())
-    mode_means = (
-        tradeoff.groupby("score_mode", as_index=True)[
-            ["target_accuracy_mean_delta_vs_global", "target_roc_auc_mean_delta_vs_global"]
-        ]
-        .mean()
-        .to_dict("index")
-    )
-    for mode in ["tile_max", "tile_mean"]:
-        if mode not in mode_means:
-            raise ValueError(f"Missing tiled-DINO score_mode={mode!r}")
-    tile_mean = tradeoff[tradeoff["score_mode"].eq("tile_mean")]
-    return (
-        "tiled_dinov2_calibration_tradeoff "
-        f"(tile_max: mean acc_delta={_signed_metric(mode_means['tile_max']['target_accuracy_mean_delta_vs_global'])}, "
-        f"mean AUC_delta={_signed_metric(mode_means['tile_max']['target_roc_auc_mean_delta_vs_global'])} "
-        f"across {n_transforms} transform-stress probes; "
-        f"tile_mean: Brier improves on {_bool_count(tile_mean['target_brier_score_mean_improved_vs_global'])}/{n_transforms}, "
-        f"ECE improves on {_bool_count(tile_mean['target_expected_calibration_error_mean_improved_vs_global'])}/{n_transforms})"
-    )
-
-
 def _evidence_summary(core_results: pd.DataFrame, finding_ids: list[str]) -> str:
     if not finding_ids:
         return "Tracked outside the generated core result table."
@@ -356,7 +315,10 @@ def build_claim_matrix(core_results: Path, tiled_dino_tradeoff: Path) -> pd.Data
     for claim in CLAIMS:
         finding_ids = claim["evidence_finding_ids"]
         if claim.get("evidence_summary_source") == "tiled_dino_tradeoff":
-            evidence_summary = _tiled_dino_evidence_summary(tiled_dino_tradeoff)
+            tiled_dino = load_tiled_dino_tradeoff_summary(tiled_dino_tradeoff)
+            if tiled_dino is None:
+                raise ValueError("Missing tiled-DINO tradeoff summary")
+            evidence_summary = tiled_dino_evidence_summary(tiled_dino)
         else:
             evidence_summary = _evidence_summary(core, finding_ids)
         rows.append(

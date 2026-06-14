@@ -6,6 +6,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from tiled_dino_tradeoff_utils import load_tiled_dino_tradeoff_summary, tiled_dino_sentence
+
 
 RESULT_IDS = [
     "ishu_same_combined_v3",
@@ -110,57 +112,6 @@ def _word_count(text: str) -> int:
     return len(re.findall(r"\b[\w'-]+\b", text))
 
 
-def _bool_count(series: pd.Series) -> int:
-    return int(series.astype(str).str.lower().isin(["true", "1", "yes"]).sum())
-
-
-def _signed_metric(value: float) -> str:
-    return f"{float(value):+.4f}"
-
-
-def _tiled_dino_summary(tradeoff_path: Path) -> dict[str, str]:
-    tradeoff = pd.read_csv(tradeoff_path)
-    required = {
-        "variant",
-        "score_mode",
-        "target_accuracy_mean_delta_vs_global",
-        "target_roc_auc_mean_delta_vs_global",
-        "target_brier_score_mean_improved_vs_global",
-        "target_expected_calibration_error_mean_improved_vs_global",
-    }
-    missing = required - set(tradeoff.columns)
-    if missing:
-        raise ValueError(f"Missing tiled-DINO tradeoff columns: {sorted(missing)}")
-    n_transforms = int(tradeoff["variant"].nunique())
-    mode_means = (
-        tradeoff.groupby("score_mode", as_index=True)[
-            ["target_accuracy_mean_delta_vs_global", "target_roc_auc_mean_delta_vs_global"]
-        ]
-        .mean()
-        .to_dict("index")
-    )
-    for mode in ["tile_max", "tile_mean"]:
-        if mode not in mode_means:
-            raise ValueError(f"Missing tiled-DINO score_mode={mode!r}")
-    tile_mean = tradeoff[tradeoff["score_mode"].eq("tile_mean")]
-    return {
-        "n_transforms": str(n_transforms),
-        "tile_max_acc_delta": _signed_metric(mode_means["tile_max"]["target_accuracy_mean_delta_vs_global"]),
-        "tile_max_auc_delta": _signed_metric(mode_means["tile_max"]["target_roc_auc_mean_delta_vs_global"]),
-        "tile_mean_brier_count": f"{_bool_count(tile_mean['target_brier_score_mean_improved_vs_global'])}/{n_transforms}",
-        "tile_mean_ece_count": f"{_bool_count(tile_mean['target_expected_calibration_error_mean_improved_vs_global'])}/{n_transforms}",
-    }
-
-
-def _tiled_dino_sentence(summary: dict[str, str]) -> str:
-    return (
-        f"Across {summary['n_transforms']} transform-stress probes, tiled-DINO `tile_max` gives "
-        f"{summary['tile_max_acc_delta']} accuracy and {summary['tile_max_auc_delta']} AUC average deltas, "
-        f"while `tile_mean` improves Brier on {summary['tile_mean_brier_count']} and ECE on "
-        f"{summary['tile_mean_ece_count']} transforms."
-    )
-
-
 def _dfrws_abstract(core: pd.DataFrame, tiled_dino: dict[str, str]) -> str:
     same = _row(core, "ishu_same_physics_guided")
     clip = _row(core, "ishu_to_ms_clip_standalone")
@@ -172,7 +123,7 @@ def _dfrws_abstract(core: pd.DataFrame, tiled_dino: dict[str, str]) -> str:
         f"On the Ishu AI-vs-real benchmark, physics-guided fusion improves the same-domain anchor to {_metric(same, 'accuracy')} accuracy and {_metric(same, 'auc')} AUC, but cross-source transfer tells a different story: frozen CLIP is the strongest standalone ranker on Ishu to source-balanced MS COCOAI at {_metric(clip, 'accuracy')} accuracy and {_metric(clip, 'auc')} AUC. "
         f"Strict source-heldout triage with CLIP decides {_metric(triage, 'coverage')} of target images at {_metric(triage, 'decided_accuracy')} decided-case accuracy, showing that partial high-confidence decisions can be more defensible than forcing every image through one threshold. "
         f"In the reverse direction, a source-capped SCP-Fusion setting improves further when the conventional branch uses native-tiled scores, reaching {_metric(tiled, 'accuracy')} accuracy and {_metric(tiled, 'auc')} AUC, while blur, harsh JPEG, and resize remain clear stressors. "
-        f"{_tiled_dino_sentence(tiled_dino)} "
+        f"{tiled_dino_sentence(tiled_dino)} "
         "The poster emphasizes reproducible source-shift diagnostics, calibration, triage, and failure cases rather than a production detector claim."
     )
 
@@ -237,7 +188,9 @@ def _markdown_table(frame: pd.DataFrame, columns: list[str]) -> str:
 def build_submission_text(core_results: Path, claim_matrix: Path, tiled_dino_tradeoff: Path) -> tuple[str, pd.DataFrame]:
     core = pd.read_csv(core_results)
     claims = pd.read_csv(claim_matrix)
-    tiled_dino = _tiled_dino_summary(tiled_dino_tradeoff)
+    tiled_dino = load_tiled_dino_tradeoff_summary(tiled_dino_tradeoff)
+    if tiled_dino is None:
+        raise ValueError("Missing tiled-DINO tradeoff summary")
     for finding_id in RESULT_IDS:
         _row(core, finding_id)
 
@@ -289,7 +242,7 @@ def build_submission_text(core_results: Path, claim_matrix: Path, tiled_dino_tra
         "",
         "## Tiled-DINO Mode Tradeoff",
         "",
-        _tiled_dino_sentence(tiled_dino),
+        tiled_dino_sentence(tiled_dino),
         "",
         "Paper-safe wording: use `tile_max` for decision/ranking robustness headlines with a calibration caveat, and use `tile_mean` for Brier/ECE discussion.",
         "",

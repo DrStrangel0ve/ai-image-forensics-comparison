@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from tiled_dino_tradeoff_utils import load_tiled_dino_tradeoff_summary, tiled_dino_sentence
+
 
 KEY_FINDINGS = [
     "ishu_same_combined_v3",
@@ -103,50 +105,6 @@ def _format_number(value: object) -> str:
     return f"{float(value):.4f}"
 
 
-def _signed_number(value: float) -> str:
-    return f"{float(value):+.4f}"
-
-
-def _bool_count(series: pd.Series) -> int:
-    return int(series.astype(str).str.lower().isin(["true", "1", "yes"]).sum())
-
-
-def _tiled_dino_summary(tradeoff_path: Path | None) -> dict[str, str] | None:
-    if tradeoff_path is None or not tradeoff_path.exists():
-        return None
-    tradeoff = pd.read_csv(tradeoff_path)
-    required = {
-        "variant",
-        "score_mode",
-        "target_accuracy_mean_delta_vs_global",
-        "target_roc_auc_mean_delta_vs_global",
-        "target_brier_score_mean_improved_vs_global",
-        "target_expected_calibration_error_mean_improved_vs_global",
-    }
-    missing = required - set(tradeoff.columns)
-    if missing:
-        raise ValueError(f"Missing tiled-DINO tradeoff columns: {sorted(missing)}")
-    n_transforms = int(tradeoff["variant"].nunique())
-    mode_means = (
-        tradeoff.groupby("score_mode", as_index=True)[
-            ["target_accuracy_mean_delta_vs_global", "target_roc_auc_mean_delta_vs_global"]
-        ]
-        .mean()
-        .to_dict("index")
-    )
-    for mode in ["tile_max", "tile_mean"]:
-        if mode not in mode_means:
-            raise ValueError(f"Missing tiled-DINO score_mode={mode!r}")
-    tile_mean = tradeoff[tradeoff["score_mode"].eq("tile_mean")]
-    return {
-        "n_transforms": str(n_transforms),
-        "tile_max_acc_delta": _signed_number(mode_means["tile_max"]["target_accuracy_mean_delta_vs_global"]),
-        "tile_max_auc_delta": _signed_number(mode_means["tile_max"]["target_roc_auc_mean_delta_vs_global"]),
-        "tile_mean_brier_count": f"{_bool_count(tile_mean['target_brier_score_mean_improved_vs_global'])}/{n_transforms}",
-        "tile_mean_ece_count": f"{_bool_count(tile_mean['target_expected_calibration_error_mean_improved_vs_global'])}/{n_transforms}",
-    }
-
-
 def _metric_summary(row: pd.Series) -> str:
     parts = []
     for column, label in [
@@ -215,7 +173,11 @@ def build_poster_brief(
 ) -> tuple[str, pd.DataFrame]:
     core = pd.read_csv(core_results)
     claims = pd.read_csv(claim_matrix)
-    tiled_dino = _tiled_dino_summary(tiled_dino_tradeoff)
+    tiled_dino = (
+        load_tiled_dino_tradeoff_summary(tiled_dino_tradeoff, allow_missing=True)
+        if tiled_dino_tradeoff is not None
+        else None
+    )
     key_rows = _rows_by_id(core, KEY_FINDINGS)
     robustness_rows = _rows_by_id(core, ROBUSTNESS_FINDINGS)
     key_display = _display_rows(key_rows)
@@ -258,11 +220,7 @@ def build_poster_brief(
         "## Tiled-DINO Follow-Up",
         "",
         (
-            "Across "
-            f"{tiled_dino['n_transforms']} transform-stress probes, tiled-DINO `tile_max` gives "
-            f"{tiled_dino['tile_max_acc_delta']} accuracy and {tiled_dino['tile_max_auc_delta']} AUC average deltas, "
-            f"while `tile_mean` improves Brier on {tiled_dino['tile_mean_brier_count']} and ECE on "
-            f"{tiled_dino['tile_mean_ece_count']} probes."
+            tiled_dino_sentence(tiled_dino, terminal_label="probes")
             if tiled_dino
             else "No tiled-DINO tradeoff table was provided for this brief build."
         ),
