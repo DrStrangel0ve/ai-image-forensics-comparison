@@ -29,6 +29,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--core-results", default="reports/assets/publication_core_results.csv")
     parser.add_argument("--claim-matrix", default="reports/assets/claim_evidence_matrix.csv")
     parser.add_argument("--literature-map", default="reports/assets/literature_map.csv")
+    parser.add_argument("--tiled-dino-tradeoff", default="reports/assets/tiled_dinov2_calibration_tradeoff.csv")
     parser.add_argument("--out-path", default="reports/paper_section_drafts_2026_06_14.md")
     parser.add_argument("--manifest-out", default="reports/assets/paper_section_draft_manifest.csv")
     return parser.parse_args()
@@ -55,6 +56,48 @@ def _word_count(text: str) -> int:
     return len(re.findall(r"\b[\w'-]+\b", text))
 
 
+def _bool_count(series: pd.Series) -> int:
+    return int(series.astype(str).str.lower().isin(["true", "1", "yes"]).sum())
+
+
+def _signed_metric(value: float) -> str:
+    return f"{float(value):+.4f}"
+
+
+def _tiled_dino_summary(tradeoff_path: Path) -> dict[str, str]:
+    tradeoff = pd.read_csv(tradeoff_path)
+    required = {
+        "variant",
+        "score_mode",
+        "target_accuracy_mean_delta_vs_global",
+        "target_roc_auc_mean_delta_vs_global",
+        "target_brier_score_mean_improved_vs_global",
+        "target_expected_calibration_error_mean_improved_vs_global",
+    }
+    missing = required - set(tradeoff.columns)
+    if missing:
+        raise ValueError(f"Missing tiled-DINO tradeoff columns: {sorted(missing)}")
+    n_transforms = int(tradeoff["variant"].nunique())
+    mode_means = (
+        tradeoff.groupby("score_mode", as_index=True)[
+            ["target_accuracy_mean_delta_vs_global", "target_roc_auc_mean_delta_vs_global"]
+        ]
+        .mean()
+        .to_dict("index")
+    )
+    for mode in ["tile_max", "tile_mean"]:
+        if mode not in mode_means:
+            raise ValueError(f"Missing tiled-DINO score_mode={mode!r}")
+    tile_mean = tradeoff[tradeoff["score_mode"].eq("tile_mean")]
+    return {
+        "n_transforms": str(n_transforms),
+        "tile_max_acc_delta": _signed_metric(mode_means["tile_max"]["target_accuracy_mean_delta_vs_global"]),
+        "tile_max_auc_delta": _signed_metric(mode_means["tile_max"]["target_roc_auc_mean_delta_vs_global"]),
+        "tile_mean_brier_count": f"{_bool_count(tile_mean['target_brier_score_mean_improved_vs_global'])}/{n_transforms}",
+        "tile_mean_ece_count": f"{_bool_count(tile_mean['target_expected_calibration_error_mean_improved_vs_global'])}/{n_transforms}",
+    }
+
+
 def _section(title: str, text: str) -> dict[str, object]:
     return {"section": title, "text": text.strip(), "word_count": _word_count(text)}
 
@@ -66,10 +109,13 @@ def _citation_keys(literature: pd.DataFrame, theme: str) -> str:
     return ", ".join(f"`{key}`" for key in keys)
 
 
-def build_sections(core_results: Path, claim_matrix: Path, literature_map: Path) -> list[dict[str, object]]:
+def build_sections(
+    core_results: Path, claim_matrix: Path, literature_map: Path, tiled_dino_tradeoff: Path
+) -> list[dict[str, object]]:
     core = pd.read_csv(core_results)
     claims = pd.read_csv(claim_matrix)
     literature = pd.read_csv(literature_map)
+    tiled_dino = _tiled_dino_summary(tiled_dino_tradeoff)
     rows = _rows_by_id(core)
 
     combined_v3 = rows["ishu_same_combined_v3"]
@@ -167,7 +213,11 @@ def build_sections(core_results: Path, claim_matrix: Path, literature_map: Path)
                 f"that to {_fmt(native, 'accuracy')} accuracy and {_fmt(native, 'auc')} AUC. Robustness remains mixed: "
                 f"social-style 720p processing is comparatively stable at {_fmt(social, 'accuracy')} accuracy and "
                 f"{_fmt(social, 'auc')} AUC, while JPEG30 and blur expose weaker operating points at "
-                f"{_fmt(jpeg30, 'accuracy')} and {_fmt(blur, 'accuracy')} accuracy."
+                f"{_fmt(jpeg30, 'accuracy')} and {_fmt(blur, 'accuracy')} accuracy. A tiled-DINO follow-up gives "
+                f"`tile_max` average deltas of {tiled_dino['tile_max_acc_delta']} accuracy and "
+                f"{tiled_dino['tile_max_auc_delta']} AUC across {tiled_dino['n_transforms']} stress probes, while "
+                f"`tile_mean` improves Brier on {tiled_dino['tile_mean_brier_count']} and ECE on "
+                f"{tiled_dino['tile_mean_ece_count']} probes."
             ),
         ),
         _section(
@@ -180,9 +230,10 @@ def build_sections(core_results: Path, claim_matrix: Path, literature_map: Path)
                 "two-threshold triage avoids pretending every image deserves a confident binary call. Failure grids "
                 "and source-slice diagnostics should be used as explainability evidence: when generated images are "
                 "missed, the paper should ask whether the miss is semantic, spectral, compression-driven, or a "
-                "source-threshold artifact. The DFF framing can also carry the `combined_v4` and reconstruction "
-                "roadmap, but it should keep the caveat that current `combined_v4` is an ablation candidate and "
-                "that true AEROBLADE/FIRE-style reconstruction has not yet replaced the lightweight residual branch."
+                "source-threshold artifact. The DFF framing can carry the tiled-DINO mode tradeoff as a small "
+                "robustness design rule, then connect it to the `combined_v4` and reconstruction roadmap; it should "
+                "keep the caveat that current `combined_v4` is an ablation candidate and that true "
+                "AEROBLADE/FIRE-style reconstruction has not yet replaced the lightweight residual branch."
             ),
         ),
         _section(
@@ -190,9 +241,9 @@ def build_sections(core_results: Path, claim_matrix: Path, literature_map: Path)
             (
                 f"The manuscript should preserve all {claim_count} ready or caveated claim guardrails from the "
                 "claim-evidence matrix. Most importantly, the physical branch is a single-image proxy rather than "
-                "classic photometric stereo, SCP-Fusion does not universally beat frozen CLIP, native tiling is "
-                "currently bounded to the conventional target branch in the fused diagnostic, and robustness claims "
-                "must name the transform being tested. The repo is public and contains generated result tables, "
+                "classic photometric stereo, SCP-Fusion does not universally beat frozen CLIP, native/foundation "
+                "tiling is a bounded diagnostic rather than an official external high-resolution benchmark result, "
+                "and robustness claims must name the transform being tested. The repo is public and contains generated result tables, "
                 "LaTeX fragments, paper skeletons, lint reports, literature maps, draft BibTeX, and reproduction "
                 "commands. The final paper still needs official venue templates, verified bibliography metadata, "
                 "and, if time allows, broader source-balanced data or a true reconstruction branch."
@@ -248,7 +299,12 @@ def write_report(sections: list[dict[str, object]], out_path: Path) -> pd.DataFr
 
 def main() -> None:
     args = parse_args()
-    sections = build_sections(Path(args.core_results), Path(args.claim_matrix), Path(args.literature_map))
+    sections = build_sections(
+        Path(args.core_results),
+        Path(args.claim_matrix),
+        Path(args.literature_map),
+        Path(args.tiled_dino_tradeoff),
+    )
     manifest = write_report(sections, Path(args.out_path))
     manifest_out = Path(args.manifest_out)
     manifest_out.parent.mkdir(parents=True, exist_ok=True)

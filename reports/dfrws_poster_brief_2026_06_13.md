@@ -16,6 +16,7 @@ AI-image forensic detectors need source-heldout evaluation because ranking, prob
 2. Transfer ranking has a different winner: frozen CLIP is the strongest standalone cross-domain ranker and triage branch.
 3. SCP-Fusion is most useful as a diagnostic protocol: it exposes calibration, fake-call-rate, and transform-specific failure modes rather than simply replacing the best branch.
 4. Source-aware thresholds and triage produce more defensible forensic decisions than one default threshold everywhere.
+5. Tiled-DINO stress probes add a mode-specific design rule: `tile_max` helps decision/ranking headlines, while `tile_mean` is safer for Brier/ECE.
 
 ## Key Numbers
 
@@ -46,6 +47,10 @@ AI-image forensic detectors need source-heldout evaluation because ranking, prob
 | ms_to_ishu_tuned_fusion_social_square | Reverse tuned-fusion target-transform robustness (social_square) | MS COCOAI -> Ishu tuned-fusion social_square robustness | accuracy 0.7778 / AUC 0.8474 / Brier 0.2782 / ECE 0.3010 / fake-call rate 0.5088 | Target-transform robustness stress test for the best reverse tuned-fusion cap; source-selected policy is evaluated without target tuning. |
 | ms_to_ishu_tuned_fusion_social_720p | Reverse tuned-fusion target-transform robustness (social_720p) | MS COCOAI -> Ishu tuned-fusion social_720p robustness | accuracy 0.7602 / AUC 0.8506 / Brier 0.2583 / ECE 0.2657 / fake-call rate 0.4678 | Target-transform robustness stress test for the best reverse tuned-fusion cap; source-selected policy is evaluated without target tuning. |
 
+## Tiled-DINO Follow-Up
+
+Across 4 transform-stress probes, tiled-DINO `tile_max` gives +0.0139 accuracy and +0.0147 AUC average deltas, while `tile_mean` improves Brier on 4/4 and ECE on 3/4 probes.
+
 ## Figure Package
 
 | panel | file | poster_use |
@@ -66,6 +71,7 @@ AI-image forensic detectors need source-heldout evaluation because ranking, prob
 | clip_transfer_frontier | ready | DFRWS headline result; DFF foundation-baseline result; WIFS compact comparison. | CLIP has strong ranking but reverse-transfer default thresholds still over-call generated images. |
 | scp_fusion_is_diagnostic | ready_with_caveat | DFF method framing; WIFS cautionary fusion result; DFRWS reproducibility panel. | Current score fusion can suppress the best branch and can inherit source-threshold bias. |
 | source_thresholding_improves_decisions | ready_with_caveat | DFRWS operational triage panel; WIFS/DFF calibration and utility section. | The capped source-threshold result is an operating point, not a learned general solution. |
+| transform_stress_exposes_failure_modes | ready_with_caveat | DFRWS robustness panel; WIFS/DFF robustness and failure-analysis section. | This is source-selected proxy transform stress, not an official NTIRE/ImageCLEF challenge score or a universal robustness claim. |
 | high_confidence_triage_is_viable | ready | DFRWS poster workflow; DFF real-world processing discussion. | Coverage is intentionally partial; this is an investigative triage mode, not full automation. |
 | combined_v4_is_ablation_candidate | ready_with_caveat | WIFS/DFF ablation roadmap; appendix feature-family caveat. | Raw v4 mainly helps transfer accuracy, while select-k60 helps transfer AUC/calibration but loses same-domain Ishu accuracy; source-slice diagnostics show the gains and losses are generator/category uneven, so keep it as an ablation rather than a headline method. |
 
@@ -74,6 +80,7 @@ AI-image forensic detectors need source-heldout evaluation because ranking, prob
 - Do not claim SCP-Fusion beats frozen CLIP as a transfer ranker; the current evidence says CLIP is the ranking frontier.
 - Do not describe the photometric branch as true multi-light photometric stereo; it is a single-image physical/signal proxy.
 - Do not frame the tuned-fusion cap as production-ready; JPEG30, blur, resize, and screenshot transforms still expose weaknesses.
+- Do not claim tiled-DINO improves calibration universally; report `tile_max` and `tile_mean` as different operating modes.
 
 ## Immediate Poster TODOs
 

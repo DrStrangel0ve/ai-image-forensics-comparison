@@ -14,6 +14,7 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
     core_results = tmp_path / "publication_core_results.csv"
     claim_matrix = tmp_path / "claim_evidence_matrix.csv"
     literature_map = tmp_path / "literature_map.csv"
+    tiled_dino_tradeoff = tmp_path / "tiled_dinov2_calibration_tradeoff.csv"
     out_path = tmp_path / "paper_section_drafts.md"
     manifest_out = tmp_path / "paper_section_draft_manifest.csv"
 
@@ -83,6 +84,24 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
             ],
         }
     ).to_csv(literature_map, index=False)
+    pd.DataFrame(
+        [
+            {
+                "variant": variant,
+                "score_mode": score_mode,
+                "target_accuracy_mean_delta_vs_global": acc_delta,
+                "target_roc_auc_mean_delta_vs_global": auc_delta,
+                "target_brier_score_mean_improved_vs_global": brier_improved,
+                "target_expected_calibration_error_mean_improved_vs_global": ece_improved,
+            }
+            for variant in ["blur1", "jpeg30"]
+            for score_mode, acc_delta, auc_delta, brier_improved, ece_improved in [
+                ("global", 0.0, 0.0, False, False),
+                ("tile_mean", 0.002, 0.004, True, True),
+                ("tile_max", 0.014, 0.016, False, False),
+            ]
+        ]
+    ).to_csv(tiled_dino_tradeoff, index=False)
 
     subprocess.run(
         [
@@ -94,6 +113,8 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
             str(claim_matrix),
             "--literature-map",
             str(literature_map),
+            "--tiled-dino-tradeoff",
+            str(tiled_dino_tradeoff),
             "--out-path",
             str(out_path),
             "--manifest-out",
@@ -111,6 +132,8 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
     assert "0.8500 accuracy" in report
     assert "single-image physical/signal proxy" in report
     assert "does not universally beat frozen CLIP" in report
+    assert "tile_max" in report
+    assert "tile_mean" in report
     assert len(manifest) >= 6
     assert manifest["has_metric"].any()
     assert manifest["has_caveat"].any()

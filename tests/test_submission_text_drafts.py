@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path: Path) -> None:
     core_results = tmp_path / "publication_core_results.csv"
     claim_matrix = tmp_path / "claim_evidence_matrix.csv"
+    tiled_dino_tradeoff = tmp_path / "tiled_dinov2_calibration_tradeoff.csv"
     out_path = tmp_path / "submission_text_drafts.md"
     counts_out = tmp_path / "word_counts.csv"
 
@@ -58,6 +59,24 @@ def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path:
             "next_action": ["next", "next"],
         }
     ).to_csv(claim_matrix, index=False)
+    pd.DataFrame(
+        [
+            {
+                "variant": variant,
+                "score_mode": score_mode,
+                "target_accuracy_mean_delta_vs_global": acc_delta,
+                "target_roc_auc_mean_delta_vs_global": auc_delta,
+                "target_brier_score_mean_improved_vs_global": brier_improved,
+                "target_expected_calibration_error_mean_improved_vs_global": ece_improved,
+            }
+            for variant in ["blur1", "jpeg30"]
+            for score_mode, acc_delta, auc_delta, brier_improved, ece_improved in [
+                ("global", 0.0, 0.0, False, False),
+                ("tile_mean", 0.002, 0.004, True, True),
+                ("tile_max", 0.014, 0.016, False, False),
+            ]
+        ]
+    ).to_csv(tiled_dino_tradeoff, index=False)
 
     subprocess.run(
         [
@@ -67,6 +86,8 @@ def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path:
             str(core_results),
             "--claim-matrix",
             str(claim_matrix),
+            "--tiled-dino-tradeoff",
+            str(tiled_dino_tradeoff),
             "--out-path",
             str(out_path),
             "--word-counts-out",
@@ -84,6 +105,9 @@ def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path:
     assert "WIFS Six-Page Skeleton" in text
     assert "ms_to_ishu_tuned_fusion_native_tiling_best" in text
     assert "single-image proxy" in text
+    assert "Tiled-DINO Mode Tradeoff" in text
+    assert "tile_max" in text
+    assert "tile_mean" in text
     assert "0.7000" in text
     assert set(counts["draft"]) == {
         "DFRWS poster abstract",

@@ -10,7 +10,7 @@ This scorecard is deliberately conservative: `ready_to_polish` means the checked
 
 | venue | deadline | days_left | packet_status | artifacts | lint_reports | lint_checks | claims | next_action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DFRWS-USA 2026 poster/demo | 2026-07-07 | 23 | ready_to_polish | 30/30 | 3/3 | 83/83 | ready 3, caveated 4, needs 0 | Finalize poster layout, choose one qualitative grid, and export the final PDF/poster image. |
+| DFRWS-USA 2026 poster/demo | 2026-07-07 | 23 | ready_to_polish | 30/30 | 3/3 | 87/87 | ready 3, caveated 4, needs 0 | Finalize poster layout, choose one qualitative grid, and export the final PDF/poster image. |
 | IEEE WIFS 2026 paper | 2026-07-15 | 31 | ready_to_polish | 45/45 | 4/4 | 166/166 | ready 2, caveated 5, needs 0 | Draft the 6-page paper, keep claims conservative, and add only one paper-critical breadth check. |
 | DFF-2026 ACM Multimedia workshop | 2026-07-16 | 32 | ready_to_polish | 45/45 | 4/4 | 166/166 | ready 3, caveated 5, needs 0 | Turn failure grids and source-slice diagnostics into a short explainability/failure-analysis section. |
 
@@ -18,7 +18,7 @@ This scorecard is deliberately conservative: `ready_to_polish` means the checked
 
 | name | venues | status | passed_checks | total_checks | path | purpose |
 | --- | --- | --- | --- | --- | --- | --- |
-| DFRWS poster package | DFRWS | PASS | 21 | 21 | reports/dfrws_poster_package_lint_2026_06_14.md | Poster asset, key-number, dimension, and caution checks. |
+| DFRWS poster package | DFRWS | PASS | 25 | 25 | reports/dfrws_poster_package_lint_2026_06_14.md | Poster asset, key-number, dimension, and caution checks. |
 | submission result tables | DFRWS,WIFS,DFF | PASS | 31 | 31 | reports/submission_result_tables_lint_2026_06_14.md | Compact table consistency against canonical result rows. |
 | paper section drafts | WIFS,DFF | PASS | 59 | 59 | reports/paper_section_drafts_lint_2026_06_14.md | Paper prose metric anchors, caveats, and overclaim checks. |
 | paper skeletons | WIFS,DFF | PASS | 45 | 45 | reports/paper_skeleton_lint_2026_06_14.md | WIFS/DFF skeleton structure, referenced assets, and guardrails. |

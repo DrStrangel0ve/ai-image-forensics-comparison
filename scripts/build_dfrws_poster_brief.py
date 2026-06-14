@@ -89,6 +89,11 @@ def parse_args() -> argparse.Namespace:
         default="reports/assets/dfrws_poster_key_numbers.csv",
         help="Compact CSV of poster-leading result rows.",
     )
+    parser.add_argument(
+        "--tiled-dino-tradeoff",
+        default="reports/assets/tiled_dinov2_calibration_tradeoff.csv",
+        help="Optional tiled-DINO transform-stress tradeoff table.",
+    )
     return parser.parse_args()
 
 
@@ -96,6 +101,50 @@ def _format_number(value: object) -> str:
     if value is None or pd.isna(value):
         return ""
     return f"{float(value):.4f}"
+
+
+def _signed_number(value: float) -> str:
+    return f"{float(value):+.4f}"
+
+
+def _bool_count(series: pd.Series) -> int:
+    return int(series.astype(str).str.lower().isin(["true", "1", "yes"]).sum())
+
+
+def _tiled_dino_summary(tradeoff_path: Path | None) -> dict[str, str] | None:
+    if tradeoff_path is None or not tradeoff_path.exists():
+        return None
+    tradeoff = pd.read_csv(tradeoff_path)
+    required = {
+        "variant",
+        "score_mode",
+        "target_accuracy_mean_delta_vs_global",
+        "target_roc_auc_mean_delta_vs_global",
+        "target_brier_score_mean_improved_vs_global",
+        "target_expected_calibration_error_mean_improved_vs_global",
+    }
+    missing = required - set(tradeoff.columns)
+    if missing:
+        raise ValueError(f"Missing tiled-DINO tradeoff columns: {sorted(missing)}")
+    n_transforms = int(tradeoff["variant"].nunique())
+    mode_means = (
+        tradeoff.groupby("score_mode", as_index=True)[
+            ["target_accuracy_mean_delta_vs_global", "target_roc_auc_mean_delta_vs_global"]
+        ]
+        .mean()
+        .to_dict("index")
+    )
+    for mode in ["tile_max", "tile_mean"]:
+        if mode not in mode_means:
+            raise ValueError(f"Missing tiled-DINO score_mode={mode!r}")
+    tile_mean = tradeoff[tradeoff["score_mode"].eq("tile_mean")]
+    return {
+        "n_transforms": str(n_transforms),
+        "tile_max_acc_delta": _signed_number(mode_means["tile_max"]["target_accuracy_mean_delta_vs_global"]),
+        "tile_max_auc_delta": _signed_number(mode_means["tile_max"]["target_roc_auc_mean_delta_vs_global"]),
+        "tile_mean_brier_count": f"{_bool_count(tile_mean['target_brier_score_mean_improved_vs_global'])}/{n_transforms}",
+        "tile_mean_ece_count": f"{_bool_count(tile_mean['target_expected_calibration_error_mean_improved_vs_global'])}/{n_transforms}",
+    }
 
 
 def _metric_summary(row: pd.Series) -> str:
@@ -161,9 +210,12 @@ def _ready_claims(claims: pd.DataFrame) -> pd.DataFrame:
     return display
 
 
-def build_poster_brief(core_results: Path, claim_matrix: Path) -> tuple[str, pd.DataFrame]:
+def build_poster_brief(
+    core_results: Path, claim_matrix: Path, tiled_dino_tradeoff: Path | None = None
+) -> tuple[str, pd.DataFrame]:
     core = pd.read_csv(core_results)
     claims = pd.read_csv(claim_matrix)
+    tiled_dino = _tiled_dino_summary(tiled_dino_tradeoff)
     key_rows = _rows_by_id(core, KEY_FINDINGS)
     robustness_rows = _rows_by_id(core, ROBUSTNESS_FINDINGS)
     key_display = _display_rows(key_rows)
@@ -193,6 +245,7 @@ def build_poster_brief(core_results: Path, claim_matrix: Path) -> tuple[str, pd.
         "2. Transfer ranking has a different winner: frozen CLIP is the strongest standalone cross-domain ranker and triage branch.",
         "3. SCP-Fusion is most useful as a diagnostic protocol: it exposes calibration, fake-call-rate, and transform-specific failure modes rather than simply replacing the best branch.",
         "4. Source-aware thresholds and triage produce more defensible forensic decisions than one default threshold everywhere.",
+        "5. Tiled-DINO stress probes add a mode-specific design rule: `tile_max` helps decision/ranking headlines, while `tile_mean` is safer for Brier/ECE.",
         "",
         "## Key Numbers",
         "",
@@ -201,6 +254,18 @@ def build_poster_brief(core_results: Path, claim_matrix: Path) -> tuple[str, pd.
         "## Robustness Stress Panel",
         "",
         _markdown_table(robustness_display, list(robustness_display.columns)),
+        "",
+        "## Tiled-DINO Follow-Up",
+        "",
+        (
+            "Across "
+            f"{tiled_dino['n_transforms']} transform-stress probes, tiled-DINO `tile_max` gives "
+            f"{tiled_dino['tile_max_acc_delta']} accuracy and {tiled_dino['tile_max_auc_delta']} AUC average deltas, "
+            f"while `tile_mean` improves Brier on {tiled_dino['tile_mean_brier_count']} and ECE on "
+            f"{tiled_dino['tile_mean_ece_count']} probes."
+            if tiled_dino
+            else "No tiled-DINO tradeoff table was provided for this brief build."
+        ),
         "",
         "## Figure Package",
         "",
@@ -218,6 +283,7 @@ def build_poster_brief(core_results: Path, claim_matrix: Path) -> tuple[str, pd.
         "- Do not claim SCP-Fusion beats frozen CLIP as a transfer ranker; the current evidence says CLIP is the ranking frontier.",
         "- Do not describe the photometric branch as true multi-light photometric stereo; it is a single-image physical/signal proxy.",
         "- Do not frame the tuned-fusion cap as production-ready; JPEG30, blur, resize, and screenshot transforms still expose weaknesses.",
+        "- Do not claim tiled-DINO improves calibration universally; report `tile_max` and `tile_mean` as different operating modes.",
         "",
         "## Immediate Poster TODOs",
         "",
@@ -231,7 +297,11 @@ def build_poster_brief(core_results: Path, claim_matrix: Path) -> tuple[str, pd.
 
 def main() -> None:
     args = parse_args()
-    text, key_numbers = build_poster_brief(Path(args.core_results), Path(args.claim_matrix))
+    text, key_numbers = build_poster_brief(
+        Path(args.core_results),
+        Path(args.claim_matrix),
+        Path(args.tiled_dino_tradeoff),
+    )
     out_path = Path(args.out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(text, encoding="utf-8")

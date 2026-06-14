@@ -79,6 +79,25 @@ def test_dfrws_poster_package_lint_passes_generated_fixture(tmp_path: Path) -> N
             "next_action": ["action"],
         }
     ).to_csv(claim_matrix, index=False)
+    tiled_dino_tradeoff = assets_dir / "tiled_dinov2_calibration_tradeoff.csv"
+    pd.DataFrame(
+        [
+            {
+                "variant": variant,
+                "score_mode": score_mode,
+                "target_accuracy_mean_delta_vs_global": acc_delta,
+                "target_roc_auc_mean_delta_vs_global": auc_delta,
+                "target_brier_score_mean_improved_vs_global": brier_improved,
+                "target_expected_calibration_error_mean_improved_vs_global": ece_improved,
+            }
+            for variant in ["blur1", "jpeg30"]
+            for score_mode, acc_delta, auc_delta, brier_improved, ece_improved in [
+                ("global", 0.0, 0.0, False, False),
+                ("tile_mean", 0.002, 0.004, True, True),
+                ("tile_max", 0.014, 0.016, False, False),
+            ]
+        ]
+    ).to_csv(tiled_dino_tradeoff, index=False)
 
     for relative in [
         "reports/assets/publication_score_fusion_clip_frontier.png",
@@ -98,6 +117,8 @@ def test_dfrws_poster_package_lint_passes_generated_fixture(tmp_path: Path) -> N
             "reports/assets/publication_core_results.csv",
             "--claim-matrix",
             "reports/assets/claim_evidence_matrix.csv",
+            "--tiled-dino-tradeoff",
+            "reports/assets/tiled_dinov2_calibration_tradeoff.csv",
             "--out-path",
             "reports/dfrws_poster_brief_2026_06_13.md",
             "--key-numbers-out",
@@ -147,6 +168,8 @@ def test_dfrws_poster_package_lint_passes_generated_fixture(tmp_path: Path) -> N
             str(assets_dir / "dfrws_poster_transfer_panel.csv"),
             "--robustness-panel",
             str(assets_dir / "dfrws_poster_robustness_panel.csv"),
+            "--tiled-dino-tradeoff",
+            str(tiled_dino_tradeoff),
             "--min-panel-width",
             "900",
             "--min-panel-height",
@@ -170,6 +193,7 @@ def test_dfrws_poster_package_lint_passes_generated_fixture(tmp_path: Path) -> N
     assert checks["passed"].all()
     assert "poster key numbers match canonical results" in checks["check"].tolist()
     assert "transfer panel CSV matches canonical results" in checks["check"].tolist()
+    assert "brief tiled-DINO phrase present: tile_max" in checks["check"].tolist()
     assert "poster draft PPTX is nontrivial" in checks["check"].tolist()
 
 

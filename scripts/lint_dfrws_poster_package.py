@@ -30,6 +30,7 @@ REQUIRED_BRIEF_SECTIONS = [
     "## Poster Spine",
     "## Key Numbers",
     "## Robustness Stress Panel",
+    "## Tiled-DINO Follow-Up",
     "## Figure Package",
     "## Claims To Carry",
     "## Do Not Overclaim",
@@ -40,6 +41,7 @@ REQUIRED_BRIEF_CAUTIONS = [
     "Do not claim SCP-Fusion beats frozen CLIP",
     "single-image physical/signal proxy",
     "JPEG30, blur, resize, and screenshot transforms still expose weaknesses",
+    "Do not claim tiled-DINO improves calibration universally",
 ]
 
 PANEL_FILES = {
@@ -84,6 +86,11 @@ def parse_args() -> argparse.Namespace:
         "--robustness-panel",
         default="reports/assets/dfrws_poster_robustness_panel.csv",
         help="Generated robustness-panel source CSV.",
+    )
+    parser.add_argument(
+        "--tiled-dino-tradeoff",
+        default="reports/assets/tiled_dinov2_calibration_tradeoff.csv",
+        help="Tiled-DINO tradeoff table used by the poster brief when present.",
     )
     parser.add_argument("--min-panel-width", type=int, default=2500)
     parser.add_argument("--min-panel-height", type=int, default=1000)
@@ -152,6 +159,7 @@ def lint_dfrws_poster_package(
     key_numbers_path: Path,
     transfer_panel_path: Path,
     robustness_panel_path: Path,
+    tiled_dino_tradeoff_path: Path,
     min_panel_width: int,
     min_panel_height: int,
     min_preview_width: int,
@@ -167,6 +175,7 @@ def lint_dfrws_poster_package(
     key_numbers = pd.read_csv(key_numbers_path)
     transfer_panel = pd.read_csv(transfer_panel_path)
     robustness_panel = pd.read_csv(robustness_panel_path)
+    tiled_dino_available = tiled_dino_tradeoff_path.exists()
 
     missing_files = [relative for relative in POSTER_PACKAGE_FILES if not (repo_root / relative).exists()]
     _add_check(
@@ -203,10 +212,19 @@ def lint_dfrws_poster_package(
             caution in brief_text,
             "present" if caution in brief_text else "missing",
         )
+    if tiled_dino_available:
+        for phrase in ["tile_max", "tile_mean"]:
+            _add_check(
+                rows,
+                f"brief tiled-DINO phrase present: {phrase}",
+                phrase in brief_text,
+                "present" if phrase in brief_text else "missing",
+            )
 
     _expected_text, expected_key_numbers = brief_builder.build_poster_brief(
         Path(core_results_path),
         Path(claim_matrix_path),
+        Path(tiled_dino_tradeoff_path),
     )
     key_columns = ["finding", "method", "setting", "metrics", "poster_use"]
     key_mismatches = _compare_frames(key_numbers[key_columns], expected_key_numbers[key_columns], key_columns)
@@ -332,6 +350,7 @@ def main() -> None:
         key_numbers_path=Path(args.key_numbers),
         transfer_panel_path=Path(args.transfer_panel),
         robustness_panel_path=Path(args.robustness_panel),
+        tiled_dino_tradeoff_path=Path(args.tiled_dino_tradeoff),
         min_panel_width=args.min_panel_width,
         min_panel_height=args.min_panel_height,
         min_preview_width=args.min_preview_width,
