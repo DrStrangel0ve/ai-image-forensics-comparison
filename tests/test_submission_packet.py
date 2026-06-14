@@ -128,10 +128,16 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "reports/ms_cocoai_to_ishu_tuned_fusion_tiled_convnext_2026_06_14.md" in set(manifest["path"])
     assert "reports/ms_cocoai_to_ishu_tiled_foundation_fusion_comparison_2026_06_14.md" in set(manifest["path"])
     assert "reports/assets/ms_cocoai_to_ishu_tiled_foundation_fusion_comparison.csv" in set(manifest["path"])
+    assert "reports/tiled_dinov2_blur1_reverse_transfer_2026_06_14.md" in set(manifest["path"])
+    assert "reports/assets/tiled_dinov2_blur1_reverse_transfer_summary.csv" in set(manifest["path"])
+    assert "reports/ms_cocoai_to_ishu_tuned_fusion_blur1_tiled_dinov2_2026_06_14.md" in set(manifest["path"])
+    assert "reports/assets/ms_cocoai_to_ishu_tuned_fusion_blur1_tiled_dinov2_summary.csv" in set(manifest["path"])
     assert "reports/tiled_dinov2_resize_half_reverse_transfer_2026_06_14.md" in set(manifest["path"])
     assert "reports/assets/tiled_dinov2_resize_half_reverse_transfer_summary.csv" in set(manifest["path"])
     assert "reports/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_2026_06_14.md" in set(manifest["path"])
     assert "reports/assets/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_summary.csv" in set(manifest["path"])
+    assert "reports/tiled_dinov2_transform_stress_comparison_2026_06_14.md" in set(manifest["path"])
+    assert "reports/assets/tiled_dinov2_transform_stress_comparison.csv" in set(manifest["path"])
     assert "DFF" in manifest["venues"].str.cat(sep=",")
 
 

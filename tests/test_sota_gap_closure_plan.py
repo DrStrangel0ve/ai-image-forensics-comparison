@@ -43,6 +43,6 @@ def test_sota_gap_closure_plan_prioritizes_official_benchmark_runs(tmp_path: Pat
         plan.loc[
             plan["task_id"] == "high_res_tiled_foundation_eval", "status"
         ].item()
-        == "resize_stress_probe_complete"
+        == "blur_resize_stress_probes_complete"
     )
     assert set(plan["status"]) >= {"implementation_next", "ready_when_data_available"}
