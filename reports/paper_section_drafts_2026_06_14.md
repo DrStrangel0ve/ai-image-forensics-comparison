@@ -12,9 +12,9 @@ These are prose starting points for WIFS/DFF authoring. They are not final copy 
 | --- | --- | --- | --- |
 | WIFS Introduction Draft | 138 | True | False |
 | WIFS Related Work Draft | 99 | False | True |
-| WIFS Data And Audit Draft | 107 | False | False |
+| WIFS Data And Audit Draft | 136 | True | False |
 | WIFS Methods Draft | 101 | False | True |
-| WIFS Results Draft | 183 | True | False |
+| WIFS Results Draft | 206 | True | False |
 | DFF Expansion Draft | 147 | False | False |
 | Limitations And Reproducibility Draft | 105 | False | True |
 
@@ -28,7 +28,7 @@ Prior work motivates three design choices in this benchmark. First, universal fa
 
 ## WIFS Data And Audit Draft
 
-The current submission package centers on two audited evaluation directions. Ishu AI-vs-real provides repeated same-domain splits for comparing `combined_v3`, ResNet-18, physics-guided fusion, frozen encoders, and saved-score fusion. Source-balanced MS COCOAI provides generator source labels for cross-domain and source-aware validation with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney-style generated subsets represented in the exported metadata. Dataset commands, audits, and artifact manifests are part of the public repo so that results can be traced back to specific exports rather than opaque benchmark names. The paper should state that raw datasets and large model artifacts are external, while reports, prediction-derived tables, figures, manifests, and reproduction commands are checked in.
+The current submission package centers on two audited evaluation directions. Ishu AI-vs-real provides repeated same-domain splits for comparing `combined_v3`, ResNet-18, physics-guided fusion, frozen encoders, and saved-score fusion. Source-balanced MS COCOAI provides generator source labels for cross-domain and source-aware validation with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney-style generated subsets represented in the exported metadata. Dataset commands, audits, and artifact manifests are part of the public repo so that results can be traced back to specific exports rather than opaque benchmark names. The paper should state that raw datasets and large model artifacts are external, while reports, prediction-derived tables, figures, manifests, and reproduction commands are checked in. The source-holdout stress table adds a generator-level audit: for the paper-facing capped policy, `sd3` is currently the weakest held-out generator, with 0.7961 recall and 0.2039 fake-miss rate.
 
 ## WIFS Methods Draft
 
@@ -36,7 +36,7 @@ The compared methods are intentionally heterogeneous. `combined_v3` measures sin
 
 ## WIFS Results Draft
 
-Same-domain Ishu results show why the physical branch is worth keeping: physics-guided fusion improves from the tied `combined_v3`/ResNet-18 accuracy of 0.8246 to 0.8450 accuracy and 0.9177 AUC. Cross-domain transfer changes the ranking: frozen CLIP reaches 0.6363 accuracy and 0.8641 AUC on Ishu to source-balanced MS COCOAI, ahead of all-foundation SCP-Fusion at 0.6163 accuracy and 0.7995 AUC. The triage result is more operationally useful than a forced threshold: CLIP decides 0.4747 of target images at 0.9261 decided-case accuracy. In the reverse direction, source-capped tuned fusion reaches 0.7632 accuracy and 0.8361 AUC, and the bounded native-tiled conventional branch diagnostic improves that to 0.7749 accuracy and 0.8472 AUC. Robustness remains mixed: social-style 720p processing is comparatively stable at 0.7602 accuracy and 0.8506 AUC, while JPEG30 and blur expose weaker operating points at 0.7076 and 0.7105 accuracy. A tiled-DINO follow-up gives `tile_max` average deltas of +0.0139 accuracy and +0.0147 AUC across 4 stress probes, while `tile_mean` improves Brier on 4/4 and ECE on 3/4 probes.
+Same-domain Ishu results show why the physical branch is worth keeping: physics-guided fusion improves from the tied `combined_v3`/ResNet-18 accuracy of 0.8246 to 0.8450 accuracy and 0.9177 AUC. Cross-domain transfer changes the ranking: frozen CLIP reaches 0.6363 accuracy and 0.8641 AUC on Ishu to source-balanced MS COCOAI, ahead of all-foundation SCP-Fusion at 0.6163 accuracy and 0.7995 AUC. The triage result is more operationally useful than a forced threshold: CLIP decides 0.4747 of target images at 0.9261 decided-case accuracy. In the reverse direction, source-capped tuned fusion reaches 0.7632 accuracy and 0.8361 AUC, and the bounded native-tiled conventional branch diagnostic improves that to 0.7749 accuracy and 0.8472 AUC. Robustness remains mixed: social-style 720p processing is comparatively stable at 0.7602 accuracy and 0.8506 AUC, while JPEG30 and blur expose weaker operating points at 0.7076 and 0.7105 accuracy. Held-out-generator stress adds a source-specific failure handle: `sd3` is the weakest capped source-holdout generator at 0.7961 recall and 0.2039 fake-miss rate. A tiled-DINO follow-up gives `tile_max` average deltas of +0.0139 accuracy and +0.0147 AUC across 4 stress probes, while `tile_mean` improves Brier on 4/4 and ECE on 3/4 probes.
 
 ## DFF Expansion Draft
 

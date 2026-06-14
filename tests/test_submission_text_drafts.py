@@ -14,6 +14,7 @@ def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path:
     core_results = tmp_path / "publication_core_results.csv"
     claim_matrix = tmp_path / "claim_evidence_matrix.csv"
     tiled_dino_tradeoff = tmp_path / "tiled_dinov2_calibration_tradeoff.csv"
+    source_stress_summary = tmp_path / "source_stress.csv"
     out_path = tmp_path / "submission_text_drafts.md"
     counts_out = tmp_path / "word_counts.csv"
 
@@ -77,6 +78,17 @@ def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path:
             ]
         ]
     ).to_csv(tiled_dino_tradeoff, index=False)
+    pd.DataFrame(
+        [
+            {
+                "selection_policy": "source_holdout_mean_utility_cap_0p48",
+                "heldout_source_name": "sd3",
+                "source_holdout_utility_mean": 1.42,
+                "source_holdout_recall_mean": 0.7961,
+                "source_holdout_fake_miss_rate_mean": 0.2039,
+            }
+        ]
+    ).to_csv(source_stress_summary, index=False)
 
     subprocess.run(
         [
@@ -88,6 +100,8 @@ def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path:
             str(claim_matrix),
             "--tiled-dino-tradeoff",
             str(tiled_dino_tradeoff),
+            "--source-stress-summary",
+            str(source_stress_summary),
             "--out-path",
             str(out_path),
             "--word-counts-out",
@@ -108,6 +122,9 @@ def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path:
     assert "Tiled-DINO Mode Tradeoff" in text
     assert "tile_max" in text
     assert "tile_mean" in text
+    assert "Held-Out Generator Stress" in text
+    assert "sd3" in text
+    assert "0.7961" in text
     assert "0.7000" in text
     assert set(counts["draft"]) == {
         "DFRWS poster abstract",

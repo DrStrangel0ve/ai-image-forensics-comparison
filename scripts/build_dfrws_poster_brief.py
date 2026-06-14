@@ -5,6 +5,10 @@ from pathlib import Path
 
 import pandas as pd
 
+from source_stress_utils import (
+    load_source_stress_summary,
+    source_stress_sentence,
+)
 from tiled_dino_tradeoff_utils import load_tiled_dino_tradeoff_summary, tiled_dino_sentence
 
 
@@ -96,6 +100,11 @@ def parse_args() -> argparse.Namespace:
         default="reports/assets/tiled_dinov2_calibration_tradeoff.csv",
         help="Optional tiled-DINO transform-stress tradeoff table.",
     )
+    parser.add_argument(
+        "--source-stress-summary",
+        default="reports/assets/ms_cocoai_to_ishu_source_holdout_model_selection_source_summary.csv",
+        help="Optional held-out-generator stress table.",
+    )
     return parser.parse_args()
 
 
@@ -169,13 +178,21 @@ def _ready_claims(claims: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_poster_brief(
-    core_results: Path, claim_matrix: Path, tiled_dino_tradeoff: Path | None = None
+    core_results: Path,
+    claim_matrix: Path,
+    tiled_dino_tradeoff: Path | None = None,
+    source_stress_summary: Path | None = None,
 ) -> tuple[str, pd.DataFrame]:
     core = pd.read_csv(core_results)
     claims = pd.read_csv(claim_matrix)
     tiled_dino = (
         load_tiled_dino_tradeoff_summary(tiled_dino_tradeoff, allow_missing=True)
         if tiled_dino_tradeoff is not None
+        else None
+    )
+    source_stress = (
+        load_source_stress_summary(source_stress_summary, allow_missing=True)
+        if source_stress_summary is not None
         else None
     )
     key_rows = _rows_by_id(core, KEY_FINDINGS)
@@ -207,7 +224,8 @@ def build_poster_brief(
         "2. Transfer ranking has a different winner: frozen CLIP is the strongest standalone cross-domain ranker and triage branch.",
         "3. SCP-Fusion is most useful as a diagnostic protocol: it exposes calibration, fake-call-rate, and transform-specific failure modes rather than simply replacing the best branch.",
         "4. Source-aware thresholds and triage produce more defensible forensic decisions than one default threshold everywhere.",
-        "5. Tiled-DINO stress probes add a mode-specific design rule: `tile_max` helps decision/ranking headlines, while `tile_mean` is safer for Brier/ECE.",
+        "5. Held-out generator stress makes source-shift concrete: the current capped policy is weakest on the generator family identified below.",
+        "6. Tiled-DINO stress probes add a mode-specific design rule: `tile_max` helps decision/ranking headlines, while `tile_mean` is safer for Brier/ECE.",
         "",
         "## Key Numbers",
         "",
@@ -224,6 +242,10 @@ def build_poster_brief(
             if tiled_dino
             else "No tiled-DINO tradeoff table was provided for this brief build."
         ),
+        "",
+        "## Held-Out Generator Stress",
+        "",
+        source_stress_sentence(source_stress),
         "",
         "## Figure Package",
         "",
@@ -259,6 +281,7 @@ def main() -> None:
         Path(args.core_results),
         Path(args.claim_matrix),
         Path(args.tiled_dino_tradeoff),
+        Path(args.source_stress_summary),
     )
     out_path = Path(args.out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)

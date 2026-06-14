@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from source_stress_utils import load_source_stress_summary
 from tiled_dino_tradeoff_utils import load_tiled_dino_tradeoff_summary
 
 
@@ -32,6 +33,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--claim-matrix", default="reports/assets/claim_evidence_matrix.csv")
     parser.add_argument("--literature-map", default="reports/assets/literature_map.csv")
     parser.add_argument("--tiled-dino-tradeoff", default="reports/assets/tiled_dinov2_calibration_tradeoff.csv")
+    parser.add_argument(
+        "--source-stress-summary",
+        default="reports/assets/ms_cocoai_to_ishu_source_holdout_model_selection_source_summary.csv",
+    )
     parser.add_argument("--out-path", default="reports/paper_section_drafts_2026_06_14.md")
     parser.add_argument("--manifest-out", default="reports/assets/paper_section_draft_manifest.csv")
     return parser.parse_args()
@@ -70,7 +75,11 @@ def _citation_keys(literature: pd.DataFrame, theme: str) -> str:
 
 
 def build_sections(
-    core_results: Path, claim_matrix: Path, literature_map: Path, tiled_dino_tradeoff: Path
+    core_results: Path,
+    claim_matrix: Path,
+    literature_map: Path,
+    tiled_dino_tradeoff: Path,
+    source_stress_summary: Path,
 ) -> list[dict[str, object]]:
     core = pd.read_csv(core_results)
     claims = pd.read_csv(claim_matrix)
@@ -78,6 +87,9 @@ def build_sections(
     tiled_dino = load_tiled_dino_tradeoff_summary(tiled_dino_tradeoff)
     if tiled_dino is None:
         raise ValueError("Missing tiled-DINO tradeoff summary")
+    source_stress = load_source_stress_summary(source_stress_summary)
+    if source_stress is None:
+        raise ValueError("Missing source-stress summary")
     rows = _rows_by_id(core)
 
     combined_v3 = rows["ishu_same_combined_v3"]
@@ -142,7 +154,10 @@ def build_sections(
                 "audits, and artifact manifests are part of the public repo so that results can be traced back to "
                 "specific exports rather than opaque benchmark names. The paper should state that raw datasets and "
                 "large model artifacts are external, while reports, prediction-derived tables, figures, manifests, "
-                "and reproduction commands are checked in."
+                "and reproduction commands are checked in. The source-holdout stress table adds a generator-level "
+                f"audit: for the paper-facing capped policy, `{source_stress['heldout_source_name']}` is currently "
+                f"the weakest held-out generator, with {source_stress['recall']} recall and "
+                f"{source_stress['fake_miss_rate']} fake-miss rate."
             ),
         ),
         _section(
@@ -175,7 +190,10 @@ def build_sections(
                 f"that to {_fmt(native, 'accuracy')} accuracy and {_fmt(native, 'auc')} AUC. Robustness remains mixed: "
                 f"social-style 720p processing is comparatively stable at {_fmt(social, 'accuracy')} accuracy and "
                 f"{_fmt(social, 'auc')} AUC, while JPEG30 and blur expose weaker operating points at "
-                f"{_fmt(jpeg30, 'accuracy')} and {_fmt(blur, 'accuracy')} accuracy. A tiled-DINO follow-up gives "
+                f"{_fmt(jpeg30, 'accuracy')} and {_fmt(blur, 'accuracy')} accuracy. Held-out-generator stress "
+                f"adds a source-specific failure handle: `{source_stress['heldout_source_name']}` is the weakest "
+                f"capped source-holdout generator at {source_stress['recall']} recall and "
+                f"{source_stress['fake_miss_rate']} fake-miss rate. A tiled-DINO follow-up gives "
                 f"`tile_max` average deltas of {tiled_dino['tile_max_acc_delta']} accuracy and "
                 f"{tiled_dino['tile_max_auc_delta']} AUC across {tiled_dino['n_transforms']} stress probes, while "
                 f"`tile_mean` improves Brier on {tiled_dino['tile_mean_brier_count']} and ECE on "
@@ -266,6 +284,7 @@ def main() -> None:
         Path(args.claim_matrix),
         Path(args.literature_map),
         Path(args.tiled_dino_tradeoff),
+        Path(args.source_stress_summary),
     )
     manifest = write_report(sections, Path(args.out_path))
     manifest_out = Path(args.manifest_out)

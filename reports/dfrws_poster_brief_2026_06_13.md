@@ -16,7 +16,8 @@ AI-image forensic detectors need source-heldout evaluation because ranking, prob
 2. Transfer ranking has a different winner: frozen CLIP is the strongest standalone cross-domain ranker and triage branch.
 3. SCP-Fusion is most useful as a diagnostic protocol: it exposes calibration, fake-call-rate, and transform-specific failure modes rather than simply replacing the best branch.
 4. Source-aware thresholds and triage produce more defensible forensic decisions than one default threshold everywhere.
-5. Tiled-DINO stress probes add a mode-specific design rule: `tile_max` helps decision/ranking headlines, while `tile_mean` is safer for Brier/ECE.
+5. Held-out generator stress makes source-shift concrete: the current capped policy is weakest on the generator family identified below.
+6. Tiled-DINO stress probes add a mode-specific design rule: `tile_max` helps decision/ranking headlines, while `tile_mean` is safer for Brier/ECE.
 
 ## Key Numbers
 
@@ -50,6 +51,10 @@ AI-image forensic detectors need source-heldout evaluation because ranking, prob
 ## Tiled-DINO Follow-Up
 
 Across 4 transform-stress probes, tiled-DINO `tile_max` gives +0.0139 accuracy and +0.0147 AUC average deltas, while `tile_mean` improves Brier on 4/4 and ECE on 3/4 probes.
+
+## Held-Out Generator Stress
+
+For the paper-facing `source_holdout_mean_utility_cap_0p48` policy, the weakest held-out generator is `sd3` with mean utility 1.4235, mean recall 0.7961, and mean fake-miss rate 0.2039.
 
 ## Figure Package
 

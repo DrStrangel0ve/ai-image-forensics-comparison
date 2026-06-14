@@ -15,6 +15,7 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
     claim_matrix = tmp_path / "claim_evidence_matrix.csv"
     literature_map = tmp_path / "literature_map.csv"
     tiled_dino_tradeoff = tmp_path / "tiled_dinov2_calibration_tradeoff.csv"
+    source_stress_summary = tmp_path / "source_stress.csv"
     out_path = tmp_path / "paper_section_drafts.md"
     manifest_out = tmp_path / "paper_section_draft_manifest.csv"
 
@@ -102,6 +103,17 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
             ]
         ]
     ).to_csv(tiled_dino_tradeoff, index=False)
+    pd.DataFrame(
+        [
+            {
+                "selection_policy": "source_holdout_mean_utility_cap_0p48",
+                "heldout_source_name": "sd3",
+                "source_holdout_utility_mean": 1.42,
+                "source_holdout_recall_mean": 0.7961,
+                "source_holdout_fake_miss_rate_mean": 0.2039,
+            }
+        ]
+    ).to_csv(source_stress_summary, index=False)
 
     subprocess.run(
         [
@@ -115,6 +127,8 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
             str(literature_map),
             "--tiled-dino-tradeoff",
             str(tiled_dino_tradeoff),
+            "--source-stress-summary",
+            str(source_stress_summary),
             "--out-path",
             str(out_path),
             "--manifest-out",
@@ -134,6 +148,8 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
     assert "does not universally beat frozen CLIP" in report
     assert "tile_max" in report
     assert "tile_mean" in report
+    assert "sd3" in report
+    assert "0.2039 fake-miss rate" in report
     assert len(manifest) >= 6
     assert manifest["has_metric"].any()
     assert manifest["has_caveat"].any()

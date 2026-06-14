@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_dfrws_poster_brief_builder_writes_markdown_and_key_numbers(tmp_path: Path) -> None:
     core_results = tmp_path / "publication_core_results.csv"
     claim_matrix = tmp_path / "claim_evidence_matrix.csv"
+    source_stress_summary = tmp_path / "source_stress.csv"
     out_path = tmp_path / "dfrws_poster_brief.md"
     key_numbers_out = tmp_path / "dfrws_poster_key_numbers.csv"
     finding_ids = [
@@ -65,6 +66,17 @@ def test_dfrws_poster_brief_builder_writes_markdown_and_key_numbers(tmp_path: Pa
             "next_action": ["action", "action"],
         }
     ).to_csv(claim_matrix, index=False)
+    pd.DataFrame(
+        [
+            {
+                "selection_policy": "source_holdout_mean_utility_cap_0p48",
+                "heldout_source_name": "sd3",
+                "source_holdout_utility_mean": 1.42,
+                "source_holdout_recall_mean": 0.7961,
+                "source_holdout_fake_miss_rate_mean": 0.2039,
+            }
+        ]
+    ).to_csv(source_stress_summary, index=False)
 
     subprocess.run(
         [
@@ -74,6 +86,8 @@ def test_dfrws_poster_brief_builder_writes_markdown_and_key_numbers(tmp_path: Pa
             str(core_results),
             "--claim-matrix",
             str(claim_matrix),
+            "--source-stress-summary",
+            str(source_stress_summary),
             "--out-path",
             str(out_path),
             "--key-numbers-out",
@@ -88,6 +102,8 @@ def test_dfrws_poster_brief_builder_writes_markdown_and_key_numbers(tmp_path: Pa
 
     assert "DFRWS-USA 2026 Poster Brief" in text
     assert "Do Not Overclaim" in text
+    assert "Held-Out Generator Stress" in text
+    assert "sd3" in text
     assert "clip_transfer_frontier" in text
     assert "combined_v4_is_ablation_candidate" not in text
     assert "ms_to_ishu_tuned_fusion_social_720p" in set(key_numbers["finding"])
