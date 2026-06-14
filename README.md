@@ -45,6 +45,8 @@ The public reproducibility checklist is documented in [reports/reproducibility_c
 
 The completed `combined_v4` full-transfer gate is summarized in [reports/combined_v4_full_transfer_summary_2026_06_13.md](reports/combined_v4_full_transfer_summary_2026_06_13.md). Across seeds 7/17/29, raw v4 improves Ishu -> source-balanced MS COCOAI transfer accuracy but not transfer AUC or calibration, while select-k60 v4 improves transfer AUC/Brier/ECE at the cost of same-domain Ishu accuracy. `combined_v3` remains the main conventional baseline; `combined_v4_selectk60` is now a caveated transfer/calibration ablation.
 
+The AEROBLADE-lite reconstruction proxy is also exposed as a standalone `reconstruction_lite` feature set and documented in [reports/reconstruction_lite_feature_set_2026_06_14.md](reports/reconstruction_lite_feature_set_2026_06_14.md). This keeps resize-reconstruction residuals ablatable on their own, while leaving historical `combined_v3` and `combined_v4` metrics unchanged.
+
 ## Setup
 
 From this repo root:

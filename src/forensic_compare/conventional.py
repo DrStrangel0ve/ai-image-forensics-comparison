@@ -104,6 +104,23 @@ NOISE_V4_EXTRA_FEATURE_NAMES = [
 
 NOISE_V4_FEATURE_NAMES = NOISE_V3_FEATURE_NAMES + NOISE_V4_EXTRA_FEATURE_NAMES
 
+RECONSTRUCTION_LITE_FEATURE_NAMES = [
+    "recon_half_abs_mean",
+    "recon_half_abs_p95",
+    "recon_half_luma_chroma_ratio",
+    "recon_half_laplacian_abs_mean",
+    "recon_half_tile16_std_mean",
+    "recon_half_tile16_std_p90",
+    "recon_quarter_abs_mean",
+    "recon_quarter_abs_p95",
+    "recon_quarter_luma_chroma_ratio",
+    "recon_quarter_laplacian_abs_mean",
+    "recon_half_quarter_abs_mean_delta",
+    "recon_half_quarter_abs_p95_delta",
+    "recon_half_quarter_luma_chroma_ratio_delta",
+    "recon_half_quarter_laplacian_delta",
+]
+
 
 def _load_rgb(path: str | Path, image_size: int) -> np.ndarray:
     with Image.open(path) as image:
@@ -445,6 +462,29 @@ def _reconstruction_stats(rgb: np.ndarray, scale: float, prefix: str) -> dict[st
     }
 
 
+def _reconstruction_lite_feature_values(rgb: np.ndarray) -> dict[str, float]:
+    half = _reconstruction_stats(rgb, scale=0.5, prefix="recon_half")
+    quarter = _reconstruction_stats(rgb, scale=0.25, prefix="recon_quarter")
+    values = {**half, **quarter}
+    values.update(
+        {
+            "recon_half_quarter_abs_mean_delta": float(
+                half["recon_half_abs_mean"] - quarter["recon_quarter_abs_mean"]
+            ),
+            "recon_half_quarter_abs_p95_delta": float(
+                half["recon_half_abs_p95"] - quarter["recon_quarter_abs_p95"]
+            ),
+            "recon_half_quarter_luma_chroma_ratio_delta": float(
+                half["recon_half_luma_chroma_ratio"] - quarter["recon_quarter_luma_chroma_ratio"]
+            ),
+            "recon_half_quarter_laplacian_delta": float(
+                half["recon_half_laplacian_abs_mean"] - quarter["recon_quarter_laplacian_abs_mean"]
+            ),
+        }
+    )
+    return values
+
+
 def _chroma_v4_features(rgb: np.ndarray, gray: np.ndarray) -> dict[str, float]:
     chroma_u = rgb[:, :, 0] - gray
     chroma_v = rgb[:, :, 2] - gray
@@ -552,6 +592,12 @@ def extract_noise_v4_features(path: str | Path, image_size: int = 128) -> np.nda
     return np.asarray([values[name] for name in NOISE_V4_FEATURE_NAMES], dtype=np.float32)
 
 
+def extract_reconstruction_lite_features(path: str | Path, image_size: int = 128) -> np.ndarray:
+    rgb = _load_rgb(path, image_size)
+    values = _reconstruction_lite_feature_values(rgb)
+    return np.asarray([values[name] for name in RECONSTRUCTION_LITE_FEATURE_NAMES], dtype=np.float32)
+
+
 def feature_names(feature_set: str) -> list[str]:
     if feature_set == "photometric":
         return list(PHOTOMETRIC_FEATURE_NAMES)
@@ -563,6 +609,8 @@ def feature_names(feature_set: str) -> list[str]:
         return list(NOISE_V3_FEATURE_NAMES)
     if feature_set == "noise_v4":
         return list(NOISE_V4_FEATURE_NAMES)
+    if feature_set == "reconstruction_lite":
+        return list(RECONSTRUCTION_LITE_FEATURE_NAMES)
     if feature_set == "combined":
         return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_FEATURE_NAMES)
     if feature_set == "combined_v2":
@@ -585,6 +633,8 @@ def extract_feature_set(path: str | Path, image_size: int, feature_set: str) -> 
         return extract_noise_v3_features(path, image_size=image_size)
     if feature_set == "noise_v4":
         return extract_noise_v4_features(path, image_size=image_size)
+    if feature_set == "reconstruction_lite":
+        return extract_reconstruction_lite_features(path, image_size=image_size)
     if feature_set == "combined":
         return np.concatenate(
             [

@@ -1,0 +1,15 @@
+order,feature_name,family,description,status
+1,recon_half_abs_mean,half_scale_resize_residual,Mean RGB residual after bicubic downsample-to-half and upsample reconstruction.,implemented_standalone_ablation
+2,recon_half_abs_p95,half_scale_resize_residual,95th percentile RGB residual after half-scale reconstruction.,implemented_standalone_ablation
+3,recon_half_luma_chroma_ratio,half_scale_resize_residual,Ratio of luma reconstruction residual to chroma reconstruction residual at half scale.,implemented_standalone_ablation
+4,recon_half_laplacian_abs_mean,half_scale_resize_residual,Mean absolute Laplacian of the half-scale reconstruction residual map.,implemented_standalone_ablation
+5,recon_half_tile16_std_mean,half_scale_resize_residual,Mean local residual standard deviation over 16x16 tiles at half scale.,implemented_standalone_ablation
+6,recon_half_tile16_std_p90,half_scale_resize_residual,90th percentile local residual standard deviation over 16x16 tiles at half scale.,implemented_standalone_ablation
+7,recon_quarter_abs_mean,quarter_scale_resize_residual,Mean RGB residual after bicubic downsample-to-quarter and upsample reconstruction.,implemented_standalone_ablation
+8,recon_quarter_abs_p95,quarter_scale_resize_residual,95th percentile RGB residual after quarter-scale reconstruction.,implemented_standalone_ablation
+9,recon_quarter_luma_chroma_ratio,quarter_scale_resize_residual,Ratio of luma reconstruction residual to chroma reconstruction residual at quarter scale.,implemented_standalone_ablation
+10,recon_quarter_laplacian_abs_mean,quarter_scale_resize_residual,Mean absolute Laplacian of the quarter-scale reconstruction residual map.,implemented_standalone_ablation
+11,recon_half_quarter_abs_mean_delta,cross_scale_delta,Half-minus-quarter delta for mean reconstruction residual.,implemented_standalone_ablation
+12,recon_half_quarter_abs_p95_delta,cross_scale_delta,Half-minus-quarter delta for 95th percentile reconstruction residual.,implemented_standalone_ablation
+13,recon_half_quarter_luma_chroma_ratio_delta,cross_scale_delta,Half-minus-quarter delta for luma/chroma reconstruction residual ratio.,implemented_standalone_ablation
+14,recon_half_quarter_laplacian_delta,cross_scale_delta,Half-minus-quarter delta for residual Laplacian energy.,implemented_standalone_ablation

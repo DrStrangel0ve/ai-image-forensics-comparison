@@ -45,6 +45,7 @@ def test_conventional_feature_sets_are_finite(tmp_path: Path) -> None:
         "noise_v2",
         "noise_v3",
         "noise_v4",
+        "reconstruction_lite",
         "combined",
         "combined_v2",
         "combined_v3",
@@ -60,6 +61,15 @@ def test_conventional_feature_sets_are_finite(tmp_path: Path) -> None:
     assert len(feature_names("combined_v2")) > len(feature_names("combined"))
     assert len(feature_names("combined_v3")) > len(feature_names("combined_v2"))
     assert len(feature_names("combined_v4")) > len(feature_names("combined_v3"))
+
+
+def test_reconstruction_lite_is_a_standalone_ablation() -> None:
+    names = feature_names("reconstruction_lite")
+
+    assert "recon_half_abs_mean" in names
+    assert "recon_half_quarter_laplacian_delta" in names
+    assert "noise_abs_mean" not in names
+    assert set(names).isdisjoint(FEATURE_NAMES)
 
 
 def test_robustness_variants_preserve_image_size() -> None:

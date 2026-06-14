@@ -46,6 +46,7 @@ def parse_args() -> argparse.Namespace:
             "noise_v2",
             "noise_v3",
             "noise_v4",
+            "reconstruction_lite",
             "combined",
             "combined_v2",
             "combined_v3",

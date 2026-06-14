@@ -169,6 +169,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/reconstruction_lite_feature_set_2026_06_14.md",
+        "type": "method",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/reconstruction_lite_feature_manifest.csv",
+        "type": "method",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable reconstruction_lite feature manifest.",
+        "required": False,
+    },
+    {
         "path": "reports/literature_map_2026_06_14.md",
         "type": "literature",
         "venues": "WIFS,DFF",
@@ -1141,6 +1155,7 @@ REGEN_COMMANDS = [
     ("external benchmark claim lint", "python scripts/lint_external_benchmark_claims.py"),
     ("SOTA gap report", "python scripts/build_sota_gap_report.py"),
     ("SOTA gap closure plan", "python scripts/build_sota_gap_closure_plan.py"),
+    ("reconstruction-lite feature report", "python scripts/build_reconstruction_lite_feature_report.py"),
     ("tiled foundation comparison", "python scripts/build_tiled_foundation_comparison.py"),
     ("tiled foundation fusion comparison", "python scripts/build_tiled_foundation_fusion_comparison.py"),
     (

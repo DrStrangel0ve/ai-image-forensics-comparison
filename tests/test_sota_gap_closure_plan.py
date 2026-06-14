@@ -45,4 +45,7 @@ def test_sota_gap_closure_plan_prioritizes_official_benchmark_runs(tmp_path: Pat
         ].item()
         == "core_transform_stress_probes_complete"
     )
-    assert set(plan["status"]) >= {"implementation_next", "ready_when_data_available"}
+    assert set(plan["status"]) >= {
+        "standalone_proxy_ready_pretrained_branch_next",
+        "ready_when_data_available",
+    }
