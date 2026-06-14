@@ -382,19 +382,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | draft BibTeX references | python scripts/build_references_bib.py |
 | publication tables | python scripts/build_publication_tables.py |
 | robustness failure ranking | python scripts/build_robustness_failure_ranking.py |
-| claim matrix | python scripts/build_claim_evidence_matrix.py |
-| submission result tables | python scripts/build_submission_result_tables.py |
-| submission result table lint | python scripts/lint_submission_result_tables.py |
-| submission LaTeX tables | python scripts/build_submission_latex_tables.py |
-| submission text drafts | python scripts/build_submission_text_drafts.py |
-| paper section drafts | python scripts/build_paper_section_drafts.py |
-| paper section draft lint | python scripts/lint_paper_section_drafts.py |
-| submission paper skeletons | python scripts/build_submission_paper_skeletons.py |
-| paper skeleton lint | python scripts/lint_paper_skeletons.py |
 | publication figures | python scripts/build_publication_assets.py |
-| DFRWS poster brief | python scripts/build_dfrws_poster_brief.py |
-| DFRWS poster panels | python scripts/build_dfrws_poster_figures.py |
-| DFRWS poster package lint | python scripts/lint_dfrws_poster_package.py |
 | opportunity watchlist | python scripts/build_opportunity_watchlist.py |
 | external benchmark readiness | python scripts/build_external_benchmark_readiness.py |
 | external benchmark claim lint | python scripts/lint_external_benchmark_claims.py |
@@ -408,6 +396,18 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | tiled DINO screenshot fusion robustness | python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant screenshot --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_screenshot_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_2026_06_14.md |
 | tiled DINO transform stress comparison | python scripts/build_tiled_dinov2_transform_stress_comparison.py |
 | tiled DINO calibration tradeoff | python scripts/build_tiled_dinov2_calibration_tradeoff.py |
+| claim matrix | python scripts/build_claim_evidence_matrix.py |
+| submission result tables | python scripts/build_submission_result_tables.py |
+| submission result table lint | python scripts/lint_submission_result_tables.py |
+| submission LaTeX tables | python scripts/build_submission_latex_tables.py |
+| submission text drafts | python scripts/build_submission_text_drafts.py |
+| paper section drafts | python scripts/build_paper_section_drafts.py |
+| paper section draft lint | python scripts/lint_paper_section_drafts.py |
+| submission paper skeletons | python scripts/build_submission_paper_skeletons.py |
+| paper skeleton lint | python scripts/lint_paper_skeletons.py |
+| DFRWS poster brief | python scripts/build_dfrws_poster_brief.py |
+| DFRWS poster panels | python scripts/build_dfrws_poster_figures.py |
+| DFRWS poster package lint | python scripts/lint_dfrws_poster_package.py |
 | publication control suite dry run | python scripts/run_publication_control_suite.py --dry-run |
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |

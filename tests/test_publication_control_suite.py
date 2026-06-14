@@ -37,7 +37,13 @@ def test_publication_control_suite_dry_run_lists_ordered_commands(tmp_path: Path
     assert "Publication Control Suite" in text
     assert "Status: **DRY-RUN**" in text
     assert set(frame["status"]) == {"planned"}
-    assert order["publication tables"] < order["claim matrix"]
+    assert order["publication tables"] < order["robustness failure ranking"]
+    assert order["robustness failure ranking"] < order["tiled DINO calibration tradeoff"]
+    assert order["tiled DINO transform stress comparison"] < order["tiled DINO calibration tradeoff"]
+    assert order["tiled DINO calibration tradeoff"] < order["claim matrix"]
+    assert order["claim matrix"] < order["submission result tables"]
+    assert order["claim matrix"] < order["submission text drafts"]
+    assert order["claim matrix"] < order["DFRWS poster brief"]
     assert order["robustness failure ranking"] < order["submission packet"]
     assert order["external benchmark claim lint"] < order["submission packet"]
     assert order["SOTA gap report"] < order["submission packet"]
