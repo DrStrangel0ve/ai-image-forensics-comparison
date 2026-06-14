@@ -876,6 +876,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/manuscript_drafts_lint_2026_06_14.md",
+        "type": "quality-control",
+        "venues": "WIFS,DFF",
+        "purpose": "Generated lint report checking WIFS/DFF manuscript draft sections, asset callouts, word counts, and overclaim guardrails.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/manuscript_drafts_lint.csv",
+        "type": "quality-control",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable manuscript draft lint checks.",
+        "required": False,
+    },
+    {
         "path": "reports/physics_guided_vs_resnet_2026_06_12.md",
         "type": "result-note",
         "venues": "DFRWS,WIFS,DFF",
@@ -1414,6 +1428,7 @@ REGEN_COMMANDS = [
     ("WIFS breadth decision", "python scripts/build_wifs_breadth_decision.py"),
     ("manuscript assembly map", "python scripts/build_manuscript_assembly_map.py"),
     ("manuscript drafts", "python scripts/build_manuscript_drafts.py"),
+    ("manuscript draft lint", "python scripts/lint_manuscript_drafts.py"),
     ("publication control suite dry run", "python scripts/run_publication_control_suite.py --dry-run"),
     ("submission packet", "python scripts/build_submission_packet.py"),
     ("submission package lint", "python scripts/lint_submission_package.py"),

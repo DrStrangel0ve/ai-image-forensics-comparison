@@ -1,0 +1,33 @@
+venue,check,passed,detail
+WIFS,draft exists,True,reports\wifs_manuscript_draft_2026_06_14.md
+WIFS,required sections present,True,all required sections present
+WIFS,draft word count in editable range,True,1293 words; allowed 900-2200
+WIFS,manifest word count matches draft,True,"computed 1293, recorded 1293"
+WIFS,asset callout count matches manifest,True,"computed 19, recorded 19"
+WIFS,asset callouts exist,True,all asset callouts exist
+WIFS,required phrase present: 0.8450 accuracy,True,present
+WIFS,required phrase present: 0.8641 AUC,True,present
+WIFS,required phrase present: single-image physical/signal proxy,True,present
+WIFS,required phrase present: SCP-Fusion does not universally beat frozen CLIP,True,present
+WIFS,required phrase present: Assets to place or cite,True,present
+WIFS,avoid overclaim: \bstate[- ]of[- ]the[- ]art\b,True,not found
+WIFS,avoid overclaim: \bproduction[- ]ready\b,True,not found
+WIFS,avoid overclaim: \bguaranteed\b,True,not found
+WIFS,avoid overclaim: \bSCP-Fusion beats CLIP\b,True,not found
+WIFS,avoid overclaim: \brobust to processing\b,True,not found
+DFF,draft exists,True,reports\dff_manuscript_draft_2026_06_14.md
+DFF,required sections present,True,all required sections present
+DFF,draft word count in editable range,True,1462 words; allowed 1000-2600
+DFF,manifest word count matches draft,True,"computed 1462, recorded 1462"
+DFF,asset callout count matches manifest,True,"computed 16, recorded 16"
+DFF,asset callouts exist,True,all asset callouts exist
+DFF,required phrase present: SCP-Fusion as a diagnostic protocol,True,present
+DFF,required phrase present: 0.8641 AUC,True,present
+DFF,required phrase present: Failure grids and source-slice diagnostics,True,present
+DFF,required phrase present: single-image physical/signal proxy,True,present
+DFF,required phrase present: Assets to place or cite,True,present
+DFF,avoid overclaim: \bstate[- ]of[- ]the[- ]art\b,True,not found
+DFF,avoid overclaim: \bproduction[- ]ready\b,True,not found
+DFF,avoid overclaim: \bguaranteed\b,True,not found
+DFF,avoid overclaim: \bSCP-Fusion beats CLIP\b,True,not found
+DFF,avoid overclaim: \brobust to processing\b,True,not found

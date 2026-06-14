@@ -43,6 +43,12 @@ LINT_REPORTS = [
         "purpose": "WIFS/DFF skeleton structure, referenced assets, and guardrails.",
     },
     {
+        "name": "manuscript drafts",
+        "path": "reports/manuscript_drafts_lint_2026_06_14.md",
+        "venues": "WIFS,DFF",
+        "purpose": "Assembled manuscript draft section, asset, word-count, and guardrail checks.",
+    },
+    {
         "name": "submission package",
         "path": "reports/submission_package_lint_2026_06_14.md",
         "venues": "DFRWS,WIFS,DFF",

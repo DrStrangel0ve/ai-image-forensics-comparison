@@ -92,6 +92,7 @@ def test_submission_scorecard_aggregates_manifest_lints_and_claims(tmp_path: Pat
         ("reports/submission_result_tables_lint_2026_06_14.md", 31, 31),
         ("reports/paper_section_drafts_lint_2026_06_14.md", 59, 59),
         ("reports/paper_skeleton_lint_2026_06_14.md", 45, 45),
+        ("reports/manuscript_drafts_lint_2026_06_14.md", 32, 32),
         ("reports/submission_package_lint_2026_06_14.md", 31, 31),
     ]:
         path = repo_root / relative
