@@ -71,6 +71,12 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/sota_gap_closure_plan.csv | Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
+| method | reports/reconstruction_v2_feature_set_2026_06_14.md | Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions. |
+| method | reports/assets/reconstruction_v2_feature_manifest.csv | Machine-readable reconstruction_v2 feature manifest. |
+| result-note | reports/reconstruction_v2_probe_2026_06_14.md | Bounded same-domain and Ishu to MS COCOAI reconstruction_v2 diagnostic. |
+| result-data | reports/assets/reconstruction_v2_probe_seed_summary.csv | Seed-level reconstruction_v2, reconstruction_lite, and combined_v3 probe metrics. |
+| result-data | reports/assets/reconstruction_v2_probe_mean_summary.csv | Mean reconstruction_v2, reconstruction_lite, and combined_v3 probe metrics. |
+| result-data | reports/assets/reconstruction_v2_probe_delta_summary.csv | Delta summary for reconstruction_v2 against reconstruction_lite and combined_v3. |
 | result-note | reports/reconstruction_lite_probe_2026_06_14.md | Bounded three-seed reconstruction_lite vs combined_v3 ablation summary. |
 | result-data | reports/assets/reconstruction_lite_probe_seed_summary.csv | Seed-level reconstruction_lite vs combined_v3 bounded probe metrics. |
 | result-data | reports/assets/reconstruction_lite_probe_mean_summary.csv | Mean reconstruction_lite vs combined_v3 bounded probe metrics. |
@@ -153,6 +159,12 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/sota_gap_closure_plan.csv | Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
+| method | reports/reconstruction_v2_feature_set_2026_06_14.md | Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions. |
+| method | reports/assets/reconstruction_v2_feature_manifest.csv | Machine-readable reconstruction_v2 feature manifest. |
+| result-note | reports/reconstruction_v2_probe_2026_06_14.md | Bounded same-domain and Ishu to MS COCOAI reconstruction_v2 diagnostic. |
+| result-data | reports/assets/reconstruction_v2_probe_seed_summary.csv | Seed-level reconstruction_v2, reconstruction_lite, and combined_v3 probe metrics. |
+| result-data | reports/assets/reconstruction_v2_probe_mean_summary.csv | Mean reconstruction_v2, reconstruction_lite, and combined_v3 probe metrics. |
+| result-data | reports/assets/reconstruction_v2_probe_delta_summary.csv | Delta summary for reconstruction_v2 against reconstruction_lite and combined_v3. |
 | result-note | reports/reconstruction_lite_probe_2026_06_14.md | Bounded three-seed reconstruction_lite vs combined_v3 ablation summary. |
 | result-data | reports/assets/reconstruction_lite_probe_seed_summary.csv | Seed-level reconstruction_lite vs combined_v3 bounded probe metrics. |
 | result-data | reports/assets/reconstruction_lite_probe_mean_summary.csv | Mean reconstruction_lite vs combined_v3 bounded probe metrics. |
@@ -314,6 +326,12 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/sota_gap_closure_plan.csv | Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
+| method | reports/reconstruction_v2_feature_set_2026_06_14.md | Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions. |
+| method | reports/assets/reconstruction_v2_feature_manifest.csv | Machine-readable reconstruction_v2 feature manifest. |
+| result-note | reports/reconstruction_v2_probe_2026_06_14.md | Bounded same-domain and Ishu to MS COCOAI reconstruction_v2 diagnostic. |
+| result-data | reports/assets/reconstruction_v2_probe_seed_summary.csv | Seed-level reconstruction_v2, reconstruction_lite, and combined_v3 probe metrics. |
+| result-data | reports/assets/reconstruction_v2_probe_mean_summary.csv | Mean reconstruction_v2, reconstruction_lite, and combined_v3 probe metrics. |
+| result-data | reports/assets/reconstruction_v2_probe_delta_summary.csv | Delta summary for reconstruction_v2 against reconstruction_lite and combined_v3. |
 | result-note | reports/reconstruction_lite_probe_2026_06_14.md | Bounded three-seed reconstruction_lite vs combined_v3 ablation summary. |
 | result-data | reports/assets/reconstruction_lite_probe_seed_summary.csv | Seed-level reconstruction_lite vs combined_v3 bounded probe metrics. |
 | result-data | reports/assets/reconstruction_lite_probe_mean_summary.csv | Mean reconstruction_lite vs combined_v3 bounded probe metrics. |
@@ -465,6 +483,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | SOTA gap report | python scripts/build_sota_gap_report.py |
 | SOTA gap closure plan | python scripts/build_sota_gap_closure_plan.py |
 | reconstruction-lite feature report | python scripts/build_reconstruction_lite_feature_report.py |
+| reconstruction-v2 feature report | python scripts/build_reconstruction_v2_feature_report.py |
+| reconstruction-v2 bounded probe | python scripts/summarize_reconstruction_v2_probe.py |
 | reconstruction-lite bounded probe | python scripts/summarize_reconstruction_lite_probe.py |
 | reconstruction-lite transfer probe | python scripts/summarize_reconstruction_lite_transfer_probe.py |
 | reconstruction-lite fusion probe | python scripts/summarize_reconstruction_lite_fusion_probe.py |

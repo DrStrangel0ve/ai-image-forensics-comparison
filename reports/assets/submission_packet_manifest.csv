@@ -1,5 +1,5 @@
 path,type,venues,purpose,required,exists,size_bytes
-README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,54034
+README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,54806
 CITATION.cff,repo,"DFRWS,WIFS,DFF",Citation metadata for public release and reproducibility review.,True,True,788
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF","Reviewer-facing map of included artifacts, external datasets, and commands.",True,True,16823
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
@@ -22,6 +22,12 @@ reports/sota_gap_closure_plan_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Prioritize
 reports/assets/sota_gap_closure_plan.csv,planning,"DFRWS,WIFS,DFF","Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria.",False,True,4848
 reports/reconstruction_lite_feature_set_2026_06_14.md,method,"DFRWS,WIFS,DFF",Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command.,False,True,3939
 reports/assets/reconstruction_lite_feature_manifest.csv,method,"DFRWS,WIFS,DFF",Machine-readable reconstruction_lite feature manifest.,False,True,2323
+reports/reconstruction_v2_feature_set_2026_06_14.md,method,"DFRWS,WIFS,DFF",Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions.,False,True,9394
+reports/assets/reconstruction_v2_feature_manifest.csv,method,"DFRWS,WIFS,DFF",Machine-readable reconstruction_v2 feature manifest.,False,True,7107
+reports/reconstruction_v2_probe_2026_06_14.md,result-note,"DFRWS,WIFS,DFF",Bounded same-domain and Ishu to MS COCOAI reconstruction_v2 diagnostic.,False,True,5388
+reports/assets/reconstruction_v2_probe_seed_summary.csv,result-data,"DFRWS,WIFS,DFF","Seed-level reconstruction_v2, reconstruction_lite, and combined_v3 probe metrics.",False,True,6168
+reports/assets/reconstruction_v2_probe_mean_summary.csv,result-data,"DFRWS,WIFS,DFF","Mean reconstruction_v2, reconstruction_lite, and combined_v3 probe metrics.",False,True,5590
+reports/assets/reconstruction_v2_probe_delta_summary.csv,result-data,"DFRWS,WIFS,DFF",Delta summary for reconstruction_v2 against reconstruction_lite and combined_v3.,False,True,6269
 reports/reconstruction_lite_probe_2026_06_14.md,result-note,"DFRWS,WIFS,DFF",Bounded three-seed reconstruction_lite vs combined_v3 ablation summary.,False,True,2074
 reports/assets/reconstruction_lite_probe_seed_summary.csv,result-data,"DFRWS,WIFS,DFF",Seed-level reconstruction_lite vs combined_v3 bounded probe metrics.,False,True,1991
 reports/assets/reconstruction_lite_probe_mean_summary.csv,result-data,"DFRWS,WIFS,DFF",Mean reconstruction_lite vs combined_v3 bounded probe metrics.,False,True,2146

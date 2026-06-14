@@ -47,6 +47,10 @@ The completed `combined_v4` full-transfer gate is summarized in [reports/combine
 
 The AEROBLADE-lite reconstruction proxy is also exposed as a standalone `reconstruction_lite` feature set and documented in [reports/reconstruction_lite_feature_set_2026_06_14.md](reports/reconstruction_lite_feature_set_2026_06_14.md). This keeps resize-reconstruction residuals ablatable on their own, while leaving historical `combined_v3` and `combined_v4` metrics unchanged.
 
+The extended `reconstruction_v2` ablation is documented in [reports/reconstruction_v2_feature_set_2026_06_14.md](reports/reconstruction_v2_feature_set_2026_06_14.md). It adds deterministic FFT low-pass and low-rank SVD reconstruction residuals as a faster, learned-model-free stepping stone toward a true cached autoencoder/diffusion reconstruction branch.
+
+A bounded `reconstruction_v2` probe is summarized in [reports/reconstruction_v2_probe_2026_06_14.md](reports/reconstruction_v2_probe_2026_06_14.md). It improves same-domain Ishu ranking over `reconstruction_lite`, but transfers worse to source-balanced MS COCOAI, which is a useful warning that richer deterministic reconstruction residuals can overfit source texture instead of improving cross-domain forensics.
+
 A bounded three-seed Ishu probe is summarized in [reports/reconstruction_lite_probe_2026_06_14.md](reports/reconstruction_lite_probe_2026_06_14.md). In that small 160/80 split sanity check, `reconstruction_lite` trails `combined_v3` on mean accuracy/AUC but remains useful as an auxiliary reconstruction-signal branch to test in transfer and fusion.
 
 The matching bounded Ishu -> source-balanced MS COCOAI transfer probe is summarized in [reports/reconstruction_lite_transfer_probe_2026_06_14.md](reports/reconstruction_lite_transfer_probe_2026_06_14.md). In that diagnostic, `reconstruction_lite` beats the bounded `combined_v3` model on mean transfer accuracy/AUC and calibration, supporting reconstruction residuals as a transfer/fusion branch rather than a standalone same-domain replacement.

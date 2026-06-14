@@ -121,6 +121,41 @@ RECONSTRUCTION_LITE_FEATURE_NAMES = [
     "recon_half_quarter_laplacian_delta",
 ]
 
+RECONSTRUCTION_V2_EXTRA_FEATURE_NAMES = [
+    "recon_fft20_abs_mean",
+    "recon_fft20_abs_p95",
+    "recon_fft20_luma_chroma_ratio",
+    "recon_fft20_laplacian_abs_mean",
+    "recon_fft20_tile16_std_mean",
+    "recon_fft20_tile16_std_p90",
+    "recon_fft35_abs_mean",
+    "recon_fft35_abs_p95",
+    "recon_fft35_luma_chroma_ratio",
+    "recon_fft35_laplacian_abs_mean",
+    "recon_fft35_tile16_std_mean",
+    "recon_fft35_tile16_std_p90",
+    "recon_svd8_abs_mean",
+    "recon_svd8_abs_p95",
+    "recon_svd8_luma_chroma_ratio",
+    "recon_svd8_laplacian_abs_mean",
+    "recon_svd8_tile16_std_mean",
+    "recon_svd8_tile16_std_p90",
+    "recon_svd16_abs_mean",
+    "recon_svd16_abs_p95",
+    "recon_svd16_luma_chroma_ratio",
+    "recon_svd16_laplacian_abs_mean",
+    "recon_svd16_tile16_std_mean",
+    "recon_svd16_tile16_std_p90",
+    "recon_fft20_fft35_abs_mean_delta",
+    "recon_fft20_fft35_laplacian_delta",
+    "recon_svd8_svd16_abs_mean_delta",
+    "recon_svd8_svd16_laplacian_delta",
+    "recon_fft20_svd8_abs_mean_ratio",
+    "recon_fft35_svd16_abs_mean_ratio",
+]
+
+RECONSTRUCTION_V2_FEATURE_NAMES = RECONSTRUCTION_LITE_FEATURE_NAMES + RECONSTRUCTION_V2_EXTRA_FEATURE_NAMES
+
 
 def _load_rgb(path: str | Path, image_size: int) -> np.ndarray:
     with Image.open(path) as image:
@@ -184,6 +219,34 @@ def _resize_reconstruction_diff(rgb: np.ndarray, scale: float) -> np.ndarray:
     reconstructed = small.resize((width, height), Image.Resampling.BICUBIC)
     reconstructed_rgb = np.asarray(reconstructed.convert("RGB"), dtype=np.float32) / 255.0
     return np.abs(rgb - reconstructed_rgb)
+
+
+def _fft_lowpass_reconstruction_diff(rgb: np.ndarray, cutoff: float) -> np.ndarray:
+    height, width, _channels = rgb.shape
+    yy, xx = np.mgrid[:height, :width]
+    cy = (height - 1) / 2.0
+    cx = (width - 1) / 2.0
+    radius = np.sqrt((yy - cy) ** 2 + (xx - cx) ** 2)
+    radius_norm = radius / np.clip(float(radius.max()), 1e-8, None)
+    mask = radius_norm <= cutoff
+    channels = []
+    for channel in range(3):
+        spectrum = np.fft.fftshift(np.fft.fft2(rgb[:, :, channel]))
+        reconstructed = np.fft.ifft2(np.fft.ifftshift(spectrum * mask)).real
+        channels.append(reconstructed)
+    reconstructed_rgb = np.stack(channels, axis=2).astype(np.float32)
+    return np.abs(rgb - np.clip(reconstructed_rgb, 0.0, 1.0))
+
+
+def _svd_lowrank_reconstruction_diff(rgb: np.ndarray, rank: int) -> np.ndarray:
+    channels = []
+    for channel in range(3):
+        u, singular_values, vt = np.linalg.svd(rgb[:, :, channel], full_matrices=False)
+        effective_rank = min(rank, len(singular_values))
+        reconstructed = (u[:, :effective_rank] * singular_values[:effective_rank]) @ vt[:effective_rank, :]
+        channels.append(reconstructed)
+    reconstructed_rgb = np.stack(channels, axis=2).astype(np.float32)
+    return np.abs(rgb - np.clip(reconstructed_rgb, 0.0, 1.0))
 
 
 def _ela_diff(rgb: np.ndarray) -> np.ndarray:
@@ -431,8 +494,7 @@ def _noise_v3_extra_features(
     return values
 
 
-def _reconstruction_stats(rgb: np.ndarray, scale: float, prefix: str) -> dict[str, float]:
-    diff = _resize_reconstruction_diff(rgb, scale=scale)
+def _reconstruction_diff_stats(diff: np.ndarray, prefix: str, include_tiles: bool = False) -> dict[str, float]:
     diff_abs = np.mean(diff, axis=2)
     gray_diff = _gray(diff)
     chroma_diff = 0.5 * (np.abs(diff[:, :, 0] - diff[:, :, 1]) + np.abs(diff[:, :, 2] - diff[:, :, 1]))
@@ -444,8 +506,18 @@ def _reconstruction_stats(rgb: np.ndarray, scale: float, prefix: str) -> dict[st
         ),
         f"{prefix}_laplacian_abs_mean": float(np.abs(_laplacian(diff_abs)).mean()),
     }
-    if prefix == "recon_half":
+    if include_tiles:
         values.update(_tile_std_stats(diff_abs, tile_size=16, prefix=f"{prefix}_tile16"))
+    return values
+
+
+def _reconstruction_stats(rgb: np.ndarray, scale: float, prefix: str) -> dict[str, float]:
+    values = _reconstruction_diff_stats(
+        _resize_reconstruction_diff(rgb, scale=scale),
+        prefix=prefix,
+        include_tiles=prefix == "recon_half",
+    )
+    if prefix == "recon_half":
         return {
             "recon_half_abs_mean": values["recon_half_abs_mean"],
             "recon_half_abs_p95": values["recon_half_abs_p95"],
@@ -479,6 +551,60 @@ def _reconstruction_lite_feature_values(rgb: np.ndarray) -> dict[str, float]:
             ),
             "recon_half_quarter_laplacian_delta": float(
                 half["recon_half_laplacian_abs_mean"] - quarter["recon_quarter_laplacian_abs_mean"]
+            ),
+        }
+    )
+    return values
+
+
+def _reconstruction_v2_feature_values(rgb: np.ndarray) -> dict[str, float]:
+    values = _reconstruction_lite_feature_values(rgb)
+    fft20 = _reconstruction_diff_stats(
+        _fft_lowpass_reconstruction_diff(rgb, cutoff=0.20),
+        prefix="recon_fft20",
+        include_tiles=True,
+    )
+    fft35 = _reconstruction_diff_stats(
+        _fft_lowpass_reconstruction_diff(rgb, cutoff=0.35),
+        prefix="recon_fft35",
+        include_tiles=True,
+    )
+    svd8 = _reconstruction_diff_stats(
+        _svd_lowrank_reconstruction_diff(rgb, rank=8),
+        prefix="recon_svd8",
+        include_tiles=True,
+    )
+    svd16 = _reconstruction_diff_stats(
+        _svd_lowrank_reconstruction_diff(rgb, rank=16),
+        prefix="recon_svd16",
+        include_tiles=True,
+    )
+    values.update(fft20)
+    values.update(fft35)
+    values.update(svd8)
+    values.update(svd16)
+    values.update(
+        {
+            "recon_fft20_fft35_abs_mean_delta": float(
+                fft20["recon_fft20_abs_mean"] - fft35["recon_fft35_abs_mean"]
+            ),
+            "recon_fft20_fft35_laplacian_delta": float(
+                fft20["recon_fft20_laplacian_abs_mean"]
+                - fft35["recon_fft35_laplacian_abs_mean"]
+            ),
+            "recon_svd8_svd16_abs_mean_delta": float(
+                svd8["recon_svd8_abs_mean"] - svd16["recon_svd16_abs_mean"]
+            ),
+            "recon_svd8_svd16_laplacian_delta": float(
+                svd8["recon_svd8_laplacian_abs_mean"]
+                - svd16["recon_svd16_laplacian_abs_mean"]
+            ),
+            "recon_fft20_svd8_abs_mean_ratio": float(
+                fft20["recon_fft20_abs_mean"] / np.clip(svd8["recon_svd8_abs_mean"], 1e-8, None)
+            ),
+            "recon_fft35_svd16_abs_mean_ratio": float(
+                fft35["recon_fft35_abs_mean"]
+                / np.clip(svd16["recon_svd16_abs_mean"], 1e-8, None)
             ),
         }
     )
@@ -598,6 +724,12 @@ def extract_reconstruction_lite_features(path: str | Path, image_size: int = 128
     return np.asarray([values[name] for name in RECONSTRUCTION_LITE_FEATURE_NAMES], dtype=np.float32)
 
 
+def extract_reconstruction_v2_features(path: str | Path, image_size: int = 128) -> np.ndarray:
+    rgb = _load_rgb(path, image_size)
+    values = _reconstruction_v2_feature_values(rgb)
+    return np.asarray([values[name] for name in RECONSTRUCTION_V2_FEATURE_NAMES], dtype=np.float32)
+
+
 def feature_names(feature_set: str) -> list[str]:
     if feature_set == "photometric":
         return list(PHOTOMETRIC_FEATURE_NAMES)
@@ -611,6 +743,8 @@ def feature_names(feature_set: str) -> list[str]:
         return list(NOISE_V4_FEATURE_NAMES)
     if feature_set == "reconstruction_lite":
         return list(RECONSTRUCTION_LITE_FEATURE_NAMES)
+    if feature_set == "reconstruction_v2":
+        return list(RECONSTRUCTION_V2_FEATURE_NAMES)
     if feature_set == "combined":
         return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_FEATURE_NAMES)
     if feature_set == "combined_v2":
@@ -635,6 +769,8 @@ def extract_feature_set(path: str | Path, image_size: int, feature_set: str) -> 
         return extract_noise_v4_features(path, image_size=image_size)
     if feature_set == "reconstruction_lite":
         return extract_reconstruction_lite_features(path, image_size=image_size)
+    if feature_set == "reconstruction_v2":
+        return extract_reconstruction_v2_features(path, image_size=image_size)
     if feature_set == "combined":
         return np.concatenate(
             [
