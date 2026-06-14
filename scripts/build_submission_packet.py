@@ -113,6 +113,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/external_benchmark_claim_lint_2026_06_14.md",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Generated lint report checking that NTIRE/ImageCLEF proxy evidence is not described as official challenge performance.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/external_benchmark_claim_lint.csv",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable external benchmark claim lint checks.",
+        "required": False,
+    },
+    {
         "path": "reports/literature_map_2026_06_14.md",
         "type": "literature",
         "venues": "WIFS,DFF",
@@ -598,6 +612,7 @@ REGEN_COMMANDS = [
     ("submission upload checklist", "python scripts/build_submission_upload_checklist.py"),
     ("opportunity watchlist", "python scripts/build_opportunity_watchlist.py"),
     ("external benchmark readiness", "python scripts/build_external_benchmark_readiness.py"),
+    ("external benchmark claim lint", "python scripts/lint_external_benchmark_claims.py"),
 ]
 
 

@@ -1,5 +1,5 @@
 path,type,venues,purpose,required,exists,size_bytes
-README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,46917
+README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,47108
 CITATION.cff,repo,"DFRWS,WIFS,DFF",Citation metadata for public release and reproducibility review.,True,True,788
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF","Reviewer-facing map of included artifacts, external datasets, and commands.",True,True,16823
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
@@ -12,6 +12,8 @@ reports/assets/opportunity_watchlist.csv,planning,"DFRWS,WIFS,DFF",Machine-reada
 reports/external_benchmark_readiness_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Official-vs-proxy readiness audit for NTIRE/ImageCLEF-style external benchmark claims.,False,True,5790
 reports/assets/external_benchmark_readiness.csv,planning,"DFRWS,WIFS,DFF",Machine-readable official benchmark readiness status.,False,True,1422
 reports/assets/external_benchmark_proxy_metrics.csv,planning,"DFRWS,WIFS,DFF",Machine-readable proxy evidence rows for external benchmark claims.,False,True,4658
+reports/external_benchmark_claim_lint_2026_06_14.md,quality-control,"DFRWS,WIFS,DFF",Generated lint report checking that NTIRE/ImageCLEF proxy evidence is not described as official challenge performance.,False,True,1005
+reports/assets/external_benchmark_claim_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable external benchmark claim lint checks.,False,True,648
 reports/literature_map_2026_06_14.md,literature,"WIFS,DFF","Paper-facing map from related-work references to method claims, paper sections, and caveats.",True,True,6270
 reports/assets/literature_map.csv,literature,"WIFS,DFF",Machine-readable literature map for WIFS/DFF related-work drafting.,True,True,5116
 references.bib,bibliography,"WIFS,DFF",Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations.,True,True,4612
