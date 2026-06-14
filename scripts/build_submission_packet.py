@@ -616,6 +616,34 @@ ARTIFACTS = [
         "purpose": "Machine-readable ranked robustness stress table.",
         "required": False,
     },
+    {
+        "path": "reports/tiled_clip_reverse_transfer_2026_06_14.md",
+        "type": "result-note",
+        "venues": "WIFS,DFF",
+        "purpose": "Three-seed reverse-transfer diagnostic comparing global CLIP scores with native-tile mean/max/top-2 aggregation.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_clip_reverse_transfer_summary.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable three-seed summary for tiled CLIP reverse-transfer score modes.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_clip_reverse_transfer_seed_metrics.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Per-seed metrics for tiled CLIP reverse-transfer score modes.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_clip_reverse_transfer_detail.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Per-image scores for tiled CLIP reverse-transfer diagnostics.",
+        "required": False,
+    },
 ]
 
 VENUES = [

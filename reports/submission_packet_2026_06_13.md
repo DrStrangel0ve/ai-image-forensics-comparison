@@ -179,6 +179,10 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | result-note | reports/ms_cocoai_to_ishu_tuned_fusion_native_tiling_2026_06_13.md | Bounded fused native-tiling diagnostic. |
 | result-note | reports/robustness_failure_ranking_2026_06_14.md | Ranked target-transform failure summary for reverse tuned-fusion SCP-Fusion. |
 | table | reports/assets/robustness_failure_ranking.csv | Machine-readable ranked robustness stress table. |
+| result-note | reports/tiled_clip_reverse_transfer_2026_06_14.md | Three-seed reverse-transfer diagnostic comparing global CLIP scores with native-tile mean/max/top-2 aggregation. |
+| table | reports/assets/tiled_clip_reverse_transfer_summary.csv | Machine-readable three-seed summary for tiled CLIP reverse-transfer score modes. |
+| table | reports/assets/tiled_clip_reverse_transfer_seed_metrics.csv | Per-seed metrics for tiled CLIP reverse-transfer score modes. |
+| table | reports/assets/tiled_clip_reverse_transfer_detail.csv | Per-image scores for tiled CLIP reverse-transfer diagnostics. |
 
 ## DFF Packet
 
@@ -256,6 +260,10 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | result-note | reports/ms_cocoai_to_ishu_tuned_fusion_native_tiling_2026_06_13.md | Bounded fused native-tiling diagnostic. |
 | result-note | reports/robustness_failure_ranking_2026_06_14.md | Ranked target-transform failure summary for reverse tuned-fusion SCP-Fusion. |
 | table | reports/assets/robustness_failure_ranking.csv | Machine-readable ranked robustness stress table. |
+| result-note | reports/tiled_clip_reverse_transfer_2026_06_14.md | Three-seed reverse-transfer diagnostic comparing global CLIP scores with native-tile mean/max/top-2 aggregation. |
+| table | reports/assets/tiled_clip_reverse_transfer_summary.csv | Machine-readable three-seed summary for tiled CLIP reverse-transfer score modes. |
+| table | reports/assets/tiled_clip_reverse_transfer_seed_metrics.csv | Per-seed metrics for tiled CLIP reverse-transfer score modes. |
+| table | reports/assets/tiled_clip_reverse_transfer_detail.csv | Per-image scores for tiled CLIP reverse-transfer diagnostics. |
 
 ## Regeneration Commands
 

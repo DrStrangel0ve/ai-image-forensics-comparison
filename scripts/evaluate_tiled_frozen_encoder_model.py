@@ -53,6 +53,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--summary-dir", default="reports/assets")
     parser.add_argument(
+        "--asset-prefix",
+        default="tiled_frozen_encoder",
+        help="Prefix for summary CSV assets written under --summary-dir.",
+    )
+    parser.add_argument(
         "--report-path",
         default="reports/tiled_frozen_encoder_eval_2026_06_14.md",
     )
@@ -317,11 +322,18 @@ def write_report(summary: pd.DataFrame, metrics: pd.DataFrame, args: argparse.Na
     global_row = summary[summary["score_mode"] == "global"].iloc[0]
     best_accuracy = summary.sort_values("accuracy_mean", ascending=False).iloc[0]
     best_auc = summary.sort_values("roc_auc_mean", ascending=False).iloc[0]
+    accuracy_delta = float(best_accuracy["accuracy_mean"] - global_row["accuracy_mean"])
+    auc_delta = float(best_auc["roc_auc_mean"] - global_row["roc_auc_mean"])
     report_path = Path(args.report_path)
     lines = [
         "# Tiled Frozen-Encoder Evaluation",
         "",
         "This report evaluates a saved frozen-encoder classifier with deterministic native-image tile aggregation. The encoder and classifier are unchanged; target images are scored as a global resized view plus native crops.",
+        "",
+        f"- model template: `{args.model_template}`",
+        f"- target template: `{args.target_template}`",
+        f"- device: `{args.device}`",
+        f"- asset prefix: `{args.asset_prefix}`",
         "",
         "## Summary",
         "",
@@ -344,8 +356,10 @@ def write_report(summary: pd.DataFrame, metrics: pd.DataFrame, args: argparse.Na
         (
             f"The global resized view reaches {global_row['accuracy_mean']:.4f} mean accuracy / "
             f"{global_row['roc_auc_mean']:.4f} mean AUC. The best default-threshold accuracy mode is "
-            f"`{best_accuracy['score_mode']}` at {best_accuracy['accuracy_mean']:.4f}; the best ranking mode is "
-            f"`{best_auc['score_mode']}` at {best_auc['roc_auc_mean']:.4f} AUC."
+            f"`{best_accuracy['score_mode']}` at {best_accuracy['accuracy_mean']:.4f} "
+            f"({accuracy_delta:+.4f} versus global); the best ranking mode is "
+            f"`{best_auc['score_mode']}` at {best_auc['roc_auc_mean']:.4f} AUC "
+            f"({auc_delta:+.4f} versus global)."
         ),
         "Treat this as a foundation-branch diagnostic until the tiled scores are folded into source-heldout SCP-Fusion.",
         "",
@@ -402,9 +416,9 @@ def main() -> None:
     summary = summarize_metrics(metrics)
 
     summary_dir = ensure_dir(Path(args.summary_dir))
-    detail_path = summary_dir / "tiled_frozen_encoder_detail.csv"
-    metrics_path = summary_dir / "tiled_frozen_encoder_seed_metrics.csv"
-    summary_path = summary_dir / "tiled_frozen_encoder_summary.csv"
+    detail_path = summary_dir / f"{args.asset_prefix}_detail.csv"
+    metrics_path = summary_dir / f"{args.asset_prefix}_seed_metrics.csv"
+    summary_path = summary_dir / f"{args.asset_prefix}_summary.csv"
     detail.to_csv(detail_path, index=False)
     metrics.to_csv(metrics_path, index=False)
     summary.to_csv(summary_path, index=False)

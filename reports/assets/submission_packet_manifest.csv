@@ -1,5 +1,5 @@
 path,type,venues,purpose,required,exists,size_bytes
-README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,48894
+README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,49281
 CITATION.cff,repo,"DFRWS,WIFS,DFF",Citation metadata for public release and reproducibility review.,True,True,788
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF","Reviewer-facing map of included artifacts, external datasets, and commands.",True,True,16823
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
@@ -18,8 +18,8 @@ reports/external_benchmark_claim_lint_2026_06_14.md,quality-control,"DFRWS,WIFS,
 reports/assets/external_benchmark_claim_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable external benchmark claim lint checks.,False,True,648
 reports/sota_gap_report_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Guarded comparison between checked-in local proxy results and official/current SOTA benchmark anchors.,False,True,5894
 reports/assets/sota_gap_report.csv,planning,"DFRWS,WIFS,DFF",Machine-readable NTIRE-style SOTA gap rows for local proxy metrics.,False,True,1293
-reports/sota_gap_closure_plan_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Prioritized experiment plan for turning the current proxy SOTA-gap evidence into official or paper-compatible benchmark evidence.,False,True,6161
-reports/assets/sota_gap_closure_plan.csv,planning,"DFRWS,WIFS,DFF","Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria.",False,True,4274
+reports/sota_gap_closure_plan_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Prioritized experiment plan for turning the current proxy SOTA-gap evidence into official or paper-compatible benchmark evidence.,False,True,6217
+reports/assets/sota_gap_closure_plan.csv,planning,"DFRWS,WIFS,DFF","Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria.",False,True,4371
 reports/literature_map_2026_06_14.md,literature,"WIFS,DFF","Paper-facing map from related-work references to method claims, paper sections, and caveats.",True,True,6270
 reports/assets/literature_map.csv,literature,"WIFS,DFF",Machine-readable literature map for WIFS/DFF related-work drafting.,True,True,5116
 references.bib,bibliography,"WIFS,DFF",Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations.,True,True,4612
@@ -84,3 +84,7 @@ reports/combined_v4_source_slice_diagnostics_2026_06_13.md,result-note,"WIFS,DFF
 reports/ms_cocoai_to_ishu_tuned_fusion_native_tiling_2026_06_13.md,result-note,"DFRWS,WIFS,DFF",Bounded fused native-tiling diagnostic.,True,True,2692
 reports/robustness_failure_ranking_2026_06_14.md,result-note,"DFRWS,WIFS,DFF",Ranked target-transform failure summary for reverse tuned-fusion SCP-Fusion.,False,True,3232
 reports/assets/robustness_failure_ranking.csv,table,"DFRWS,WIFS,DFF",Machine-readable ranked robustness stress table.,False,True,4290
+reports/tiled_clip_reverse_transfer_2026_06_14.md,result-note,"WIFS,DFF",Three-seed reverse-transfer diagnostic comparing global CLIP scores with native-tile mean/max/top-2 aggregation.,False,True,2624
+reports/assets/tiled_clip_reverse_transfer_summary.csv,table,"WIFS,DFF",Machine-readable three-seed summary for tiled CLIP reverse-transfer score modes.,False,True,1658
+reports/assets/tiled_clip_reverse_transfer_seed_metrics.csv,table,"WIFS,DFF",Per-seed metrics for tiled CLIP reverse-transfer score modes.,False,True,2814
+reports/assets/tiled_clip_reverse_transfer_detail.csv,table,"WIFS,DFF",Per-image scores for tiled CLIP reverse-transfer diagnostics.,False,True,120595
