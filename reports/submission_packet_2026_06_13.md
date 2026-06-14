@@ -85,6 +85,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/submission_result_tables_lint.csv | Machine-readable compact result-table consistency checks. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
+| analysis | reports/method_family_comparison_2026_06_14.md | Paper-facing method-family comparison separating ranking, calibration, operating-point, and triage winners. |
+| analysis | reports/assets/method_family_comparison.csv | Machine-readable method-family winner table by scenario and criterion. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
 | writing | reports/assets/submission_text_drafts_word_counts.csv | Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts. |
 | quality-control | reports/submission_package_lint_2026_06_14.md | Generated lint report for missing packet assets, abstract word counts, and overclaim language. |
@@ -170,6 +172,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/paper_skeleton_lint.csv | Machine-readable WIFS/DFF paper skeleton lint checks. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
+| analysis | reports/method_family_comparison_2026_06_14.md | Paper-facing method-family comparison separating ranking, calibration, operating-point, and triage winners. |
+| analysis | reports/assets/method_family_comparison.csv | Machine-readable method-family winner table by scenario and criterion. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
 | writing | reports/assets/submission_text_drafts_word_counts.csv | Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts. |
 | writing | reports/paper_section_drafts_2026_06_14.md | Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats. |
@@ -313,6 +317,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/paper_skeleton_lint.csv | Machine-readable WIFS/DFF paper skeleton lint checks. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
+| analysis | reports/method_family_comparison_2026_06_14.md | Paper-facing method-family comparison separating ranking, calibration, operating-point, and triage winners. |
+| analysis | reports/assets/method_family_comparison.csv | Machine-readable method-family winner table by scenario and criterion. |
 | writing | reports/submission_text_drafts_2026_06_14.md | Venue-specific abstracts, contribution wording, result sentences, and paper skeletons. |
 | writing | reports/assets/submission_text_drafts_word_counts.csv | Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts. |
 | writing | reports/paper_section_drafts_2026_06_14.md | Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats. |
@@ -420,6 +426,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | tiled DINO transform stress comparison | python scripts/build_tiled_dinov2_transform_stress_comparison.py |
 | tiled DINO calibration tradeoff | python scripts/build_tiled_dinov2_calibration_tradeoff.py |
 | claim matrix | python scripts/build_claim_evidence_matrix.py |
+| method family comparison | python scripts/build_method_family_comparison.py |
 | submission result tables | python scripts/build_submission_result_tables.py |
 | submission result table lint | python scripts/lint_submission_result_tables.py |
 | submission LaTeX tables | python scripts/build_submission_latex_tables.py |

@@ -42,6 +42,8 @@ def test_publication_control_suite_dry_run_lists_ordered_commands(tmp_path: Path
     assert order["tiled DINO transform stress comparison"] < order["tiled DINO calibration tradeoff"]
     assert order["tiled DINO calibration tradeoff"] < order["claim matrix"]
     assert order["claim matrix"] < order["submission result tables"]
+    assert order["claim matrix"] < order["method family comparison"]
+    assert order["method family comparison"] < order["submission packet"]
     assert order["claim matrix"] < order["submission text drafts"]
     assert order["claim matrix"] < order["DFRWS poster brief"]
     assert order["robustness failure ranking"] < order["submission packet"]

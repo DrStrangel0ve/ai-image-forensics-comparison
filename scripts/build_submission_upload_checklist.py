@@ -78,7 +78,7 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-15",
         "item": "paper prose sections",
         "status": "writing_needed",
-        "paths": "reports/paper_section_drafts_2026_06_14.md; reports/paper_section_drafts_lint_2026_06_14.md",
+        "paths": "reports/paper_section_drafts_2026_06_14.md; reports/paper_section_drafts_lint_2026_06_14.md; reports/method_family_comparison_2026_06_14.md",
         "action": "Merge generated sections into a compact WIFS draft; keep caveats about CLIP, single-image physics, and native tiling.",
     },
     {
@@ -132,7 +132,7 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-16",
         "item": "SCP-Fusion diagnostic framing",
         "status": "writing_needed",
-        "paths": "reports/paper_section_drafts_2026_06_14.md; reports/submission_text_drafts_2026_06_14.md",
+        "paths": "reports/paper_section_drafts_2026_06_14.md; reports/submission_text_drafts_2026_06_14.md; reports/method_family_comparison_2026_06_14.md",
         "action": "Keep SCP-Fusion framed as a diagnostic protocol, not as a universal replacement for frozen CLIP.",
     },
     {

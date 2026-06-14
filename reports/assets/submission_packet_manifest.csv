@@ -5,10 +5,10 @@ reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF"
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
 reports/submission_scorecard_2026_06_14.md,planning,"DFRWS,WIFS,DFF","Venue-level readiness scorecard aggregating packet artifacts, lint reports, claim caveats, deadlines, and next actions.",False,True,3001
 reports/assets/submission_scorecard.csv,planning,"DFRWS,WIFS,DFF",Machine-readable venue-level readiness scorecard.,False,True,1330
-reports/submission_upload_checklist_2026_06_14.md,planning,"DFRWS,WIFS,DFF","Venue upload checklist separating ready assets from final export, writing, and decision tasks.",False,True,6724
-reports/assets/submission_upload_checklist.csv,planning,"DFRWS,WIFS,DFF",Machine-readable venue upload checklist.,False,True,5830
-reports/publication_control_suite_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Ordered dry-run command plan for regenerating publication artifacts and lints.,False,True,5528
-reports/assets/publication_control_suite.csv,planning,"DFRWS,WIFS,DFF",Machine-readable publication-control command plan.,False,True,4621
+reports/submission_upload_checklist_2026_06_14.md,planning,"DFRWS,WIFS,DFF","Venue upload checklist separating ready assets from final export, writing, and decision tasks.",False,True,6820
+reports/assets/submission_upload_checklist.csv,planning,"DFRWS,WIFS,DFF",Machine-readable venue upload checklist.,False,True,5926
+reports/publication_control_suite_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Ordered dry-run command plan for regenerating publication artifacts and lints.,False,True,5634
+reports/assets/publication_control_suite.csv,planning,"DFRWS,WIFS,DFF",Machine-readable publication-control command plan.,False,True,4713
 reports/opportunity_watchlist_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Current venue/challenge watchlist separating active submission targets from closed benchmark tracks.,False,True,4047
 reports/assets/opportunity_watchlist.csv,planning,"DFRWS,WIFS,DFF",Machine-readable opportunity and benchmark watchlist.,False,True,2927
 reports/external_benchmark_readiness_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Official-vs-proxy readiness audit for NTIRE/ImageCLEF-style external benchmark claims.,False,True,5790
@@ -57,6 +57,8 @@ reports/paper_skeleton_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated 
 reports/assets/paper_skeleton_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF paper skeleton lint checks.,False,True,3365
 reports/assets/claim_evidence_matrix.csv,claim-audit,"DFRWS,WIFS,DFF",Machine-readable claim-to-evidence map with caveats and next actions.,True,True,19694
 reports/assets/claim_evidence_matrix.md,claim-audit,"DFRWS,WIFS,DFF",Readable claim-to-evidence map for authoring and review.,True,True,20063
+reports/method_family_comparison_2026_06_14.md,analysis,"DFRWS,WIFS,DFF","Paper-facing method-family comparison separating ranking, calibration, operating-point, and triage winners.",False,True,4650
+reports/assets/method_family_comparison.csv,analysis,"DFRWS,WIFS,DFF",Machine-readable method-family winner table by scenario and criterion.,False,True,6807
 reports/submission_text_drafts_2026_06_14.md,writing,"DFRWS,WIFS,DFF","Venue-specific abstracts, contribution wording, result sentences, and paper skeletons.",True,True,14524
 reports/assets/submission_text_drafts_word_counts.csv,writing,"DFRWS,WIFS,DFF","Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts.",True,True,99
 reports/paper_section_drafts_2026_06_14.md,writing,"WIFS,DFF","Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats.",True,True,7846

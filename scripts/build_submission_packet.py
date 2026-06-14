@@ -428,6 +428,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/method_family_comparison_2026_06_14.md",
+        "type": "analysis",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Paper-facing method-family comparison separating ranking, calibration, operating-point, and triage winners.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/method_family_comparison.csv",
+        "type": "analysis",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable method-family winner table by scenario and criterion.",
+        "required": False,
+    },
+    {
         "path": "reports/submission_text_drafts_2026_06_14.md",
         "type": "writing",
         "venues": "DFRWS,WIFS,DFF",
@@ -1147,6 +1161,7 @@ REGEN_COMMANDS = [
         "python scripts/build_tiled_dinov2_calibration_tradeoff.py",
     ),
     ("claim matrix", "python scripts/build_claim_evidence_matrix.py"),
+    ("method family comparison", "python scripts/build_method_family_comparison.py"),
     ("submission result tables", "python scripts/build_submission_result_tables.py"),
     ("submission result table lint", "python scripts/lint_submission_result_tables.py"),
     ("submission LaTeX tables", "python scripts/build_submission_latex_tables.py"),
