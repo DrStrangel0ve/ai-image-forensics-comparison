@@ -1,0 +1,5 @@
+option_id,decision,paper_use,manuscript_value,deadline_fit,reproducibility_fit,effort,risk,rationale,decision_score
+freeze_current_scope,selected,WIFS main plan,4.0,5.0,5.0,1.0,1.0,"Use the already checked source-heldout, robustness, reconstruction, and method-family evidence. This keeps the WIFS paper compact and avoids a last-minute experiment that could dilute the story.",12.0
+source_aware_v4_selection,optional_spare_time,appendix ablation only,4.0,4.0,3.0,2.0,3.0,"Best optional add-on if a short GPU window opens, because the current combined_v4 caveat already points to source-aware feature selection as the most targeted follow-up.",6.0
+larger_source_split,defer,post-WIFS/DFF extension,5.0,2.0,2.0,5.0,4.0,"Scientifically valuable, but it changes dataset scope and can disturb all existing tables close to deadline.",0.0
+true_tiled_neural_foundation,defer,post-WIFS/DFF extension,5.0,2.0,2.0,5.0,4.0,"High-value method work, but it is implementation-heavy and should not block the current WIFS paper.",0.0

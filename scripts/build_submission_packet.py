@@ -827,6 +827,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/wifs_breadth_decision_2026_06_14.md",
+        "type": "planning",
+        "venues": "WIFS,DFF",
+        "purpose": "Generated WIFS breadth decision freezing the 6-page paper scope and deferring high-risk extra experiments.",
+        "required": True,
+    },
+    {
+        "path": "reports/assets/wifs_breadth_decision.csv",
+        "type": "planning",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable WIFS breadth option ranking.",
+        "required": True,
+    },
+    {
         "path": "reports/physics_guided_vs_resnet_2026_06_12.md",
         "type": "result-note",
         "venues": "DFRWS,WIFS,DFF",
@@ -1291,7 +1305,7 @@ VENUES = [
         "status": "feasible with tighter breadth",
         "title": "Source-Heldout Evaluation of Physical, Neural, and Frozen-Encoder Signals for AI-Generated Image Detection",
         "claim": "Use a compact benchmark-paper framing around metric splits: ranking, calibration, fake-call rate, and source-aware decisions.",
-        "next_action": "Draft the 6-page paper, keep claims conservative, and add only one paper-critical breadth check.",
+        "next_action": "Draft the 6-page paper with the frozen WIFS breadth stance; keep any source-aware v4 work appendix-only.",
     },
     {
         "venue": "DFF-2026 ACM Multimedia workshop",
@@ -1362,6 +1376,7 @@ REGEN_COMMANDS = [
     ("DFRWS poster brief", "python scripts/build_dfrws_poster_brief.py"),
     ("DFRWS poster panels", "python scripts/build_dfrws_poster_figures.py"),
     ("DFRWS poster package lint", "python scripts/lint_dfrws_poster_package.py"),
+    ("WIFS breadth decision", "python scripts/build_wifs_breadth_decision.py"),
     ("publication control suite dry run", "python scripts/run_publication_control_suite.py --dry-run"),
     ("submission packet", "python scripts/build_submission_packet.py"),
     ("submission package lint", "python scripts/lint_submission_package.py"),

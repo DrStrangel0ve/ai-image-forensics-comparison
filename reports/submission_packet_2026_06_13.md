@@ -11,7 +11,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | venue | deadline | status | title | claim | next_action |
 | --- | --- | --- | --- | --- | --- |
 | DFRWS-USA 2026 poster/demo | 2026-07-07 | ready to polish | When AI Image Detectors Travel: Source-Heldout Diagnostics for Physical, Neural, and Frozen-Encoder Forensics | Lead with source-heldout diagnostics, CLIP transfer ranking, triage, robustness caveats, and public reproducibility. | Finalize poster layout with the selected seed-29 qualitative grid and export the final PDF/poster image. |
-| IEEE WIFS 2026 paper | 2026-07-15 | feasible with tighter breadth | Source-Heldout Evaluation of Physical, Neural, and Frozen-Encoder Signals for AI-Generated Image Detection | Use a compact benchmark-paper framing around metric splits: ranking, calibration, fake-call rate, and source-aware decisions. | Draft the 6-page paper, keep claims conservative, and add only one paper-critical breadth check. |
+| IEEE WIFS 2026 paper | 2026-07-15 | feasible with tighter breadth | Source-Heldout Evaluation of Physical, Neural, and Frozen-Encoder Signals for AI-Generated Image Detection | Use a compact benchmark-paper framing around metric splits: ranking, calibration, fake-call rate, and source-aware decisions. | Draft the 6-page paper with the frozen WIFS breadth stance; keep any source-aware v4 work appendix-only. |
 | DFF-2026 ACM Multimedia workshop | 2026-07-16 | best full-paper fit | SCP-Fusion: Source-Calibrated Physical and Foundation Features for Robust AI-Generated Image Forensics | Frame SCP-Fusion as a diagnostic fusion protocol for robustness, dataset bias, explainability, and real-world processing. | Turn failure grids and source-slice diagnostics into a short explainability/failure-analysis section. |
 
 ## Lead Results To Carry
@@ -240,6 +240,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | figure | reports/assets/publication_source_heldout_calibration.png | Source-heldout calibration evidence. |
 | qualitative | reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Appendix or backup failure-case grid for generated-image misses. |
 | qualitative | reports/assets/qualitative_seed29_scp_fusion_false_negatives.png | Selected DFRWS poster failure-case grid and second-seed repeatability grid. |
+| planning | reports/wifs_breadth_decision_2026_06_14.md | Generated WIFS breadth decision freezing the 6-page paper scope and deferring high-risk extra experiments. |
+| planning | reports/assets/wifs_breadth_decision.csv | Machine-readable WIFS breadth option ranking. |
 | result-note | reports/physics_guided_vs_resnet_2026_06_12.md | Conservative physics-guided ResNet versus vanilla ResNet framing. |
 | result-note | reports/combined_v4_full_transfer_summary_2026_06_13.md | combined_v4 transfer gate and ablation caveat. |
 | result-note | reports/combined_v4_source_slice_diagnostics_2026_06_13.md | Generator/category slice analysis for combined_v4 caveats. |
@@ -411,6 +413,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | qualitative | reports/assets/qualitative_seed29_scp_fusion_false_negatives.png | Selected DFRWS poster failure-case grid and second-seed repeatability grid. |
 | planning | reports/dfrws_qualitative_grid_selection_2026_06_14.md | Generated selection report choosing the seed-29 false-negative grid for the DFRWS poster. |
 | planning | reports/assets/dfrws_qualitative_grid_selection.csv | Machine-readable DFRWS qualitative-grid selection audit. |
+| planning | reports/wifs_breadth_decision_2026_06_14.md | Generated WIFS breadth decision freezing the 6-page paper scope and deferring high-risk extra experiments. |
+| planning | reports/assets/wifs_breadth_decision.csv | Machine-readable WIFS breadth option ranking. |
 | result-note | reports/physics_guided_vs_resnet_2026_06_12.md | Conservative physics-guided ResNet versus vanilla ResNet framing. |
 | result-note | reports/combined_v4_full_transfer_summary_2026_06_13.md | combined_v4 transfer gate and ablation caveat. |
 | result-note | reports/combined_v4_source_slice_diagnostics_2026_06_13.md | Generator/category slice analysis for combined_v4 caveats. |
@@ -520,6 +524,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | DFRWS poster brief | python scripts/build_dfrws_poster_brief.py |
 | DFRWS poster panels | python scripts/build_dfrws_poster_figures.py |
 | DFRWS poster package lint | python scripts/lint_dfrws_poster_package.py |
+| WIFS breadth decision | python scripts/build_wifs_breadth_decision.py |
 | publication control suite dry run | python scripts/run_publication_control_suite.py --dry-run |
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |

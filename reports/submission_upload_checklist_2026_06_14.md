@@ -11,7 +11,7 @@ This is the practical handoff checklist after the scorecard: it separates checke
 | venue | deadline | ready_assets | decision_needed | writing_needed | final_export_needed | missing_assets |
 | --- | --- | --- | --- | --- | --- | --- |
 | DFRWS-USA 2026 poster/demo | 2026-07-07 | 5 | 0 | 0 | 1 | 0 |
-| IEEE WIFS 2026 paper | 2026-07-15 | 3 | 1 | 1 | 1 | 0 |
+| IEEE WIFS 2026 paper | 2026-07-15 | 4 | 0 | 1 | 1 | 0 |
 | DFF-2026 ACM Multimedia workshop | 2026-07-16 | 5 | 0 | 1 | 1 | 0 |
 
 ## DFRWS-USA 2026 poster/demo
@@ -37,7 +37,7 @@ Deadline: 2026-07-15
 | paper prose sections | writing_needed | reports/paper_section_drafts_2026_06_14.md; reports/paper_section_drafts_lint_2026_06_14.md; reports/method_family_comparison_2026_06_14.md | Merge generated sections into a compact WIFS draft; keep caveats about CLIP, single-image physics, and native tiling. |  |
 | LaTeX tables and bibliography | ready_asset | reports/assets/latex_tables/method_family_comparison.tex; reports/assets/latex_tables/same_domain_anchor.tex; reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/latex_tables/robustness_stress.tex; reports/assets/latex_tables/source_holdout_stress.tex; reports/assets/latex_tables/reconstruction_ablation.tex; references.bib | Pull compact tables and references into the paper template; verify final citation metadata before submission. |  |
 | figures | ready_asset | reports/assets/publication_score_fusion_clip_frontier.png; reports/assets/source_holdout_generator_stress.png; reports/assets/publication_triage_operating_points.png; reports/assets/publication_reverse_operating_points.png; reports/assets/publication_reverse_transform_robustness.png | Use a compact figure set; avoid overcrowding the 6-page paper. |  |
-| paper-critical breadth choice | decision_needed | reports/submission_scorecard_2026_06_14.md; reports/submission_plan_2026.md | Choose one additional breadth check only if time allows: larger source split, tiled neural/foundation branch, or source-aware v4 selection. |  |
+| paper-critical breadth stance | ready_asset | reports/wifs_breadth_decision_2026_06_14.md; reports/assets/wifs_breadth_decision.csv; reports/submission_scorecard_2026_06_14.md; reports/submission_plan_2026.md | Freeze the WIFS experimental scope; use existing source-heldout, robustness, reconstruction, and method-family evidence. Treat source-aware v4 selection as optional appendix work only. |  |
 | final camera-ready formatting | final_export_needed | reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex | Compile, inspect page count, check references/figures, and export the final PDF for the WIFS system. |  |
 
 ## DFF-2026 ACM Multimedia workshop
