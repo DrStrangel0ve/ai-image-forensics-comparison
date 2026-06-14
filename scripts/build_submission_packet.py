@@ -791,6 +791,55 @@ ARTIFACTS = [
         "purpose": "Machine-readable fixed-fusion comparison for tiled foundation target replacements.",
         "required": False,
     },
+    {
+        "path": "reports/tiled_dinov2_resize_half_reverse_transfer_2026_06_14.md",
+        "type": "result-note",
+        "venues": "WIFS,DFF",
+        "purpose": "Resize-half robustness probe for tiled DINOv2 reverse-transfer score aggregation.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_dinov2_resize_half_reverse_transfer_summary.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable summary for resize-half tiled DINOv2 reverse-transfer score modes.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_dinov2_resize_half_reverse_transfer_seed_metrics.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Per-seed metrics for resize-half tiled DINOv2 reverse-transfer score modes.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/tiled_dinov2_resize_half_reverse_transfer_detail.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Per-image resize-half tiled DINOv2 scores for robustness diagnostics.",
+        "required": False,
+    },
+    {
+        "path": "reports/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_2026_06_14.md",
+        "type": "result-note",
+        "venues": "WIFS,DFF",
+        "purpose": "Fixed reverse SCP-Fusion resize-half robustness diagnostic after replacing the DINOv2 target branch with tiled target scores.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_summary.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable fixed-fusion resize-half summary for tiled DINOv2 branch replacement.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_detail.csv",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "Per-seed fixed-fusion resize-half detail for tiled DINOv2 branch replacement.",
+        "required": False,
+    },
 ]
 
 VENUES = [
@@ -845,6 +894,10 @@ REGEN_COMMANDS = [
     ("SOTA gap closure plan", "python scripts/build_sota_gap_closure_plan.py"),
     ("tiled foundation comparison", "python scripts/build_tiled_foundation_comparison.py"),
     ("tiled foundation fusion comparison", "python scripts/build_tiled_foundation_fusion_comparison.py"),
+    (
+        "tiled DINO resize-half fusion robustness",
+        "python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant resize_half --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_resize_half_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_2026_06_14.md",
+    ),
     ("publication control suite dry run", "python scripts/run_publication_control_suite.py --dry-run"),
     ("submission packet", "python scripts/build_submission_packet.py"),
     ("submission package lint", "python scripts/lint_submission_package.py"),
@@ -1018,7 +1071,7 @@ def build_submission_packet(repo_root: Path, core_results: Path, claim_matrix: P
         "- Do not claim classic multi-light photometric stereo; the current physical branch is a single-image proxy.",
         "- Do not claim SCP-Fusion universally beats frozen CLIP; CLIP is still the transfer-ranking frontier in the current evidence.",
         "- Do not claim SOTA or NTIRE/ImageCLEF leaderboard placement; the checked SOTA-gap report separates official results from local proxy evidence.",
-        "- Treat native tiling as bounded evidence: only the conventional target branch is tiled in the current fused diagnostic.",
+        "- Treat native/foundation tiling as bounded diagnostic evidence; clean and resize-half stress gains are small and transform coverage is still incomplete.",
         "- Keep `combined_v4` as an ablation unless source-aware feature selection or stronger regularization changes the transfer gate.",
         "",
     ]

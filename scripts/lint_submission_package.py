@@ -23,7 +23,7 @@ REQUIRED_GUARDRAILS = [
     "single-image physical proxy",
     "CLIP as the current ranking frontier",
     "SCP-Fusion as a diagnostic protocol",
-    "native tiling as a bounded conventional-branch result",
+    "native/foundation tiling as a bounded diagnostic",
 ]
 
 REQUIRED_RESULT_IDS = [

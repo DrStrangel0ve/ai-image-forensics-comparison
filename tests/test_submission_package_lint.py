@@ -43,7 +43,7 @@ def test_submission_package_lint_passes_clean_generated_packet(tmp_path: Path) -
 
     dfrws = (
         "single-image physical proxy keeps the claim careful. CLIP as the current ranking frontier is stated. "
-        "SCP-Fusion as a diagnostic protocol is stated. native tiling as a bounded conventional-branch result is stated. "
+        "SCP-Fusion as a diagnostic protocol is stated. native/foundation tiling as a bounded diagnostic is stated. "
         "ishu_same_physics_guided ishu_to_ms_clip_standalone ishu_to_ms_triage5_clip_standalone "
         "ms_to_ishu_tuned_fusion_constraint_sweep_best ms_to_ishu_tuned_fusion_native_tiling_best "
         "ms_to_ishu_tuned_fusion_jpeg30 ms_to_ishu_tuned_fusion_blur1. "

@@ -16,7 +16,7 @@ DFF Workshop Abstract recorded count matches text,True,"computed 179, recorded 1
 guardrail present: single-image physical proxy,True,present
 guardrail present: CLIP as the current ranking frontier,True,present
 guardrail present: SCP-Fusion as a diagnostic protocol,True,present
-guardrail present: native tiling as a bounded conventional-branch result,True,present
+guardrail present: native/foundation tiling as a bounded diagnostic,True,present
 result id present: ishu_same_physics_guided,True,present
 result id present: ishu_to_ms_clip_standalone,True,present
 result id present: ishu_to_ms_triage5_clip_standalone,True,present
