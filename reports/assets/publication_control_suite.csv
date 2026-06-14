@@ -48,3 +48,4 @@ order,asset,command,status,returncode,elapsed_seconds
 47,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
 48,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
 49,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0
+50,submission critical path,python scripts/build_submission_critical_path.py,planned,0,0.0

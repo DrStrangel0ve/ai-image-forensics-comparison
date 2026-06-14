@@ -78,6 +78,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/submission_critical_path_2026_06_14.md",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Deadline-driven remaining-work queue for final writing and upload export tasks.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/submission_critical_path.csv",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable critical path for pending writing and final-export tasks.",
+        "required": False,
+    },
+    {
         "path": "reports/publication_control_suite_2026_06_14.md",
         "type": "planning",
         "venues": "DFRWS,WIFS,DFF",
@@ -1434,6 +1448,7 @@ REGEN_COMMANDS = [
     ("submission package lint", "python scripts/lint_submission_package.py"),
     ("submission scorecard", "python scripts/build_submission_scorecard.py"),
     ("submission upload checklist", "python scripts/build_submission_upload_checklist.py"),
+    ("submission critical path", "python scripts/build_submission_critical_path.py"),
 ]
 
 

@@ -57,6 +57,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_scorecard.csv | Machine-readable venue-level readiness scorecard. |
 | planning | reports/submission_upload_checklist_2026_06_14.md | Venue upload checklist separating ready assets from final export, writing, and decision tasks. |
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
+| planning | reports/submission_critical_path_2026_06_14.md | Deadline-driven remaining-work queue for final writing and upload export tasks. |
+| planning | reports/assets/submission_critical_path.csv | Machine-readable critical path for pending writing and final-export tasks. |
 | planning | reports/publication_control_suite_2026_06_14.md | Ordered dry-run command plan for regenerating publication artifacts and lints. |
 | planning | reports/assets/publication_control_suite.csv | Machine-readable publication-control command plan. |
 | planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
@@ -148,6 +150,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_scorecard.csv | Machine-readable venue-level readiness scorecard. |
 | planning | reports/submission_upload_checklist_2026_06_14.md | Venue upload checklist separating ready assets from final export, writing, and decision tasks. |
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
+| planning | reports/submission_critical_path_2026_06_14.md | Deadline-driven remaining-work queue for final writing and upload export tasks. |
+| planning | reports/assets/submission_critical_path.csv | Machine-readable critical path for pending writing and final-export tasks. |
 | planning | reports/publication_control_suite_2026_06_14.md | Ordered dry-run command plan for regenerating publication artifacts and lints. |
 | planning | reports/assets/publication_control_suite.csv | Machine-readable publication-control command plan. |
 | planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
@@ -325,6 +329,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_scorecard.csv | Machine-readable venue-level readiness scorecard. |
 | planning | reports/submission_upload_checklist_2026_06_14.md | Venue upload checklist separating ready assets from final export, writing, and decision tasks. |
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
+| planning | reports/submission_critical_path_2026_06_14.md | Deadline-driven remaining-work queue for final writing and upload export tasks. |
+| planning | reports/assets/submission_critical_path.csv | Machine-readable critical path for pending writing and final-export tasks. |
 | planning | reports/publication_control_suite_2026_06_14.md | Ordered dry-run command plan for regenerating publication artifacts and lints. |
 | planning | reports/assets/publication_control_suite.csv | Machine-readable publication-control command plan. |
 | planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
@@ -545,6 +551,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | submission package lint | python scripts/lint_submission_package.py |
 | submission scorecard | python scripts/build_submission_scorecard.py |
 | submission upload checklist | python scripts/build_submission_upload_checklist.py |
+| submission critical path | python scripts/build_submission_critical_path.py |
 
 ## Current Editorial Guardrails
 

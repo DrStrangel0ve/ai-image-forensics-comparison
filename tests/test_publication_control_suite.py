@@ -70,3 +70,5 @@ def test_publication_control_suite_dry_run_lists_ordered_commands(tmp_path: Path
     assert order["manuscript draft lint"] < order["submission packet"]
     assert order["submission packet"] < order["submission package lint"]
     assert order["submission package lint"] < order["submission scorecard"]
+    assert order["submission scorecard"] < order["submission upload checklist"]
+    assert order["submission upload checklist"] < order["submission critical path"]
