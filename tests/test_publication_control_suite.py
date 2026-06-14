@@ -40,5 +40,6 @@ def test_publication_control_suite_dry_run_lists_ordered_commands(tmp_path: Path
     assert order["publication tables"] < order["claim matrix"]
     assert order["robustness failure ranking"] < order["submission packet"]
     assert order["external benchmark claim lint"] < order["submission packet"]
+    assert order["SOTA gap report"] < order["submission packet"]
     assert order["submission packet"] < order["submission package lint"]
     assert order["submission package lint"] < order["submission scorecard"]

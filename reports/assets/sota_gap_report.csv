@@ -1,0 +1,6 @@
+benchmark_id,finding_id,method,proxy_setting,proxy_auc,official_sota_auc,auc_gap_to_official_sota,comparison_validity
+ntire_2026_robust_aigc,ms_to_ishu_tuned_fusion_constraint_sweep_best,Reverse tuned-fusion constraint sweep best,MS COCOAI -> Ishu tuned-fusion source fake-rate constraint sweep,0.8361042692939243,0.9723,-0.1361957307060757,proxy_not_official
+ntire_2026_robust_aigc,ms_to_ishu_tuned_fusion_native_tiling_best,Reverse tuned fusion + native tiled combined_v3,MS COCOAI -> Ishu tuned-fusion native-tiling diagnostic,0.8471880131362889,0.9723,-0.12511198686371117,proxy_not_official
+ntire_2026_robust_aigc,ms_to_ishu_tuned_fusion_resize_half,Reverse tuned-fusion target-transform robustness (resize_half),MS COCOAI -> Ishu tuned-fusion resize_half robustness,0.7816091954022989,0.9723,-0.19069080459770116,proxy_not_official
+ntire_2026_robust_aigc,ms_to_ishu_tuned_fusion_blur1,Reverse tuned-fusion target-transform robustness (blur1),MS COCOAI -> Ishu tuned-fusion blur1 robustness,0.7871510673234811,0.9723,-0.185148932676519,proxy_not_official
+ntire_2026_robust_aigc,ms_to_ishu_tuned_fusion_noise3,Reverse tuned-fusion target-transform robustness (noise3),MS COCOAI -> Ishu tuned-fusion noise3 robustness,0.8703817733990148,0.9723,-0.10191822660098526,proxy_not_official

@@ -64,6 +64,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/external_benchmark_proxy_metrics.csv | Machine-readable proxy evidence rows for external benchmark claims. |
 | quality-control | reports/external_benchmark_claim_lint_2026_06_14.md | Generated lint report checking that NTIRE/ImageCLEF proxy evidence is not described as official challenge performance. |
 | quality-control | reports/assets/external_benchmark_claim_lint.csv | Machine-readable external benchmark claim lint checks. |
+| planning | reports/sota_gap_report_2026_06_14.md | Guarded comparison between checked-in local proxy results and official/current SOTA benchmark anchors. |
+| planning | reports/assets/sota_gap_report.csv | Machine-readable NTIRE-style SOTA gap rows for local proxy metrics. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
 | table | reports/submission_result_tables_2026_06_14.md | Copy-ready compact result tables for poster and paper drafting. |
@@ -120,6 +122,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/external_benchmark_proxy_metrics.csv | Machine-readable proxy evidence rows for external benchmark claims. |
 | quality-control | reports/external_benchmark_claim_lint_2026_06_14.md | Generated lint report checking that NTIRE/ImageCLEF proxy evidence is not described as official challenge performance. |
 | quality-control | reports/assets/external_benchmark_claim_lint.csv | Machine-readable external benchmark claim lint checks. |
+| planning | reports/sota_gap_report_2026_06_14.md | Guarded comparison between checked-in local proxy results and official/current SOTA benchmark anchors. |
+| planning | reports/assets/sota_gap_report.csv | Machine-readable NTIRE-style SOTA gap rows for local proxy metrics. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -193,6 +197,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/external_benchmark_proxy_metrics.csv | Machine-readable proxy evidence rows for external benchmark claims. |
 | quality-control | reports/external_benchmark_claim_lint_2026_06_14.md | Generated lint report checking that NTIRE/ImageCLEF proxy evidence is not described as official challenge performance. |
 | quality-control | reports/assets/external_benchmark_claim_lint.csv | Machine-readable external benchmark claim lint checks. |
+| planning | reports/sota_gap_report_2026_06_14.md | Guarded comparison between checked-in local proxy results and official/current SOTA benchmark anchors. |
+| planning | reports/assets/sota_gap_report.csv | Machine-readable NTIRE-style SOTA gap rows for local proxy metrics. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -269,6 +275,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | opportunity watchlist | python scripts/build_opportunity_watchlist.py |
 | external benchmark readiness | python scripts/build_external_benchmark_readiness.py |
 | external benchmark claim lint | python scripts/lint_external_benchmark_claims.py |
+| SOTA gap report | python scripts/build_sota_gap_report.py |
 | publication control suite dry run | python scripts/run_publication_control_suite.py --dry-run |
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |
@@ -279,5 +286,6 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 
 - Do not claim classic multi-light photometric stereo; the current physical branch is a single-image proxy.
 - Do not claim SCP-Fusion universally beats frozen CLIP; CLIP is still the transfer-ranking frontier in the current evidence.
+- Do not claim SOTA or NTIRE/ImageCLEF leaderboard placement; the checked SOTA-gap report separates official results from local proxy evidence.
 - Treat native tiling as bounded evidence: only the conventional target branch is tiled in the current fused diagnostic.
 - Keep `combined_v4` as an ablation unless source-aware feature selection or stronger regularization changes the transfer gate.
