@@ -244,6 +244,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/wifs_breadth_decision.csv | Machine-readable WIFS breadth option ranking. |
 | planning | reports/manuscript_assembly_map_2026_06_14.md | Generated WIFS/DFF manuscript assembly map tying section drafts, page budgets, figures, and tables to writing tasks. |
 | planning | reports/assets/manuscript_assembly_map.csv | Machine-readable manuscript assembly map for WIFS and DFF writing. |
+| paper-draft | reports/wifs_manuscript_draft_2026_06_14.md | Assembled WIFS markdown manuscript draft with section prose and asset callouts. |
+| paper-draft | reports/assets/manuscript_draft_manifest.csv | Machine-readable WIFS/DFF manuscript draft manifest. |
 | result-note | reports/physics_guided_vs_resnet_2026_06_12.md | Conservative physics-guided ResNet versus vanilla ResNet framing. |
 | result-note | reports/combined_v4_full_transfer_summary_2026_06_13.md | combined_v4 transfer gate and ablation caveat. |
 | result-note | reports/combined_v4_source_slice_diagnostics_2026_06_13.md | Generator/category slice analysis for combined_v4 caveats. |
@@ -419,6 +421,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/wifs_breadth_decision.csv | Machine-readable WIFS breadth option ranking. |
 | planning | reports/manuscript_assembly_map_2026_06_14.md | Generated WIFS/DFF manuscript assembly map tying section drafts, page budgets, figures, and tables to writing tasks. |
 | planning | reports/assets/manuscript_assembly_map.csv | Machine-readable manuscript assembly map for WIFS and DFF writing. |
+| paper-draft | reports/dff_manuscript_draft_2026_06_14.md | Assembled DFF markdown manuscript draft with section prose and asset callouts. |
+| paper-draft | reports/assets/manuscript_draft_manifest.csv | Machine-readable WIFS/DFF manuscript draft manifest. |
 | result-note | reports/physics_guided_vs_resnet_2026_06_12.md | Conservative physics-guided ResNet versus vanilla ResNet framing. |
 | result-note | reports/combined_v4_full_transfer_summary_2026_06_13.md | combined_v4 transfer gate and ablation caveat. |
 | result-note | reports/combined_v4_source_slice_diagnostics_2026_06_13.md | Generator/category slice analysis for combined_v4 caveats. |
@@ -530,6 +534,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | DFRWS poster package lint | python scripts/lint_dfrws_poster_package.py |
 | WIFS breadth decision | python scripts/build_wifs_breadth_decision.py |
 | manuscript assembly map | python scripts/build_manuscript_assembly_map.py |
+| manuscript drafts | python scripts/build_manuscript_drafts.py |
 | publication control suite dry run | python scripts/run_publication_control_suite.py --dry-run |
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |
