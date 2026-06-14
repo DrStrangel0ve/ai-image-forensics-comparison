@@ -1,0 +1,11 @@
+candidate,baseline,metric,candidate_mean,baseline_mean,delta_mean
+reconstruction_lite_logreg,combined_v3_logreg,accuracy,0.6875,0.75,-0.0625
+reconstruction_lite_logreg,combined_v3_logreg,roc_auc,0.7335416666666666,0.8116666666666666,-0.078125
+reconstruction_lite_logreg,combined_v3_logreg,brier_score,0.2103910589044559,0.1832939289841257,0.0270971299203302
+reconstruction_lite_logreg,combined_v3_logreg,expected_calibration_error,0.1053148428744559,0.1401859789328538,-0.03487113605839791
+reconstruction_lite_logreg,combined_v3_logreg,precision,0.6735107200223479,0.7278358497870693,-0.05432512976472137
+reconstruction_lite_logreg,combined_v3_logreg,recall,0.7333333333333334,0.7999999999999999,-0.06666666666666654
+reconstruction_lite_logreg,combined_v3_logreg,f1,0.6990920725860486,0.7610180138422274,-0.061925941256178896
+reconstruction_lite_logreg,combined_v3_logreg,fake_call_rate,0.5458333333333333,0.55,-0.004166666666666763
+reconstruction_lite_logreg,combined_v3_logreg,real_false_positive_rate,0.35833333333333334,0.3,0.05833333333333335
+reconstruction_lite_logreg,combined_v3_logreg,fake_miss_rate,0.26666666666666666,0.20000000000000004,0.06666666666666662

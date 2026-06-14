@@ -71,6 +71,10 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/sota_gap_closure_plan.csv | Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
+| result-note | reports/reconstruction_lite_probe_2026_06_14.md | Bounded three-seed reconstruction_lite vs combined_v3 ablation summary. |
+| result-data | reports/assets/reconstruction_lite_probe_seed_summary.csv | Seed-level reconstruction_lite vs combined_v3 bounded probe metrics. |
+| result-data | reports/assets/reconstruction_lite_probe_mean_summary.csv | Mean reconstruction_lite vs combined_v3 bounded probe metrics. |
+| result-data | reports/assets/reconstruction_lite_probe_delta_summary.csv | Delta summary for reconstruction_lite against combined_v3 on the bounded probe. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
 | result-note | reports/source_holdout_generator_stress_2026_06_14.md | Readable held-out-generator stress figure note for the capped source-holdout policy. |
@@ -140,6 +144,10 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/sota_gap_closure_plan.csv | Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
+| result-note | reports/reconstruction_lite_probe_2026_06_14.md | Bounded three-seed reconstruction_lite vs combined_v3 ablation summary. |
+| result-data | reports/assets/reconstruction_lite_probe_seed_summary.csv | Seed-level reconstruction_lite vs combined_v3 bounded probe metrics. |
+| result-data | reports/assets/reconstruction_lite_probe_mean_summary.csv | Mean reconstruction_lite vs combined_v3 bounded probe metrics. |
+| result-data | reports/assets/reconstruction_lite_probe_delta_summary.csv | Delta summary for reconstruction_lite against combined_v3 on the bounded probe. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -288,6 +296,10 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/sota_gap_closure_plan.csv | Machine-readable SOTA gap closure tasks, statuses, commands, and exit criteria. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
+| result-note | reports/reconstruction_lite_probe_2026_06_14.md | Bounded three-seed reconstruction_lite vs combined_v3 ablation summary. |
+| result-data | reports/assets/reconstruction_lite_probe_seed_summary.csv | Seed-level reconstruction_lite vs combined_v3 bounded probe metrics. |
+| result-data | reports/assets/reconstruction_lite_probe_mean_summary.csv | Mean reconstruction_lite vs combined_v3 bounded probe metrics. |
+| result-data | reports/assets/reconstruction_lite_probe_delta_summary.csv | Delta summary for reconstruction_lite against combined_v3 on the bounded probe. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -426,6 +438,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | SOTA gap report | python scripts/build_sota_gap_report.py |
 | SOTA gap closure plan | python scripts/build_sota_gap_closure_plan.py |
 | reconstruction-lite feature report | python scripts/build_reconstruction_lite_feature_report.py |
+| reconstruction-lite bounded probe | python scripts/summarize_reconstruction_lite_probe.py |
 | tiled foundation comparison | python scripts/build_tiled_foundation_comparison.py |
 | tiled foundation fusion comparison | python scripts/build_tiled_foundation_fusion_comparison.py |
 | tiled DINO resize-half fusion robustness | python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant resize_half --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_resize_half_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_2026_06_14.md |

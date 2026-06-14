@@ -183,6 +183,34 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/reconstruction_lite_probe_2026_06_14.md",
+        "type": "result-note",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Bounded three-seed reconstruction_lite vs combined_v3 ablation summary.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/reconstruction_lite_probe_seed_summary.csv",
+        "type": "result-data",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Seed-level reconstruction_lite vs combined_v3 bounded probe metrics.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/reconstruction_lite_probe_mean_summary.csv",
+        "type": "result-data",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Mean reconstruction_lite vs combined_v3 bounded probe metrics.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/reconstruction_lite_probe_delta_summary.csv",
+        "type": "result-data",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Delta summary for reconstruction_lite against combined_v3 on the bounded probe.",
+        "required": False,
+    },
+    {
         "path": "reports/literature_map_2026_06_14.md",
         "type": "literature",
         "venues": "WIFS,DFF",
@@ -1156,6 +1184,7 @@ REGEN_COMMANDS = [
     ("SOTA gap report", "python scripts/build_sota_gap_report.py"),
     ("SOTA gap closure plan", "python scripts/build_sota_gap_closure_plan.py"),
     ("reconstruction-lite feature report", "python scripts/build_reconstruction_lite_feature_report.py"),
+    ("reconstruction-lite bounded probe", "python scripts/summarize_reconstruction_lite_probe.py"),
     ("tiled foundation comparison", "python scripts/build_tiled_foundation_comparison.py"),
     ("tiled foundation fusion comparison", "python scripts/build_tiled_foundation_fusion_comparison.py"),
     (
