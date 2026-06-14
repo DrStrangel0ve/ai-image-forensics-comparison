@@ -31,6 +31,12 @@ LINT_REPORTS = [
         "purpose": "Compact table consistency against canonical result rows.",
     },
     {
+        "name": "claim evidence matrix",
+        "path": "reports/claim_evidence_matrix_lint_2026_06_14.md",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Claim IDs, artifacts, evidence IDs, caveats, and overclaim checks.",
+    },
+    {
         "name": "paper section drafts",
         "path": "reports/paper_section_drafts_lint_2026_06_14.md",
         "venues": "WIFS,DFF",

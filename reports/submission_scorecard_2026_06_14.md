@@ -10,9 +10,9 @@ This scorecard is deliberately conservative: `ready_to_polish` means the checked
 
 | venue | deadline | days_left | packet_status | artifacts | lint_reports | lint_checks | claims | next_action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DFRWS-USA 2026 poster/demo | 2026-07-07 | 23 | ready_to_polish | 34/34 | 3/3 | 104/104 | ready 3, caveated 7, needs 0 | Finalize poster layout with the selected seed-29 qualitative grid and export the final PDF/poster image. |
-| IEEE WIFS 2026 paper | 2026-07-15 | 31 | ready_to_polish | 56/56 | 5/5 | 224/224 | ready 2, caveated 8, needs 0 | Draft the 6-page paper with the frozen WIFS breadth stance; keep any source-aware v4 work appendix-only. |
-| DFF-2026 ACM Multimedia workshop | 2026-07-16 | 32 | ready_to_polish | 58/58 | 5/5 | 224/224 | ready 3, caveated 8, needs 0 | Turn failure grids and source-slice diagnostics into a short explainability/failure-analysis section. |
+| DFRWS-USA 2026 poster/demo | 2026-07-07 | 23 | ready_to_polish | 34/34 | 4/4 | 116/116 | ready 3, caveated 7, needs 0 | Finalize poster layout with the selected seed-29 qualitative grid and export the final PDF/poster image. |
+| IEEE WIFS 2026 paper | 2026-07-15 | 31 | ready_to_polish | 56/56 | 6/6 | 236/236 | ready 2, caveated 8, needs 0 | Draft the 6-page paper with the frozen WIFS breadth stance; keep any source-aware v4 work appendix-only. |
+| DFF-2026 ACM Multimedia workshop | 2026-07-16 | 32 | ready_to_polish | 58/58 | 6/6 | 236/236 | ready 3, caveated 8, needs 0 | Turn failure grids and source-slice diagnostics into a short explainability/failure-analysis section. |
 
 ## Quality-Control Reports
 
@@ -20,6 +20,7 @@ This scorecard is deliberately conservative: `ready_to_polish` means the checked
 | --- | --- | --- | --- | --- | --- | --- |
 | DFRWS poster package | DFRWS | PASS | 26 | 26 | reports/dfrws_poster_package_lint_2026_06_14.md | Poster asset, key-number, dimension, and caution checks. |
 | submission result tables | DFRWS,WIFS,DFF | PASS | 47 | 47 | reports/submission_result_tables_lint_2026_06_14.md | Compact table consistency against canonical result rows. |
+| claim evidence matrix | DFRWS,WIFS,DFF | PASS | 12 | 12 | reports/claim_evidence_matrix_lint_2026_06_14.md | Claim IDs, artifacts, evidence IDs, caveats, and overclaim checks. |
 | paper section drafts | WIFS,DFF | PASS | 61 | 61 | reports/paper_section_drafts_lint_2026_06_14.md | Paper prose metric anchors, caveats, and overclaim checks. |
 | paper skeletons | WIFS,DFF | PASS | 53 | 53 | reports/paper_skeleton_lint_2026_06_14.md | WIFS/DFF skeleton structure, referenced assets, and guardrails. |
 | manuscript drafts | WIFS,DFF | PASS | 32 | 32 | reports/manuscript_drafts_lint_2026_06_14.md | Assembled manuscript draft section, asset, word-count, and guardrail checks. |

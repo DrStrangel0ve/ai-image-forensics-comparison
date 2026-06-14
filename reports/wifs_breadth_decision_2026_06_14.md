@@ -4,7 +4,7 @@ Run date: 2026-06-14
 
 Decision: freeze the WIFS experimental scope and write the 6-page paper around the checked-in evidence. Do not make a new model run a WIFS blocker.
 
-Current WIFS readiness: packet `ready_to_polish`, artifacts 56/56, lint reports 5/5, lint checks 224/224, claims ready 2, caveated 8, needs 0.
+Current WIFS readiness: packet `ready_to_polish`, artifacts 56/56, lint reports 6/6, lint checks 236/236, claims ready 2, caveated 8, needs 0.
 
 ## Option Ranking
 

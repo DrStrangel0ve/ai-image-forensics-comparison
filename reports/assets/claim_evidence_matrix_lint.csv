@@ -1,0 +1,13 @@
+check,passed,detail
+claim IDs are unique,True,11 unique claim IDs across 11 rows
+claim statuses are allowed,True,all statuses allowed
+primary artifacts exist,True,all primary artifacts exist
+caveated claims include caveats,True,all caveated claims explain their caveat
+evidence IDs resolve or artifact-backed summaries are named,True,all evidence resolves
+claim text avoids overclaim: \bstate[- ]of[- ]the[- ]art\b,True,not found
+claim text avoids overclaim: \bproduction[- ]ready\b,True,not found
+claim text avoids overclaim: \bguaranteed\b,True,not found
+claim text avoids overclaim: \buniversally beats\b,True,not found
+claim text avoids overclaim: \bbeats CLIP\b,True,not found
+claim text avoids overclaim: \bofficial NTIRE\b,True,not found
+claim text avoids overclaim: \bofficial ImageCLEF\b,True,not found

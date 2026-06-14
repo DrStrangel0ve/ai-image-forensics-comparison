@@ -106,6 +106,7 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "SOTA gap closure plan" in text
     assert "Do not claim SOTA" in text
     assert "calibration operating modes" in text
+    assert "claim matrix lint" in text
     assert "robustness failure ranking" in text
     assert "tiled foundation comparison" in text
     assert "tiled foundation fusion comparison" in text
@@ -134,6 +135,8 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "reports/assets/method_family_comparison.csv" in set(manifest["path"])
     assert "reports/calibration_operating_modes_2026_06_14.md" in set(manifest["path"])
     assert "reports/assets/calibration_operating_modes.csv" in set(manifest["path"])
+    assert "reports/claim_evidence_matrix_lint_2026_06_14.md" in set(manifest["path"])
+    assert "reports/assets/claim_evidence_matrix_lint.csv" in set(manifest["path"])
     assert "reports/assets/latex_tables/method_family_comparison.tex" in set(manifest["path"])
     assert "reports/robustness_failure_ranking_2026_06_14.md" in set(manifest["path"])
     assert "reports/tiled_clip_reverse_transfer_2026_06_14.md" in set(manifest["path"])

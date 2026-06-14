@@ -110,6 +110,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/submission_result_tables_lint.csv | Machine-readable compact result-table consistency checks. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
+| quality-control | reports/claim_evidence_matrix_lint_2026_06_14.md | Generated lint report checking claim IDs, artifacts, evidence IDs, caveats, and overclaim language. |
+| quality-control | reports/assets/claim_evidence_matrix_lint.csv | Machine-readable claim-evidence matrix lint checks. |
 | analysis | reports/method_family_comparison_2026_06_14.md | Paper-facing method-family comparison separating ranking, calibration, operating-point, and triage winners. |
 | analysis | reports/assets/method_family_comparison.csv | Machine-readable method-family winner table by scenario and criterion. |
 | analysis | reports/calibration_operating_modes_2026_06_14.md | Paper-facing calibration operating-mode synthesis for ranking, decision, Brier, ECE, and tiled-DINO mode choices. |
@@ -228,6 +230,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/paper_skeleton_lint.csv | Machine-readable WIFS/DFF paper skeleton lint checks. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
+| quality-control | reports/claim_evidence_matrix_lint_2026_06_14.md | Generated lint report checking claim IDs, artifacts, evidence IDs, caveats, and overclaim language. |
+| quality-control | reports/assets/claim_evidence_matrix_lint.csv | Machine-readable claim-evidence matrix lint checks. |
 | analysis | reports/method_family_comparison_2026_06_14.md | Paper-facing method-family comparison separating ranking, calibration, operating-point, and triage winners. |
 | analysis | reports/assets/method_family_comparison.csv | Machine-readable method-family winner table by scenario and criterion. |
 | analysis | reports/calibration_operating_modes_2026_06_14.md | Paper-facing calibration operating-mode synthesis for ranking, decision, Brier, ECE, and tiled-DINO mode choices. |
@@ -409,6 +413,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/paper_skeleton_lint.csv | Machine-readable WIFS/DFF paper skeleton lint checks. |
 | claim-audit | reports/assets/claim_evidence_matrix.csv | Machine-readable claim-to-evidence map with caveats and next actions. |
 | claim-audit | reports/assets/claim_evidence_matrix.md | Readable claim-to-evidence map for authoring and review. |
+| quality-control | reports/claim_evidence_matrix_lint_2026_06_14.md | Generated lint report checking claim IDs, artifacts, evidence IDs, caveats, and overclaim language. |
+| quality-control | reports/assets/claim_evidence_matrix_lint.csv | Machine-readable claim-evidence matrix lint checks. |
 | analysis | reports/method_family_comparison_2026_06_14.md | Paper-facing method-family comparison separating ranking, calibration, operating-point, and triage winners. |
 | analysis | reports/assets/method_family_comparison.csv | Machine-readable method-family winner table by scenario and criterion. |
 | analysis | reports/calibration_operating_modes_2026_06_14.md | Paper-facing calibration operating-mode synthesis for ranking, decision, Brier, ECE, and tiled-DINO mode choices. |
@@ -537,6 +543,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | tiled DINO calibration tradeoff | python scripts/build_tiled_dinov2_calibration_tradeoff.py |
 | calibration operating modes | python scripts/build_calibration_operating_modes.py |
 | claim matrix | python scripts/build_claim_evidence_matrix.py |
+| claim matrix lint | python scripts/lint_claim_evidence_matrix.py |
 | method family comparison | python scripts/build_method_family_comparison.py |
 | submission result tables | python scripts/build_submission_result_tables.py |
 | submission result table lint | python scripts/lint_submission_result_tables.py |

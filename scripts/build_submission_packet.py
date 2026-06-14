@@ -610,6 +610,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/claim_evidence_matrix_lint_2026_06_14.md",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Generated lint report checking claim IDs, artifacts, evidence IDs, caveats, and overclaim language.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/claim_evidence_matrix_lint.csv",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable claim-evidence matrix lint checks.",
+        "required": False,
+    },
+    {
         "path": "reports/method_family_comparison_2026_06_14.md",
         "type": "analysis",
         "venues": "DFRWS,WIFS,DFF",
@@ -1441,6 +1455,7 @@ REGEN_COMMANDS = [
     ),
     ("calibration operating modes", "python scripts/build_calibration_operating_modes.py"),
     ("claim matrix", "python scripts/build_claim_evidence_matrix.py"),
+    ("claim matrix lint", "python scripts/lint_claim_evidence_matrix.py"),
     ("method family comparison", "python scripts/build_method_family_comparison.py"),
     ("submission result tables", "python scripts/build_submission_result_tables.py"),
     ("submission result table lint", "python scripts/lint_submission_result_tables.py"),
