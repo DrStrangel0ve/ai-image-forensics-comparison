@@ -92,6 +92,27 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/external_benchmark_readiness_2026_06_14.md",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Official-vs-proxy readiness audit for NTIRE/ImageCLEF-style external benchmark claims.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/external_benchmark_readiness.csv",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable official benchmark readiness status.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/external_benchmark_proxy_metrics.csv",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable proxy evidence rows for external benchmark claims.",
+        "required": False,
+    },
+    {
         "path": "reports/literature_map_2026_06_14.md",
         "type": "literature",
         "venues": "WIFS,DFF",
@@ -576,6 +597,7 @@ REGEN_COMMANDS = [
     ("submission scorecard", "python scripts/build_submission_scorecard.py"),
     ("submission upload checklist", "python scripts/build_submission_upload_checklist.py"),
     ("opportunity watchlist", "python scripts/build_opportunity_watchlist.py"),
+    ("external benchmark readiness", "python scripts/build_external_benchmark_readiness.py"),
 ]
 
 

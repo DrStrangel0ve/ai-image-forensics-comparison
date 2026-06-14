@@ -95,9 +95,11 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "ms_to_ishu_tuned_fusion_native_tiling_best" in text
     assert "classic multi-light photometric stereo" in text
     assert "opportunity watchlist" in text
+    assert "external benchmark readiness" in text
     assert manifest["exists"].all()
     assert "reports/assets/dfrws_poster_robustness_panel.png" in set(manifest["path"])
     assert "reports/opportunity_watchlist_2026_06_14.md" in set(manifest["path"])
+    assert "reports/external_benchmark_readiness_2026_06_14.md" in set(manifest["path"])
     assert "DFF" in manifest["venues"].str.cat(sep=",")
 
 

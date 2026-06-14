@@ -56,6 +56,9 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
 | planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
 | planning | reports/assets/opportunity_watchlist.csv | Machine-readable opportunity and benchmark watchlist. |
+| planning | reports/external_benchmark_readiness_2026_06_14.md | Official-vs-proxy readiness audit for NTIRE/ImageCLEF-style external benchmark claims. |
+| planning | reports/assets/external_benchmark_readiness.csv | Machine-readable official benchmark readiness status. |
+| planning | reports/assets/external_benchmark_proxy_metrics.csv | Machine-readable proxy evidence rows for external benchmark claims. |
 | table | reports/assets/publication_core_results.csv | Canonical machine-readable result rows used by claim and figure builders. |
 | table | reports/assets/publication_core_results.md | Readable core result table for paper drafting. |
 | table | reports/submission_result_tables_2026_06_14.md | Copy-ready compact result tables for poster and paper drafting. |
@@ -103,6 +106,9 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
 | planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
 | planning | reports/assets/opportunity_watchlist.csv | Machine-readable opportunity and benchmark watchlist. |
+| planning | reports/external_benchmark_readiness_2026_06_14.md | Official-vs-proxy readiness audit for NTIRE/ImageCLEF-style external benchmark claims. |
+| planning | reports/assets/external_benchmark_readiness.csv | Machine-readable official benchmark readiness status. |
+| planning | reports/assets/external_benchmark_proxy_metrics.csv | Machine-readable proxy evidence rows for external benchmark claims. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -167,6 +173,9 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
 | planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
 | planning | reports/assets/opportunity_watchlist.csv | Machine-readable opportunity and benchmark watchlist. |
+| planning | reports/external_benchmark_readiness_2026_06_14.md | Official-vs-proxy readiness audit for NTIRE/ImageCLEF-style external benchmark claims. |
+| planning | reports/assets/external_benchmark_readiness.csv | Machine-readable official benchmark readiness status. |
+| planning | reports/assets/external_benchmark_proxy_metrics.csv | Machine-readable proxy evidence rows for external benchmark claims. |
 | literature | reports/literature_map_2026_06_14.md | Paper-facing map from related-work references to method claims, paper sections, and caveats. |
 | literature | reports/assets/literature_map.csv | Machine-readable literature map for WIFS/DFF related-work drafting. |
 | bibliography | references.bib | Draft BibTeX generated from the literature map for WIFS/DFF skeleton citations. |
@@ -242,6 +251,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | submission scorecard | python scripts/build_submission_scorecard.py |
 | submission upload checklist | python scripts/build_submission_upload_checklist.py |
 | opportunity watchlist | python scripts/build_opportunity_watchlist.py |
+| external benchmark readiness | python scripts/build_external_benchmark_readiness.py |
 
 ## Current Editorial Guardrails
 
