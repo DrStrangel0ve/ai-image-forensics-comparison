@@ -33,6 +33,8 @@ def test_submission_upload_checklist_writes_status_summary(tmp_path: Path) -> No
             str(out_path),
             "--csv-out",
             str(csv_out),
+            "--run-date",
+            "2026-06-14",
         ],
         cwd=ROOT,
         check=True,
@@ -43,6 +45,7 @@ def test_submission_upload_checklist_writes_status_summary(tmp_path: Path) -> No
     summary_text = text.split("## DFRWS-USA 2026 poster/demo", maxsplit=1)[0]
 
     assert "Submission Upload Checklist" in text
+    assert "Run date: 2026-06-14" in text
     assert "DFRWS-USA 2026 poster/demo" in text
     assert "IEEE WIFS 2026 paper" in text
     assert "DFF-2026 ACM Multimedia workshop" in text
