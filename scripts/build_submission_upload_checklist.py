@@ -16,7 +16,7 @@ UPLOAD_ITEMS = [
         "item": "poster abstract",
         "status": "ready_asset",
         "paths": "reports/submission_text_drafts_2026_06_14.md; reports/assets/submission_text_drafts_word_counts.csv",
-        "action": "Use the DFRWS poster abstract; current generated count is 183 words.",
+        "action": "Use the DFRWS poster abstract; {dfrws_poster_abstract_count_note}.",
     },
     {
         "venue_key": "DFRWS",
@@ -198,6 +198,11 @@ def parse_args() -> argparse.Namespace:
         default="reports/assets/submission_upload_checklist.csv",
         help="Machine-readable checklist CSV to write.",
     )
+    parser.add_argument(
+        "--word-counts",
+        default="reports/assets/submission_text_drafts_word_counts.csv",
+        help="Generated abstract word-count CSV used to keep checklist guidance current.",
+    )
     return parser.parse_args()
 
 
@@ -209,13 +214,41 @@ def _missing_paths(repo_root: Path, paths: str) -> list[str]:
     return [path for path in _path_list(paths) if not (repo_root / path).exists()]
 
 
-def build_upload_checklist(repo_root: Path) -> tuple[str, pd.DataFrame]:
+def _load_word_counts(path: Path) -> dict[str, int]:
+    try:
+        frame = pd.read_csv(path)
+    except (FileNotFoundError, pd.errors.EmptyDataError, pd.errors.ParserError, ValueError):
+        return {}
+    if not {"draft", "word_count"}.issubset(frame.columns):
+        return {}
+    return {
+        str(row.draft): int(row.word_count)
+        for row in frame.itertuples(index=False)
+        if pd.notna(row.draft) and pd.notna(row.word_count)
+    }
+
+
+def _action_context(word_counts: dict[str, int]) -> dict[str, str]:
+    dfrws_count = word_counts.get("DFRWS poster abstract")
+    if dfrws_count is None:
+        count_note = "verify the current count in reports/assets/submission_text_drafts_word_counts.csv"
+    else:
+        count_note = f"current generated count is {dfrws_count} words"
+    return {"dfrws_poster_abstract_count_note": count_note}
+
+
+def build_upload_checklist(repo_root: Path, word_counts_path: Path | None = None) -> tuple[str, pd.DataFrame]:
     repo_root = repo_root.resolve()
+    resolved_word_counts = word_counts_path or Path("reports/assets/submission_text_drafts_word_counts.csv")
+    if not resolved_word_counts.is_absolute():
+        resolved_word_counts = repo_root / resolved_word_counts
+    action_context = _action_context(_load_word_counts(resolved_word_counts))
     rows = []
     for item in UPLOAD_ITEMS:
         missing = _missing_paths(repo_root, item["paths"])
         row = {
             **item,
+            "action": item["action"].format(**action_context),
             "paths_present": not missing,
             "missing_paths": "; ".join(missing),
         }
@@ -305,7 +338,7 @@ def _write_markdown(checklist: pd.DataFrame) -> str:
 
 def main() -> None:
     args = parse_args()
-    text, checklist = build_upload_checklist(Path(args.repo_root))
+    text, checklist = build_upload_checklist(Path(args.repo_root), Path(args.word_counts))
     out_path = Path(args.out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(text, encoding="utf-8")

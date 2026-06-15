@@ -20,7 +20,7 @@ Deadline: 2026-07-07
 
 | item | status | paths | action | missing_paths |
 | --- | --- | --- | --- | --- |
-| poster abstract | ready_asset | reports/submission_text_drafts_2026_06_14.md; reports/assets/submission_text_drafts_word_counts.csv | Use the DFRWS poster abstract; current generated count is 183 words. |  |
+| poster abstract | ready_asset | reports/submission_text_drafts_2026_06_14.md; reports/assets/submission_text_drafts_word_counts.csv | Use the DFRWS poster abstract; current generated count is 232 words. |  |
 | editable poster draft | ready_asset | reports/assets/dfrws_poster_draft_v2_2026_06_13.pptx; reports/assets/dfrws_poster_draft_v2_2026_06_13.png | Open the PPTX, make final visual edits, then export the upload PDF/image. |  |
 | poster-native panels | ready_asset | reports/assets/dfrws_poster_transfer_panel.png; reports/assets/dfrws_poster_robustness_panel.png; reports/assets/dfrws_poster_transfer_panel.svg; reports/assets/dfrws_poster_robustness_panel.svg | Use the PNGs directly or edit the SVGs if final poster layout needs native vector text. |  |
 | selected qualitative grid | ready_asset | reports/dfrws_qualitative_grid_selection_2026_06_14.md; reports/assets/dfrws_qualitative_grid_selection.csv; reports/assets/qualitative_seed29_scp_fusion_false_negatives.png; reports/assets/qualitative_seed17_scp_fusion_false_negatives.png | Use the seed-29 false-negative grid for the poster; keep seed 17 as appendix or backup material. |  |

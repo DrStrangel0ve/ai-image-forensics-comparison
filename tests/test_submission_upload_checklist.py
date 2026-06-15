@@ -14,6 +14,12 @@ def test_submission_upload_checklist_writes_status_summary(tmp_path: Path) -> No
     repo_root = tmp_path / "repo"
     repo_root.mkdir()
     _write_all_referenced_files(repo_root)
+    pd.DataFrame(
+        {
+            "draft": ["DFRWS poster abstract", "WIFS compact abstract", "DFF workshop abstract"],
+            "word_count": [232, 189, 219],
+        }
+    ).to_csv(repo_root / "reports" / "assets" / "submission_text_drafts_word_counts.csv", index=False)
 
     out_path = tmp_path / "submission_upload_checklist.md"
     csv_out = tmp_path / "submission_upload_checklist.csv"
@@ -48,6 +54,8 @@ def test_submission_upload_checklist_writes_status_summary(tmp_path: Path) -> No
     assert "| DFRWS-USA 2026 poster/demo | 2026-07-07 | 5 | 0 | 0 | 1 | 0 |" in summary_text
     assert "| IEEE WIFS 2026 paper | 2026-07-15 | 4 | 0 | 1 | 1 | 0 |" in summary_text
     assert "selected qualitative grid" in text
+    assert "current generated count is 232 words" in text
+    assert "183 words" not in text
     assert "seed-29 false-negative grid" in text
     assert "paper-critical breadth stance" in text
     assert "Freeze the WIFS experimental scope" in text
