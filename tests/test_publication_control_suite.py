@@ -66,6 +66,7 @@ def test_publication_control_suite_dry_run_lists_ordered_commands(tmp_path: Path
     assert order["external benchmark claim lint"] < order["submission packet"]
     assert order["SOTA gap report"] < order["submission packet"]
     assert order["SOTA gap closure plan"] < order["submission packet"]
+    assert order["competition submission dry run"] < order["submission packet"]
     assert order["reconstruction-lite feature report"] < order["reconstruction-v2 feature report"]
     assert order["reconstruction-v2 feature report"] < order["reconstruction-v2 bounded probe"]
     assert order["reconstruction-v2 bounded probe"] < order["reconstruction-lite bounded probe"]

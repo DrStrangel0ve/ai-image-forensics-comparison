@@ -1,0 +1,83 @@
+{
+  "checks": [
+    {
+      "check": "required_columns",
+      "detail": "all required columns present",
+      "passed": true
+    },
+    {
+      "check": "no_label_leakage_columns",
+      "detail": "no label-like leakage columns found",
+      "passed": true
+    },
+    {
+      "check": "image_id_nonempty",
+      "detail": "all image_id values are non-empty",
+      "passed": true
+    },
+    {
+      "check": "image_id_unique",
+      "detail": "all image_id values are unique",
+      "passed": true
+    },
+    {
+      "check": "fake_score_probability",
+      "detail": "all fake_score values are finite probabilities in [0, 1]",
+      "passed": true
+    },
+    {
+      "check": "predicted_label_consistent",
+      "detail": "predicted_label matches fake_score >= 0.5",
+      "passed": true
+    },
+    {
+      "check": "predicted_label_name_consistent",
+      "detail": "predicted_label_name matches the decision threshold",
+      "passed": true
+    },
+    {
+      "check": "confidence_consistent",
+      "detail": "confidence matches abs(fake_score - 0.5) * 2",
+      "passed": true
+    },
+    {
+      "check": "triage_decision_consistent",
+      "detail": "triage_decision matches real/fake uncertainty thresholds",
+      "passed": true
+    },
+    {
+      "check": "optional_packager_columns",
+      "detail": "all packager columns present",
+      "passed": true
+    },
+    {
+      "check": "expected_id_coverage",
+      "detail": "submission image_id values exactly match expected ids",
+      "passed": true
+    }
+  ],
+  "columns": [
+    "image_id",
+    "fake_score",
+    "predicted_label",
+    "predicted_label_name",
+    "confidence",
+    "triage_decision"
+  ],
+  "decision_threshold": 0.5,
+  "expected_id_summary": {
+    "expected_count": 114,
+    "extra_count": 0,
+    "extra_examples": [],
+    "missing_count": 0,
+    "missing_examples": []
+  },
+  "expected_ids_path": "reports\\assets\\competition_dry_run\\expected_ids.csv",
+  "fake_threshold": 0.8,
+  "n_rows": 114,
+  "real_threshold": 0.2,
+  "score_max": 1.0,
+  "score_min": 0.0,
+  "status": "pass",
+  "submission_path": "reports\\assets\\competition_dry_run\\submission.csv"
+}

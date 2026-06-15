@@ -1,0 +1,30 @@
+{
+  "columns": [
+    "image_id",
+    "fake_score",
+    "predicted_label",
+    "predicted_label_name",
+    "confidence",
+    "triage_decision"
+  ],
+  "decision_threshold": 0.5,
+  "fake_threshold": 0.8,
+  "id_column": "image_id",
+  "input_path": "reports\\assets\\competition_dry_run\\predictions.csv",
+  "label_counts": {
+    "fake": 93,
+    "real": 21
+  },
+  "n_rows": 114,
+  "output_path": "reports\\assets\\competition_dry_run\\submission.csv",
+  "real_threshold": 0.2,
+  "score_column": "fake_score",
+  "score_max": 0.9999997615814208,
+  "score_min": 4.4417674871510826e-08,
+  "triage_counts": {
+    "likely_fake": 64,
+    "likely_real": 8,
+    "uncertain": 42
+  },
+  "y_true_present_excluded": true
+}
