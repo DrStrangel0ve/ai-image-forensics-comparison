@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import argparse
 import re
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
 
+
+DEFAULT_RUN_DATE = date.today()
 
 ABSTRACT_HEADERS = [
     "DFRWS Poster Abstract",
@@ -51,6 +54,11 @@ WORD_LIMITS = {
     "DFF workshop abstract": (80, 250),
 }
 
+FRESH_PLANNING_REPORTS = [
+    "reports/opportunity_watchlist_2026_06_14.md",
+    "reports/publication_control_suite_2026_06_14.md",
+]
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -82,6 +90,11 @@ def parse_args() -> argparse.Namespace:
         default="reports/assets/submission_package_lint.csv",
         help="Machine-readable lint checks to write.",
     )
+    parser.add_argument(
+        "--run-date",
+        default=DEFAULT_RUN_DATE.isoformat(),
+        help="Date expected in live planning reports, in YYYY-MM-DD format. Defaults to today's local date.",
+    )
     return parser.parse_args()
 
 
@@ -108,11 +121,21 @@ def _add_check(rows: list[dict[str, object]], check: str, passed: bool, detail: 
     rows.append({"check": check, "passed": bool(passed), "detail": detail})
 
 
+def _extract_run_date(path: Path) -> str | None:
+    match = re.search(
+        r"^Run date:\s*(\d{4}-\d{2}-\d{2})\s*$",
+        path.read_text(encoding="utf-8"),
+        flags=re.MULTILINE,
+    )
+    return match.group(1) if match else None
+
+
 def lint_submission_package(
     repo_root: Path,
     manifest_path: Path,
     text_drafts_path: Path,
     word_counts_path: Path,
+    run_date: date = DEFAULT_RUN_DATE,
 ) -> pd.DataFrame:
     rows = _check_rows()
     repo_root = repo_root.resolve()
@@ -150,6 +173,20 @@ def lint_submission_package(
             f"{venue} artifacts listed",
             venue in manifest_venues,
             f"{venue} appears in packet manifest",
+        )
+
+    manifest_paths = set(manifest["path"].dropna().astype(str))
+    expected_run_date = run_date.isoformat()
+    for report_path in FRESH_PLANNING_REPORTS:
+        if report_path not in manifest_paths:
+            continue
+        full_path = repo_root / report_path
+        actual_run_date = _extract_run_date(full_path) if full_path.exists() else None
+        _add_check(
+            rows,
+            f"fresh planning report: {report_path}",
+            actual_run_date == expected_run_date,
+            f"Run date {actual_run_date or 'missing'}; expected {expected_run_date}",
         )
 
     for header in ABSTRACT_HEADERS:
@@ -219,14 +256,14 @@ def _markdown_table(frame: pd.DataFrame) -> str:
     return "\n".join(lines)
 
 
-def write_report(frame: pd.DataFrame, out_path: Path) -> None:
+def write_report(frame: pd.DataFrame, out_path: Path, run_date: date) -> None:
     passed = int(frame["passed"].sum())
     total = len(frame)
     status = "PASS" if passed == total else "FAIL"
     lines = [
         "# Submission Package Lint",
         "",
-        "Run date: 2026-06-14",
+        f"Run date: {run_date.isoformat()}",
         "",
         f"Status: **{status}** ({passed}/{total} checks passed).",
         "",
@@ -241,16 +278,18 @@ def write_report(frame: pd.DataFrame, out_path: Path) -> None:
 
 def main() -> None:
     args = parse_args()
+    run_date = date.fromisoformat(args.run_date)
     frame = lint_submission_package(
         repo_root=Path(args.repo_root),
         manifest_path=Path(args.manifest),
         text_drafts_path=Path(args.text_drafts),
         word_counts_path=Path(args.word_counts),
+        run_date=run_date,
     )
     checks_path = Path(args.checks_out)
     checks_path.parent.mkdir(parents=True, exist_ok=True)
     frame.to_csv(checks_path, index=False)
-    write_report(frame, Path(args.out_path))
+    write_report(frame, Path(args.out_path), run_date)
     if not bool(frame["passed"].all()):
         failed = frame[~frame["passed"]]
         raise SystemExit(

@@ -18,10 +18,18 @@ def test_submission_package_lint_passes_clean_generated_packet(tmp_path: Path) -
         "reports/submission_text_drafts_2026_06_14.md",
         "reports/assets/submission_text_drafts_word_counts.csv",
     ]
+    fresh_report_paths = [
+        "reports/opportunity_watchlist_2026_06_14.md",
+        "reports/publication_control_suite_2026_06_14.md",
+    ]
     for relative in required_paths:
         path = repo_root / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text("placeholder\n", encoding="utf-8")
+    for relative in fresh_report_paths:
+        path = repo_root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("# Report\n\nRun date: 2026-06-14\n", encoding="utf-8")
 
     manifest = tmp_path / "submission_packet_manifest.csv"
     text_drafts = tmp_path / "submission_text_drafts.md"
@@ -40,6 +48,25 @@ def test_submission_package_lint_passes_clean_generated_packet(tmp_path: Path) -
             "size_bytes": [12, 12, 12],
         }
     ).to_csv(manifest, index=False)
+    manifest_frame = pd.read_csv(manifest)
+    manifest_frame = pd.concat(
+        [
+            manifest_frame,
+            pd.DataFrame(
+                {
+                    "path": fresh_report_paths,
+                    "type": ["planning", "planning"],
+                    "venues": ["DFRWS,WIFS,DFF", "DFRWS,WIFS,DFF"],
+                    "purpose": ["freshness check"] * 2,
+                    "required": [False, False],
+                    "exists": [True, True],
+                    "size_bytes": [32, 32],
+                }
+            ),
+        ],
+        ignore_index=True,
+    )
+    manifest_frame.to_csv(manifest, index=False)
 
     dfrws = (
         "single-image physical proxy keeps the claim careful. CLIP as the current ranking frontier is stated. "
@@ -112,6 +139,8 @@ def test_submission_package_lint_passes_clean_generated_packet(tmp_path: Path) -
             str(out_path),
             "--checks-out",
             str(checks_out),
+            "--run-date",
+            "2026-06-14",
         ],
         cwd=ROOT,
         check=True,
@@ -120,8 +149,10 @@ def test_submission_package_lint_passes_clean_generated_packet(tmp_path: Path) -
     report = out_path.read_text(encoding="utf-8")
     checks = pd.read_csv(checks_out)
     assert "Status: **PASS**" in report
+    assert "Run date: 2026-06-14" in report
     assert checks["passed"].all()
     assert "abstracts avoid overclaim" in checks["check"].str.cat(sep=" ")
+    assert "fresh planning report" in checks["check"].str.cat(sep=" ")
 
 
 def _word_count(text: str) -> int:
