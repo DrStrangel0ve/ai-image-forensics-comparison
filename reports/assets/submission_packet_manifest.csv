@@ -32,16 +32,18 @@ reports/assets/competition_dry_run/submission.csv,quality-control,"DFRWS,WIFS,DF
 reports/assets/competition_dry_run/submission_manifest.json,quality-control,"DFRWS,WIFS,DFF",Manifest emitted by the competition submission packager for the dry-run submission.,False,True,735
 reports/assets/competition_dry_run/submission_lint.json,quality-control,"DFRWS,WIFS,DFF","Machine-readable lint report proving the dry-run submission has no leakage, duplicate IDs, score errors, or ID coverage gaps.",False,True,2222
 reports/submission_artifact_hashes_2026_06_15.md,reproducibility,"DFRWS,WIFS,DFF",Reviewer-facing SHA-256 hash summary for checked-in submission packet artifacts.,False,True,1387
-reports/assets/submission_artifact_hashes.csv,reproducibility,"DFRWS,WIFS,DFF",Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts.,False,True,35327
+reports/assets/submission_artifact_hashes.csv,reproducibility,"DFRWS,WIFS,DFF",Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts.,False,True,35325
 reports/submission_artifact_hashes_lint_2026_06_15.md,quality-control,"DFRWS,WIFS,DFF",Generated lint report proving checked artifact hashes still match the files on disk.,False,True,720
 reports/assets/submission_artifact_hashes_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable lint checks for the submission artifact hash manifest.,False,True,420
 reports/submission_path_sanitization_2026_06_15.md,quality-control,"DFRWS,WIFS,DFF",Public-release path sanitization report for replacing workstation-specific repository prefixes with <repo> placeholders.,False,True,1321
 reports/assets/submission_path_sanitization.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable path sanitization changes for checked-in text artifacts.,False,True,644
 reports/submission_privacy_audit_2026_06_15.md,quality-control,"DFRWS,WIFS,DFF","Public-release audit for local absolute paths, placeholder paths, and obvious secret-like strings in packet artifacts.",False,True,852
 reports/assets/submission_privacy_audit.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable privacy/local-path audit findings for checked-in submission packet artifacts.,False,True,144
-reports/submission_anonymity_audit_2026_06_15.md,quality-control,"WIFS,DFF",Blind-review anonymity audit for WIFS/DFF paper-facing drafts and skeletons.,False,True,1107
+reports/submission_anonymity_audit_2026_06_15.md,quality-control,"WIFS,DFF",Blind-review anonymity audit for WIFS/DFF paper-facing drafts and skeletons.,False,True,1098
 reports/assets/submission_anonymity_audit.csv,quality-control,"WIFS,DFF",Machine-readable anonymity findings for WIFS/DFF paper-facing drafts and skeletons.,False,True,34
-reports/assets/submission_anonymity_audit_checks.csv,quality-control,"WIFS,DFF",Machine-readable anonymity audit checks for WIFS/DFF paper-facing drafts and skeletons.,False,True,330
+reports/assets/submission_anonymity_audit_checks.csv,quality-control,"WIFS,DFF",Machine-readable anonymity audit checks for WIFS/DFF paper-facing drafts and skeletons.,False,True,321
+reports/anonymous_review_bundle_2026_06_15.md,quality-control,"WIFS,DFF",Anonymous supplementary artifact bundle manifest with hashes and identifier-scan status.,False,True,5204
+reports/assets/anonymous_review_bundle_manifest.csv,quality-control,"WIFS,DFF",Machine-readable anonymous supplementary artifact bundle manifest.,False,True,5011
 reports/reconstruction_lite_feature_set_2026_06_14.md,method,"DFRWS,WIFS,DFF",Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command.,False,True,3939
 reports/assets/reconstruction_lite_feature_manifest.csv,method,"DFRWS,WIFS,DFF",Machine-readable reconstruction_lite feature manifest.,False,True,2323
 reports/reconstruction_v2_feature_set_2026_06_14.md,method,"DFRWS,WIFS,DFF",Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions.,False,True,9394

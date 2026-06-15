@@ -3,8 +3,8 @@ README.md,repo,"DFRWS,WIFS,DFF",True,True,57171,c8dbc701907f726311cb0cd6bf7631f7
 CITATION.cff,repo,"DFRWS,WIFS,DFF",True,True,788,7b52c39b6b305a5c4fbe4dcf3c082c72bfd91927b1f4fa407ef38bb8cdec8a49,hashed
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF",True,True,16823,8347ede904820de368b7c896c96dbc3653c0401d9fdd5654f09b66907c317a31,hashed
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF",True,True,15291,218f84d6665f765d6aec052a8838b01aa742e79036c5bea25e7b4a50a9ac80c5,hashed
-reports/submission_scorecard_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,3561,5b74ccc1197930c2aac3d0e8e4ae71de0fc696a747997667aa1fb0b80d035a11,hashed
-reports/assets/submission_scorecard.csv,planning,"DFRWS,WIFS,DFF",False,True,1351,c61e58ca0cebd05c162e874ad0fb3260cb09d51a2883776ee04d975e31fa5b6a,hashed
+reports/submission_scorecard_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,3743,29171b54e5075dddc772d3a9d5bcadede0ba63e3a6616c7ad140a6595112d052,hashed
+reports/assets/submission_scorecard.csv,planning,"DFRWS,WIFS,DFF",False,True,1351,1d98ad5a9ff006762c232af549927ee73ae8982d8eb4272ac6afd1cfc5c80374,hashed
 reports/submission_upload_checklist_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,8216,fd279825e42d9f798a62c5219bb5745002cbdf7c44c0ba0bf75055304ac682ae,hashed
 reports/assets/submission_upload_checklist.csv,planning,"DFRWS,WIFS,DFF",False,True,7365,8701d9fa84e7b0e8d2f4b3c1800e873c956ac618daaf545bea987f8803ce817c,hashed
 reports/submission_critical_path_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,2460,a0490f3485832df414305cba5fb810fd1d59da5468360cb3010e86de8501fbcc,hashed
@@ -12,8 +12,8 @@ reports/assets/submission_critical_path.csv,planning,"DFRWS,WIFS,DFF",False,True
 reports/submission_deadline_calendar_2026_06_15.md,planning,"DFRWS,WIFS,DFF",False,True,1512,bd1bb39a99e9c07147a47dc304976f6f7dab1c039e9b66b763a821c109072c11,hashed
 reports/assets/submission_deadline_calendar.csv,planning,"DFRWS,WIFS,DFF",False,True,2117,3349d364de7d72af819e94a15654176733329f7f85b192d3ddf6df95e38b5c46,hashed
 reports/assets/submission_deadline_calendar.ics,planning,"DFRWS,WIFS,DFF",False,True,3461,37ebbfe890f851687b44e308397687cbda4b237f148631b39c2f39e5b0baecd7,hashed
-reports/publication_control_suite_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,9455,9164be930cfa2c6b20da0b1ca2f2531ef25bf37033e61e32e8e60ade2b51eb92,hashed
-reports/assets/publication_control_suite.csv,planning,"DFRWS,WIFS,DFF",False,True,7762,1e8279dc25036e873c33d251d4afd29560bccab54603751db21a8254c290d540,hashed
+reports/publication_control_suite_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,9582,0b0260d86448aca3b599752e190247e2239c5dd625cd3df488c9e1fd388769a2,hashed
+reports/assets/publication_control_suite.csv,planning,"DFRWS,WIFS,DFF",False,True,7873,76a65e65ea2a286593ef136ed1ffd10b708120a58c95f8d97112100c72fa9014,hashed
 reports/opportunity_watchlist_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,4061,f04f9e2f12382a4e7c55d2cee1f858e1595f25a6b04472abbdeb2eca43d0dfc7,hashed
 reports/assets/opportunity_watchlist.csv,planning,"DFRWS,WIFS,DFF",False,True,2941,91f52989c73590f95e7afade8a356afdb6462b38bc0af47f4f2aa9b2075792fc,hashed
 reports/external_benchmark_readiness_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,5790,dcfc2e0f84e6178fc5169c9d0e4f4413ce7912d9c1ba6a51de5142a8fec89c67,hashed
@@ -42,6 +42,8 @@ reports/assets/submission_privacy_audit.csv,quality-control,"DFRWS,WIFS,DFF",Fal
 reports/submission_anonymity_audit_2026_06_15.md,quality-control,"WIFS,DFF",False,True,1098,,index_or_self_skipped
 reports/assets/submission_anonymity_audit.csv,quality-control,"WIFS,DFF",False,True,34,,index_or_self_skipped
 reports/assets/submission_anonymity_audit_checks.csv,quality-control,"WIFS,DFF",False,True,321,,index_or_self_skipped
+reports/anonymous_review_bundle_2026_06_15.md,quality-control,"WIFS,DFF",False,True,5204,208599306711274cb86fd8ad597e28925dff415c28ac89bc3f4708cdfcbbb22d,hashed
+reports/assets/anonymous_review_bundle_manifest.csv,quality-control,"WIFS,DFF",False,True,5011,dd0529595988d55eb055815dc21a531aa38eab5110eeeb397e5a2160150608b9,hashed
 reports/reconstruction_lite_feature_set_2026_06_14.md,method,"DFRWS,WIFS,DFF",False,True,3939,a7d42ab49bf229ddd22bb2d684ded433fa3f415a77f4aac1ba168dc583892f95,hashed
 reports/assets/reconstruction_lite_feature_manifest.csv,method,"DFRWS,WIFS,DFF",False,True,2323,cef8d6d2b0724e33a8e3aaa0675693c5fd551aef9404734767403955f9536ba5,hashed
 reports/reconstruction_v2_feature_set_2026_06_14.md,method,"DFRWS,WIFS,DFF",False,True,9394,4faad4f14edafc05b8d0b4f0d7aef37c9f432c9e84800d1480aa5d40ebfe1a10,hashed

@@ -61,6 +61,12 @@ LINT_REPORTS = [
         "purpose": "Blind-review author, account, path, and public-repository wording checks.",
     },
     {
+        "name": "anonymous review bundle",
+        "path": "reports/anonymous_review_bundle_2026_06_15.md",
+        "venues": "WIFS,DFF",
+        "purpose": "Anonymous supplementary artifact bundle hashes and identifier-scan checks.",
+    },
+    {
         "name": "submission package",
         "path": "reports/submission_package_lint_2026_06_14.md",
         "venues": "DFRWS,WIFS,DFF",
