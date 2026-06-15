@@ -6,6 +6,10 @@ from pathlib import Path
 
 import pandas as pd
 
+from operating_mode_utils import (
+    load_calibration_operating_modes,
+    operating_mode_results_sentence,
+)
 from source_stress_utils import load_source_stress_summary
 from tiled_dino_tradeoff_utils import load_tiled_dino_tradeoff_summary
 
@@ -41,6 +45,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--source-stress-summary",
         default="reports/assets/ms_cocoai_to_ishu_source_holdout_model_selection_source_summary.csv",
+    )
+    parser.add_argument(
+        "--calibration-operating-modes",
+        default="reports/assets/calibration_operating_modes.csv",
+        help="Objective-specific calibration and operating-mode selector table.",
     )
     parser.add_argument("--out-path", default="reports/paper_section_drafts_2026_06_14.md")
     parser.add_argument("--manifest-out", default="reports/assets/paper_section_draft_manifest.csv")
@@ -96,6 +105,7 @@ def build_sections(
     tiled_dino_tradeoff: Path,
     reconstruction_ablation_path: Path,
     source_stress_summary: Path,
+    calibration_operating_modes: Path,
 ) -> list[dict[str, object]]:
     core = pd.read_csv(core_results)
     claims = pd.read_csv(claim_matrix)
@@ -107,6 +117,7 @@ def build_sections(
     source_stress = load_source_stress_summary(source_stress_summary)
     if source_stress is None:
         raise ValueError("Missing source-stress summary")
+    operating_modes = load_calibration_operating_modes(calibration_operating_modes)
     rows = _rows_by_id(core)
 
     combined_v3 = rows["ishu_same_combined_v3"]
@@ -218,7 +229,8 @@ def build_sections(
                 f"`tile_max` average deltas of {tiled_dino['tile_max_acc_delta']} accuracy and "
                 f"{tiled_dino['tile_max_auc_delta']} AUC across {tiled_dino['n_transforms']} stress probes, while "
                 f"`tile_mean` improves Brier on {tiled_dino['tile_mean_brier_count']} and ECE on "
-                f"{tiled_dino['tile_mean_ece_count']} probes."
+                f"{tiled_dino['tile_mean_ece_count']} probes. "
+                f"{operating_mode_results_sentence(operating_modes)}"
             ),
         ),
         _section(
@@ -246,7 +258,9 @@ def build_sections(
                 "claim-evidence matrix. Most importantly, the physical branch is a single-image proxy rather than "
                 "classic photometric stereo, SCP-Fusion does not universally beat frozen CLIP, native/foundation "
                 "tiling is a bounded diagnostic rather than an official external high-resolution benchmark result, "
-                "and robustness claims must name the transform being tested. The repo is public and contains generated result tables, "
+                "and robustness claims must name the transform being tested. The operating-mode guardrail is "
+                "especially important: ranking, Brier, ECE, source-heldout decisions, and tiled-DINO stress select "
+                "different winners, so comparisons must name the objective. The repo is public and contains generated result tables, "
                 "LaTeX fragments, paper skeletons, lint reports, literature maps, draft BibTeX, and reproduction "
                 "commands. The final paper still needs official venue templates, verified bibliography metadata, "
                 "and, if time allows, broader source-balanced data or a true reconstruction branch."
@@ -309,6 +323,7 @@ def main() -> None:
         Path(args.tiled_dino_tradeoff),
         Path(args.reconstruction_ablation),
         Path(args.source_stress_summary),
+        Path(args.calibration_operating_modes),
     )
     manifest = write_report(sections, Path(args.out_path))
     manifest_out = Path(args.manifest_out)

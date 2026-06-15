@@ -15,6 +15,7 @@ def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path:
     claim_matrix = tmp_path / "claim_evidence_matrix.csv"
     tiled_dino_tradeoff = tmp_path / "tiled_dinov2_calibration_tradeoff.csv"
     source_stress_summary = tmp_path / "source_stress.csv"
+    calibration_operating_modes = tmp_path / "calibration_operating_modes.csv"
     out_path = tmp_path / "submission_text_drafts.md"
     counts_out = tmp_path / "word_counts.csv"
 
@@ -89,6 +90,52 @@ def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path:
             }
         ]
     ).to_csv(source_stress_summary, index=False)
+    pd.DataFrame(
+        [
+            {
+                "objective": "ranking_auc",
+                "selected_method": "Frozen CLIP",
+                "selected_mode": "default_score",
+                "metric": "auc",
+                "metric_value": 0.8641,
+            },
+            {
+                "objective": "probability_brier",
+                "selected_method": "SCP-Fusion + CLIP",
+                "selected_mode": "default_score",
+                "metric": "brier",
+                "metric_value": 0.3112,
+            },
+            {
+                "objective": "reliability_ece",
+                "selected_method": "combined_v4 select-k60",
+                "selected_mode": "default_score",
+                "metric": "ece",
+                "metric_value": 0.2663,
+            },
+            {
+                "objective": "source_holdout_ece",
+                "selected_method": "source_calibrated",
+                "selected_mode": "temperature_balanced",
+                "metric": "mean_calibrated_ece",
+                "metric_value": 0.1268,
+            },
+            {
+                "objective": "tiled_dino_accuracy",
+                "selected_method": "tiled DINOv2 reverse fusion",
+                "selected_mode": "tile_max",
+                "metric": "best_accuracy_delta",
+                "metric_value": 0.0139,
+            },
+            {
+                "objective": "tiled_dino_brier",
+                "selected_method": "tiled DINOv2 reverse fusion",
+                "selected_mode": "tile_mean",
+                "metric": "best_brier_delta",
+                "metric_value": -0.0058,
+            },
+        ]
+    ).to_csv(calibration_operating_modes, index=False)
 
     subprocess.run(
         [
@@ -102,6 +149,8 @@ def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path:
             str(tiled_dino_tradeoff),
             "--source-stress-summary",
             str(source_stress_summary),
+            "--calibration-operating-modes",
+            str(calibration_operating_modes),
             "--out-path",
             str(out_path),
             "--word-counts-out",
@@ -124,6 +173,11 @@ def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path:
     assert "tile_mean" in text
     assert "Held-Out Generator Stress" in text
     assert "sd3" in text
+    assert "Calibration Operating Mode Guidance" in text
+    assert "Frozen CLIP leads transfer AUC at 0.8641" in text
+    assert "SCP-Fusion + CLIP gives the best transfer Brier score at 0.3112" in text
+    assert "combined_v4 select-k60 gives the lowest transfer ECE at 0.2663" in text
+    assert "source_calibrated with `temperature_balanced` anchors source-heldout ECE at 0.1268" in text
     assert "0.7961" in text
     assert "0.7000" in text
     assert set(counts["draft"]) == {

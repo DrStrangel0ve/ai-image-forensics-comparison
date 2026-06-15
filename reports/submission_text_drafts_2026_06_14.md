@@ -45,6 +45,10 @@ Paper-safe wording: use `tile_max` for decision/ranking robustness headlines wit
 
 For the paper-facing `source_holdout_mean_utility_cap_0p48` policy, the weakest held-out generator is `sd3` with mean utility 1.4235, mean recall 0.7961, and mean fake-miss rate 0.2039.
 
+## Calibration Operating Mode Guidance
+
+The operating-mode audit is deliberately objective-specific: Frozen CLIP ViT-B/32 leads transfer AUC at 0.8641; SCP-Fusion + CLIP gives the best transfer Brier score at 0.3112; combined_v4 select-k60 gives the lowest transfer ECE at 0.2663; source_calibrated with `temperature_balanced` anchors source-heldout ECE at 0.1268; and tiled DINOv2 reverse fusion separates `tile_max` for decision/ranking stress from `tile_mean` for Brier-sensitive stress (-0.0058).
+
 ## Result Sentences
 
 | finding_id | draft_sentence |
@@ -70,6 +74,7 @@ For the paper-facing `source_holdout_mean_utility_cap_0p48` policy, the weakest 
 | clip_transfer_frontier | ready | DFRWS headline result; DFF foundation-baseline result; WIFS compact comparison. | CLIP has strong ranking but reverse-transfer default thresholds still over-call generated images. |
 | scp_fusion_is_diagnostic | ready_with_caveat | DFF method framing; WIFS cautionary fusion result; DFRWS reproducibility panel. | Current score fusion can suppress the best branch and can inherit source-threshold bias. |
 | source_thresholding_improves_decisions | ready_with_caveat | DFRWS operational triage panel; WIFS/DFF calibration and utility section. | The capped source-threshold result is an operating point, not a learned general solution. |
+| operating_modes_are_objective_specific | ready_with_caveat | WIFS calibration subsection; DFF diagnostic-protocol framing; DFRWS caveat panel. | This is a synthesis of checked-in proxy and source-heldout evidence; do not turn it into a leaderboard or universal-detector claim. |
 | transform_stress_exposes_failure_modes | ready_with_caveat | DFRWS robustness panel; WIFS/DFF robustness and failure-analysis section. | This is source-selected proxy transform stress, not an official NTIRE/ImageCLEF challenge score or a universal robustness claim. |
 | tiled_dino_mode_tradeoff | ready_with_caveat | DFRWS poster follow-up; WIFS/DFF robustness and calibration section. | This is derived from source-selected proxy transform stress, not an official external benchmark; do not claim tiled-DINO improves calibration universally. |
 | high_confidence_triage_is_viable | ready | DFRWS poster workflow; DFF real-world processing discussion. | Coverage is intentionally partial; this is an investigative triage mode, not full automation. |

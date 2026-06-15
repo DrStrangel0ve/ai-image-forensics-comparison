@@ -17,6 +17,7 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
     tiled_dino_tradeoff = tmp_path / "tiled_dinov2_calibration_tradeoff.csv"
     reconstruction_ablation = tmp_path / "submission_table_reconstruction_ablation.csv"
     source_stress_summary = tmp_path / "source_stress.csv"
+    calibration_operating_modes = tmp_path / "calibration_operating_modes.csv"
     out_path = tmp_path / "paper_section_drafts.md"
     manifest_out = tmp_path / "paper_section_draft_manifest.csv"
 
@@ -129,6 +130,52 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
             }
         ]
     ).to_csv(source_stress_summary, index=False)
+    pd.DataFrame(
+        [
+            {
+                "objective": "ranking_auc",
+                "selected_method": "clip ranker",
+                "selected_mode": "default_score",
+                "metric": "auc",
+                "metric_value": 0.8641,
+            },
+            {
+                "objective": "probability_brier",
+                "selected_method": "brier fusion",
+                "selected_mode": "default_score",
+                "metric": "brier",
+                "metric_value": 0.3112,
+            },
+            {
+                "objective": "reliability_ece",
+                "selected_method": "ece selector",
+                "selected_mode": "default_score",
+                "metric": "ece",
+                "metric_value": 0.2663,
+            },
+            {
+                "objective": "source_holdout_ece",
+                "selected_method": "source calibrated",
+                "selected_mode": "temperature_balanced",
+                "metric": "mean_calibrated_ece",
+                "metric_value": 0.1268,
+            },
+            {
+                "objective": "tiled_dino_accuracy",
+                "selected_method": "tiled DINOv2 reverse fusion",
+                "selected_mode": "tile_max",
+                "metric": "best_accuracy_delta",
+                "metric_value": 0.0139,
+            },
+            {
+                "objective": "tiled_dino_brier",
+                "selected_method": "tiled DINOv2 reverse fusion",
+                "selected_mode": "tile_mean",
+                "metric": "best_brier_delta",
+                "metric_value": -0.0058,
+            },
+        ]
+    ).to_csv(calibration_operating_modes, index=False)
 
     subprocess.run(
         [
@@ -146,6 +193,8 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
             str(reconstruction_ablation),
             "--source-stress-summary",
             str(source_stress_summary),
+            "--calibration-operating-modes",
+            str(calibration_operating_modes),
             "--out-path",
             str(out_path),
             "--manifest-out",
@@ -170,6 +219,9 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
     assert "-0.0408 under Ishu-to-MS transfer" in report
     assert "sd3" in report
     assert "0.2039 fake-miss rate" in report
+    assert "brier fusion leads Brier at 0.3112" in report
+    assert "ece selector leads ECE at 0.2663" in report
+    assert "operating-mode guardrail" in report
     assert len(manifest) >= 6
     assert manifest["has_metric"].any()
     assert manifest["has_caveat"].any()
