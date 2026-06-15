@@ -12,7 +12,7 @@ These are prose starting points for WIFS/DFF authoring. They are not final copy 
 | --- | --- | --- | --- |
 | WIFS Introduction Draft | 138 | True | False |
 | WIFS Related Work Draft | 99 | False | True |
-| WIFS Data And Audit Draft | 136 | True | False |
+| WIFS Data And Audit Draft | 139 | True | False |
 | WIFS Methods Draft | 101 | False | True |
 | WIFS Results Draft | 249 | True | False |
 | DFF Expansion Draft | 175 | True | False |
@@ -28,7 +28,7 @@ Prior work motivates three design choices in this benchmark. First, universal fa
 
 ## WIFS Data And Audit Draft
 
-The current submission package centers on two audited evaluation directions. Ishu AI-vs-real provides repeated same-domain splits for comparing `combined_v3`, ResNet-18, physics-guided fusion, frozen encoders, and saved-score fusion. Source-balanced MS COCOAI provides generator source labels for cross-domain and source-aware validation with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney-style generated subsets represented in the exported metadata. Dataset commands, audits, and artifact manifests are part of the public repo so that results can be traced back to specific exports rather than opaque benchmark names. The paper should state that raw datasets and large model artifacts are external, while reports, prediction-derived tables, figures, manifests, and reproduction commands are checked in. The source-holdout stress table adds a generator-level audit: for the paper-facing capped policy, `sd3` is currently the weakest held-out generator, with 0.7961 recall and 0.2039 fake-miss rate.
+The current submission package centers on two audited evaluation directions. Ishu AI-vs-real provides repeated same-domain splits for comparing `combined_v3`, ResNet-18, physics-guided fusion, frozen encoders, and saved-score fusion. Source-balanced MS COCOAI provides generator source labels for cross-domain and source-aware validation with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney-style generated subsets represented in the exported metadata. Dataset commands, audits, and artifact manifests are part of the anonymized supplementary artifact package so that results can be traced back to specific exports rather than opaque benchmark names. The paper should state that raw datasets and large model artifacts are external, while reports, prediction-derived tables, figures, manifests, and reproduction commands are bundled for review. The source-holdout stress table adds a generator-level audit: for the paper-facing capped policy, `sd3` is currently the weakest held-out generator, with 0.7961 recall and 0.2039 fake-miss rate.
 
 ## WIFS Methods Draft
 

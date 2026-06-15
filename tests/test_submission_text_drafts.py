@@ -178,6 +178,8 @@ def test_submission_text_drafts_use_core_metrics_and_write_word_counts(tmp_path:
     assert "SCP-Fusion + CLIP gives the best transfer Brier score at 0.3112" in text
     assert "combined_v4 select-k60 gives the lowest transfer ECE at 0.2663" in text
     assert "source_calibrated with `temperature_balanced` anchors source-heldout ECE at 0.1268" in text
+    assert "public repo" not in text.lower()
+    assert "anonymized artifact manifests" in text
     assert "0.7961" in text
     assert "0.7000" in text
     assert set(counts["draft"]) == {

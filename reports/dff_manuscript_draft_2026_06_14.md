@@ -2,7 +2,7 @@
 
 Run date: 2026-06-14
 
-Generated manuscript draft assembled from checked-in section drafts, abstract text, and the manuscript assembly map.
+Generated manuscript draft assembled from generated section drafts, abstract text, and the manuscript assembly map.
 Author editing is still required before copying into the official venue template.
 
 ## Abstract
@@ -29,7 +29,7 @@ Prior work motivates three design choices in this benchmark. First, universal fa
 
 ## Protocol and branches
 
-The current submission package centers on two audited evaluation directions. Ishu AI-vs-real provides repeated same-domain splits for comparing `combined_v3`, ResNet-18, physics-guided fusion, frozen encoders, and saved-score fusion. Source-balanced MS COCOAI provides generator source labels for cross-domain and source-aware validation with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney-style generated subsets represented in the exported metadata. Dataset commands, audits, and artifact manifests are part of the public repo so that results can be traced back to specific exports rather than opaque benchmark names. The paper should state that raw datasets and large model artifacts are external, while reports, prediction-derived tables, figures, manifests, and reproduction commands are checked in. The source-holdout stress table adds a generator-level audit: for the paper-facing capped policy, `sd3` is currently the weakest held-out generator, with 0.7961 recall and 0.2039 fake-miss rate.
+The current submission package centers on two audited evaluation directions. Ishu AI-vs-real provides repeated same-domain splits for comparing `combined_v3`, ResNet-18, physics-guided fusion, frozen encoders, and saved-score fusion. Source-balanced MS COCOAI provides generator source labels for cross-domain and source-aware validation with SD3, SD2.1, SDXL, DALL-E 3, and MidJourney-style generated subsets represented in the exported metadata. Dataset commands, audits, and artifact manifests are part of the anonymized supplementary artifact package so that results can be traced back to specific exports rather than opaque benchmark names. The paper should state that raw datasets and large model artifacts are external, while reports, prediction-derived tables, figures, manifests, and reproduction commands are bundled for review. The source-holdout stress table adds a generator-level audit: for the paper-facing capped policy, `sd3` is currently the weakest held-out generator, with 0.7961 recall and 0.2039 fake-miss rate.
 
 The compared methods are intentionally heterogeneous. `combined_v3` measures single-image physical/signal features such as pseudo-normal consistency, noise residuals, JPEG/block cues, frequency balance, and chroma consistency. ResNet-18 is the conventional neural baseline. The physics-guided model fuses a ResNet image embedding with standardized `combined_v3` features, which is the practical physics-informed route for single-image datasets. Frozen ConvNeXt, DINOv2, and CLIP encoders test whether broad pretrained representations transfer better than task-trained detectors. SCP-Fusion combines saved branch scores and evaluates source-aware calibration, branch constraints, and threshold policies, reporting AUC, accuracy, Brier score, ECE, fake-call rate, and partial triage coverage instead of a single headline metric.
 

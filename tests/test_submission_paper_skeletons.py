@@ -159,6 +159,10 @@ def test_submission_paper_skeleton_builder_writes_wifs_and_dff_tex(tmp_path: Pat
     assert "physics\\_guided\\_branch\\_helps" in wifs
     assert "poster\\_only\\_claim" not in wifs
     assert "single-image physical proxy" in dff
+    assert "public repo" not in (wifs + dff).lower()
+    assert "public repository" not in (wifs + dff).lower()
+    assert "checked into the repository" not in (wifs + dff).lower()
+    assert "anonymized supplementary artifact package" in wifs
     assert set(manifest["claim_count"]) == {1}
     assert set(manifest["citation_count"]) == {3}
     assert set(manifest["todo_count"]) == {0}

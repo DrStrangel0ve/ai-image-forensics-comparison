@@ -155,7 +155,7 @@ def _claim_checklist_block(claims: pd.DataFrame) -> list[str]:
     lines = [
         r"\section{Claim-Evidence Checklist}",
         _latex_escape(
-            "This generated checklist mirrors the repository claim-evidence matrix so paper claims stay tied "
+            "This generated checklist mirrors the project claim-evidence matrix so paper claims stay tied "
             "to concrete artifacts and caveats during editing."
         ),
         "",
@@ -296,7 +296,7 @@ def _paper_tex(
             _latex_escape(
                 "Experiments are organized around repeated seeds, same-domain anchors, cross-domain transfer, "
                 "source-heldout generator validation, calibration metrics, high-confidence triage, and robustness "
-                "transforms. Tables below are generated from the checked-in result assets."
+                "transforms. Tables below are generated from the review artifact assets."
             ),
             "",
             r"\section{Results}",
@@ -306,7 +306,8 @@ def _paper_tex(
     lines.extend(
         [
             _latex_escape(
-                "The following generated table fragments are checked into the repository and can be edited for space."
+                "The following generated table fragments are included in the review artifact bundle and can be "
+                "edited for space."
             ),
             "",
         ]
@@ -346,10 +347,10 @@ def _paper_tex(
         [
             r"\section{Reproducibility}",
             _latex_escape(
-                "The public repository includes the submission packet manifest, paper-section draft manifest, "
-                "lint reports, dataset/export commands, generated tables, figure builders, and draft bibliography. "
-                "Before submission, replace this scaffold with the official venue template and verify all BibTeX "
-                "metadata."
+                "The anonymized supplementary artifact package includes the submission packet manifest, "
+                "paper-section draft manifest, lint reports, dataset/export commands, generated tables, figure "
+                "builders, and draft bibliography. Before submission, replace this scaffold with the official "
+                "venue template and verify all BibTeX metadata."
             ),
             "",
             r"\bibliographystyle{" + spec["bibliography_style"] + "}",

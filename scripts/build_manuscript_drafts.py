@@ -143,7 +143,7 @@ def _build_draft(
         "",
         f"Run date: {RUN_DATE}",
         "",
-        "Generated manuscript draft assembled from checked-in section drafts, abstract text, and the manuscript assembly map.",
+        "Generated manuscript draft assembled from generated section drafts, abstract text, and the manuscript assembly map.",
         "Author editing is still required before copying into the official venue template.",
         "",
     ]

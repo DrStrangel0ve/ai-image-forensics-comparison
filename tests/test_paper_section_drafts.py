@@ -222,6 +222,8 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
     assert "brier fusion leads Brier at 0.3112" in report
     assert "ece selector leads ECE at 0.2663" in report
     assert "operating-mode guardrail" in report
+    assert "public repo" not in report.lower()
+    assert "anonymized supplementary artifact package" in report
     assert len(manifest) >= 6
     assert manifest["has_metric"].any()
     assert manifest["has_caveat"].any()

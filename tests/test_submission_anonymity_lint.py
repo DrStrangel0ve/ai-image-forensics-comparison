@@ -96,3 +96,36 @@ def test_submission_anonymity_lint_fails_direct_identifiers(tmp_path: Path) -> N
         findings["issue"]
     )
     assert "blocker" in set(findings["severity"])
+
+
+def test_submission_anonymity_lint_current_paper_artifacts_are_quiet(tmp_path: Path) -> None:
+    out_path = tmp_path / "anonymity.md"
+    findings_out = tmp_path / "anonymity.csv"
+    checks_out = tmp_path / "anonymity_checks.csv"
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "lint_submission_anonymity.py"),
+            "--repo-root",
+            str(ROOT),
+            "--out-path",
+            str(out_path),
+            "--findings-out",
+            str(findings_out),
+            "--checks-out",
+            str(checks_out),
+            "--run-date",
+            "2026-06-15",
+        ],
+        cwd=ROOT,
+        check=True,
+    )
+
+    report = out_path.read_text(encoding="utf-8")
+    findings = pd.read_csv(findings_out)
+    checks = pd.read_csv(checks_out)
+
+    assert "Status: **PASS** (4/4 checks passed)." in report
+    assert findings.empty
+    assert checks["passed"].all()

@@ -31,16 +31,16 @@ reports/assets/competition_dry_run/expected_ids.csv,quality-control,"DFRWS,WIFS,
 reports/assets/competition_dry_run/submission.csv,quality-control,"DFRWS,WIFS,DFF","Upload-shaped competition dry-run submission with scores, labels, confidence, and triage but no ground-truth labels.",False,True,6344
 reports/assets/competition_dry_run/submission_manifest.json,quality-control,"DFRWS,WIFS,DFF",Manifest emitted by the competition submission packager for the dry-run submission.,False,True,735
 reports/assets/competition_dry_run/submission_lint.json,quality-control,"DFRWS,WIFS,DFF","Machine-readable lint report proving the dry-run submission has no leakage, duplicate IDs, score errors, or ID coverage gaps.",False,True,2222
-reports/submission_artifact_hashes_2026_06_15.md,reproducibility,"DFRWS,WIFS,DFF",Reviewer-facing SHA-256 hash summary for checked-in submission packet artifacts.,False,True,1386
-reports/assets/submission_artifact_hashes.csv,reproducibility,"DFRWS,WIFS,DFF",Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts.,False,True,34979
-reports/submission_artifact_hashes_lint_2026_06_15.md,quality-control,"DFRWS,WIFS,DFF",Generated lint report proving checked artifact hashes still match the files on disk.,False,True,719
-reports/assets/submission_artifact_hashes_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable lint checks for the submission artifact hash manifest.,False,True,419
+reports/submission_artifact_hashes_2026_06_15.md,reproducibility,"DFRWS,WIFS,DFF",Reviewer-facing SHA-256 hash summary for checked-in submission packet artifacts.,False,True,1387
+reports/assets/submission_artifact_hashes.csv,reproducibility,"DFRWS,WIFS,DFF",Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts.,False,True,35327
+reports/submission_artifact_hashes_lint_2026_06_15.md,quality-control,"DFRWS,WIFS,DFF",Generated lint report proving checked artifact hashes still match the files on disk.,False,True,720
+reports/assets/submission_artifact_hashes_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable lint checks for the submission artifact hash manifest.,False,True,420
 reports/submission_path_sanitization_2026_06_15.md,quality-control,"DFRWS,WIFS,DFF",Public-release path sanitization report for replacing workstation-specific repository prefixes with <repo> placeholders.,False,True,1321
 reports/assets/submission_path_sanitization.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable path sanitization changes for checked-in text artifacts.,False,True,644
 reports/submission_privacy_audit_2026_06_15.md,quality-control,"DFRWS,WIFS,DFF","Public-release audit for local absolute paths, placeholder paths, and obvious secret-like strings in packet artifacts.",False,True,852
 reports/assets/submission_privacy_audit.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable privacy/local-path audit findings for checked-in submission packet artifacts.,False,True,144
-reports/submission_anonymity_audit_2026_06_15.md,quality-control,"WIFS,DFF",Blind-review anonymity audit for WIFS/DFF paper-facing drafts and skeletons.,False,True,3184
-reports/assets/submission_anonymity_audit.csv,quality-control,"WIFS,DFF",Machine-readable anonymity findings for WIFS/DFF paper-facing drafts and skeletons.,False,True,1961
+reports/submission_anonymity_audit_2026_06_15.md,quality-control,"WIFS,DFF",Blind-review anonymity audit for WIFS/DFF paper-facing drafts and skeletons.,False,True,1107
+reports/assets/submission_anonymity_audit.csv,quality-control,"WIFS,DFF",Machine-readable anonymity findings for WIFS/DFF paper-facing drafts and skeletons.,False,True,34
 reports/assets/submission_anonymity_audit_checks.csv,quality-control,"WIFS,DFF",Machine-readable anonymity audit checks for WIFS/DFF paper-facing drafts and skeletons.,False,True,330
 reports/reconstruction_lite_feature_set_2026_06_14.md,method,"DFRWS,WIFS,DFF",Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command.,False,True,3939
 reports/assets/reconstruction_lite_feature_manifest.csv,method,"DFRWS,WIFS,DFF",Machine-readable reconstruction_lite feature manifest.,False,True,2323
@@ -98,8 +98,8 @@ reports/assets/latex_tables/source_holdout_stress.tex,table,"WIFS,DFF",LaTeX fra
 reports/assets/latex_tables/reconstruction_ablation.tex,table,"WIFS,DFF",LaTeX fragment for the reconstruction residual ablation table.,True,True,784
 reports/submission_paper_skeletons_2026_06_14.md,paper-draft,"WIFS,DFF",Report listing generated WIFS/DFF paper skeletons.,True,True,1283
 reports/assets/paper_skeletons/submission_paper_skeleton_manifest.csv,paper-draft,"WIFS,DFF",Machine-readable manifest for generated WIFS/DFF paper skeletons.,True,True,752
-reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex,paper-draft,WIFS,"IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures.",True,True,16111
-reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex,paper-draft,DFF,"ACM-style DFF workshop skeleton with generated abstract, tables, and figures.",True,True,18085
+reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex,paper-draft,WIFS,"IEEEtran-style WIFS paper skeleton with generated abstract, tables, and figures.",True,True,16179
+reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex,paper-draft,DFF,"ACM-style DFF workshop skeleton with generated abstract, tables, and figures.",True,True,18153
 reports/paper_skeleton_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF paper skeleton structure, referenced assets, and claim guardrails.",False,True,4698
 reports/assets/paper_skeleton_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF paper skeleton lint checks.,False,True,3936
 reports/assets/claim_evidence_matrix.csv,claim-audit,"DFRWS,WIFS,DFF",Machine-readable claim-to-evidence map with caveats and next actions.,True,True,22085
@@ -110,9 +110,9 @@ reports/method_family_comparison_2026_06_14.md,analysis,"DFRWS,WIFS,DFF","Paper-
 reports/assets/method_family_comparison.csv,analysis,"DFRWS,WIFS,DFF",Machine-readable method-family winner table by scenario and criterion.,False,True,6807
 reports/calibration_operating_modes_2026_06_14.md,analysis,"DFRWS,WIFS,DFF","Paper-facing calibration operating-mode synthesis for ranking, decision, Brier, ECE, and tiled-DINO mode choices.",False,True,3730
 reports/assets/calibration_operating_modes.csv,analysis,"DFRWS,WIFS,DFF",Machine-readable calibration operating-mode selector table.,False,True,3476
-reports/submission_text_drafts_2026_06_14.md,writing,"DFRWS,WIFS,DFF","Venue-specific abstracts, contribution wording, result sentences, and paper skeletons.",True,True,15619
+reports/submission_text_drafts_2026_06_14.md,writing,"DFRWS,WIFS,DFF","Venue-specific abstracts, contribution wording, result sentences, and paper skeletons.",True,True,15625
 reports/assets/submission_text_drafts_word_counts.csv,writing,"DFRWS,WIFS,DFF","Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts.",True,True,99
-reports/paper_section_drafts_2026_06_14.md,writing,"WIFS,DFF","Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats.",True,True,8511
+reports/paper_section_drafts_2026_06_14.md,writing,"WIFS,DFF","Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats.",True,True,8549
 reports/assets/paper_section_draft_manifest.csv,writing,"WIFS,DFF",Machine-readable section word counts and caveat/metric flags for generated paper prose drafts.,True,True,323
 reports/paper_section_drafts_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF section prose, required metric anchors, caveats, and overclaim checks.",False,True,5440
 reports/assets/paper_section_drafts_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF section prose lint checks.,False,True,4601
@@ -145,8 +145,8 @@ reports/wifs_breadth_decision_2026_06_14.md,planning,"WIFS,DFF",Generated WIFS b
 reports/assets/wifs_breadth_decision.csv,planning,"WIFS,DFF",Machine-readable WIFS breadth option ranking.,True,True,1023
 reports/manuscript_assembly_map_2026_06_14.md,planning,"WIFS,DFF","Generated WIFS/DFF manuscript assembly map tying section drafts, page budgets, figures, and tables to writing tasks.",True,True,5504
 reports/assets/manuscript_assembly_map.csv,planning,"WIFS,DFF",Machine-readable manuscript assembly map for WIFS and DFF writing.,True,True,4335
-reports/wifs_manuscript_draft_2026_06_14.md,paper-draft,WIFS,Assembled WIFS markdown manuscript draft with section prose and asset callouts.,True,True,10997
-reports/dff_manuscript_draft_2026_06_14.md,paper-draft,DFF,Assembled DFF markdown manuscript draft with section prose and asset callouts.,True,True,12189
+reports/wifs_manuscript_draft_2026_06_14.md,paper-draft,WIFS,Assembled WIFS markdown manuscript draft with section prose and asset callouts.,True,True,11034
+reports/dff_manuscript_draft_2026_06_14.md,paper-draft,DFF,Assembled DFF markdown manuscript draft with section prose and asset callouts.,True,True,12226
 reports/assets/manuscript_draft_manifest.csv,paper-draft,"WIFS,DFF",Machine-readable WIFS/DFF manuscript draft manifest.,True,True,221
 reports/manuscript_drafts_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report checking WIFS/DFF manuscript draft sections, asset callouts, word counts, and overclaim guardrails.",False,True,2747
 reports/assets/manuscript_drafts_lint.csv,quality-control,"WIFS,DFF",Machine-readable manuscript draft lint checks.,False,True,2191

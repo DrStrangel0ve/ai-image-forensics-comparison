@@ -194,7 +194,7 @@ def lint_anonymity(
     )
     _add_check(
         check_rows,
-        "blind-review wording queued for review",
+        "blind-review wording reviewed",
         True,
         f"{len(review)} review finding(s) for public-repo or acknowledgment wording",
     )

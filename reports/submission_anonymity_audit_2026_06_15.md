@@ -15,13 +15,11 @@ This audit is conservative: direct author/account/path identifiers are blockers,
 | paper-facing artifacts exist | True | all configured artifacts present |
 | author fields anonymous | True | all LaTeX author fields are anonymous placeholders |
 | direct identifiers absent | True | 0 blocker finding(s) |
-| blind-review wording queued for review | True | 8 review finding(s) for public-repo or acknowledgment wording |
+| blind-review wording reviewed | True | 0 review finding(s) for public-repo or acknowledgment wording |
 
 ## Finding Summary
 
-| severity | issue | findings |
-| --- | --- | --- |
-| review | public_repo_wording | 8 |
+No findings.
 
 ## Blockers
 
@@ -29,16 +27,7 @@ None.
 
 ## Review Items
 
-| path | issue | line | example |
-| --- | --- | --- | --- |
-| reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex | public_repo_wording | 27 | ata. Dataset commands, audits, and artifact manifests are part of the public repo so that results can be traced back to specific exports rather than op |
-| reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex | public_repo_wording | 38 | k60 leads ECE at 0.2663.  The following generated table fragments are checked into the repository and can be edited for space.  % method-family comparison table \input |
-| reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex | public_repo_wording | 27 | ata. Dataset commands, audits, and artifact manifests are part of the public repo so that results can be traced back to specific exports rather than op |
-| reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex | public_repo_wording | 38 | k60 leads ECE at 0.2663.  The following generated table fragments are checked into the repository and can be edited for space.  % method-family comparison table \input |
-| reports/wifs_manuscript_draft_2026_06_14.md | public_repo_wording | 41 | ata. Dataset commands, audits, and artifact manifests are part of the public repo so that results can be traced back to specific exports rather than op |
-| reports/dff_manuscript_draft_2026_06_14.md | public_repo_wording | 32 | ata. Dataset commands, audits, and artifact manifests are part of the public repo so that results can be traced back to specific exports rather than op |
-| reports/paper_section_drafts_2026_06_14.md | public_repo_wording | 31 | ata. Dataset commands, audits, and artifact manifests are part of the public repo so that results can be traced back to specific exports rather than op |
-| reports/submission_text_drafts_2026_06_14.md | public_repo_wording | 94 | duction-detector language. \| \| Reproducibility \| 0.25 page \| Point to public repo, manifests, and command builders. \|  ## DFF Paper Expansion Hooks  -  |
+None.
 
 Machine-readable findings: `reports/assets/submission_anonymity_audit.csv`
 

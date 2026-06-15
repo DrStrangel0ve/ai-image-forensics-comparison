@@ -91,7 +91,7 @@ The operating-mode audit is deliberately objective-specific: Frozen CLIP ViT-B/3
 | Methods | 1.0 page | Define combined_v3/v4, ResNet-18, physics-guided fusion, frozen encoders, score fusion, and source thresholds. |
 | Results | 1.5 pages | Lead with same-domain tie, physics-guided gain, CLIP transfer frontier, reverse tuned fusion, and robustness stressors. |
 | Failure analysis and limitations | 0.75 page | Use qualitative grids and caveats; avoid production-detector language. |
-| Reproducibility | 0.25 page | Point to public repo, manifests, and command builders. |
+| Reproducibility | 0.25 page | Point to anonymized artifact manifests and command builders. |
 
 ## DFF Paper Expansion Hooks
 
