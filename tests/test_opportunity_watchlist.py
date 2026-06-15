@@ -22,6 +22,8 @@ def test_opportunity_watchlist_writes_current_targets(tmp_path: Path) -> None:
             str(out_path),
             "--csv-out",
             str(csv_out),
+            "--run-date",
+            "2026-06-14",
         ],
         cwd=ROOT,
         check=True,
