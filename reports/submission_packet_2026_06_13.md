@@ -79,6 +79,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/competition_dry_run/submission.csv | Upload-shaped competition dry-run submission with scores, labels, confidence, and triage but no ground-truth labels. |
 | quality-control | reports/assets/competition_dry_run/submission_manifest.json | Manifest emitted by the competition submission packager for the dry-run submission. |
 | quality-control | reports/assets/competition_dry_run/submission_lint.json | Machine-readable lint report proving the dry-run submission has no leakage, duplicate IDs, score errors, or ID coverage gaps. |
+| reproducibility | reports/submission_artifact_hashes_2026_06_15.md | Reviewer-facing SHA-256 hash summary for checked-in submission packet artifacts. |
+| reproducibility | reports/assets/submission_artifact_hashes.csv | Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
 | method | reports/reconstruction_v2_feature_set_2026_06_14.md | Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions. |
@@ -182,6 +184,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/competition_dry_run/submission.csv | Upload-shaped competition dry-run submission with scores, labels, confidence, and triage but no ground-truth labels. |
 | quality-control | reports/assets/competition_dry_run/submission_manifest.json | Manifest emitted by the competition submission packager for the dry-run submission. |
 | quality-control | reports/assets/competition_dry_run/submission_lint.json | Machine-readable lint report proving the dry-run submission has no leakage, duplicate IDs, score errors, or ID coverage gaps. |
+| reproducibility | reports/submission_artifact_hashes_2026_06_15.md | Reviewer-facing SHA-256 hash summary for checked-in submission packet artifacts. |
+| reproducibility | reports/assets/submission_artifact_hashes.csv | Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
 | method | reports/reconstruction_v2_feature_set_2026_06_14.md | Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions. |
@@ -372,6 +376,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/competition_dry_run/submission.csv | Upload-shaped competition dry-run submission with scores, labels, confidence, and triage but no ground-truth labels. |
 | quality-control | reports/assets/competition_dry_run/submission_manifest.json | Manifest emitted by the competition submission packager for the dry-run submission. |
 | quality-control | reports/assets/competition_dry_run/submission_lint.json | Machine-readable lint report proving the dry-run submission has no leakage, duplicate IDs, score errors, or ID coverage gaps. |
+| reproducibility | reports/submission_artifact_hashes_2026_06_15.md | Reviewer-facing SHA-256 hash summary for checked-in submission packet artifacts. |
+| reproducibility | reports/assets/submission_artifact_hashes.csv | Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
 | method | reports/reconstruction_v2_feature_set_2026_06_14.md | Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions. |
@@ -583,6 +589,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | manuscript drafts | python scripts/build_manuscript_drafts.py |
 | manuscript draft lint | python scripts/lint_manuscript_drafts.py |
 | publication control suite dry run | python scripts/run_publication_control_suite.py --dry-run |
+| submission artifact hashes | python scripts/build_submission_artifact_hashes.py |
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |
 | submission scorecard | python scripts/build_submission_scorecard.py |

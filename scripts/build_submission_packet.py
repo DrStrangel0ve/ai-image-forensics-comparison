@@ -228,6 +228,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/submission_artifact_hashes_2026_06_15.md",
+        "type": "reproducibility",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Reviewer-facing SHA-256 hash summary for checked-in submission packet artifacts.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/submission_artifact_hashes.csv",
+        "type": "reproducibility",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts.",
+        "required": False,
+    },
+    {
         "path": "reports/reconstruction_lite_feature_set_2026_06_14.md",
         "type": "method",
         "venues": "DFRWS,WIFS,DFF",
@@ -1527,6 +1541,7 @@ REGEN_COMMANDS = [
     ("manuscript drafts", "python scripts/build_manuscript_drafts.py"),
     ("manuscript draft lint", "python scripts/lint_manuscript_drafts.py"),
     ("publication control suite dry run", "python scripts/run_publication_control_suite.py --dry-run"),
+    ("submission artifact hashes", "python scripts/build_submission_artifact_hashes.py"),
     ("submission packet", "python scripts/build_submission_packet.py"),
     ("submission package lint", "python scripts/lint_submission_package.py"),
     ("submission scorecard", "python scripts/build_submission_scorecard.py"),
