@@ -977,6 +977,20 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/assets/dfrws_poster_draft_v2_2026_06_13_candidate_export.pdf",
+        "type": "poster",
+        "venues": "DFRWS",
+        "purpose": "Candidate PDF export preserving the checked-in poster draft's 16:9 slide layout.",
+        "required": True,
+    },
+    {
+        "path": "reports/dfrws_poster_candidate_export_2026_06_15.md",
+        "type": "poster",
+        "venues": "DFRWS",
+        "purpose": "Freeze-mode provenance note for the candidate poster PDF export.",
+        "required": True,
+    },
+    {
         "path": "reports/dfrws_poster_package_lint_2026_06_14.md",
         "type": "quality-control",
         "venues": "DFRWS",

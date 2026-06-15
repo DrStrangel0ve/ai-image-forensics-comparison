@@ -54,7 +54,8 @@ def test_submission_upload_checklist_writes_status_summary(tmp_path: Path) -> No
     assert "decision_needed" not in set(checklist["status"])
     assert "writing_needed" in set(checklist["status"])
     assert "final_export_needed" in set(checklist["status"])
-    assert "| DFRWS-USA 2026 poster/demo | 2026-07-07 | 5 | 0 | 0 | 1 | 0 |" in summary_text
+    assert "| DFRWS-USA 2026 poster/demo | 2026-07-07 | 6 | 0 | 0 | 1 | 0 |" in summary_text
+    assert "candidate poster PDF export" in text
     assert "| IEEE WIFS 2026 paper | 2026-07-15 | 4 | 0 | 1 | 1 | 0 |" in summary_text
     assert "selected qualitative grid" in text
     assert "current generated count is 232 words" in text

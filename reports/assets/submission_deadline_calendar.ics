@@ -34,8 +34,8 @@ DTSTART;VALUE=DATE:20260706
 DTEND;VALUE=DATE:20260707
 SUMMARY:DFF target: SCP-Fusion diagnostic framing
 DESCRIPTION:Edit the assembled DFF markdown draft so SCP-Fusion stays frame
- d as a diagnostic protocol with objective-specific operating modes\, not a
-  universal replacement for frozen CLIP.
+ d as a diagnostic protocol with objective-specific operating modes and pai
+ red-seed support\, not a universal replacement for frozen CLIP.
 CATEGORIES:DFF,target_done_by,scheduled
 TRANSP:TRANSPARENT
 END:VEVENT

@@ -149,6 +149,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | poster | reports/dfrws_poster_draft_v2_2026_06_13.md | Editable poster draft notes and preview references. |
 | poster | reports/assets/dfrws_poster_draft_v2_2026_06_13.pptx | Editable PowerPoint poster draft. |
 | poster | reports/assets/dfrws_poster_draft_v2_2026_06_13.png | Poster draft PNG preview. |
+| poster | reports/assets/dfrws_poster_draft_v2_2026_06_13_candidate_export.pdf | Candidate PDF export preserving the checked-in poster draft's 16:9 slide layout. |
+| poster | reports/dfrws_poster_candidate_export_2026_06_15.md | Freeze-mode provenance note for the candidate poster PDF export. |
 | quality-control | reports/dfrws_poster_package_lint_2026_06_14.md | Generated lint report for DFRWS poster assets, key-number consistency, figure dimensions, and overclaim cautions. |
 | quality-control | reports/assets/dfrws_poster_package_lint.csv | Machine-readable DFRWS poster package lint checks. |
 | figure | reports/assets/publication_score_fusion_clip_frontier.png | CLIP transfer frontier and all-foundation fusion comparison. |

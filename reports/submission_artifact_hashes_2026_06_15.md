@@ -10,7 +10,7 @@ This report provides SHA-256 hashes for checked-in submission packet artifacts s
 
 | hash_status | artifacts |
 | --- | --- |
-| hashed | 211 |
+| hashed | 213 |
 | index_or_self_skipped | 11 |
 
 ## By Artifact Type
@@ -24,8 +24,8 @@ This report provides SHA-256 hashes for checked-in submission packet artifacts s
 | literature | 2 | 2 | 2 | 11386 |
 | method | 4 | 4 | 4 | 22763 |
 | paper-draft | 7 | 7 | 7 | 61832 |
-| planning | 27 | 27 | 27 | 121511 |
-| poster | 6 | 6 | 6 | 607096 |
+| planning | 27 | 27 | 27 | 122264 |
+| poster | 8 | 8 | 8 | 707479 |
 | qualitative | 2 | 2 | 2 | 1781533 |
 | quality-control | 35 | 35 | 26 | 102303 |
 | repo | 2 | 2 | 2 | 58811 |
