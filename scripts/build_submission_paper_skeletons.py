@@ -40,6 +40,7 @@ TABLE_INPUTS = [
     ("reports/assets/latex_tables/robustness_stress.tex", "robustness stress table"),
     ("reports/assets/latex_tables/source_holdout_stress.tex", "held-out generator stress table"),
     ("reports/assets/latex_tables/reconstruction_ablation.tex", "reconstruction residual ablation table"),
+    ("reports/assets/latex_tables/calibration_operating_modes.tex", "objective-specific operating-mode table"),
 ]
 
 FIGURE_INPUTS = [

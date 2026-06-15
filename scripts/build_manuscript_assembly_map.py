@@ -60,7 +60,7 @@ ASSEMBLY_ROWS = [
         "section": "Results",
         "target_pages": 1.75,
         "source_sections": "WIFS Results Draft",
-        "primary_assets": "reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/latex_tables/robustness_stress.tex; reports/assets/latex_tables/reconstruction_ablation.tex; reports/assets/publication_score_fusion_clip_frontier.png; reports/assets/publication_reverse_operating_points.png",
+        "primary_assets": "reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/latex_tables/calibration_operating_modes.tex; reports/assets/latex_tables/robustness_stress.tex; reports/assets/latex_tables/reconstruction_ablation.tex; reports/assets/publication_score_fusion_clip_frontier.png; reports/assets/publication_reverse_operating_points.png",
         "writing_action": "Use compact tables first; include only two or three figures if the official page limit gets tight.",
     },
     {
@@ -105,7 +105,7 @@ ASSEMBLY_ROWS = [
         "section": "Main results and operating points",
         "target_pages": 1.75,
         "source_sections": "WIFS Results Draft",
-        "primary_assets": "reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/publication_score_fusion_clip_frontier.png; reports/assets/publication_triage_operating_points.png",
+        "primary_assets": "reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/latex_tables/calibration_operating_modes.tex; reports/assets/publication_score_fusion_clip_frontier.png; reports/assets/publication_triage_operating_points.png",
         "writing_action": "Carry the multi-objective story: CLIP ranks best, physics helps same-domain, source-aware fusion helps reverse operating points.",
     },
     {

@@ -1,0 +1,24 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Objective-specific operating modes; lower is better for Brier and ECE objectives.}
+\label{tab:calibration-operating-modes}
+\begin{tabular}{p{0.22\linewidth} p{0.27\linewidth} p{0.20\linewidth} p{0.16\linewidth} r}
+\toprule
+Objective & Selected method & Mode & Metric & Value \\
+\midrule
+Default threshold & Frozen CLIP & Default score & Acc. & 0.636 \\
+Transfer ranking & Frozen CLIP & Default score & AUC & 0.864 \\
+Probability error & SCP-Fusion + CLIP & Default score & Brier & 0.311 \\
+Reliability & combined\_v4 k60 & Default score & ECE & 0.266 \\
+Source decision & Branch dropout & Temp. balanced & Acc. & 0.745 \\
+Source Brier & Source calibrated & Temp. balanced & Brier & 0.198 \\
+Source ECE & Source calibrated & Temp. balanced & ECE & 0.127 \\
+Generated recall & Source calibrated & Temp. balanced & Recall & 0.282 \\
+Tiled-DINO decision & Tiled DINOv2 fusion & tile\_max & dAcc. & 0.014 \\
+Tiled-DINO ranking & Tiled DINOv2 fusion & tile\_max & dAUC & 0.015 \\
+Tiled-DINO Brier & Tiled DINOv2 fusion & tile\_mean & dBrier & -0.006 \\
+Tiled-DINO ECE & Tiled DINOv2 fusion & tile\_mean & dECE & -0.005 \\
+\bottomrule
+\end{tabular}
+\end{table}

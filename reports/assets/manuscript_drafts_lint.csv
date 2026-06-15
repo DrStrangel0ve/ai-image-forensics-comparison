@@ -1,9 +1,9 @@
 venue,check,passed,detail
 WIFS,draft exists,True,reports\wifs_manuscript_draft_2026_06_14.md
 WIFS,required sections present,True,all required sections present
-WIFS,draft word count in editable range,True,1336 words; allowed 900-2200
-WIFS,manifest word count matches draft,True,"computed 1336, recorded 1336"
-WIFS,asset callout count matches manifest,True,"computed 19, recorded 19"
+WIFS,draft word count in editable range,True,1342 words; allowed 900-2200
+WIFS,manifest word count matches draft,True,"computed 1342, recorded 1342"
+WIFS,asset callout count matches manifest,True,"computed 20, recorded 20"
 WIFS,asset callouts exist,True,all asset callouts exist
 WIFS,required phrase present: 0.8450 accuracy,True,present
 WIFS,required phrase present: 0.8641 AUC,True,present
@@ -17,9 +17,9 @@ WIFS,avoid overclaim: \bSCP-Fusion beats CLIP\b,True,not found
 WIFS,avoid overclaim: \brobust to processing\b,True,not found
 DFF,draft exists,True,reports\dff_manuscript_draft_2026_06_14.md
 DFF,required sections present,True,all required sections present
-DFF,draft word count in editable range,True,1505 words; allowed 1000-2600
-DFF,manifest word count matches draft,True,"computed 1505, recorded 1505"
-DFF,asset callout count matches manifest,True,"computed 16, recorded 16"
+DFF,draft word count in editable range,True,1511 words; allowed 1000-2600
+DFF,manifest word count matches draft,True,"computed 1511, recorded 1511"
+DFF,asset callout count matches manifest,True,"computed 17, recorded 17"
 DFF,asset callouts exist,True,all asset callouts exist
 DFF,required phrase present: SCP-Fusion as a diagnostic protocol,True,present
 DFF,required phrase present: 0.8641 AUC,True,present

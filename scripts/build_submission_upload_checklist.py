@@ -87,8 +87,8 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-15",
         "item": "LaTeX tables and bibliography",
         "status": "ready_asset",
-        "paths": "reports/assets/latex_tables/method_family_comparison.tex; reports/assets/latex_tables/same_domain_anchor.tex; reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/latex_tables/robustness_stress.tex; reports/assets/latex_tables/source_holdout_stress.tex; reports/assets/latex_tables/reconstruction_ablation.tex; references.bib",
-        "action": "Pull compact tables and references into the paper template; verify final citation metadata before submission.",
+        "paths": "reports/assets/latex_tables/method_family_comparison.tex; reports/assets/latex_tables/same_domain_anchor.tex; reports/assets/latex_tables/transfer_frontier.tex; reports/assets/latex_tables/reverse_operating_points.tex; reports/assets/latex_tables/calibration_operating_modes.tex; reports/assets/latex_tables/robustness_stress.tex; reports/assets/latex_tables/source_holdout_stress.tex; reports/assets/latex_tables/reconstruction_ablation.tex; references.bib",
+        "action": "Pull compact tables and references into the paper template, including the objective-specific operating-mode table; verify final citation metadata before submission.",
     },
     {
         "venue_key": "WIFS",
@@ -132,8 +132,8 @@ UPLOAD_ITEMS = [
         "deadline": "2026-07-16",
         "item": "SCP-Fusion diagnostic framing",
         "status": "writing_needed",
-        "paths": "reports/dff_manuscript_draft_2026_06_14.md; reports/assets/manuscript_draft_manifest.csv; reports/manuscript_assembly_map_2026_06_14.md; reports/assets/manuscript_assembly_map.csv; reports/paper_section_drafts_2026_06_14.md; reports/submission_text_drafts_2026_06_14.md; reports/method_family_comparison_2026_06_14.md; reports/assets/latex_tables/method_family_comparison.tex",
-        "action": "Edit the assembled DFF markdown draft so SCP-Fusion stays framed as a diagnostic protocol, not a universal replacement for frozen CLIP.",
+        "paths": "reports/dff_manuscript_draft_2026_06_14.md; reports/assets/manuscript_draft_manifest.csv; reports/manuscript_assembly_map_2026_06_14.md; reports/assets/manuscript_assembly_map.csv; reports/paper_section_drafts_2026_06_14.md; reports/submission_text_drafts_2026_06_14.md; reports/method_family_comparison_2026_06_14.md; reports/assets/latex_tables/method_family_comparison.tex; reports/assets/latex_tables/calibration_operating_modes.tex",
+        "action": "Edit the assembled DFF markdown draft so SCP-Fusion stays framed as a diagnostic protocol with objective-specific operating modes, not a universal replacement for frozen CLIP.",
     },
     {
         "venue_key": "DFF",

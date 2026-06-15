@@ -221,6 +221,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/latex_tables/reverse_operating_points.tex | LaTeX fragment for the reverse operating point table. |
 | table | reports/assets/latex_tables/robustness_stress.tex | LaTeX fragment for the robustness stress table. |
 | table | reports/assets/latex_tables/method_family_comparison.tex | LaTeX fragment for the method-family comparison table. |
+| table | reports/assets/latex_tables/calibration_operating_modes.tex | LaTeX fragment for the objective-specific calibration and operating-mode table. |
 | table | reports/assets/latex_tables/source_holdout_stress.tex | LaTeX fragment for the held-out generator stress table. |
 | table | reports/assets/latex_tables/reconstruction_ablation.tex | LaTeX fragment for the reconstruction residual ablation table. |
 | paper-draft | reports/submission_paper_skeletons_2026_06_14.md | Report listing generated WIFS/DFF paper skeletons. |
@@ -404,6 +405,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | table | reports/assets/latex_tables/reverse_operating_points.tex | LaTeX fragment for the reverse operating point table. |
 | table | reports/assets/latex_tables/robustness_stress.tex | LaTeX fragment for the robustness stress table. |
 | table | reports/assets/latex_tables/method_family_comparison.tex | LaTeX fragment for the method-family comparison table. |
+| table | reports/assets/latex_tables/calibration_operating_modes.tex | LaTeX fragment for the objective-specific calibration and operating-mode table. |
 | table | reports/assets/latex_tables/source_holdout_stress.tex | LaTeX fragment for the held-out generator stress table. |
 | table | reports/assets/latex_tables/reconstruction_ablation.tex | LaTeX fragment for the reconstruction residual ablation table. |
 | paper-draft | reports/submission_paper_skeletons_2026_06_14.md | Report listing generated WIFS/DFF paper skeletons. |

@@ -53,6 +53,8 @@ def test_submission_upload_checklist_writes_status_summary(tmp_path: Path) -> No
     assert "Freeze the WIFS experimental scope" in text
     assert "Edit the assembled WIFS markdown draft" in text
     assert "Edit the assembled DFF markdown draft" in text
+    assert "calibration_operating_modes.tex" in text
+    assert "objective-specific operating modes" in text
     assert "wifs_manuscript_draft_2026_06_14.md" in text
     assert "dff_manuscript_draft_2026_06_14.md" in text
 

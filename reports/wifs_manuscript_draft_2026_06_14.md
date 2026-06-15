@@ -65,6 +65,7 @@ Same-domain Ishu results show why the physical branch is worth keeping: physics-
 **Assets to place or cite:**
 - Table fragment: `reports/assets/latex_tables/transfer_frontier.tex`
 - Table fragment: `reports/assets/latex_tables/reverse_operating_points.tex`
+- Table fragment: `reports/assets/latex_tables/calibration_operating_modes.tex`
 - Table fragment: `reports/assets/latex_tables/robustness_stress.tex`
 - Table fragment: `reports/assets/latex_tables/reconstruction_ablation.tex`
 - Figure candidate: `reports/assets/publication_score_fusion_clip_frontier.png`

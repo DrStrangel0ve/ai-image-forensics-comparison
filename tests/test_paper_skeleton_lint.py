@@ -39,6 +39,7 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
         "reports/assets/latex_tables/robustness_stress.tex",
         "reports/assets/latex_tables/source_holdout_stress.tex",
         "reports/assets/latex_tables/reconstruction_ablation.tex",
+        "reports/assets/latex_tables/calibration_operating_modes.tex",
     ]
     figure_paths = [
         "reports/assets/publication_score_fusion_clip_frontier.png",
@@ -131,4 +132,5 @@ def test_paper_skeleton_lint_validates_paths_and_claim_guardrails(tmp_path: Path
     assert "method family table referenced" in checks["check"].str.cat(sep=" ")
     assert "source stress table referenced" in checks["check"].str.cat(sep=" ")
     assert "reconstruction ablation table referenced" in checks["check"].str.cat(sep=" ")
+    assert "operating-mode table referenced" in checks["check"].str.cat(sep=" ")
     assert "source stress figure referenced" in checks["check"].str.cat(sep=" ")

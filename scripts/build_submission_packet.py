@@ -540,6 +540,13 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/assets/latex_tables/calibration_operating_modes.tex",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "LaTeX fragment for the objective-specific calibration and operating-mode table.",
+        "required": True,
+    },
+    {
         "path": "reports/assets/latex_tables/source_holdout_stress.tex",
         "type": "table",
         "venues": "WIFS,DFF",

@@ -17,6 +17,7 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     source_dir.mkdir()
     manifest_path = source_dir / "submission_result_table_manifest.csv"
     method_family_path = source_dir / "method_family_comparison.csv"
+    calibration_modes_path = source_dir / "calibration_operating_modes.csv"
     table_ids = [
         "same_domain_anchor",
         "transfer_frontier",
@@ -93,6 +94,38 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
             "method": ["Frozen CLIP ViT-B/32"],
         }
     ).to_csv(method_family_path, index=False)
+    pd.DataFrame(
+        [
+            {
+                "objective": "ranking_auc",
+                "selected_method": "Frozen CLIP ViT-B/32",
+                "selected_mode": "default_score",
+                "metric": "auc",
+                "metric_value": 0.8641,
+            },
+            {
+                "objective": "probability_brier",
+                "selected_method": "SCP-Fusion + CLIP",
+                "selected_mode": "default_score",
+                "metric": "brier",
+                "metric_value": 0.3112,
+            },
+            {
+                "objective": "reliability_ece",
+                "selected_method": "combined_v4 select-k60",
+                "selected_mode": "default_score",
+                "metric": "ece",
+                "metric_value": 0.2663,
+            },
+            {
+                "objective": "tiled_dino_accuracy",
+                "selected_method": "tiled DINOv2 reverse fusion",
+                "selected_mode": "tile_max",
+                "metric": "best_accuracy_delta",
+                "metric_value": 0.0139,
+            },
+        ]
+    ).to_csv(calibration_modes_path, index=False)
 
     subprocess.run(
         [
@@ -102,6 +135,8 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
             str(manifest_path),
             "--method-family-comparison",
             str(method_family_path),
+            "--calibration-operating-modes",
+            str(calibration_modes_path),
             "--out-dir",
             str(out_dir),
             "--report-out",
@@ -117,9 +152,13 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     source_tex = (out_dir / "source_holdout_stress.tex").read_text(encoding="utf-8")
     reconstruction_tex = (out_dir / "reconstruction_ablation.tex").read_text(encoding="utf-8")
     family_tex = (out_dir / "method_family_comparison.tex").read_text(encoding="utf-8")
+    modes_tex = (out_dir / "calibration_operating_modes.tex").read_text(encoding="utf-8")
     report = report_out.read_text(encoding="utf-8")
 
-    assert set(latex_manifest["table_id"]) == set(table_ids) | {"method_family_comparison"}
+    assert set(latex_manifest["table_id"]) == set(table_ids) | {
+        "method_family_comparison",
+        "calibration_operating_modes",
+    }
     assert "\\begin{table}[t]" in same_tex
     assert "\\toprule" in same_tex
     assert "combined\\_v3" in same_tex
@@ -132,4 +171,10 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     assert "+0.030" in reconstruction_tex
     assert "tab:method-family-comparison" in family_tex
     assert "CLIP" in family_tex
+    assert "tab:calibration-operating-modes" in modes_tex
+    assert "Transfer ranking" in modes_tex
+    assert "Frozen CLIP" in modes_tex
+    assert "SCP-Fusion + CLIP" in modes_tex
+    assert "combined\\_v4 k60" in modes_tex
+    assert "dAcc." in modes_tex
     assert "Submission LaTeX Tables" in report
