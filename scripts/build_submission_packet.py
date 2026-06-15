@@ -242,6 +242,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/submission_artifact_hashes_lint_2026_06_15.md",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Generated lint report proving checked artifact hashes still match the files on disk.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/submission_artifact_hashes_lint.csv",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable lint checks for the submission artifact hash manifest.",
+        "required": False,
+    },
+    {
         "path": "reports/reconstruction_lite_feature_set_2026_06_14.md",
         "type": "method",
         "venues": "DFRWS,WIFS,DFF",
@@ -1542,6 +1556,7 @@ REGEN_COMMANDS = [
     ("manuscript draft lint", "python scripts/lint_manuscript_drafts.py"),
     ("publication control suite dry run", "python scripts/run_publication_control_suite.py --dry-run"),
     ("submission artifact hashes", "python scripts/build_submission_artifact_hashes.py"),
+    ("submission artifact hash lint", "python scripts/lint_submission_artifact_hashes.py"),
     ("submission packet", "python scripts/build_submission_packet.py"),
     ("submission package lint", "python scripts/lint_submission_package.py"),
     ("submission scorecard", "python scripts/build_submission_scorecard.py"),

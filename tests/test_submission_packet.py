@@ -109,6 +109,7 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "SOTA gap closure plan" in text
     assert "competition submission dry run" in text
     assert "submission artifact hashes" in text
+    assert "submission artifact hash lint" in text
     assert "Do not claim SOTA" in text
     assert "calibration operating modes" in text
     assert "claim matrix lint" in text
@@ -135,6 +136,8 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "reports/assets/competition_dry_run/submission_lint.json" in set(manifest["path"])
     assert "reports/submission_artifact_hashes_2026_06_15.md" in set(manifest["path"])
     assert "reports/assets/submission_artifact_hashes.csv" in set(manifest["path"])
+    assert "reports/submission_artifact_hashes_lint_2026_06_15.md" in set(manifest["path"])
+    assert "reports/assets/submission_artifact_hashes_lint.csv" in set(manifest["path"])
     assert "reports/submission_critical_path_2026_06_14.md" in set(manifest["path"])
     assert "reports/assets/submission_critical_path.csv" in set(manifest["path"])
     assert "reports/ms_cocoai_to_ishu_source_holdout_model_selection_2026_06_13.md" in set(manifest["path"])

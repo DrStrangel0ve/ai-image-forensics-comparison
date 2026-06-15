@@ -1,5 +1,5 @@
 path,type,venues,required,exists,size_bytes,sha256,hash_status
-README.md,repo,"DFRWS,WIFS,DFF",True,True,56476,430e1803a0b2bd7cc1eac6dc10518035cdb16c0fa99bd054bdd6e7d079fd25c0,hashed
+README.md,repo,"DFRWS,WIFS,DFF",True,True,56610,58839375ac15b7e9418a89ff218cde7b50a77e61cbab7301ee84bd51fd225642,hashed
 CITATION.cff,repo,"DFRWS,WIFS,DFF",True,True,788,7b52c39b6b305a5c4fbe4dcf3c082c72bfd91927b1f4fa407ef38bb8cdec8a49,hashed
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF",True,True,16823,8347ede904820de368b7c896c96dbc3653c0401d9fdd5654f09b66907c317a31,hashed
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF",True,True,15291,218f84d6665f765d6aec052a8838b01aa742e79036c5bea25e7b4a50a9ac80c5,hashed
@@ -9,8 +9,8 @@ reports/submission_upload_checklist_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Fals
 reports/assets/submission_upload_checklist.csv,planning,"DFRWS,WIFS,DFF",False,True,7365,8701d9fa84e7b0e8d2f4b3c1800e873c956ac618daaf545bea987f8803ce817c,hashed
 reports/submission_critical_path_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,2460,a0490f3485832df414305cba5fb810fd1d59da5468360cb3010e86de8501fbcc,hashed
 reports/assets/submission_critical_path.csv,planning,"DFRWS,WIFS,DFF",False,True,2771,3bb698820ae48d4c1d7ae42d95c327dd1f53e3f74bb3caa1d7dae12aaf7429f4,hashed
-reports/publication_control_suite_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,8795,39ed4140bd9d7391a103d7194d48613520ba0b4c226627b0ab997ea6bc64cf6b,hashed
-reports/assets/publication_control_suite.csv,planning,"DFRWS,WIFS,DFF",False,True,7183,ae89d7fa3a9f415169664c81f1007e80c7835fec9a837f37c848c93b90341fdc,hashed
+reports/publication_control_suite_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,8925,23c2c0eb238e237046d51952867376bef8a3932b016dbae4ebaf0e3a01173cb4,hashed
+reports/assets/publication_control_suite.csv,planning,"DFRWS,WIFS,DFF",False,True,7297,b10c30c127bf3d8c97a2d85d80e88c6326d8a78e9558fce68d20a3a59584d795,hashed
 reports/opportunity_watchlist_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,4061,f04f9e2f12382a4e7c55d2cee1f858e1595f25a6b04472abbdeb2eca43d0dfc7,hashed
 reports/assets/opportunity_watchlist.csv,planning,"DFRWS,WIFS,DFF",False,True,2941,91f52989c73590f95e7afade8a356afdb6462b38bc0af47f4f2aa9b2075792fc,hashed
 reports/external_benchmark_readiness_2026_06_14.md,planning,"DFRWS,WIFS,DFF",False,True,5790,dcfc2e0f84e6178fc5169c9d0e4f4413ce7912d9c1ba6a51de5142a8fec89c67,hashed
@@ -29,7 +29,9 @@ reports/assets/competition_dry_run/submission.csv,quality-control,"DFRWS,WIFS,DF
 reports/assets/competition_dry_run/submission_manifest.json,quality-control,"DFRWS,WIFS,DFF",False,True,735,a3e766a67ae18477556d246804bd06d2b5e19087fbb3729836a0dd8e7c0c63df,hashed
 reports/assets/competition_dry_run/submission_lint.json,quality-control,"DFRWS,WIFS,DFF",False,True,2222,c3c46e1c00c1303d611f5caf64696ed5d3c630341585aa9dd9239eaaeb33f38b,hashed
 reports/submission_artifact_hashes_2026_06_15.md,reproducibility,"DFRWS,WIFS,DFF",False,True,1387,,index_or_self_skipped
-reports/assets/submission_artifact_hashes.csv,reproducibility,"DFRWS,WIFS,DFF",False,True,33762,,index_or_self_skipped
+reports/assets/submission_artifact_hashes.csv,reproducibility,"DFRWS,WIFS,DFF",False,True,34011,,index_or_self_skipped
+reports/submission_artifact_hashes_lint_2026_06_15.md,quality-control,"DFRWS,WIFS,DFF",False,True,719,,index_or_self_skipped
+reports/assets/submission_artifact_hashes_lint.csv,quality-control,"DFRWS,WIFS,DFF",False,True,419,,index_or_self_skipped
 reports/reconstruction_lite_feature_set_2026_06_14.md,method,"DFRWS,WIFS,DFF",False,True,3939,a7d42ab49bf229ddd22bb2d684ded433fa3f415a77f4aac1ba168dc583892f95,hashed
 reports/assets/reconstruction_lite_feature_manifest.csv,method,"DFRWS,WIFS,DFF",False,True,2323,cef8d6d2b0724e33a8e3aaa0675693c5fd551aef9404734767403955f9536ba5,hashed
 reports/reconstruction_v2_feature_set_2026_06_14.md,method,"DFRWS,WIFS,DFF",False,True,9394,4faad4f14edafc05b8d0b4f0d7aef37c9f432c9e84800d1480aa5d40ebfe1a10,hashed

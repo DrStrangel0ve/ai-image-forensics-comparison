@@ -9,6 +9,12 @@ import pandas as pd
 
 
 DEFAULT_RUN_DATE = date.today()
+DEFAULT_SKIP_RELATIVE_PATHS = {
+    "reports/submission_artifact_hashes_2026_06_15.md",
+    "reports/assets/submission_artifact_hashes.csv",
+    "reports/submission_artifact_hashes_lint_2026_06_15.md",
+    "reports/assets/submission_artifact_hashes_lint.csv",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -90,6 +96,7 @@ def build_artifact_hashes(
         _repo_relative(repo_root, manifest_path),
         _repo_relative(repo_root, out_path),
         _repo_relative(repo_root, hashes_out),
+        *DEFAULT_SKIP_RELATIVE_PATHS,
     }
     rows = []
     for artifact in manifest.itertuples(index=False):
