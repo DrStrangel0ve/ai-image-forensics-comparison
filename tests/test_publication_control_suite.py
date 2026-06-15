@@ -81,6 +81,7 @@ def test_publication_control_suite_dry_run_lists_ordered_commands(tmp_path: Path
     assert order["submission artifact hashes"] < order["submission packet"]
     assert order["submission artifact hashes"] < order["submission artifact hash lint"]
     assert order["submission artifact hash lint"] < order["submission packet"]
+    assert order["submission privacy audit"] < order["submission packet"]
     assert order["submission packet"] < order["submission package lint"]
     assert order["submission package lint"] < order["submission scorecard"]
     assert order["submission scorecard"] < order["submission upload checklist"]

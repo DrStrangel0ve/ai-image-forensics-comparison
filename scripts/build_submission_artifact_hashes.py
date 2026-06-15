@@ -14,6 +14,8 @@ DEFAULT_SKIP_RELATIVE_PATHS = {
     "reports/assets/submission_artifact_hashes.csv",
     "reports/submission_artifact_hashes_lint_2026_06_15.md",
     "reports/assets/submission_artifact_hashes_lint.csv",
+    "reports/submission_privacy_audit_2026_06_15.md",
+    "reports/assets/submission_privacy_audit.csv",
 }
 
 

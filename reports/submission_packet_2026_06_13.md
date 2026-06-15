@@ -83,6 +83,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | reproducibility | reports/assets/submission_artifact_hashes.csv | Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts. |
 | quality-control | reports/submission_artifact_hashes_lint_2026_06_15.md | Generated lint report proving checked artifact hashes still match the files on disk. |
 | quality-control | reports/assets/submission_artifact_hashes_lint.csv | Machine-readable lint checks for the submission artifact hash manifest. |
+| quality-control | reports/submission_privacy_audit_2026_06_15.md | Public-release audit for local absolute paths, placeholder paths, and obvious secret-like strings in packet artifacts. |
+| quality-control | reports/assets/submission_privacy_audit.csv | Machine-readable privacy/local-path audit findings for checked-in submission packet artifacts. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
 | method | reports/reconstruction_v2_feature_set_2026_06_14.md | Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions. |
@@ -190,6 +192,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | reproducibility | reports/assets/submission_artifact_hashes.csv | Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts. |
 | quality-control | reports/submission_artifact_hashes_lint_2026_06_15.md | Generated lint report proving checked artifact hashes still match the files on disk. |
 | quality-control | reports/assets/submission_artifact_hashes_lint.csv | Machine-readable lint checks for the submission artifact hash manifest. |
+| quality-control | reports/submission_privacy_audit_2026_06_15.md | Public-release audit for local absolute paths, placeholder paths, and obvious secret-like strings in packet artifacts. |
+| quality-control | reports/assets/submission_privacy_audit.csv | Machine-readable privacy/local-path audit findings for checked-in submission packet artifacts. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
 | method | reports/reconstruction_v2_feature_set_2026_06_14.md | Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions. |
@@ -384,6 +388,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | reproducibility | reports/assets/submission_artifact_hashes.csv | Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts. |
 | quality-control | reports/submission_artifact_hashes_lint_2026_06_15.md | Generated lint report proving checked artifact hashes still match the files on disk. |
 | quality-control | reports/assets/submission_artifact_hashes_lint.csv | Machine-readable lint checks for the submission artifact hash manifest. |
+| quality-control | reports/submission_privacy_audit_2026_06_15.md | Public-release audit for local absolute paths, placeholder paths, and obvious secret-like strings in packet artifacts. |
+| quality-control | reports/assets/submission_privacy_audit.csv | Machine-readable privacy/local-path audit findings for checked-in submission packet artifacts. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
 | method | reports/reconstruction_v2_feature_set_2026_06_14.md | Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions. |
@@ -597,6 +603,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | publication control suite dry run | python scripts/run_publication_control_suite.py --dry-run |
 | submission artifact hashes | python scripts/build_submission_artifact_hashes.py |
 | submission artifact hash lint | python scripts/lint_submission_artifact_hashes.py |
+| submission privacy audit | python scripts/build_submission_privacy_audit.py |
 | submission packet | python scripts/build_submission_packet.py |
 | submission package lint | python scripts/lint_submission_package.py |
 | submission scorecard | python scripts/build_submission_scorecard.py |

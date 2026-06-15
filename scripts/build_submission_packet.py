@@ -256,6 +256,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/submission_privacy_audit_2026_06_15.md",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Public-release audit for local absolute paths, placeholder paths, and obvious secret-like strings in packet artifacts.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/submission_privacy_audit.csv",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable privacy/local-path audit findings for checked-in submission packet artifacts.",
+        "required": False,
+    },
+    {
         "path": "reports/reconstruction_lite_feature_set_2026_06_14.md",
         "type": "method",
         "venues": "DFRWS,WIFS,DFF",
@@ -1557,6 +1571,7 @@ REGEN_COMMANDS = [
     ("publication control suite dry run", "python scripts/run_publication_control_suite.py --dry-run"),
     ("submission artifact hashes", "python scripts/build_submission_artifact_hashes.py"),
     ("submission artifact hash lint", "python scripts/lint_submission_artifact_hashes.py"),
+    ("submission privacy audit", "python scripts/build_submission_privacy_audit.py"),
     ("submission packet", "python scripts/build_submission_packet.py"),
     ("submission package lint", "python scripts/lint_submission_package.py"),
     ("submission scorecard", "python scripts/build_submission_scorecard.py"),
