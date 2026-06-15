@@ -47,6 +47,7 @@ CRITICAL_PATH_COLUMNS = [
     "status",
     "target_done_by",
     "days_until_target",
+    "urgency",
     "days_until_deadline",
     "reason",
     "action",
@@ -91,6 +92,18 @@ def _target_date(deadline: str, status: str) -> date:
     return date.fromisoformat(deadline) - timedelta(days=int(policy["buffer_days"]))
 
 
+def _urgency(days_until_target: int) -> str:
+    if days_until_target < 0:
+        return "overdue"
+    if days_until_target <= 3:
+        return "due_now"
+    if days_until_target <= 7:
+        return "due_this_week"
+    if days_until_target <= 14:
+        return "due_next_two_weeks"
+    return "scheduled"
+
+
 def build_critical_path(
     checklist_path: Path,
     scorecard_path: Path,
@@ -105,6 +118,7 @@ def build_critical_path(
     for item in pending.itertuples(index=False):
         policy = STATUS_POLICY[str(item.status)]
         target = _target_date(str(item.deadline), str(item.status))
+        days_until_target = (target - run_date).days
         score = scorecard_by_key.loc[str(item.venue_key)]
         rows.append(
             {
@@ -117,7 +131,8 @@ def build_critical_path(
                 "item": item.item,
                 "status": item.status,
                 "target_done_by": target.isoformat(),
-                "days_until_target": (target - run_date).days,
+                "days_until_target": days_until_target,
+                "urgency": _urgency(days_until_target),
                 "days_until_deadline": (date.fromisoformat(str(item.deadline)) - run_date).days,
                 "reason": policy["reason"],
                 "action": item.action,
@@ -188,6 +203,7 @@ def _write_markdown(frame: pd.DataFrame, run_date: date) -> str:
         "status",
         "target_done_by",
         "days_until_target",
+        "urgency",
         "action",
     ]
     lines = [
@@ -212,6 +228,7 @@ def _write_markdown(frame: pd.DataFrame, run_date: date) -> str:
         "- `writing_needed` targets are set 10 days before the venue deadline.",
         "- `final_export_needed` targets are set 3 days before the venue deadline.",
         "- Missing assets or unresolved decisions, if any appear later, are pulled earlier with larger buffers.",
+        "- Urgency bands are `overdue`, `due_now` (0-3 days), `due_this_week` (4-7 days), `due_next_two_weeks` (8-14 days), and `scheduled`.",
         "",
     ]
     return "\n".join(lines)

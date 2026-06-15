@@ -16,16 +16,17 @@ This report is the remaining work queue after the checked-in packet has reached 
 
 ## Ordered Critical Path
 
-| venue_key | phase | item | status | target_done_by | days_until_target | action |
-| --- | --- | --- | --- | --- | --- | --- |
-| DFRWS | export | final upload export | final_export_needed | 2026-07-04 | 19 | Export the final polished poster to the exact DFRWS-required format before upload. |
-| WIFS | draft | paper prose sections | writing_needed | 2026-07-05 | 20 | Edit the assembled WIFS markdown draft into the official template; keep caveats about CLIP, single-image physics, and native tiling. |
-| DFF | draft | SCP-Fusion diagnostic framing | writing_needed | 2026-07-06 | 21 | Edit the assembled DFF markdown draft so SCP-Fusion stays framed as a diagnostic protocol with objective-specific operating modes, not a universal replacement for frozen CLIP. |
-| WIFS | export | final camera-ready formatting | final_export_needed | 2026-07-12 | 27 | Compile, inspect page count, check references/figures, and export the final PDF for the WIFS system. |
-| DFF | export | final OpenReview upload package | final_export_needed | 2026-07-13 | 28 | Compile the DFF PDF, verify anonymous/non-anonymous requirements, and upload through OpenReview. |
+| venue_key | phase | item | status | target_done_by | days_until_target | urgency | action |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| DFRWS | export | final upload export | final_export_needed | 2026-07-04 | 19 | scheduled | Export the final polished poster to the exact DFRWS-required format before upload. |
+| WIFS | draft | paper prose sections | writing_needed | 2026-07-05 | 20 | scheduled | Edit the assembled WIFS markdown draft into the official template; keep caveats about CLIP, single-image physics, and native tiling. |
+| DFF | draft | SCP-Fusion diagnostic framing | writing_needed | 2026-07-06 | 21 | scheduled | Edit the assembled DFF markdown draft so SCP-Fusion stays framed as a diagnostic protocol with objective-specific operating modes, not a universal replacement for frozen CLIP. |
+| WIFS | export | final camera-ready formatting | final_export_needed | 2026-07-12 | 27 | scheduled | Compile, inspect page count, check references/figures, and export the final PDF for the WIFS system. |
+| DFF | export | final OpenReview upload package | final_export_needed | 2026-07-13 | 28 | scheduled | Compile the DFF PDF, verify anonymous/non-anonymous requirements, and upload through OpenReview. |
 
 ## Policy
 
 - `writing_needed` targets are set 10 days before the venue deadline.
 - `final_export_needed` targets are set 3 days before the venue deadline.
 - Missing assets or unresolved decisions, if any appear later, are pulled earlier with larger buffers.
+- Urgency bands are `overdue`, `due_now` (0-3 days), `due_this_week` (4-7 days), `due_next_two_weeks` (8-14 days), and `scheduled`.
