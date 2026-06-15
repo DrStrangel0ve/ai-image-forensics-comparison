@@ -56,3 +56,4 @@ order,stage,asset,command,status,returncode,elapsed_seconds
 55,submission-planning,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
 56,submission-planning,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0
 57,submission-planning,submission critical path,python scripts/build_submission_critical_path.py,planned,0,0.0
+58,reference-and-claims,submission deadline calendar,python scripts/build_submission_deadline_calendar.py,planned,0,0.0

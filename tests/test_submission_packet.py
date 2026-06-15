@@ -99,6 +99,7 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "classic multi-light photometric stereo" in text
     assert "publication control suite dry run" in text
     assert "submission critical path" in text
+    assert "submission deadline calendar" in text
     assert "source-heldout model selection" in text
     assert "source-heldout stress figure" in text
     assert "method-family comparison" in text
@@ -146,6 +147,9 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     assert "reports/assets/submission_privacy_audit.csv" in set(manifest["path"])
     assert "reports/submission_critical_path_2026_06_14.md" in set(manifest["path"])
     assert "reports/assets/submission_critical_path.csv" in set(manifest["path"])
+    assert "reports/submission_deadline_calendar_2026_06_15.md" in set(manifest["path"])
+    assert "reports/assets/submission_deadline_calendar.csv" in set(manifest["path"])
+    assert "reports/assets/submission_deadline_calendar.ics" in set(manifest["path"])
     assert "reports/ms_cocoai_to_ishu_source_holdout_model_selection_2026_06_13.md" in set(manifest["path"])
     assert "reports/assets/ms_cocoai_to_ishu_source_holdout_model_selection_source_summary.csv" in set(manifest["path"])
     assert "reports/source_holdout_generator_stress_2026_06_14.md" in set(manifest["path"])

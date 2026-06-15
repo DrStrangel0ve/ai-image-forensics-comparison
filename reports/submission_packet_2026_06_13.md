@@ -60,6 +60,9 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
 | planning | reports/submission_critical_path_2026_06_14.md | Deadline-driven remaining-work queue for final writing and upload export tasks. |
 | planning | reports/assets/submission_critical_path.csv | Machine-readable critical path for pending writing and final-export tasks. |
+| planning | reports/submission_deadline_calendar_2026_06_15.md | Calendar-ready view of target dates and final deadlines for DFRWS, WIFS, and DFF submissions. |
+| planning | reports/assets/submission_deadline_calendar.csv | Machine-readable submission target and deadline events. |
+| planning | reports/assets/submission_deadline_calendar.ics | Importable all-day calendar reminders for submission target dates and final deadlines. |
 | planning | reports/publication_control_suite_2026_06_14.md | Ordered dry-run command plan for regenerating publication artifacts and lints. |
 | planning | reports/assets/publication_control_suite.csv | Machine-readable publication-control command plan. |
 | planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
@@ -171,6 +174,9 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
 | planning | reports/submission_critical_path_2026_06_14.md | Deadline-driven remaining-work queue for final writing and upload export tasks. |
 | planning | reports/assets/submission_critical_path.csv | Machine-readable critical path for pending writing and final-export tasks. |
+| planning | reports/submission_deadline_calendar_2026_06_15.md | Calendar-ready view of target dates and final deadlines for DFRWS, WIFS, and DFF submissions. |
+| planning | reports/assets/submission_deadline_calendar.csv | Machine-readable submission target and deadline events. |
+| planning | reports/assets/submission_deadline_calendar.ics | Importable all-day calendar reminders for submission target dates and final deadlines. |
 | planning | reports/publication_control_suite_2026_06_14.md | Ordered dry-run command plan for regenerating publication artifacts and lints. |
 | planning | reports/assets/publication_control_suite.csv | Machine-readable publication-control command plan. |
 | planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
@@ -369,6 +375,9 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | planning | reports/assets/submission_upload_checklist.csv | Machine-readable venue upload checklist. |
 | planning | reports/submission_critical_path_2026_06_14.md | Deadline-driven remaining-work queue for final writing and upload export tasks. |
 | planning | reports/assets/submission_critical_path.csv | Machine-readable critical path for pending writing and final-export tasks. |
+| planning | reports/submission_deadline_calendar_2026_06_15.md | Calendar-ready view of target dates and final deadlines for DFRWS, WIFS, and DFF submissions. |
+| planning | reports/assets/submission_deadline_calendar.csv | Machine-readable submission target and deadline events. |
+| planning | reports/assets/submission_deadline_calendar.ics | Importable all-day calendar reminders for submission target dates and final deadlines. |
 | planning | reports/publication_control_suite_2026_06_14.md | Ordered dry-run command plan for regenerating publication artifacts and lints. |
 | planning | reports/assets/publication_control_suite.csv | Machine-readable publication-control command plan. |
 | planning | reports/opportunity_watchlist_2026_06_14.md | Current venue/challenge watchlist separating active submission targets from closed benchmark tracks. |
@@ -616,6 +625,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | submission scorecard | python scripts/build_submission_scorecard.py |
 | submission upload checklist | python scripts/build_submission_upload_checklist.py |
 | submission critical path | python scripts/build_submission_critical_path.py |
+| submission deadline calendar | python scripts/build_submission_deadline_calendar.py |
 
 ## Current Editorial Guardrails
 

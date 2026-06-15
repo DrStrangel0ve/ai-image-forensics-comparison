@@ -95,6 +95,27 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/submission_deadline_calendar_2026_06_15.md",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Calendar-ready view of target dates and final deadlines for DFRWS, WIFS, and DFF submissions.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/submission_deadline_calendar.csv",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable submission target and deadline events.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/submission_deadline_calendar.ics",
+        "type": "planning",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Importable all-day calendar reminders for submission target dates and final deadlines.",
+        "required": False,
+    },
+    {
         "path": "reports/publication_control_suite_2026_06_14.md",
         "type": "planning",
         "venues": "DFRWS,WIFS,DFF",
@@ -1592,6 +1613,7 @@ REGEN_COMMANDS = [
     ("submission scorecard", "python scripts/build_submission_scorecard.py"),
     ("submission upload checklist", "python scripts/build_submission_upload_checklist.py"),
     ("submission critical path", "python scripts/build_submission_critical_path.py"),
+    ("submission deadline calendar", "python scripts/build_submission_deadline_calendar.py"),
 ]
 
 

@@ -1,0 +1,99 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//SCP-Fusion//Submission Deadline Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:SCP-Fusion Submissions 2026
+BEGIN:VEVENT
+UID:dfrws-target-done-by-20260704-final-upload-export@scp-fusion.local
+DTSTAMP:20260615T000000Z
+DTSTART;VALUE=DATE:20260704
+DTEND;VALUE=DATE:20260705
+SUMMARY:DFRWS target: final upload export
+DESCRIPTION:Export the final polished poster to the exact DFRWS-required fo
+ rmat before upload.
+CATEGORIES:DFRWS,target_done_by,scheduled
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:wifs-target-done-by-20260705-paper-prose-sections@scp-fusion.local
+DTSTAMP:20260615T000000Z
+DTSTART;VALUE=DATE:20260705
+DTEND;VALUE=DATE:20260706
+SUMMARY:WIFS target: paper prose sections
+DESCRIPTION:Edit the assembled WIFS markdown draft into the official templa
+ te\; keep caveats about CLIP\, single-image physics\, and native tiling.
+CATEGORIES:WIFS,target_done_by,scheduled
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dff-target-done-by-20260706-scp-fusion-diagnostic-framing@scp-fusion.lo
+ cal
+DTSTAMP:20260615T000000Z
+DTSTART;VALUE=DATE:20260706
+DTEND;VALUE=DATE:20260707
+SUMMARY:DFF target: SCP-Fusion diagnostic framing
+DESCRIPTION:Edit the assembled DFF markdown draft so SCP-Fusion stays frame
+ d as a diagnostic protocol with objective-specific operating modes\, not a
+  universal replacement for frozen CLIP.
+CATEGORIES:DFF,target_done_by,scheduled
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dfrws-venue-deadline-20260707-venue-deadline@scp-fusion.local
+DTSTAMP:20260615T000000Z
+DTSTART;VALUE=DATE:20260707
+DTEND;VALUE=DATE:20260708
+SUMMARY:DFRWS final submission deadline
+DESCRIPTION:Final deadline for DFRWS-USA 2026 poster/demo. Packet status: r
+ eady_to_polish.
+CATEGORIES:DFRWS,venue_deadline,scheduled
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:wifs-target-done-by-20260712-final-camera-ready-formatting@scp-fusion.l
+ ocal
+DTSTAMP:20260615T000000Z
+DTSTART;VALUE=DATE:20260712
+DTEND;VALUE=DATE:20260713
+SUMMARY:WIFS target: final camera-ready formatting
+DESCRIPTION:Compile\, inspect page count\, check references/figures\, and e
+ xport the final PDF for the WIFS system.
+CATEGORIES:WIFS,target_done_by,scheduled
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dff-target-done-by-20260713-final-openreview-upload-package@scp-fusion.
+ local
+DTSTAMP:20260615T000000Z
+DTSTART;VALUE=DATE:20260713
+DTEND;VALUE=DATE:20260714
+SUMMARY:DFF target: final OpenReview upload package
+DESCRIPTION:Compile the DFF PDF\, verify anonymous/non-anonymous requiremen
+ ts\, and upload through OpenReview.
+CATEGORIES:DFF,target_done_by,scheduled
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:wifs-venue-deadline-20260715-venue-deadline@scp-fusion.local
+DTSTAMP:20260615T000000Z
+DTSTART;VALUE=DATE:20260715
+DTEND;VALUE=DATE:20260716
+SUMMARY:WIFS final submission deadline
+DESCRIPTION:Final deadline for IEEE WIFS 2026 paper. Packet status: ready_t
+ o_polish.
+CATEGORIES:WIFS,venue_deadline,scheduled
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dff-venue-deadline-20260716-venue-deadline@scp-fusion.local
+DTSTAMP:20260615T000000Z
+DTSTART;VALUE=DATE:20260716
+DTEND;VALUE=DATE:20260717
+SUMMARY:DFF final submission deadline
+DESCRIPTION:Final deadline for DFF-2026 ACM Multimedia workshop. Packet sta
+ tus: ready_to_polish.
+CATEGORIES:DFF,venue_deadline,scheduled
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR
