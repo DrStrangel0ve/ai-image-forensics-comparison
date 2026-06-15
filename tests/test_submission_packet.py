@@ -80,6 +80,8 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
             str(out_path),
             "--manifest-out",
             str(manifest_out),
+            "--run-date",
+            "2026-06-14",
         ],
         cwd=ROOT,
         check=True,
@@ -89,6 +91,7 @@ def test_submission_packet_builder_writes_manifest_and_validates_artifacts(tmp_p
     manifest = pd.read_csv(manifest_out)
 
     assert "Submission Packet Manifest" in text
+    assert "Run date: 2026-06-14" in text
     assert "DFRWS Packet" in text
     assert "WIFS Packet" in text
     assert "DFF Packet" in text
