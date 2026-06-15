@@ -36,6 +36,7 @@ def test_sota_gap_closure_plan_prioritizes_official_benchmark_runs(tmp_path: Pat
     assert "genimage_official_split_eval" in text
     assert "high_res_tiled_foundation_eval" in text
     assert "evaluate_frozen_encoder_model.py" in text
+    assert "package_competition_submission.py" in text
     assert plan.iloc[0]["task_id"] == "genimage_official_split_eval"
     assert plan["rank"].is_monotonic_increasing
     assert "ntire_released_protocol_replay" in set(plan["task_id"])
@@ -45,6 +46,9 @@ def test_sota_gap_closure_plan_prioritizes_official_benchmark_runs(tmp_path: Pat
         ].item()
         == "core_transform_stress_probes_complete"
     )
+    assert "package_competition_submission.py" in plan.loc[
+        plan["task_id"] == "imageclef_next_cycle_packaging", "commands"
+    ].item()
     assert set(plan["status"]) >= {
         "bounded_transfer_and_fusion_probe_complete_pretrained_branch_next",
         "ready_when_data_available",

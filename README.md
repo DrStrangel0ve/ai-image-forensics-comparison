@@ -41,6 +41,15 @@ The current venue-facing scorecard is documented in [reports/submission_scorecar
 
 The ordered publication-control runner is [scripts/run_publication_control_suite.py](scripts/run_publication_control_suite.py). Use `python scripts/run_publication_control_suite.py --dry-run` to refresh [reports/publication_control_suite_2026_06_14.md](reports/publication_control_suite_2026_06_14.md), or omit `--dry-run` to execute the checked-in publication builders and lints in dependency order.
 
+Competition-style score packaging is handled by [scripts/package_competition_submission.py](scripts/package_competition_submission.py). Given a prediction CSV with `path`/`image_id` and `fake_score`/`prob_fake`, it writes a submission CSV with per-image fake scores, binary labels, confidence, and likely-real/uncertain/likely-fake triage while excluding any `y_true` column from the output:
+
+```powershell
+python scripts/package_competition_submission.py `
+  --predictions runs\some_model\predictions.csv `
+  --out-path reports\assets\competition_submission.csv `
+  --manifest-out reports\assets\competition_submission_manifest.json
+```
+
 The public reproducibility checklist is documented in [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It lists what is included in the public repo, what must be downloaded externally, and the shortest commands for tests, ablations, and publication figure generation.
 
 The completed `combined_v4` full-transfer gate is summarized in [reports/combined_v4_full_transfer_summary_2026_06_13.md](reports/combined_v4_full_transfer_summary_2026_06_13.md). Across seeds 7/17/29, raw v4 improves Ishu -> source-balanced MS COCOAI transfer accuracy but not transfer AUC or calibration, while select-k60 v4 improves transfer AUC/Brier/ECE at the cost of same-domain Ishu accuracy. `combined_v3` remains the main conventional baseline; `combined_v4_selectk60` is now a caveated transfer/calibration ablation.
