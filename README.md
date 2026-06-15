@@ -50,6 +50,15 @@ python scripts/package_competition_submission.py `
   --manifest-out reports\assets\competition_submission_manifest.json
 ```
 
+Before uploading a challenge-style file, run [scripts/lint_competition_submission.py](scripts/lint_competition_submission.py) to catch duplicate IDs, out-of-range scores, accidental label leakage, score/label mismatches, and optional expected-ID coverage:
+
+```powershell
+python scripts/lint_competition_submission.py `
+  --submission reports\assets\competition_submission.csv `
+  --expected-ids reports\assets\challenge_expected_ids.csv `
+  --manifest-out reports\assets\competition_submission_lint.json
+```
+
 The public reproducibility checklist is documented in [reports/reproducibility_checklist_2026_06_12.md](reports/reproducibility_checklist_2026_06_12.md). It lists what is included in the public repo, what must be downloaded externally, and the shortest commands for tests, ablations, and publication figure generation.
 
 The completed `combined_v4` full-transfer gate is summarized in [reports/combined_v4_full_transfer_summary_2026_06_13.md](reports/combined_v4_full_transfer_summary_2026_06_13.md). Across seeds 7/17/29, raw v4 improves Ishu -> source-balanced MS COCOAI transfer accuracy but not transfer AUC or calibration, while select-k60 v4 improves transfer AUC/Brier/ECE at the cost of same-domain Ishu accuracy. `combined_v3` remains the main conventional baseline; `combined_v4_selectk60` is now a caveated transfer/calibration ablation.

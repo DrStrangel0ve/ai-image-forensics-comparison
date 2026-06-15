@@ -71,7 +71,7 @@ TASKS = [
         "status": "watchlist",
         "why": "ImageCLEF rewards robust packaging and clear operating points; our triage evidence is a natural fit.",
         "primary_gap": "No ImageCLEF 2026 task data or submission.",
-        "commands": "After scoring a public/test image folder, run `python scripts/package_competition_submission.py --predictions <predictions.csv> --out-path <submission.csv> --manifest-out <manifest.json>` to emit per-image scores, labels, confidence, and triage decisions without training-time leakage.",
+        "commands": "After scoring a public/test image folder, run `python scripts/package_competition_submission.py --predictions <predictions.csv> --out-path <submission.csv> --manifest-out <manifest.json>`, then `python scripts/lint_competition_submission.py --submission <submission.csv> --expected-ids <expected_ids.csv>` to catch leakage, duplicate ids, score range errors, and missing/extra test ids.",
         "exit_criterion": "A dry-run submission folder can be produced from any image folder with a stable manifest and score CSV.",
         "paper_use": "Makes the repo competition-ready for the next open cycle.",
     },

@@ -44,7 +44,7 @@ This is an experiment plan, not a claim of leaderboard performance. It ranks the
 | 3 | high_res_tiled_foundation_eval | Run `python scripts/build_tiled_foundation_comparison.py` and `python scripts/build_tiled_foundation_fusion_comparison.py`; for transformed targets, run `python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant <variant> --tile-branch dinov2_vits14 --tile-detail <detail.csv>` after generating tiled target scores. |
 | 4 | reconstruction_branch_ablation | Use `python scripts/summarize_reconstruction_lite_transfer_probe.py` and `python scripts/summarize_reconstruction_lite_fusion_probe.py` for bounded diagnostics, then add cached autoencoder/diffusion-reconstruction residual features. |
 | 5 | source_diverse_training_scaleup | Expand the dataset catalog, train repeated seeds with `python scripts/run_repeated_benchmark.py --data-dir <source> --out-dir <runs> --seeds 7 17 29 -- ...`, and evaluate leave-one-generator-out. |
-| 6 | imageclef_next_cycle_packaging | After scoring a public/test image folder, run `python scripts/package_competition_submission.py --predictions <predictions.csv> --out-path <submission.csv> --manifest-out <manifest.json>` to emit per-image scores, labels, confidence, and triage decisions without training-time leakage. |
+| 6 | imageclef_next_cycle_packaging | After scoring a public/test image folder, run `python scripts/package_competition_submission.py --predictions <predictions.csv> --out-path <submission.csv> --manifest-out <manifest.json>`, then `python scripts/lint_competition_submission.py --submission <submission.csv> --expected-ids <expected_ids.csv>` to catch leakage, duplicate ids, score range errors, and missing/extra test ids. |
 
 ## Immediate Recommendation
 
