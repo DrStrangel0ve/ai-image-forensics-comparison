@@ -113,6 +113,13 @@ DEFAULT_ARTIFACTS = [
         "purpose": "Calibration operating-mode LaTeX table fragment.",
     },
     {
+        "path": "reports/assets/latex_tables/paired_seed_support.tex",
+        "section": "tables",
+        "venues": "WIFS,DFF",
+        "required": True,
+        "purpose": "Paired-seed statistical support LaTeX table fragment.",
+    },
+    {
         "path": "reports/assets/latex_tables/source_holdout_stress.tex",
         "section": "tables",
         "venues": "WIFS,DFF",

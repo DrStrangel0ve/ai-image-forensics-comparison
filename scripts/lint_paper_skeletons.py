@@ -104,7 +104,7 @@ def _lint_one_skeleton(repo_root: Path, row: pd.Series) -> list[dict[str, object
     graphics_paths = _extract_paths(r"\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}", text)
     inputs_ok, inputs_detail = _paths_exist(repo_root, input_paths)
     figures_ok, figures_detail = _paths_exist(repo_root, graphics_paths)
-    _add_check(checks, paper_id, "table input paths exist", inputs_ok and len(input_paths) >= 7, inputs_detail)
+    _add_check(checks, paper_id, "table input paths exist", inputs_ok and len(input_paths) >= 8, inputs_detail)
     method_family_table = "reports/assets/latex_tables/method_family_comparison.tex"
     _add_check(
         checks,
@@ -136,6 +136,14 @@ def _lint_one_skeleton(repo_root: Path, row: pd.Series) -> list[dict[str, object
         "operating-mode table referenced",
         operating_mode_table in input_paths,
         "operating-mode LaTeX table input present" if operating_mode_table in input_paths else "missing",
+    )
+    paired_seed_table = "reports/assets/latex_tables/paired_seed_support.tex"
+    _add_check(
+        checks,
+        paper_id,
+        "paired-seed support table referenced",
+        paired_seed_table in input_paths,
+        "paired-seed LaTeX table input present" if paired_seed_table in input_paths else "missing",
     )
     _add_check(checks, paper_id, "figure paths exist", figures_ok and len(graphics_paths) >= 5, figures_detail)
     source_stress_path = "reports/assets/source_holdout_generator_stress.png"

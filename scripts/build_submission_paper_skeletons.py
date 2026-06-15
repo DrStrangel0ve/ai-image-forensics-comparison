@@ -41,6 +41,7 @@ TABLE_INPUTS = [
     ("reports/assets/latex_tables/source_holdout_stress.tex", "held-out generator stress table"),
     ("reports/assets/latex_tables/reconstruction_ablation.tex", "reconstruction residual ablation table"),
     ("reports/assets/latex_tables/calibration_operating_modes.tex", "objective-specific operating-mode table"),
+    ("reports/assets/latex_tables/paired_seed_support.tex", "paired-seed statistical support table"),
 ]
 
 FIGURE_INPUTS = [

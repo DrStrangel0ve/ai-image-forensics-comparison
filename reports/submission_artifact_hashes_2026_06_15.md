@@ -10,7 +10,7 @@ This report provides SHA-256 hashes for checked-in submission packet artifacts s
 
 | hash_status | artifacts |
 | --- | --- |
-| hashed | 210 |
+| hashed | 211 |
 | index_or_self_skipped | 11 |
 
 ## By Artifact Type
@@ -23,16 +23,16 @@ This report provides SHA-256 hashes for checked-in submission packet artifacts s
 | figure | 13 | 13 | 13 | 1564818 |
 | literature | 2 | 2 | 2 | 11386 |
 | method | 4 | 4 | 4 | 22763 |
-| paper-draft | 7 | 7 | 7 | 59848 |
-| planning | 27 | 27 | 27 | 121120 |
+| paper-draft | 7 | 7 | 7 | 60056 |
+| planning | 27 | 27 | 27 | 121511 |
 | poster | 6 | 6 | 6 | 607096 |
 | qualitative | 2 | 2 | 2 | 1781533 |
-| quality-control | 35 | 35 | 26 | 100541 |
-| repo | 2 | 2 | 2 | 58650 |
-| reproducibility | 3 | 3 | 1 | 54544 |
+| quality-control | 35 | 35 | 26 | 101875 |
+| repo | 2 | 2 | 2 | 58811 |
+| reproducibility | 3 | 3 | 1 | 54701 |
 | result-data | 13 | 13 | 13 | 39909 |
 | result-note | 29 | 29 | 29 | 105136 |
-| table | 63 | 63 | 63 | 911012 |
+| table | 64 | 64 | 64 | 912927 |
 | writing | 4 | 4 | 4 | 24596 |
 
 ## Missing Artifacts

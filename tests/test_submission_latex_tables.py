@@ -18,6 +18,7 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     manifest_path = source_dir / "submission_result_table_manifest.csv"
     method_family_path = source_dir / "method_family_comparison.csv"
     calibration_modes_path = source_dir / "calibration_operating_modes.csv"
+    paired_seed_path = source_dir / "paired_seed_statistical_support.csv"
     table_ids = [
         "same_domain_anchor",
         "transfer_frontier",
@@ -126,6 +127,35 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
             },
         ]
     ).to_csv(calibration_modes_path, index=False)
+    pd.DataFrame(
+        [
+            _paired_row("ishu_physics_guided_vs_resnet18", "accuracy", 0.0205, 0.0088, 0.0263, 3),
+            _paired_row("ishu_physics_guided_vs_resnet18", "AUC", 0.0250, 0.0160, 0.0391, 3),
+            _paired_row("combined_v4_ishu_to_ms_selectk60_vs_v3", "AUC", 0.0119, -0.0233, 0.0365, 2),
+            _paired_row("combined_v4_ishu_to_ms_selectk60_vs_v3", "ECE", -0.0249, -0.0499, -0.0062, 3),
+            _paired_row("ishu_to_ms_scp_all_foundation_vs_clip", "AUC", -0.0646, -0.0749, -0.0475, 0, "candidate_trails"),
+            _paired_row(
+                "ishu_to_ms_source_calibrated_all_foundation_vs_clip",
+                "Brier",
+                -0.0161,
+                -0.0219,
+                -0.0096,
+                3,
+            ),
+            _paired_row(
+                "ishu_to_ms_source_calibrated_all_foundation_vs_clip",
+                "ECE",
+                -0.0237,
+                -0.0364,
+                -0.0164,
+                3,
+            ),
+            _paired_row("ms_to_ishu_physics_guided_vs_resnet18", "accuracy", 0.0468, 0.0175, 0.1053, 3),
+            _paired_row("ms_to_ishu_physics_guided_vs_resnet18", "ECE", -0.0770, -0.1040, -0.0406, 3),
+            _paired_row("ms_to_ishu_temp_balanced_fusion_vs_clip", "accuracy", 0.0351, 0.0088, 0.0614, 3),
+            _paired_row("ms_to_ishu_temp_balanced_fusion_vs_clip", "ECE", -0.0262, -0.0427, -0.0007, 3),
+        ]
+    ).to_csv(paired_seed_path, index=False)
 
     subprocess.run(
         [
@@ -137,6 +167,8 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
             str(method_family_path),
             "--calibration-operating-modes",
             str(calibration_modes_path),
+            "--paired-seed-support",
+            str(paired_seed_path),
             "--out-dir",
             str(out_dir),
             "--report-out",
@@ -153,11 +185,13 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     reconstruction_tex = (out_dir / "reconstruction_ablation.tex").read_text(encoding="utf-8")
     family_tex = (out_dir / "method_family_comparison.tex").read_text(encoding="utf-8")
     modes_tex = (out_dir / "calibration_operating_modes.tex").read_text(encoding="utf-8")
+    paired_tex = (out_dir / "paired_seed_support.tex").read_text(encoding="utf-8")
     report = report_out.read_text(encoding="utf-8")
 
     assert set(latex_manifest["table_id"]) == set(table_ids) | {
         "method_family_comparison",
         "calibration_operating_modes",
+        "paired_seed_support",
     }
     assert "\\begin{table}[t]" in same_tex
     assert "\\toprule" in same_tex
@@ -177,4 +211,43 @@ def test_submission_latex_table_builder_writes_escaped_fragments(tmp_path: Path)
     assert "SCP-Fusion + CLIP" in modes_tex
     assert "combined\\_v4 k60" in modes_tex
     assert "dAcc." in modes_tex
+    assert "tab:paired-seed-support" in paired_tex
+    assert "Ishu: physics-guided vs ResNet" in paired_tex
+    assert "+0.0205" in paired_tex
+    assert "3/3" in paired_tex
+    assert "candidate trails" in paired_tex
     assert "Submission LaTeX Tables" in report
+
+
+def _paired_row(
+    comparison_id: str,
+    metric: str,
+    delta: float,
+    ci_low: float,
+    ci_high: float,
+    wins: int,
+    label: str = "consistent_gain_ci_excludes_zero",
+) -> dict[str, object]:
+    return {
+        "comparison_id": comparison_id,
+        "comparison": comparison_id,
+        "metric": metric,
+        "direction": "higher",
+        "candidate": "candidate",
+        "baseline": "baseline",
+        "n_paired_seeds": 3,
+        "seeds": "seed1;seed2;seed3",
+        "candidate_mean": 0.6 + delta,
+        "baseline_mean": 0.6,
+        "raw_delta_mean": delta,
+        "raw_delta_ci_low": ci_low,
+        "raw_delta_ci_high": ci_high,
+        "favorable_delta_mean": delta,
+        "favorable_delta_ci_low": ci_low,
+        "favorable_delta_ci_high": ci_high,
+        "candidate_wins": wins,
+        "candidate_losses": 3 - wins,
+        "ties": 0,
+        "support_label": label,
+        "note": "fixture",
+    }

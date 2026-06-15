@@ -145,7 +145,9 @@ def test_submission_paper_skeleton_builder_writes_wifs_and_dff_tex(tmp_path: Pat
     assert "\\input{reports/assets/latex_tables/robustness_stress.tex}" in wifs
     assert "\\input{reports/assets/latex_tables/reconstruction_ablation.tex}" in wifs
     assert "\\input{reports/assets/latex_tables/calibration_operating_modes.tex}" in wifs
+    assert "\\input{reports/assets/latex_tables/paired_seed_support.tex}" in wifs
     assert "\\input{reports/assets/latex_tables/method_family_comparison.tex}" in wifs
+    assert "\\input{reports/assets/latex_tables/paired_seed_support.tex}" in dff
     assert "\\input{reports/assets/latex_tables/source_holdout_stress.tex}" in dff
     assert "reports/assets/source_holdout_generator_stress.png" in wifs
     assert "\\label{fig:source-stress}" in dff

@@ -718,6 +718,13 @@ ARTIFACTS = [
         "required": True,
     },
     {
+        "path": "reports/assets/latex_tables/paired_seed_support.tex",
+        "type": "table",
+        "venues": "WIFS,DFF",
+        "purpose": "LaTeX fragment for paired-seed bootstrap deltas and conservative support labels.",
+        "required": True,
+    },
+    {
         "path": "reports/assets/latex_tables/source_holdout_stress.tex",
         "type": "table",
         "venues": "WIFS,DFF",

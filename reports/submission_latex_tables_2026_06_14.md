@@ -16,3 +16,4 @@ The fragments assume the paper template supports `booktabs` commands (`\toprule`
 | reconstruction_ablation | reports/assets/submission_table_reconstruction_ablation.csv | reports/assets/latex_tables/reconstruction_ablation.tex | Bounded reconstruction residual ablation. | 6 |
 | method_family_comparison | reports/assets/method_family_comparison.csv | reports/assets/latex_tables/method_family_comparison.tex | Method-family winners by local scenario and criterion. | 14 |
 | calibration_operating_modes | reports/assets/calibration_operating_modes.csv | reports/assets/latex_tables/calibration_operating_modes.tex | Objective-specific operating modes; lower is better for Brier and ECE objectives. | 12 |
+| paired_seed_support | reports/assets/paired_seed_statistical_support.csv | reports/assets/latex_tables/paired_seed_support.tex | Paired-seed deltas for conservative model-comparison wording; intervals bootstrap the mean seed delta. | 11 |

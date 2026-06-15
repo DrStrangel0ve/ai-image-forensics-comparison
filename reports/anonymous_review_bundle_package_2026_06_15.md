@@ -11,9 +11,9 @@ The zip is built locally under `outputs/` so the archive does not bloat the git 
 ## Zip
 
 - Path: `outputs/anonymous_review_bundle_2026_06_15.zip`
-- Size bytes: `545319`
-- SHA-256: `c11d37d042f5eeae2defef950f47b0d4cfab18bc332aa7d378e9dbb972eed619`
-- Entries: `25`
+- Size bytes: `546188`
+- SHA-256: `77f407249e2893ac6ca539c8530bd4378fa6d574e0747702822fe5a22ea3971e`
+- Entries: `26`
 
 ## Checks
 
@@ -21,7 +21,7 @@ The zip is built locally under `outputs/` so the archive does not bloat the git 
 | --- | --- | --- |
 | bundle manifest exists | True | reports/assets/anonymous_review_bundle_manifest.csv |
 | all entries included | True | 0 blocked entrie(s) |
-| source hashes match bundle manifest | True | 25/25 source hash(es) matched |
+| source hashes match bundle manifest | True | 26/26 source hash(es) matched |
 | archive paths are safe | True | 0 duplicate and 0 unsafe archive path row(s) |
 | zip archive created | True | outputs/anonymous_review_bundle_2026_06_15.zip |
 
@@ -36,14 +36,15 @@ None.
 | anonymous_review_bundle/reports/assets/claim_evidence_matrix.csv | reports/assets/claim_evidence_matrix.csv | claim-audit | safe | 1ff4a98e430a6b3231eceb43aaed35a4f6a37ac86e94d85ffb15c3ba0099c950 | 482ccc62 |
 | anonymous_review_bundle/reports/assets/claim_evidence_matrix.md | reports/assets/claim_evidence_matrix.md | claim-audit | safe | 27066f65a5ac3f71f54174cdf2a9e41e712dbfa9df58ddb7cd3b551c923d8e5f | f6ab433d |
 | anonymous_review_bundle/reports/assets/latex_tables/calibration_operating_modes.tex | reports/assets/latex_tables/calibration_operating_modes.tex | tables | safe | 1a04d291a3b200c1ec7a93be99ec9efe74de7fdbfe72d0f5c99e9f70e99b6c08 | aa1d1487 |
+| anonymous_review_bundle/reports/assets/latex_tables/paired_seed_support.tex | reports/assets/latex_tables/paired_seed_support.tex | tables | safe | 48a0e5c26fd401442c8229c4a571ed1de5b555cfdfc08401d808d60c248d6954 | 86f65833 |
 | anonymous_review_bundle/reports/assets/latex_tables/reconstruction_ablation.tex | reports/assets/latex_tables/reconstruction_ablation.tex | tables | safe | 2bd339af3a7b3945befa71691cb3765eb25aeba905104c89649d2f864f9f8281 | 8aa6c18e |
 | anonymous_review_bundle/reports/assets/latex_tables/robustness_stress.tex | reports/assets/latex_tables/robustness_stress.tex | tables | safe | c5c080475cfb9043946bb4a4f11c21aaad491e5f6a5d975a62045188853a26a9 | 6377bb36 |
 | anonymous_review_bundle/reports/assets/latex_tables/same_domain_anchor.tex | reports/assets/latex_tables/same_domain_anchor.tex | tables | safe | 075d1586c50380ea91468f9a4c58e2be2826c2c7accad2dc1e1f147abd7441e8 | 45b48bea |
 | anonymous_review_bundle/reports/assets/latex_tables/source_holdout_stress.tex | reports/assets/latex_tables/source_holdout_stress.tex | tables | safe | 3b6fad509f8f5f6b1535ec7cab99f352692e52d649d2a1c4162a91ec810f40dd | 3b710235 |
 | anonymous_review_bundle/reports/assets/latex_tables/transfer_frontier.tex | reports/assets/latex_tables/transfer_frontier.tex | tables | safe | 724490465a5ae0eb2d0d853d80b01248b412415b46aa84aed3a36a61cd4a07fb | 213f8e5e |
 | anonymous_review_bundle/reports/assets/paired_seed_statistical_support.csv | reports/assets/paired_seed_statistical_support.csv | statistical-support | safe | d876fa883f392c075e0aeb274206f01fb9f1af012d226ac6d9c7b78a63580f50 | 97ece9b7 |
-| anonymous_review_bundle/reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex | reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex | paper-drafts | safe | 3d0b21acd83b9034220f580dea4006d544bef6f0b8dd76cf05e22750d2feabf3 | fc1b7496 |
-| anonymous_review_bundle/reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex | reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex | paper-drafts | safe | 1821a9f23dca5c052cc0ae57a590eadc284c863b8c579ca3bc5c7ed6d80e7188 | 32f2a3ec |
+| anonymous_review_bundle/reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex | reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex | paper-drafts | safe | 523b8bfa647c5501bf551c4858f4d99827bf691e5f6dcf3a4c9d0f4ae1d6b70a | 35cb6952 |
+| anonymous_review_bundle/reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex | reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex | paper-drafts | safe | 1b7df3109416c83cd11a481e3dafb30166bd028cbdb2ff0aca0be75732f231a7 | af91ba73 |
 | anonymous_review_bundle/reports/assets/publication_reverse_fusion_tradeoff.png | reports/assets/publication_reverse_fusion_tradeoff.png | figures | not_scanned_binary | 41ed4e5cec9a059ba6d975979d8466f643d83dcbc9f6bb3700e4092125f48bd6 | 11ffe249 |
 | anonymous_review_bundle/reports/assets/publication_reverse_transform_robustness.png | reports/assets/publication_reverse_transform_robustness.png | figures | not_scanned_binary | 01dbba5aa195dbc878a4ecdc5c998b78b18fd3f19ef32ffbf2e149cfe8f18727 | 524b3b59 |
 | anonymous_review_bundle/reports/assets/publication_score_fusion_clip_frontier.png | reports/assets/publication_score_fusion_clip_frontier.png | figures | not_scanned_binary | d1d0c1b2295a30c29ed771b580e24c975b9aba69d686fef7016e391988f7ca91 | 8989b5a3 |
@@ -54,7 +55,7 @@ None.
 | anonymous_review_bundle/reports/paired_seed_statistical_support_2026_06_15.md | reports/paired_seed_statistical_support_2026_06_15.md | statistical-support | safe | f27a0f159531ce4445e7a1324afe6ef350c079ddc0c459b763589fba35cb89cb | 3383b1a7 |
 | anonymous_review_bundle/reports/paper_section_drafts_2026_06_14.md | reports/paper_section_drafts_2026_06_14.md | writing | safe | 3b1958086e909f9069637311f1987eb66b9fc9d03c8e0a2cf3cfcf740ecd62c7 | 95344695 |
 | anonymous_review_bundle/reports/paper_section_drafts_lint_2026_06_14.md | reports/paper_section_drafts_lint_2026_06_14.md | quality-control | safe | d3ab4bbec18576d798cb23c4dc045b5ec11f247500329acd926dbf1aec482534 | 8bda3f18 |
-| anonymous_review_bundle/reports/paper_skeleton_lint_2026_06_14.md | reports/paper_skeleton_lint_2026_06_14.md | quality-control | safe | c173b1f459ce349f19503fa9a6fa35f83550004e4c87357130c2f5ca46139f42 | 4c4b4f4e |
+| anonymous_review_bundle/reports/paper_skeleton_lint_2026_06_14.md | reports/paper_skeleton_lint_2026_06_14.md | quality-control | safe | bc4aef2fa30698226818099088898e11d3e99a439f6ed2295a01689df3b879d8 | e02fe942 |
 | anonymous_review_bundle/reports/submission_result_tables_2026_06_14.md | reports/submission_result_tables_2026_06_14.md | tables | safe | 1a7f81acb30a3c7bf9584a94981a41f3aa47d5e1de29b94af3cca4fa9643cac5 | ecb24e19 |
 | anonymous_review_bundle/reports/submission_text_drafts_2026_06_14.md | reports/submission_text_drafts_2026_06_14.md | writing | safe | d0fd2a03cb227d1f45b0cc24d98703c8f2abd776b360c329740a86bea41ac663 | c1b97f28 |
 | anonymous_review_bundle/reports/wifs_manuscript_draft_2026_06_14.md | reports/wifs_manuscript_draft_2026_06_14.md | paper-drafts | safe | 5404583223b87efd358946b355706bea580ccd6163bf7ebf8311345012b3a0b2 | 9df2b9ed |

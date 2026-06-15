@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Paired-seed deltas for conservative model-comparison wording; intervals bootstrap the mean seed delta.}
+\label{tab:paired-seed-support}
+\begin{tabular}{p{0.30\linewidth} l p{0.22\linewidth} r p{0.20\linewidth}}
+\toprule
+Comparison & Metric & $\Delta$ (95\% CI) & Seeds & Support \\
+\midrule
+Ishu: physics-guided vs ResNet & accuracy & +0.0205 [+0.0088, +0.0263] & 3/3 & consistent gain \\
+Ishu: physics-guided vs ResNet & AUC & +0.0250 [+0.0160, +0.0391] & 3/3 & consistent gain \\
+Ishu->MS: v4 k60 vs v3 & AUC & +0.0119 [-0.0233, +0.0365] & 2/3 & mixed mean gain \\
+Ishu->MS: v4 k60 vs v3 & ECE & -0.0249 [-0.0499, -0.0062] & 3/3 & consistent gain \\
+Ishu->MS: SCP all-found. vs CLIP & AUC & -0.0646 [-0.0749, -0.0475] & 0/3 & candidate trails \\
+Ishu->MS: source-calib. all-found. vs CLIP & Brier & -0.0161 [-0.0219, -0.0096] & 3/3 & consistent gain \\
+Ishu->MS: source-calib. all-found. vs CLIP & ECE & -0.0237 [-0.0364, -0.0164] & 3/3 & consistent gain \\
+MS->Ishu: physics-guided vs ResNet & accuracy & +0.0468 [+0.0175, +0.1053] & 3/3 & consistent gain \\
+MS->Ishu: physics-guided vs ResNet & ECE & -0.0770 [-0.1040, -0.0406] & 3/3 & consistent gain \\
+MS->Ishu: fusion vs CLIP & accuracy & +0.0351 [+0.0088, +0.0614] & 3/3 & consistent gain \\
+MS->Ishu: fusion vs CLIP & ECE & -0.0262 [-0.0427, -0.0007] & 3/3 & consistent gain \\
+\bottomrule
+\end{tabular}
+\end{table}
