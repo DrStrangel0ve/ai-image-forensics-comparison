@@ -119,6 +119,8 @@ def test_submission_scorecard_aggregates_manifest_lints_and_claims(tmp_path: Pat
             str(out_path),
             "--summary-out",
             str(summary_out),
+            "--run-date",
+            "2026-06-14",
         ],
         cwd=ROOT,
         check=True,
