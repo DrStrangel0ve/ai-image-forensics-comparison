@@ -1,5 +1,5 @@
 path,type,venues,purpose,required,exists,size_bytes
-README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,57668
+README.md,repo,"DFRWS,WIFS,DFF","Public project entry point with setup, dataset catalog, commands, and result map.",True,True,57862
 CITATION.cff,repo,"DFRWS,WIFS,DFF",Citation metadata for public release and reproducibility review.,True,True,788
 reports/reproducibility_checklist_2026_06_12.md,reproducibility,"DFRWS,WIFS,DFF","Reviewer-facing map of included artifacts, external datasets, and commands.",True,True,16823
 reports/submission_readiness_2026_06_13.md,planning,"DFRWS,WIFS,DFF","Current readiness snapshot, lead results, figure package, and remaining gaps.",True,True,15291
@@ -12,8 +12,8 @@ reports/assets/submission_critical_path.csv,planning,"DFRWS,WIFS,DFF",Machine-re
 reports/submission_deadline_calendar_2026_06_15.md,planning,"DFRWS,WIFS,DFF","Calendar-ready view of target dates and final deadlines for DFRWS, WIFS, and DFF submissions.",False,True,1512
 reports/assets/submission_deadline_calendar.csv,planning,"DFRWS,WIFS,DFF",Machine-readable submission target and deadline events.,False,True,2117
 reports/assets/submission_deadline_calendar.ics,planning,"DFRWS,WIFS,DFF",Importable all-day calendar reminders for submission target dates and final deadlines.,False,True,3461
-reports/publication_control_suite_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Ordered dry-run command plan for regenerating publication artifacts and lints.,False,True,9719
-reports/assets/publication_control_suite.csv,planning,"DFRWS,WIFS,DFF",Machine-readable publication-control command plan.,False,True,7994
+reports/publication_control_suite_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Ordered dry-run command plan for regenerating publication artifacts and lints.,False,True,9862
+reports/assets/publication_control_suite.csv,planning,"DFRWS,WIFS,DFF",Machine-readable publication-control command plan.,False,True,8121
 reports/opportunity_watchlist_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Current venue/challenge watchlist separating active submission targets from closed benchmark tracks.,False,True,4061
 reports/assets/opportunity_watchlist.csv,planning,"DFRWS,WIFS,DFF",Machine-readable opportunity and benchmark watchlist.,False,True,2941
 reports/external_benchmark_readiness_2026_06_14.md,planning,"DFRWS,WIFS,DFF",Official-vs-proxy readiness audit for NTIRE/ImageCLEF-style external benchmark claims.,False,True,5790
@@ -31,8 +31,8 @@ reports/assets/competition_dry_run/expected_ids.csv,quality-control,"DFRWS,WIFS,
 reports/assets/competition_dry_run/submission.csv,quality-control,"DFRWS,WIFS,DFF","Upload-shaped competition dry-run submission with scores, labels, confidence, and triage but no ground-truth labels.",False,True,6344
 reports/assets/competition_dry_run/submission_manifest.json,quality-control,"DFRWS,WIFS,DFF",Manifest emitted by the competition submission packager for the dry-run submission.,False,True,735
 reports/assets/competition_dry_run/submission_lint.json,quality-control,"DFRWS,WIFS,DFF","Machine-readable lint report proving the dry-run submission has no leakage, duplicate IDs, score errors, or ID coverage gaps.",False,True,2222
-reports/submission_artifact_hashes_2026_06_15.md,reproducibility,"DFRWS,WIFS,DFF",Reviewer-facing SHA-256 hash summary for checked-in submission packet artifacts.,False,True,1387
-reports/assets/submission_artifact_hashes.csv,reproducibility,"DFRWS,WIFS,DFF",Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts.,False,True,35997
+reports/submission_artifact_hashes_2026_06_15.md,reproducibility,"DFRWS,WIFS,DFF",Reviewer-facing SHA-256 hash summary for checked-in submission packet artifacts.,False,True,1388
+reports/assets/submission_artifact_hashes.csv,reproducibility,"DFRWS,WIFS,DFF",Machine-readable SHA-256 hash manifest for checked-in submission packet artifacts.,False,True,36333
 reports/submission_artifact_hashes_lint_2026_06_15.md,quality-control,"DFRWS,WIFS,DFF",Generated lint report proving checked artifact hashes still match the files on disk.,False,True,720
 reports/assets/submission_artifact_hashes_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable lint checks for the submission artifact hash manifest.,False,True,420
 reports/submission_path_sanitization_2026_06_15.md,quality-control,"DFRWS,WIFS,DFF",Public-release path sanitization report for replacing workstation-specific repository prefixes with <repo> placeholders.,False,True,1321
@@ -42,10 +42,10 @@ reports/assets/submission_privacy_audit.csv,quality-control,"DFRWS,WIFS,DFF",Mac
 reports/submission_anonymity_audit_2026_06_15.md,quality-control,"WIFS,DFF",Blind-review anonymity audit for WIFS/DFF paper-facing drafts and skeletons.,False,True,1098
 reports/assets/submission_anonymity_audit.csv,quality-control,"WIFS,DFF",Machine-readable anonymity findings for WIFS/DFF paper-facing drafts and skeletons.,False,True,34
 reports/assets/submission_anonymity_audit_checks.csv,quality-control,"WIFS,DFF",Machine-readable anonymity audit checks for WIFS/DFF paper-facing drafts and skeletons.,False,True,321
-reports/anonymous_review_bundle_2026_06_15.md,quality-control,"WIFS,DFF",Anonymous supplementary artifact bundle manifest with hashes and identifier-scan status.,False,True,5204
-reports/assets/anonymous_review_bundle_manifest.csv,quality-control,"WIFS,DFF",Machine-readable anonymous supplementary artifact bundle manifest.,False,True,5011
-reports/anonymous_review_bundle_package_2026_06_15.md,quality-control,"WIFS,DFF",Deterministic anonymous review zip package report with final archive hash.,False,True,6633
-reports/assets/anonymous_review_bundle_zip_manifest.csv,quality-control,"WIFS,DFF",Machine-readable zip entry manifest for the anonymous review bundle.,False,True,6244
+reports/anonymous_review_bundle_2026_06_15.md,quality-control,"WIFS,DFF",Anonymous supplementary artifact bundle manifest with hashes and identifier-scan status.,False,True,5611
+reports/assets/anonymous_review_bundle_manifest.csv,quality-control,"WIFS,DFF",Machine-readable anonymous supplementary artifact bundle manifest.,False,True,5527
+reports/anonymous_review_bundle_package_2026_06_15.md,quality-control,"WIFS,DFF",Deterministic anonymous review zip package report with final archive hash.,False,True,7119
+reports/assets/anonymous_review_bundle_zip_manifest.csv,quality-control,"WIFS,DFF",Machine-readable zip entry manifest for the anonymous review bundle.,False,True,6795
 reports/reconstruction_lite_feature_set_2026_06_14.md,method,"DFRWS,WIFS,DFF",Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command.,False,True,3939
 reports/assets/reconstruction_lite_feature_manifest.csv,method,"DFRWS,WIFS,DFF",Machine-readable reconstruction_lite feature manifest.,False,True,2323
 reports/reconstruction_v2_feature_set_2026_06_14.md,method,"DFRWS,WIFS,DFF",Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions.,False,True,9394
@@ -110,6 +110,8 @@ reports/assets/claim_evidence_matrix.csv,claim-audit,"DFRWS,WIFS,DFF",Machine-re
 reports/assets/claim_evidence_matrix.md,claim-audit,"DFRWS,WIFS,DFF",Readable claim-to-evidence map for authoring and review.,True,True,22486
 reports/claim_evidence_matrix_lint_2026_06_14.md,quality-control,"DFRWS,WIFS,DFF","Generated lint report checking claim IDs, artifacts, evidence IDs, caveats, and overclaim language.",False,True,1155
 reports/assets/claim_evidence_matrix_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable claim-evidence matrix lint checks.,False,True,825
+reports/paired_seed_statistical_support_2026_06_15.md,analysis,"DFRWS,WIFS,DFF",Paired-seed bootstrap support report for conservative model-comparison wording.,False,True,8897
+reports/assets/paired_seed_statistical_support.csv,analysis,"DFRWS,WIFS,DFF","Machine-readable paired-seed deltas, bootstrap intervals, and support labels.",False,True,18095
 reports/method_family_comparison_2026_06_14.md,analysis,"DFRWS,WIFS,DFF","Paper-facing method-family comparison separating ranking, calibration, operating-point, and triage winners.",False,True,4650
 reports/assets/method_family_comparison.csv,analysis,"DFRWS,WIFS,DFF",Machine-readable method-family winner table by scenario and criterion.,False,True,6807
 reports/calibration_operating_modes_2026_06_14.md,analysis,"DFRWS,WIFS,DFF","Paper-facing calibration operating-mode synthesis for ranking, decision, Brier, ECE, and tiled-DINO mode choices.",False,True,3730

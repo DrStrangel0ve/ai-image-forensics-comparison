@@ -802,6 +802,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/paired_seed_statistical_support_2026_06_15.md",
+        "type": "analysis",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Paired-seed bootstrap support report for conservative model-comparison wording.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/paired_seed_statistical_support.csv",
+        "type": "analysis",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable paired-seed deltas, bootstrap intervals, and support labels.",
+        "required": False,
+    },
+    {
         "path": "reports/method_family_comparison_2026_06_14.md",
         "type": "analysis",
         "venues": "DFRWS,WIFS,DFF",
@@ -1633,6 +1647,7 @@ REGEN_COMMANDS = [
         "python scripts/build_tiled_dinov2_calibration_tradeoff.py",
     ),
     ("calibration operating modes", "python scripts/build_calibration_operating_modes.py"),
+    ("paired seed statistical support", "python scripts/build_paired_seed_statistical_support.py"),
     ("claim matrix", "python scripts/build_claim_evidence_matrix.py"),
     ("claim matrix lint", "python scripts/lint_claim_evidence_matrix.py"),
     ("method family comparison", "python scripts/build_method_family_comparison.py"),

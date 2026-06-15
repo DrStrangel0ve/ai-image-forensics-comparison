@@ -95,7 +95,7 @@ def test_submission_scorecard_aggregates_manifest_lints_and_claims(tmp_path: Pat
         ("reports/paper_skeleton_lint_2026_06_14.md", 45, 45),
         ("reports/manuscript_drafts_lint_2026_06_14.md", 32, 32),
         ("reports/submission_anonymity_audit_2026_06_15.md", 4, 4),
-        ("reports/anonymous_review_bundle_2026_06_15.md", 23, 23),
+        ("reports/anonymous_review_bundle_2026_06_15.md", 25, 25),
         ("reports/anonymous_review_bundle_package_2026_06_15.md", 5, 5),
         ("reports/submission_package_lint_2026_06_14.md", 31, 31),
     ]:

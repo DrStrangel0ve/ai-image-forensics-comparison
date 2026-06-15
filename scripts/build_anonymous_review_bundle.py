@@ -64,6 +64,20 @@ DEFAULT_ARTIFACTS = [
         "purpose": "Copy-ready compact result tables.",
     },
     {
+        "path": "reports/paired_seed_statistical_support_2026_06_15.md",
+        "section": "statistical-support",
+        "venues": "WIFS,DFF",
+        "required": False,
+        "purpose": "Paired-seed bootstrap support report for conservative model-comparison wording.",
+    },
+    {
+        "path": "reports/assets/paired_seed_statistical_support.csv",
+        "section": "statistical-support",
+        "venues": "WIFS,DFF",
+        "required": False,
+        "purpose": "Machine-readable paired-seed deltas, bootstrap intervals, and support labels.",
+    },
+    {
         "path": "reports/assets/latex_tables/same_domain_anchor.tex",
         "section": "tables",
         "venues": "WIFS,DFF",
