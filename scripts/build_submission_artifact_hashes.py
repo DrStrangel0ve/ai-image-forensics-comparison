@@ -18,6 +18,9 @@ DEFAULT_SKIP_RELATIVE_PATHS = {
     "reports/assets/submission_path_sanitization.csv",
     "reports/submission_privacy_audit_2026_06_15.md",
     "reports/assets/submission_privacy_audit.csv",
+    "reports/submission_anonymity_audit_2026_06_15.md",
+    "reports/assets/submission_anonymity_audit.csv",
+    "reports/assets/submission_anonymity_audit_checks.csv",
 }
 
 

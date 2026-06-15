@@ -11,8 +11,8 @@ This scorecard is deliberately conservative: `ready_to_polish` means the checked
 | venue | deadline | days_left | packet_status | artifacts | lint_reports | lint_checks | claims | next_action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | DFRWS-USA 2026 poster/demo | 2026-07-07 | 22 | ready_to_polish | 34/34 | 4/4 | 118/118 | ready 3, caveated 7, needs 0 | Finalize poster layout with the selected seed-29 qualitative grid and export the final PDF/poster image. |
-| IEEE WIFS 2026 paper | 2026-07-15 | 30 | ready_to_polish | 57/57 | 6/6 | 240/240 | ready 2, caveated 8, needs 0 | Draft the 6-page paper with the frozen WIFS breadth stance; keep any source-aware v4 work appendix-only. |
-| DFF-2026 ACM Multimedia workshop | 2026-07-16 | 31 | ready_to_polish | 59/59 | 6/6 | 240/240 | ready 3, caveated 8, needs 0 | Turn failure grids and source-slice diagnostics into a short explainability/failure-analysis section. |
+| IEEE WIFS 2026 paper | 2026-07-15 | 30 | ready_to_polish | 57/57 | 7/7 | 244/244 | ready 2, caveated 8, needs 0 | Draft the 6-page paper with the frozen WIFS breadth stance; keep any source-aware v4 work appendix-only. |
+| DFF-2026 ACM Multimedia workshop | 2026-07-16 | 31 | ready_to_polish | 59/59 | 7/7 | 244/244 | ready 3, caveated 8, needs 0 | Turn failure grids and source-slice diagnostics into a short explainability/failure-analysis section. |
 
 ## Quality-Control Reports
 
@@ -24,6 +24,7 @@ This scorecard is deliberately conservative: `ready_to_polish` means the checked
 | paper section drafts | WIFS,DFF | PASS | 61 | 61 | reports/paper_section_drafts_lint_2026_06_14.md | Paper prose metric anchors, caveats, and overclaim checks. |
 | paper skeletons | WIFS,DFF | PASS | 55 | 55 | reports/paper_skeleton_lint_2026_06_14.md | WIFS/DFF skeleton structure, referenced assets, and guardrails. |
 | manuscript drafts | WIFS,DFF | PASS | 32 | 32 | reports/manuscript_drafts_lint_2026_06_14.md | Assembled manuscript draft section, asset, word-count, and guardrail checks. |
+| submission anonymity | WIFS,DFF | PASS | 4 | 4 | reports/submission_anonymity_audit_2026_06_15.md | Blind-review author, account, path, and public-repository wording checks. |
 | submission package | DFRWS,WIFS,DFF | PASS | 33 | 33 | reports/submission_package_lint_2026_06_14.md | Packet assets, abstract word counts, and abstract overclaims. |
 
 ## Reading The Status

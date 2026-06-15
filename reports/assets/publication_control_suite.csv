@@ -51,9 +51,10 @@ order,stage,asset,command,status,returncode,elapsed_seconds
 50,reference-and-claims,submission artifact hashes,python scripts/build_submission_artifact_hashes.py,planned,0,0.0
 51,quality-control,submission artifact hash lint,python scripts/lint_submission_artifact_hashes.py,planned,0,0.0
 52,reference-and-claims,submission privacy audit,python scripts/build_submission_privacy_audit.py,planned,0,0.0
-53,submission-planning,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
-54,quality-control,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
-55,submission-planning,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
-56,submission-planning,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0
-57,submission-planning,submission critical path,python scripts/build_submission_critical_path.py,planned,0,0.0
-58,reference-and-claims,submission deadline calendar,python scripts/build_submission_deadline_calendar.py,planned,0,0.0
+53,quality-control,submission anonymity audit,python scripts/lint_submission_anonymity.py,planned,0,0.0
+54,submission-planning,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
+55,quality-control,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
+56,submission-planning,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
+57,submission-planning,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0
+58,submission-planning,submission critical path,python scripts/build_submission_critical_path.py,planned,0,0.0
+59,reference-and-claims,submission deadline calendar,python scripts/build_submission_deadline_calendar.py,planned,0,0.0

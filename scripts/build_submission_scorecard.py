@@ -55,6 +55,12 @@ LINT_REPORTS = [
         "purpose": "Assembled manuscript draft section, asset, word-count, and guardrail checks.",
     },
     {
+        "name": "submission anonymity",
+        "path": "reports/submission_anonymity_audit_2026_06_15.md",
+        "venues": "WIFS,DFF",
+        "purpose": "Blind-review author, account, path, and public-repository wording checks.",
+    },
+    {
         "name": "submission package",
         "path": "reports/submission_package_lint_2026_06_14.md",
         "venues": "DFRWS,WIFS,DFF",

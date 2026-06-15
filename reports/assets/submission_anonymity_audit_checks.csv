@@ -1,0 +1,5 @@
+check,passed,detail
+paper-facing artifacts exist,True,all configured artifacts present
+author fields anonymous,True,all LaTeX author fields are anonymous placeholders
+direct identifiers absent,True,0 blocker finding(s)
+blind-review wording queued for review,True,8 review finding(s) for public-repo or acknowledgment wording
