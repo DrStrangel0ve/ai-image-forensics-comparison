@@ -18,6 +18,7 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
     reconstruction_ablation = tmp_path / "submission_table_reconstruction_ablation.csv"
     source_stress_summary = tmp_path / "source_stress.csv"
     calibration_operating_modes = tmp_path / "calibration_operating_modes.csv"
+    paired_seed_support = tmp_path / "paired_seed_statistical_support.csv"
     out_path = tmp_path / "paper_section_drafts.md"
     manifest_out = tmp_path / "paper_section_draft_manifest.csv"
 
@@ -176,6 +177,73 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
             },
         ]
     ).to_csv(calibration_operating_modes, index=False)
+    pd.DataFrame(
+        [
+            {
+                "comparison_id": "ishu_physics_guided_vs_resnet18",
+                "metric": "accuracy",
+                "raw_delta_mean": 0.0205,
+                "candidate_wins": 3,
+                "n_paired_seeds": 3,
+            },
+            {
+                "comparison_id": "ishu_physics_guided_vs_resnet18",
+                "metric": "AUC",
+                "raw_delta_mean": 0.0250,
+                "candidate_wins": 3,
+                "n_paired_seeds": 3,
+            },
+            {
+                "comparison_id": "combined_v4_ishu_to_ms_selectk60_vs_v3",
+                "metric": "AUC",
+                "raw_delta_mean": 0.0119,
+                "candidate_wins": 2,
+                "n_paired_seeds": 3,
+            },
+            {
+                "comparison_id": "combined_v4_ishu_to_ms_selectk60_vs_v3",
+                "metric": "ECE",
+                "raw_delta_mean": -0.0249,
+                "candidate_wins": 3,
+                "n_paired_seeds": 3,
+            },
+            {
+                "comparison_id": "ishu_to_ms_scp_all_foundation_vs_clip",
+                "metric": "AUC",
+                "raw_delta_mean": -0.0646,
+                "candidate_wins": 0,
+                "n_paired_seeds": 3,
+            },
+            {
+                "comparison_id": "ishu_to_ms_source_calibrated_all_foundation_vs_clip",
+                "metric": "Brier",
+                "raw_delta_mean": -0.0161,
+                "candidate_wins": 3,
+                "n_paired_seeds": 3,
+            },
+            {
+                "comparison_id": "ishu_to_ms_source_calibrated_all_foundation_vs_clip",
+                "metric": "ECE",
+                "raw_delta_mean": -0.0237,
+                "candidate_wins": 3,
+                "n_paired_seeds": 3,
+            },
+            {
+                "comparison_id": "ms_to_ishu_temp_balanced_fusion_vs_clip",
+                "metric": "accuracy",
+                "raw_delta_mean": 0.0351,
+                "candidate_wins": 3,
+                "n_paired_seeds": 3,
+            },
+            {
+                "comparison_id": "ms_to_ishu_temp_balanced_fusion_vs_clip",
+                "metric": "ECE",
+                "raw_delta_mean": -0.0262,
+                "candidate_wins": 3,
+                "n_paired_seeds": 3,
+            },
+        ]
+    ).to_csv(paired_seed_support, index=False)
 
     subprocess.run(
         [
@@ -195,6 +263,8 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
             str(source_stress_summary),
             "--calibration-operating-modes",
             str(calibration_operating_modes),
+            "--paired-seed-support",
+            str(paired_seed_support),
             "--out-path",
             str(out_path),
             "--manifest-out",
@@ -210,6 +280,10 @@ def test_paper_section_drafts_builder_uses_metrics_and_caveats(tmp_path: Path) -
     assert "Paper Section Drafts" in report
     assert "WIFS Introduction Draft" in report
     assert "0.8500 accuracy" in report
+    assert "paired-seed support" in report
+    assert "+0.0205 accuracy" in report
+    assert "0/3 favorable AUC seeds" in report
+    assert "improves Brier/ECE by -0.0161/-0.0237" in report
     assert "single-image physical/signal proxy" in report
     assert "does not universally beat frozen CLIP" in report
     assert "tile_max" in report

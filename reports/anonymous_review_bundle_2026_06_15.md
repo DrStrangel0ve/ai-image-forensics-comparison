@@ -21,11 +21,11 @@ This manifest is the upload checklist for an anonymous supplementary artifact pa
 | --- | --- | --- | --- | --- |
 | claim-audit | safe | 2 | 2 | 44571 |
 | figures | not_scanned_binary | 5 | 2 | 579999 |
-| paper-drafts | safe | 4 | 4 | 57800 |
-| quality-control | safe | 3 | 0 | 13086 |
+| paper-drafts | safe | 4 | 4 | 59576 |
+| quality-control | safe | 3 | 0 | 13356 |
 | statistical-support | safe | 2 | 0 | 26992 |
 | tables | safe | 8 | 8 | 18420 |
-| writing | safe | 2 | 2 | 24174 |
+| writing | safe | 2 | 2 | 25169 |
 
 ## Required Missing
 
@@ -39,11 +39,11 @@ None.
 
 | path | section | venues | required | exists | anonymous_status | sha256 |
 | --- | --- | --- | --- | --- | --- | --- |
-| reports/wifs_manuscript_draft_2026_06_14.md | paper-drafts | WIFS | True | True | safe | 5404583223b87efd358946b355706bea580ccd6163bf7ebf8311345012b3a0b2 |
-| reports/dff_manuscript_draft_2026_06_14.md | paper-drafts | DFF | True | True | safe | ba21df25d37c2a06ec4652f8d0861967595ddafb7a5423200e667e6e6a8669b2 |
+| reports/wifs_manuscript_draft_2026_06_14.md | paper-drafts | WIFS | True | True | safe | e0548c13a66afc2167a894d5d48d5edf30eae6325f38ef5c0e091451a0346bdf |
+| reports/dff_manuscript_draft_2026_06_14.md | paper-drafts | DFF | True | True | safe | d9c8c825794e128ecb7bb181037aeb01c9723088adbc925958b5c49960f9dcd1 |
 | reports/assets/paper_skeletons/wifs_2026_paper_skeleton.tex | paper-drafts | WIFS | True | True | safe | 1b7df3109416c83cd11a481e3dafb30166bd028cbdb2ff0aca0be75732f231a7 |
 | reports/assets/paper_skeletons/dff_2026_workshop_skeleton.tex | paper-drafts | DFF | True | True | safe | 523b8bfa647c5501bf551c4858f4d99827bf691e5f6dcf3a4c9d0f4ae1d6b70a |
-| reports/paper_section_drafts_2026_06_14.md | writing | WIFS,DFF | True | True | safe | 3b1958086e909f9069637311f1987eb66b9fc9d03c8e0a2cf3cfcf740ecd62c7 |
+| reports/paper_section_drafts_2026_06_14.md | writing | WIFS,DFF | True | True | safe | dae8636cdea6eebb0da591fb984b657dd1d9ac5ae3334820509c8ad990573070 |
 | reports/submission_text_drafts_2026_06_14.md | writing | DFRWS,WIFS,DFF | True | True | safe | d0fd2a03cb227d1f45b0cc24d98703c8f2abd776b360c329740a86bea41ac663 |
 | reports/submission_result_tables_2026_06_14.md | tables | DFRWS,WIFS,DFF | True | True | safe | 1a7f81acb30a3c7bf9584a94981a41f3aa47d5e1de29b94af3cca4fa9643cac5 |
 | reports/paired_seed_statistical_support_2026_06_15.md | statistical-support | WIFS,DFF | False | True | safe | f27a0f159531ce4445e7a1324afe6ef350c079ddc0c459b763589fba35cb89cb |
@@ -62,8 +62,8 @@ None.
 | reports/assets/publication_reverse_fusion_tradeoff.png | figures | WIFS,DFF | False | True | not_scanned_binary | 41ed4e5cec9a059ba6d975979d8466f643d83dcbc9f6bb3700e4092125f48bd6 |
 | reports/assets/publication_score_fusion_clip_frontier.png | figures | DFRWS,DFF | False | True | not_scanned_binary | d1d0c1b2295a30c29ed771b580e24c975b9aba69d686fef7016e391988f7ca91 |
 | reports/assets/publication_reverse_transform_robustness.png | figures | DFRWS,WIFS,DFF | False | True | not_scanned_binary | 01dbba5aa195dbc878a4ecdc5c998b78b18fd3f19ef32ffbf2e149cfe8f18727 |
-| reports/paper_section_drafts_lint_2026_06_14.md | quality-control | WIFS,DFF | False | True | safe | d3ab4bbec18576d798cb23c4dc045b5ec11f247500329acd926dbf1aec482534 |
+| reports/paper_section_drafts_lint_2026_06_14.md | quality-control | WIFS,DFF | False | True | safe | 2e5fba9ea9fed360c9224ca8586ddcb0d77325d1fabf4e20680e6d0268cf65f7 |
 | reports/paper_skeleton_lint_2026_06_14.md | quality-control | WIFS,DFF | False | True | safe | bc4aef2fa30698226818099088898e11d3e99a439f6ed2295a01689df3b879d8 |
-| reports/manuscript_drafts_lint_2026_06_14.md | quality-control | WIFS,DFF | False | True | safe | 5db11c0a452328671a1d07dfd86ebc3c3465d9f1c4383b3c33c49bf4452ed3bd |
+| reports/manuscript_drafts_lint_2026_06_14.md | quality-control | WIFS,DFF | False | True | safe | bc935e122fdecd794dcea31e6bd4722ff367efc286bb3d06e437eac5b187fae1 |
 
 Machine-readable manifest: `reports/assets/anonymous_review_bundle_manifest.csv`

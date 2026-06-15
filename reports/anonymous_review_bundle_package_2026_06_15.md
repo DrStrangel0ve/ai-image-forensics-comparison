@@ -11,8 +11,8 @@ The zip is built locally under `outputs/` so the archive does not bloat the git 
 ## Zip
 
 - Path: `outputs/anonymous_review_bundle_2026_06_15.zip`
-- Size bytes: `546188`
-- SHA-256: `77f407249e2893ac6ca539c8530bd4378fa6d574e0747702822fe5a22ea3971e`
+- Size bytes: `547029`
+- SHA-256: `8633d14ec4581c6c73232ca2faa8735d211339fbe340aa3f7608e2bc7c39d70c`
 - Entries: `26`
 
 ## Checks
@@ -50,14 +50,14 @@ None.
 | anonymous_review_bundle/reports/assets/publication_score_fusion_clip_frontier.png | reports/assets/publication_score_fusion_clip_frontier.png | figures | not_scanned_binary | d1d0c1b2295a30c29ed771b580e24c975b9aba69d686fef7016e391988f7ca91 | 8989b5a3 |
 | anonymous_review_bundle/reports/assets/source_holdout_generator_stress.png | reports/assets/source_holdout_generator_stress.png | figures | not_scanned_binary | 7e6deb48c1548815a27e9cef18bf177f6e82da1a50f04ccddb0df3f1e3bde032 | 2bfe87e6 |
 | anonymous_review_bundle/reports/assets/source_holdout_generator_stress.svg | reports/assets/source_holdout_generator_stress.svg | figures | not_scanned_binary | 481111838ec29fe3b94cf449c271c1500c6558af914e724fd9cdfa23b04e3d1a | 8d0944b5 |
-| anonymous_review_bundle/reports/dff_manuscript_draft_2026_06_14.md | reports/dff_manuscript_draft_2026_06_14.md | paper-drafts | safe | ba21df25d37c2a06ec4652f8d0861967595ddafb7a5423200e667e6e6a8669b2 | 53fd3f6b |
-| anonymous_review_bundle/reports/manuscript_drafts_lint_2026_06_14.md | reports/manuscript_drafts_lint_2026_06_14.md | quality-control | safe | 5db11c0a452328671a1d07dfd86ebc3c3465d9f1c4383b3c33c49bf4452ed3bd | 9c23a8c6 |
+| anonymous_review_bundle/reports/dff_manuscript_draft_2026_06_14.md | reports/dff_manuscript_draft_2026_06_14.md | paper-drafts | safe | d9c8c825794e128ecb7bb181037aeb01c9723088adbc925958b5c49960f9dcd1 | 8e75e5de |
+| anonymous_review_bundle/reports/manuscript_drafts_lint_2026_06_14.md | reports/manuscript_drafts_lint_2026_06_14.md | quality-control | safe | bc935e122fdecd794dcea31e6bd4722ff367efc286bb3d06e437eac5b187fae1 | 4c402f9e |
 | anonymous_review_bundle/reports/paired_seed_statistical_support_2026_06_15.md | reports/paired_seed_statistical_support_2026_06_15.md | statistical-support | safe | f27a0f159531ce4445e7a1324afe6ef350c079ddc0c459b763589fba35cb89cb | 3383b1a7 |
-| anonymous_review_bundle/reports/paper_section_drafts_2026_06_14.md | reports/paper_section_drafts_2026_06_14.md | writing | safe | 3b1958086e909f9069637311f1987eb66b9fc9d03c8e0a2cf3cfcf740ecd62c7 | 95344695 |
-| anonymous_review_bundle/reports/paper_section_drafts_lint_2026_06_14.md | reports/paper_section_drafts_lint_2026_06_14.md | quality-control | safe | d3ab4bbec18576d798cb23c4dc045b5ec11f247500329acd926dbf1aec482534 | 8bda3f18 |
+| anonymous_review_bundle/reports/paper_section_drafts_2026_06_14.md | reports/paper_section_drafts_2026_06_14.md | writing | safe | dae8636cdea6eebb0da591fb984b657dd1d9ac5ae3334820509c8ad990573070 | 9bf840cc |
+| anonymous_review_bundle/reports/paper_section_drafts_lint_2026_06_14.md | reports/paper_section_drafts_lint_2026_06_14.md | quality-control | safe | 2e5fba9ea9fed360c9224ca8586ddcb0d77325d1fabf4e20680e6d0268cf65f7 | fe21de89 |
 | anonymous_review_bundle/reports/paper_skeleton_lint_2026_06_14.md | reports/paper_skeleton_lint_2026_06_14.md | quality-control | safe | bc4aef2fa30698226818099088898e11d3e99a439f6ed2295a01689df3b879d8 | e02fe942 |
 | anonymous_review_bundle/reports/submission_result_tables_2026_06_14.md | reports/submission_result_tables_2026_06_14.md | tables | safe | 1a7f81acb30a3c7bf9584a94981a41f3aa47d5e1de29b94af3cca4fa9643cac5 | ecb24e19 |
 | anonymous_review_bundle/reports/submission_text_drafts_2026_06_14.md | reports/submission_text_drafts_2026_06_14.md | writing | safe | d0fd2a03cb227d1f45b0cc24d98703c8f2abd776b360c329740a86bea41ac663 | c1b97f28 |
-| anonymous_review_bundle/reports/wifs_manuscript_draft_2026_06_14.md | reports/wifs_manuscript_draft_2026_06_14.md | paper-drafts | safe | 5404583223b87efd358946b355706bea580ccd6163bf7ebf8311345012b3a0b2 | 9df2b9ed |
+| anonymous_review_bundle/reports/wifs_manuscript_draft_2026_06_14.md | reports/wifs_manuscript_draft_2026_06_14.md | paper-drafts | safe | e0548c13a66afc2167a894d5d48d5edf30eae6325f38ef5c0e091451a0346bdf | 6766d90b |
 
 Machine-readable zip manifest: `reports/assets/anonymous_review_bundle_zip_manifest.csv`

@@ -119,10 +119,10 @@ reports/calibration_operating_modes_2026_06_14.md,analysis,"DFRWS,WIFS,DFF","Pap
 reports/assets/calibration_operating_modes.csv,analysis,"DFRWS,WIFS,DFF",Machine-readable calibration operating-mode selector table.,False,True,3476
 reports/submission_text_drafts_2026_06_14.md,writing,"DFRWS,WIFS,DFF","Venue-specific abstracts, contribution wording, result sentences, and paper skeletons.",True,True,15625
 reports/assets/submission_text_drafts_word_counts.csv,writing,"DFRWS,WIFS,DFF","Machine-readable word counts for generated DFRWS, WIFS, and DFF abstracts.",True,True,99
-reports/paper_section_drafts_2026_06_14.md,writing,"WIFS,DFF","Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats.",True,True,8549
+reports/paper_section_drafts_2026_06_14.md,writing,"WIFS,DFF","Generated WIFS/DFF prose section drafts tied to current metrics, literature, and caveats.",True,True,9544
 reports/assets/paper_section_draft_manifest.csv,writing,"WIFS,DFF",Machine-readable section word counts and caveat/metric flags for generated paper prose drafts.,True,True,323
-reports/paper_section_drafts_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF section prose, required metric anchors, caveats, and overclaim checks.",False,True,5440
-reports/assets/paper_section_drafts_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF section prose lint checks.,False,True,4601
+reports/paper_section_drafts_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report for WIFS/DFF section prose, required metric anchors, caveats, and overclaim checks.",False,True,5710
+reports/assets/paper_section_drafts_lint.csv,quality-control,"WIFS,DFF",Machine-readable WIFS/DFF section prose lint checks.,False,True,4841
 reports/submission_package_lint_2026_06_14.md,quality-control,"DFRWS,WIFS,DFF","Generated lint report for missing packet assets, abstract word counts, and overclaim language.",False,True,2857
 reports/assets/submission_package_lint.csv,quality-control,"DFRWS,WIFS,DFF",Machine-readable submission package lint checks.,False,True,2358
 reports/dfrws_poster_brief_2026_06_13.md,poster,DFRWS,"Poster spine, key numbers, figure package, and overclaim warnings.",True,True,12972
@@ -152,8 +152,8 @@ reports/wifs_breadth_decision_2026_06_14.md,planning,"WIFS,DFF",Generated WIFS b
 reports/assets/wifs_breadth_decision.csv,planning,"WIFS,DFF",Machine-readable WIFS breadth option ranking.,True,True,1023
 reports/manuscript_assembly_map_2026_06_14.md,planning,"WIFS,DFF","Generated WIFS/DFF manuscript assembly map tying section drafts, page budgets, figures, and tables to writing tasks.",True,True,5504
 reports/assets/manuscript_assembly_map.csv,planning,"WIFS,DFF",Machine-readable manuscript assembly map for WIFS and DFF writing.,True,True,4335
-reports/wifs_manuscript_draft_2026_06_14.md,paper-draft,WIFS,Assembled WIFS markdown manuscript draft with section prose and asset callouts.,True,True,11034
-reports/dff_manuscript_draft_2026_06_14.md,paper-draft,DFF,Assembled DFF markdown manuscript draft with section prose and asset callouts.,True,True,12226
+reports/wifs_manuscript_draft_2026_06_14.md,paper-draft,WIFS,Assembled WIFS markdown manuscript draft with section prose and asset callouts.,True,True,11815
+reports/dff_manuscript_draft_2026_06_14.md,paper-draft,DFF,Assembled DFF markdown manuscript draft with section prose and asset callouts.,True,True,13221
 reports/assets/manuscript_draft_manifest.csv,paper-draft,"WIFS,DFF",Machine-readable WIFS/DFF manuscript draft manifest.,True,True,221
 reports/manuscript_drafts_lint_2026_06_14.md,quality-control,"WIFS,DFF","Generated lint report checking WIFS/DFF manuscript draft sections, asset callouts, word counts, and overclaim guardrails.",False,True,2747
 reports/assets/manuscript_drafts_lint.csv,quality-control,"WIFS,DFF",Machine-readable manuscript draft lint checks.,False,True,2191
