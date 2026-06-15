@@ -209,6 +209,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/submission_anonymity_audit_checks.csv | Machine-readable anonymity audit checks for WIFS/DFF paper-facing drafts and skeletons. |
 | quality-control | reports/anonymous_review_bundle_2026_06_15.md | Anonymous supplementary artifact bundle manifest with hashes and identifier-scan status. |
 | quality-control | reports/assets/anonymous_review_bundle_manifest.csv | Machine-readable anonymous supplementary artifact bundle manifest. |
+| quality-control | reports/anonymous_review_bundle_package_2026_06_15.md | Deterministic anonymous review zip package report with final archive hash. |
+| quality-control | reports/assets/anonymous_review_bundle_zip_manifest.csv | Machine-readable zip entry manifest for the anonymous review bundle. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
 | method | reports/reconstruction_v2_feature_set_2026_06_14.md | Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions. |
@@ -415,6 +417,8 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | quality-control | reports/assets/submission_anonymity_audit_checks.csv | Machine-readable anonymity audit checks for WIFS/DFF paper-facing drafts and skeletons. |
 | quality-control | reports/anonymous_review_bundle_2026_06_15.md | Anonymous supplementary artifact bundle manifest with hashes and identifier-scan status. |
 | quality-control | reports/assets/anonymous_review_bundle_manifest.csv | Machine-readable anonymous supplementary artifact bundle manifest. |
+| quality-control | reports/anonymous_review_bundle_package_2026_06_15.md | Deterministic anonymous review zip package report with final archive hash. |
+| quality-control | reports/assets/anonymous_review_bundle_zip_manifest.csv | Machine-readable zip entry manifest for the anonymous review bundle. |
 | method | reports/reconstruction_lite_feature_set_2026_06_14.md | Standalone AEROBLADE-lite resize-reconstruction feature ablation manifest and run command. |
 | method | reports/assets/reconstruction_lite_feature_manifest.csv | Machine-readable reconstruction_lite feature manifest. |
 | method | reports/reconstruction_v2_feature_set_2026_06_14.md | Extended deterministic reconstruction residual feature ablation with FFT and low-rank SVD reconstructions. |
@@ -630,6 +634,7 @@ This packet is an authoring map, not a substitute for venue-specific formatting.
 | submission privacy audit | python scripts/build_submission_privacy_audit.py |
 | submission anonymity audit | python scripts/lint_submission_anonymity.py |
 | anonymous review bundle | python scripts/build_anonymous_review_bundle.py |
+| anonymous review bundle package | python scripts/package_anonymous_review_bundle.py |
 | submission artifact hashes | python scripts/build_submission_artifact_hashes.py |
 | submission artifact hash lint | python scripts/lint_submission_artifact_hashes.py |
 | submission packet | python scripts/build_submission_packet.py |

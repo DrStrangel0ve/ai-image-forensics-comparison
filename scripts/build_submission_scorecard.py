@@ -67,6 +67,12 @@ LINT_REPORTS = [
         "purpose": "Anonymous supplementary artifact bundle hashes and identifier-scan checks.",
     },
     {
+        "name": "anonymous review bundle package",
+        "path": "reports/anonymous_review_bundle_package_2026_06_15.md",
+        "venues": "WIFS,DFF",
+        "purpose": "Deterministic anonymous review zip package and archive-entry checks.",
+    },
+    {
         "name": "submission package",
         "path": "reports/submission_package_lint_2026_06_14.md",
         "venues": "DFRWS,WIFS,DFF",

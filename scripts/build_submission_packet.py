@@ -340,6 +340,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/anonymous_review_bundle_package_2026_06_15.md",
+        "type": "quality-control",
+        "venues": "WIFS,DFF",
+        "purpose": "Deterministic anonymous review zip package report with final archive hash.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/anonymous_review_bundle_zip_manifest.csv",
+        "type": "quality-control",
+        "venues": "WIFS,DFF",
+        "purpose": "Machine-readable zip entry manifest for the anonymous review bundle.",
+        "required": False,
+    },
+    {
         "path": "reports/reconstruction_lite_feature_set_2026_06_14.md",
         "type": "method",
         "venues": "DFRWS,WIFS,DFF",
@@ -1643,6 +1657,7 @@ REGEN_COMMANDS = [
     ("submission privacy audit", "python scripts/build_submission_privacy_audit.py"),
     ("submission anonymity audit", "python scripts/lint_submission_anonymity.py"),
     ("anonymous review bundle", "python scripts/build_anonymous_review_bundle.py"),
+    ("anonymous review bundle package", "python scripts/package_anonymous_review_bundle.py"),
     ("submission artifact hashes", "python scripts/build_submission_artifact_hashes.py"),
     ("submission artifact hash lint", "python scripts/lint_submission_artifact_hashes.py"),
     ("submission packet", "python scripts/build_submission_packet.py"),
