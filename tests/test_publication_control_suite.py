@@ -25,6 +25,8 @@ def test_publication_control_suite_dry_run_lists_ordered_commands(tmp_path: Path
             str(out_path),
             "--csv-out",
             str(csv_out),
+            "--run-date",
+            "2026-06-14",
         ],
         cwd=ROOT,
         check=True,
@@ -35,6 +37,7 @@ def test_publication_control_suite_dry_run_lists_ordered_commands(tmp_path: Path
     order = dict(zip(frame["asset"], frame["order"], strict=True))
 
     assert "Publication Control Suite" in text
+    assert "Run date: 2026-06-14" in text
     assert "Status: **DRY-RUN**" in text
     assert set(frame["status"]) == {"planned"}
     assert order["publication tables"] < order["robustness failure ranking"]

@@ -5,12 +5,13 @@ import importlib.util
 import subprocess
 import sys
 import time
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
 
 
-RUN_DATE = "2026-06-14"
+DEFAULT_RUN_DATE = date.today()
 
 
 def parse_args() -> argparse.Namespace:
@@ -43,6 +44,11 @@ def parse_args() -> argparse.Namespace:
         "--csv-out",
         default="reports/assets/publication_control_suite.csv",
         help="Machine-readable run report to write.",
+    )
+    parser.add_argument(
+        "--run-date",
+        default=DEFAULT_RUN_DATE.isoformat(),
+        help="Date to stamp into the generated report, in YYYY-MM-DD format. Defaults to today's local date.",
     )
     return parser.parse_args()
 
@@ -124,12 +130,12 @@ def _markdown_table(frame: pd.DataFrame) -> str:
     return "\n".join(lines)
 
 
-def _write_report(frame: pd.DataFrame, out_path: Path, dry_run: bool) -> None:
+def _write_report(frame: pd.DataFrame, out_path: Path, dry_run: bool, run_date: date) -> None:
     status = "DRY-RUN" if dry_run else "PASS" if set(frame["status"]) <= {"passed"} else "FAIL"
     lines = [
         "# Publication Control Suite",
         "",
-        f"Run date: {RUN_DATE}",
+        f"Run date: {run_date.isoformat()}",
         "",
         f"Status: **{status}** ({len(frame)} commands listed).",
         "",
@@ -153,7 +159,7 @@ def main() -> None:
     csv_path = Path(args.csv_out)
     csv_path.parent.mkdir(parents=True, exist_ok=True)
     frame.to_csv(csv_path, index=False)
-    _write_report(frame, Path(args.out_path), args.dry_run)
+    _write_report(frame, Path(args.out_path), args.dry_run, date.fromisoformat(args.run_date))
 
     print(Path(args.out_path).resolve())
     print(csv_path.resolve())
