@@ -4,5 +4,5 @@ hash statuses valid,True,all statuses valid
 hashed artifacts exist,True,all hashed artifacts exist
 sha256 values match,True,all checked hashes match
 size values match,True,all checked sizes match
-skipped index files ignored,True,6 index/self files skipped
+skipped index files ignored,True,8 index/self files skipped
 missing artifacts still absent,True,all missing-status artifacts are absent

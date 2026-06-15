@@ -1,0 +1,9 @@
+path,replacements,sanitized_placeholders,applied
+reports/assets/ms_cocoai_to_ishu_combined_v3_native_tiling_detail.csv,0,342,True
+reports/assets/tiled_clip_reverse_transfer_detail.csv,0,342,True
+reports/assets/tiled_convnext_reverse_transfer_detail.csv,0,342,True
+reports/assets/tiled_dinov2_blur1_reverse_transfer_detail.csv,0,342,True
+reports/assets/tiled_dinov2_jpeg30_reverse_transfer_detail.csv,0,342,True
+reports/assets/tiled_dinov2_resize_half_reverse_transfer_detail.csv,0,342,True
+reports/assets/tiled_dinov2_reverse_transfer_detail.csv,0,342,True
+reports/assets/tiled_dinov2_screenshot_reverse_transfer_detail.csv,0,342,True

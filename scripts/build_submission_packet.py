@@ -256,6 +256,20 @@ ARTIFACTS = [
         "required": False,
     },
     {
+        "path": "reports/submission_path_sanitization_2026_06_15.md",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Public-release path sanitization report for replacing workstation-specific repository prefixes with <repo> placeholders.",
+        "required": False,
+    },
+    {
+        "path": "reports/assets/submission_path_sanitization.csv",
+        "type": "quality-control",
+        "venues": "DFRWS,WIFS,DFF",
+        "purpose": "Machine-readable path sanitization changes for checked-in text artifacts.",
+        "required": False,
+    },
+    {
         "path": "reports/submission_privacy_audit_2026_06_15.md",
         "type": "quality-control",
         "venues": "DFRWS,WIFS,DFF",
@@ -1569,6 +1583,7 @@ REGEN_COMMANDS = [
     ("manuscript drafts", "python scripts/build_manuscript_drafts.py"),
     ("manuscript draft lint", "python scripts/lint_manuscript_drafts.py"),
     ("publication control suite dry run", "python scripts/run_publication_control_suite.py --dry-run"),
+    ("submission path sanitization", "python scripts/sanitize_submission_local_paths.py --apply"),
     ("submission artifact hashes", "python scripts/build_submission_artifact_hashes.py"),
     ("submission artifact hash lint", "python scripts/lint_submission_artifact_hashes.py"),
     ("submission privacy audit", "python scripts/build_submission_privacy_audit.py"),
