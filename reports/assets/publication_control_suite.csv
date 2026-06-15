@@ -1,53 +1,53 @@
-order,asset,command,status,returncode,elapsed_seconds
-1,literature map,python scripts/build_literature_map.py,planned,0,0.0
-2,draft BibTeX references,python scripts/build_references_bib.py,planned,0,0.0
-3,source-heldout model selection,python scripts/select_reverse_fusion_by_source_holdout.py,planned,0,0.0
-4,source-heldout stress figure,python scripts/build_source_stress_figure.py,planned,0,0.0
-5,publication tables,python scripts/build_publication_tables.py,planned,0,0.0
-6,robustness failure ranking,python scripts/build_robustness_failure_ranking.py,planned,0,0.0
-7,publication figures,python scripts/build_publication_assets.py,planned,0,0.0
-8,opportunity watchlist,python scripts/build_opportunity_watchlist.py,planned,0,0.0
-9,external benchmark readiness,python scripts/build_external_benchmark_readiness.py,planned,0,0.0
-10,external benchmark claim lint,python scripts/lint_external_benchmark_claims.py,planned,0,0.0
-11,SOTA gap report,python scripts/build_sota_gap_report.py,planned,0,0.0
-12,SOTA gap closure plan,python scripts/build_sota_gap_closure_plan.py,planned,0,0.0
-13,reconstruction-lite feature report,python scripts/build_reconstruction_lite_feature_report.py,planned,0,0.0
-14,reconstruction-v2 feature report,python scripts/build_reconstruction_v2_feature_report.py,planned,0,0.0
-15,reconstruction-v2 bounded probe,python scripts/summarize_reconstruction_v2_probe.py,planned,0,0.0
-16,reconstruction-lite bounded probe,python scripts/summarize_reconstruction_lite_probe.py,planned,0,0.0
-17,reconstruction-lite transfer probe,python scripts/summarize_reconstruction_lite_transfer_probe.py,planned,0,0.0
-18,reconstruction-lite fusion probe,python scripts/summarize_reconstruction_lite_fusion_probe.py,planned,0,0.0
-19,tiled foundation comparison,python scripts/build_tiled_foundation_comparison.py,planned,0,0.0
-20,tiled foundation fusion comparison,python scripts/build_tiled_foundation_fusion_comparison.py,planned,0,0.0
-21,tiled DINO resize-half fusion robustness,python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant resize_half --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_resize_half_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_2026_06_14.md,planned,0,0.0
-22,tiled DINO blur1 fusion robustness,python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant blur1 --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_blur1_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_blur1_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_blur1_tiled_dinov2_2026_06_14.md,planned,0,0.0
-23,tiled DINO JPEG30 fusion robustness,python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant jpeg30 --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_jpeg30_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2_2026_06_14.md,planned,0,0.0
-24,tiled DINO screenshot fusion robustness,python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant screenshot --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_screenshot_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_2026_06_14.md,planned,0,0.0
-25,tiled DINO transform stress comparison,python scripts/build_tiled_dinov2_transform_stress_comparison.py,planned,0,0.0
-26,tiled DINO calibration tradeoff,python scripts/build_tiled_dinov2_calibration_tradeoff.py,planned,0,0.0
-27,calibration operating modes,python scripts/build_calibration_operating_modes.py,planned,0,0.0
-28,claim matrix,python scripts/build_claim_evidence_matrix.py,planned,0,0.0
-29,claim matrix lint,python scripts/lint_claim_evidence_matrix.py,planned,0,0.0
-30,method family comparison,python scripts/build_method_family_comparison.py,planned,0,0.0
-31,submission result tables,python scripts/build_submission_result_tables.py,planned,0,0.0
-32,submission result table lint,python scripts/lint_submission_result_tables.py,planned,0,0.0
-33,submission LaTeX tables,python scripts/build_submission_latex_tables.py,planned,0,0.0
-34,submission text drafts,python scripts/build_submission_text_drafts.py,planned,0,0.0
-35,paper section drafts,python scripts/build_paper_section_drafts.py,planned,0,0.0
-36,paper section draft lint,python scripts/lint_paper_section_drafts.py,planned,0,0.0
-37,submission paper skeletons,python scripts/build_submission_paper_skeletons.py,planned,0,0.0
-38,paper skeleton lint,python scripts/lint_paper_skeletons.py,planned,0,0.0
-39,DFRWS qualitative grid selection,python scripts/build_dfrws_qualitative_grid_selection.py,planned,0,0.0
-40,DFRWS poster brief,python scripts/build_dfrws_poster_brief.py,planned,0,0.0
-41,DFRWS poster panels,python scripts/build_dfrws_poster_figures.py,planned,0,0.0
-42,DFRWS poster package lint,python scripts/lint_dfrws_poster_package.py,planned,0,0.0
-43,WIFS breadth decision,python scripts/build_wifs_breadth_decision.py,planned,0,0.0
-44,manuscript assembly map,python scripts/build_manuscript_assembly_map.py,planned,0,0.0
-45,manuscript drafts,python scripts/build_manuscript_drafts.py,planned,0,0.0
-46,manuscript draft lint,python scripts/lint_manuscript_drafts.py,planned,0,0.0
-47,publication control suite dry run,python scripts/run_publication_control_suite.py --dry-run,planned,0,0.0
-48,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
-49,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
-50,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
-51,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0
-52,submission critical path,python scripts/build_submission_critical_path.py,planned,0,0.0
+order,stage,asset,command,status,returncode,elapsed_seconds
+1,reference-and-claims,literature map,python scripts/build_literature_map.py,planned,0,0.0
+2,reference-and-claims,draft BibTeX references,python scripts/build_references_bib.py,planned,0,0.0
+3,experiments,source-heldout model selection,python scripts/select_reverse_fusion_by_source_holdout.py,planned,0,0.0
+4,publication-assets,source-heldout stress figure,python scripts/build_source_stress_figure.py,planned,0,0.0
+5,publication-assets,publication tables,python scripts/build_publication_tables.py,planned,0,0.0
+6,experiments,robustness failure ranking,python scripts/build_robustness_failure_ranking.py,planned,0,0.0
+7,publication-assets,publication figures,python scripts/build_publication_assets.py,planned,0,0.0
+8,external-positioning,opportunity watchlist,python scripts/build_opportunity_watchlist.py,planned,0,0.0
+9,external-positioning,external benchmark readiness,python scripts/build_external_benchmark_readiness.py,planned,0,0.0
+10,quality-control,external benchmark claim lint,python scripts/lint_external_benchmark_claims.py,planned,0,0.0
+11,external-positioning,SOTA gap report,python scripts/build_sota_gap_report.py,planned,0,0.0
+12,external-positioning,SOTA gap closure plan,python scripts/build_sota_gap_closure_plan.py,planned,0,0.0
+13,experiments,reconstruction-lite feature report,python scripts/build_reconstruction_lite_feature_report.py,planned,0,0.0
+14,experiments,reconstruction-v2 feature report,python scripts/build_reconstruction_v2_feature_report.py,planned,0,0.0
+15,experiments,reconstruction-v2 bounded probe,python scripts/summarize_reconstruction_v2_probe.py,planned,0,0.0
+16,experiments,reconstruction-lite bounded probe,python scripts/summarize_reconstruction_lite_probe.py,planned,0,0.0
+17,experiments,reconstruction-lite transfer probe,python scripts/summarize_reconstruction_lite_transfer_probe.py,planned,0,0.0
+18,experiments,reconstruction-lite fusion probe,python scripts/summarize_reconstruction_lite_fusion_probe.py,planned,0,0.0
+19,experiments,tiled foundation comparison,python scripts/build_tiled_foundation_comparison.py,planned,0,0.0
+20,experiments,tiled foundation fusion comparison,python scripts/build_tiled_foundation_fusion_comparison.py,planned,0,0.0
+21,experiments,tiled DINO resize-half fusion robustness,python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant resize_half --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_resize_half_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_resize_half_tiled_dinov2_2026_06_14.md,planned,0,0.0
+22,experiments,tiled DINO blur1 fusion robustness,python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant blur1 --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_blur1_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_blur1_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_blur1_tiled_dinov2_2026_06_14.md,planned,0,0.0
+23,experiments,tiled DINO JPEG30 fusion robustness,python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant jpeg30 --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_jpeg30_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_jpeg30_tiled_dinov2_2026_06_14.md,planned,0,0.0
+24,experiments,tiled DINO screenshot fusion robustness,python scripts/evaluate_reverse_tiled_fusion_robustness.py --variant screenshot --tile-branch dinov2_vits14 --tile-detail reports/assets/tiled_dinov2_screenshot_reverse_transfer_detail.csv --asset-prefix ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2 --report-path reports/ms_cocoai_to_ishu_tuned_fusion_screenshot_tiled_dinov2_2026_06_14.md,planned,0,0.0
+25,experiments,tiled DINO transform stress comparison,python scripts/build_tiled_dinov2_transform_stress_comparison.py,planned,0,0.0
+26,experiments,tiled DINO calibration tradeoff,python scripts/build_tiled_dinov2_calibration_tradeoff.py,planned,0,0.0
+27,reference-and-claims,calibration operating modes,python scripts/build_calibration_operating_modes.py,planned,0,0.0
+28,reference-and-claims,claim matrix,python scripts/build_claim_evidence_matrix.py,planned,0,0.0
+29,quality-control,claim matrix lint,python scripts/lint_claim_evidence_matrix.py,planned,0,0.0
+30,reference-and-claims,method family comparison,python scripts/build_method_family_comparison.py,planned,0,0.0
+31,publication-assets,submission result tables,python scripts/build_submission_result_tables.py,planned,0,0.0
+32,quality-control,submission result table lint,python scripts/lint_submission_result_tables.py,planned,0,0.0
+33,publication-assets,submission LaTeX tables,python scripts/build_submission_latex_tables.py,planned,0,0.0
+34,writing-assets,submission text drafts,python scripts/build_submission_text_drafts.py,planned,0,0.0
+35,writing-assets,paper section drafts,python scripts/build_paper_section_drafts.py,planned,0,0.0
+36,quality-control,paper section draft lint,python scripts/lint_paper_section_drafts.py,planned,0,0.0
+37,writing-assets,submission paper skeletons,python scripts/build_submission_paper_skeletons.py,planned,0,0.0
+38,quality-control,paper skeleton lint,python scripts/lint_paper_skeletons.py,planned,0,0.0
+39,reference-and-claims,DFRWS qualitative grid selection,python scripts/build_dfrws_qualitative_grid_selection.py,planned,0,0.0
+40,writing-assets,DFRWS poster brief,python scripts/build_dfrws_poster_brief.py,planned,0,0.0
+41,writing-assets,DFRWS poster panels,python scripts/build_dfrws_poster_figures.py,planned,0,0.0
+42,quality-control,DFRWS poster package lint,python scripts/lint_dfrws_poster_package.py,planned,0,0.0
+43,reference-and-claims,WIFS breadth decision,python scripts/build_wifs_breadth_decision.py,planned,0,0.0
+44,writing-assets,manuscript assembly map,python scripts/build_manuscript_assembly_map.py,planned,0,0.0
+45,writing-assets,manuscript drafts,python scripts/build_manuscript_drafts.py,planned,0,0.0
+46,quality-control,manuscript draft lint,python scripts/lint_manuscript_drafts.py,planned,0,0.0
+47,reference-and-claims,publication control suite dry run,python scripts/run_publication_control_suite.py --dry-run,planned,0,0.0
+48,submission-planning,submission packet,python scripts/build_submission_packet.py,planned,0,0.0
+49,quality-control,submission package lint,python scripts/lint_submission_package.py,planned,0,0.0
+50,submission-planning,submission scorecard,python scripts/build_submission_scorecard.py,planned,0,0.0
+51,submission-planning,submission upload checklist,python scripts/build_submission_upload_checklist.py,planned,0,0.0
+52,submission-planning,submission critical path,python scripts/build_submission_critical_path.py,planned,0,0.0
