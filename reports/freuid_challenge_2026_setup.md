@@ -58,6 +58,9 @@ Smoke verification: `scripts/download_freuid_images.py` successfully downloaded 
   - Preserves the downloaded/skipped manifest order so feature runs are reproducible from acquisition logs.
 - `scripts/run_freuid_feature_baseline.py`
   - Runs a CSV-based conventional baseline with the repo's photometric/noise/JPEG/frequency feature sets.
+- `scripts/run_freuid_frozen_encoder_baseline.py`
+  - Runs pretrained frozen image encoders on FREUID CSV metadata.
+  - Writes FREUID metrics, cached embeddings, and validation predictions compatible with score fusion.
 
 Generated local canary artifact:
 
@@ -126,6 +129,19 @@ Balanced 320/160 follow-up: downloaded and materialized a larger targeted slice 
 | rank fusion, weights 0.30/0.70 photometric/`combined_v3_hgb` | 0.8313 | 0.9135 | 0.3125 | 0.0908 | 0.1258 | 0.1347 |
 
 Interpretation: on the larger local FREUID slice, `combined_v3_hgb` is now the strongest single conventional branch for AUC and AuDET, while the rank fusion buys a better strict APCER operating point, accuracy, and Brier score. This is promising but still too small for a public-test submission claim; the next competitive step is to add a neural embedding branch and validate the same operating point on a larger holdout.
+
+Frozen-encoder follow-up on the same 320/160 slice: added a CSV-native FREUID frozen encoder runner and tested pretrained ConvNeXt-Tiny and ResNet-18 embeddings with calibrated logistic regression. Lower APCER/AuDET proxy is better:
+
+| Run | Accuracy | ROC AUC | APCER @ 1% BPCER | AuDET proxy | Brier | ECE |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `convnext_tiny_logreg` | 0.8500 | 0.9227 | 0.3500 | 0.0814 | 0.1149 | 0.0846 |
+| `resnet18_logreg` | 0.8000 | 0.8497 | 0.8750 | 0.1511 | 0.1592 | 0.1370 |
+| rank fusion: photometric + `combined_v3_hgb` + ConvNeXt | 0.8563 | 0.9423 | 0.2625 | 0.0623 | 0.1145 | 0.1261 |
+| rank fusion: photometric + `combined_v3_hgb` + ConvNeXt + ResNet-18 | 0.8688 | 0.9452 | 0.2625 | 0.0595 | 0.1143 | 0.1356 |
+
+Interpretation: ConvNeXt adds useful complementary signal to the conventional branch; ResNet-18 is poor alone, but the coarse rank-fusion grid assigns it only 10% weight and slightly improves AuDET/AUC. The current best local validation candidate is the four-branch rank fusion, but this is still validation-only. Do not upload until we either validate on a larger holdout or train/package a matching public-test inference path.
+
+Embedding-cache proof: rerunning the ConvNeXt branch with `--embedding-cache-dir outputs\freuid_2026\embedding_cache` reported 320 train hits / 160 validation hits, zero misses, and unchanged metrics. Frozen neural sweeps can now be repeated without re-encoding the current 320/160 slice.
 
 Run the same baseline after downloading a larger split:
 
