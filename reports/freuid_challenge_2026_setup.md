@@ -117,6 +117,16 @@ Feature-cache follow-up: `scripts/run_freuid_feature_baseline.py` now supports `
 
 Manifest materialization follow-up: `scripts/materialize_freuid_download_manifest.py` regenerated the balanced 160-train and 80-validation metadata CSVs from their download manifests. The regenerated files exactly matched the existing local CSVs in ID order, label counts, and per-type counts, so future acquisition waves can be reconstructed directly from manifest logs.
 
+Balanced 320/160 follow-up: downloaded and materialized a larger targeted slice with 320 training images and 160 validation images. Both splits are exactly balanced across the five document types and both labels, with 32 train rows and 16 validation rows per type/label cell. Lower APCER/AuDET proxy is better:
+
+| Run | Accuracy | ROC AUC | APCER @ 1% BPCER | AuDET proxy | Brier | ECE |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `combined_v3_hgb` | 0.8063 | 0.9198 | 0.3375 | 0.0843 | 0.1326 | 0.1332 |
+| `photometric_logreg` | 0.8063 | 0.8709 | 0.4875 | 0.1323 | 0.1412 | 0.0728 |
+| rank fusion, weights 0.30/0.70 photometric/`combined_v3_hgb` | 0.8313 | 0.9135 | 0.3125 | 0.0908 | 0.1258 | 0.1347 |
+
+Interpretation: on the larger local FREUID slice, `combined_v3_hgb` is now the strongest single conventional branch for AUC and AuDET, while the rank fusion buys a better strict APCER operating point, accuracy, and Brier score. This is promising but still too small for a public-test submission claim; the next competitive step is to add a neural embedding branch and validate the same operating point on a larger holdout.
+
 Run the same baseline after downloading a larger split:
 
 ```powershell
