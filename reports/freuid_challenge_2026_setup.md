@@ -101,6 +101,15 @@ Balanced 160/80 follow-up: expanded the same acquisition strategy to 160 train a
 
 Interpretation: photometric still wins the strict low-BPCER operating point, while `combined_v3_hgb` wins AUC and the local AuDET proxy. This points toward a calibrated score-fusion step between the photometric branch and the richer `combined_v3` branch before any Kaggle submission.
 
+Fusion follow-up: added `scripts/fuse_freuid_scores.py` and grid-searched validation score fusion over raw, min-max, and rank-normalized scores.
+
+| Fusion | Accuracy | ROC AUC | APCER @ 1% BPCER | AuDET proxy | Brier | ECE |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `photometric_logreg` + `combined_v3_hgb`, rank weights 0.45/0.55 | 0.7500 | 0.8553 | 0.5750 | 0.1500 | 0.1571 | 0.0873 |
+| four-branch conventional fusion, rank weights 0.50/0.50/0.00/0.00 | 0.7500 | 0.8494 | 0.5750 | 0.1562 | 0.1584 | 0.0711 |
+
+Interpretation: the two-branch rank fusion keeps the photometric low-BPCER operating point and substantially improves its AuDET proxy and calibration. The four-branch search gives zero weight to the extra logreg branches, so the current FREUID conventional ensemble should stay focused on photometric + `combined_v3_hgb` until the data slice is larger.
+
 Run the same baseline after downloading a larger split:
 
 ```powershell
