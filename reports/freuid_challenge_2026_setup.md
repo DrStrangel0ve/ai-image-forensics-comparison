@@ -143,6 +143,19 @@ Interpretation: ConvNeXt adds useful complementary signal to the conventional br
 
 Embedding-cache proof: rerunning the ConvNeXt branch with `--embedding-cache-dir outputs\freuid_2026\embedding_cache` reported 320 train hits / 160 validation hits, zero misses, and unchanged metrics. Frozen neural sweeps can now be repeated without re-encoding the current 320/160 slice.
 
+Balanced 640-train follow-up: completed and materialized a larger 640-image training slice, exactly balanced across the five document types and both labels, with 64 rows per type/label cell. A matching 320-validation download was started but Kaggle returned HTTP 429 rate-limit responses after 164 usable rows, so that partial validation manifest should not be used for model selection.
+
+Using the clean existing 160-validation slice, larger training alone did not beat the 320-trained fusion:
+
+| Run | Accuracy | ROC AUC | APCER @ 1% BPCER | AuDET proxy |
+| --- | ---: | ---: | ---: | ---: |
+| `photometric_logreg`, train640/val160 | 0.8000 | 0.8672 | 0.3875 | 0.1366 |
+| `combined_v3_hgb`, train640/val160 | 0.8063 | 0.9042 | 0.4750 | 0.0991 |
+| `convnext_tiny_logreg`, train640/val160 | 0.8500 | 0.9177 | 0.5875 | 0.0849 |
+| rank/raw fusion, train640/val160 | 0.8313 | 0.9233 | 0.2625 | 0.0813 |
+
+Interpretation: the 640-trained fusion recovers the same APCER@1%BPCER as the 320-trained best, but its AuDET/AUC are worse. The current best local candidate remains the 320-trained four-branch rank fusion. Next acquisition should wait/retry the 320-validation manifest rather than keep increasing train size against the same small holdout.
+
 Run the same baseline after downloading a larger split:
 
 ```powershell
