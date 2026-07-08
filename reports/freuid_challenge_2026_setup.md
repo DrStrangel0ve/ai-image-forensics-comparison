@@ -90,6 +90,17 @@ Balanced 80/40 follow-up: downloaded 80 train and 40 validation images balanced 
 
 Interpretation: on this tiny balanced slice, the photometric proxy is surprisingly strongest. Do not treat this as a leaderboard estimate; use it to prioritize the next acquisition wave and to keep photometric features in the early FREUID ensemble.
 
+Balanced 160/80 follow-up: expanded the same acquisition strategy to 160 train and 80 validation images, still exactly balanced across five document types and labels. Lower APCER/AuDET proxy is better:
+
+| Run | Accuracy | ROC AUC | APCER @ 1% BPCER | AuDET proxy | Brier | ECE |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `photometric_logreg` | 0.7375 | 0.8012 | 0.5750 | 0.2041 | 0.1779 | 0.1222 |
+| `combined_v3_hgb` | 0.7750 | 0.8581 | 0.6500 | 0.1462 | 0.1770 | 0.1573 |
+| `combined_v4_logreg` | 0.6750 | 0.8156 | 0.7000 | 0.1881 | 0.1692 | 0.1391 |
+| `combined_v3_logreg` | 0.7125 | 0.8187 | 0.7250 | 0.1847 | 0.1723 | 0.1174 |
+
+Interpretation: photometric still wins the strict low-BPCER operating point, while `combined_v3_hgb` wins AUC and the local AuDET proxy. This points toward a calibrated score-fusion step between the photometric branch and the richer `combined_v3` branch before any Kaggle submission.
+
 Run the same baseline after downloading a larger split:
 
 ```powershell
