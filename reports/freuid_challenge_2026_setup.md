@@ -31,6 +31,15 @@ Training label summary from `train_labels.csv`:
 
 The first full Kaggle archive download stalled and left an invalid partial zip, which was removed. The next download attempt should use either a longer uninterrupted window or targeted file downloads for smoke runs.
 
+Kaggle stores image files under nested split directories:
+
+- Training label paths like `train/<id>.jpeg` download as `train/train/<id>.jpeg`.
+- Public test IDs download as `public_test/public_test/<id>.jpeg`.
+
+This mapping is handled by `freuid_competition_path` and `scripts/download_freuid_images.py`.
+
+Smoke verification: `scripts/download_freuid_images.py` successfully downloaded 5 training JPEGs through the nested path mapping, and PIL opened all 5 as RGB images.
+
 ## Added Tooling
 
 - `src/forensic_compare/freuid.py`
@@ -41,6 +50,8 @@ The first full Kaggle archive download stalled and left an invalid partial zip, 
   - Preserves sample submission order and rejects missing/extra IDs.
 - `scripts/lint_freuid_submission.py`
   - Validates exact `id,label` columns, row count, ID set/order, uniqueness, and binary labels.
+- `scripts/download_freuid_images.py`
+  - Downloads targeted image subsets with Kaggle's nested FREUID file paths.
 
 Generated local canary artifact:
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import PurePosixPath
 from typing import Any
 
 import numpy as np
@@ -13,6 +14,31 @@ class FreuidOperatingPoint:
     apcer: float
     n_bona_fide: int
     n_attack: int
+
+
+def freuid_competition_path(value: object, split: str | None = None) -> str:
+    """Return the Kaggle archive path for a FREUID image.
+
+    The labels expose paths such as ``train/<id>.jpeg``, while Kaggle stores
+    downloadable files under nested split folders, for example
+    ``train/train/<id>.jpeg`` and ``public_test/public_test/<id>.jpeg``.
+    """
+
+    raw = str(value).replace("\\", "/").strip()
+    if not raw:
+        raise ValueError("FREUID image path/id cannot be empty")
+    parts = PurePosixPath(raw).parts
+    name = parts[-1]
+    if "." not in name:
+        name = f"{name}.jpeg"
+    inferred_split = split
+    if inferred_split is None and parts:
+        if parts[0] in {"train", "public_test"}:
+            inferred_split = parts[0]
+    inferred_split = inferred_split or "public_test"
+    if inferred_split not in {"train", "public_test"}:
+        raise ValueError("FREUID split must be 'train' or 'public_test'")
+    return f"{inferred_split}/{inferred_split}/{name}"
 
 
 def _binary_arrays(y_true: np.ndarray | list[int], scores: np.ndarray | list[float]) -> tuple[np.ndarray, np.ndarray]:
