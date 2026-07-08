@@ -53,6 +53,9 @@ Smoke verification: `scripts/download_freuid_images.py` successfully downloaded 
 - `scripts/download_freuid_images.py`
   - Downloads targeted image subsets with Kaggle's nested FREUID file paths.
   - Supports `--balance-columns type label` for small, evenly stratified acquisition waves.
+- `scripts/materialize_freuid_download_manifest.py`
+  - Rebuilds labeled train/validation metadata CSVs from download manifests and `train_labels.csv`.
+  - Preserves the downloaded/skipped manifest order so feature runs are reproducible from acquisition logs.
 - `scripts/run_freuid_feature_baseline.py`
   - Runs a CSV-based conventional baseline with the repo's photometric/noise/JPEG/frequency feature sets.
 
@@ -111,6 +114,8 @@ Fusion follow-up: added `scripts/fuse_freuid_scores.py` and grid-searched valida
 Interpretation: the two-branch rank fusion keeps the photometric low-BPCER operating point and substantially improves its AuDET proxy and calibration. The four-branch search gives zero weight to the extra logreg branches, so the current FREUID conventional ensemble should stay focused on photometric + `combined_v3_hgb` until the data slice is larger.
 
 Feature-cache follow-up: `scripts/run_freuid_feature_baseline.py` now supports `--feature-cache-dir`. On the 160/80 photometric slice, the warm run populated 240 cached vectors and the repeat run reported 160 train hits / 80 validation hits with identical metrics. This removes repeated JPEG/feature extraction as the main blocker for larger conventional sweeps.
+
+Manifest materialization follow-up: `scripts/materialize_freuid_download_manifest.py` regenerated the balanced 160-train and 80-validation metadata CSVs from their download manifests. The regenerated files exactly matched the existing local CSVs in ID order, label counts, and per-type counts, so future acquisition waves can be reconstructed directly from manifest logs.
 
 Run the same baseline after downloading a larger split:
 
