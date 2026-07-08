@@ -52,6 +52,7 @@ Smoke verification: `scripts/download_freuid_images.py` successfully downloaded 
   - Validates exact `id,label` columns, row count, ID set/order, uniqueness, and binary labels.
 - `scripts/download_freuid_images.py`
   - Downloads targeted image subsets with Kaggle's nested FREUID file paths.
+  - Supports `--balance-columns type label` for small, evenly stratified acquisition waves.
 - `scripts/run_freuid_feature_baseline.py`
   - Runs a CSV-based conventional baseline with the repo's photometric/noise/JPEG/frequency feature sets.
 
@@ -76,6 +77,18 @@ To verify the real-data path without making a leaderboard claim, a 30-image trai
 - Skipped images: 0.
 
 This is only a pipeline check; the validation set is too small for model selection or leaderboard expectations.
+
+Balanced 80/40 follow-up: downloaded 80 train and 40 validation images balanced across the five document types and both labels. This is still small, but it is the first type-balanced real-data comparison. Lower APCER/AuDET proxy is better:
+
+| Run | Accuracy | ROC AUC | APCER @ 1% BPCER | AuDET proxy |
+| --- | ---: | ---: | ---: | ---: |
+| `photometric_logreg` | 0.8250 | 0.9050 | 0.5000 | 0.1075 |
+| `combined_v3_logreg` | 0.7500 | 0.8775 | 0.6500 | 0.1312 |
+| `combined_v3_hgb` | 0.7000 | 0.8100 | 0.7000 | 0.1975 |
+| `combined_v4_logreg` | 0.7000 | 0.7725 | 0.7500 | 0.2338 |
+| `noise_v3_logreg` | 0.6750 | 0.7575 | 0.9000 | 0.2450 |
+
+Interpretation: on this tiny balanced slice, the photometric proxy is surprisingly strongest. Do not treat this as a leaderboard estimate; use it to prioritize the next acquisition wave and to keep photometric features in the early FREUID ensemble.
 
 Run the same baseline after downloading a larger split:
 

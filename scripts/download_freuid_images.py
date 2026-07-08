@@ -28,12 +28,46 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--id-column", default="id", help="Column with image ids when --path-column is omitted.")
     parser.add_argument("--split", choices=["train", "public_test"], default="public_test")
     parser.add_argument("--limit", type=int, default=0, help="Deterministic subset size; 0 means all rows.")
+    parser.add_argument(
+        "--balance-columns",
+        nargs="+",
+        default=[],
+        help="Optional metadata columns used to allocate --limit evenly across strata, e.g. label type.",
+    )
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--retries", type=int, default=2)
     parser.add_argument("--sleep-seconds", type=float, default=0.2)
     return parser.parse_args()
+
+
+def _limited_frame(frame: pd.DataFrame, limit: int, seed: int, balance_columns: list[str]) -> pd.DataFrame:
+    if limit <= 0 or limit >= len(frame):
+        return frame
+    missing = [column for column in balance_columns if column not in frame.columns]
+    if missing:
+        raise ValueError(f"Balance columns are missing from metadata: {missing}")
+    scored = frame.copy()
+    scored["_download_score"] = scored.astype(str).agg("|".join, axis=1).map(lambda value: stable_path_score(value, seed))
+    if not balance_columns:
+        return scored.sort_values(["_download_score"]).head(limit).drop(columns=["_download_score"])
+
+    groups = [group.sort_values(["_download_score"]) for _key, group in scored.groupby(balance_columns, sort=True)]
+    selected_indices: list[int] = []
+    cursor = 0
+    while len(selected_indices) < limit:
+        progressed = False
+        for group in groups:
+            if cursor < len(group):
+                selected_indices.append(int(group.index[cursor]))
+                progressed = True
+                if len(selected_indices) >= limit:
+                    break
+        if not progressed:
+            break
+        cursor += 1
+    return scored.loc[selected_indices].drop(columns=["_download_score"])
 
 
 def build_download_plan(
@@ -43,8 +77,10 @@ def build_download_plan(
     split: str = "public_test",
     limit: int = 0,
     seed: int = 7,
+    balance_columns: list[str] | None = None,
 ) -> list[str]:
     frame = pd.read_csv(metadata_csv)
+    frame = _limited_frame(frame, limit=limit, seed=seed, balance_columns=list(balance_columns or []))
     if path_column is not None:
         if path_column not in frame.columns:
             raise ValueError(f"Requested path column {path_column!r} not found")
@@ -56,8 +92,6 @@ def build_download_plan(
         values = frame[id_column].astype(str).tolist()
         paths = [freuid_competition_path(value, split=split) for value in values]
     paths = sorted(set(paths), key=lambda value: stable_path_score(value, seed))
-    if limit > 0:
-        paths = paths[:limit]
     return paths
 
 
@@ -100,6 +134,7 @@ def main() -> None:
         split=args.split,
         limit=args.limit,
         seed=args.seed,
+        balance_columns=list(args.balance_columns),
     )
 
     rows: list[dict[str, object]] = []
@@ -129,6 +164,8 @@ def main() -> None:
         "competition": args.competition,
         "dry_run": bool(args.dry_run),
         "n_planned": int(len(plan)),
+        "limit": int(args.limit),
+        "balance_columns": list(args.balance_columns),
         "status_counts": pd.Series([row["status"] for row in rows]).value_counts().sort_index().to_dict()
         if rows
         else {},
