@@ -52,6 +52,8 @@ Smoke verification: `scripts/download_freuid_images.py` successfully downloaded 
   - Validates exact `id,label` columns, row count, ID set/order, uniqueness, and binary labels.
 - `scripts/download_freuid_images.py`
   - Downloads targeted image subsets with Kaggle's nested FREUID file paths.
+- `scripts/run_freuid_feature_baseline.py`
+  - Runs a CSV-based conventional baseline with the repo's photometric/noise/JPEG/frequency feature sets.
 
 Generated local canary artifact:
 
@@ -62,6 +64,30 @@ Generated local canary artifact:
 Lint result: pass, 142,818 rows, exact sample ID set/order, all labels binary.
 
 This canary is useful for upload-format safety, but it is not a competitive submission.
+
+## Smoke Baseline
+
+To verify the real-data path without making a leaderboard claim, a 30-image training smoke subset was downloaded and split into 21 train / 9 validation rows. `combined_v3` conventional features with logistic regression completed successfully:
+
+- Validation accuracy: 0.6667.
+- Validation ROC AUC: 0.6667.
+- Local APCER at 1% BPCER: 0.6667.
+- Local AuDET proxy: 0.3611.
+- Skipped images: 0.
+
+This is only a pipeline check; the validation set is too small for model selection or leaderboard expectations.
+
+Run the same baseline after downloading a larger split:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\run_freuid_feature_baseline.py `
+  --train-csv outputs\freuid_2026\split_train.csv `
+  --val-csv outputs\freuid_2026\split_val.csv `
+  --image-root data\raw\freuid_2026\images `
+  --output-dir runs\freuid_combined_v3 `
+  --feature-set combined_v3 `
+  --classifier logistic_regression
+```
 
 ## Competitive Plan
 
