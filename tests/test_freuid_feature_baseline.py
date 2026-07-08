@@ -40,6 +40,7 @@ def test_run_freuid_feature_baseline_on_tiny_csv(tmp_path: Path) -> None:
     train_csv = tmp_path / "train.csv"
     val_csv = tmp_path / "val.csv"
     output_dir = tmp_path / "run"
+    cache_dir = tmp_path / "cache"
     pd.DataFrame(train_rows).to_csv(train_csv, index=False)
     pd.DataFrame(val_rows).to_csv(val_csv, index=False)
 
@@ -59,6 +60,8 @@ def test_run_freuid_feature_baseline_on_tiny_csv(tmp_path: Path) -> None:
             "photometric",
             "--image-size",
             "32",
+            "--feature-cache-dir",
+            str(cache_dir),
         ],
         cwd=ROOT,
         check=True,
@@ -69,5 +72,12 @@ def test_run_freuid_feature_baseline_on_tiny_csv(tmp_path: Path) -> None:
     assert metrics["method"] == "freuid_feature_baseline"
     assert metrics["n_train"] == 8
     assert metrics["n_val"] == 4
+    assert metrics["feature_cache"] == {
+        "train_hits": 0,
+        "train_misses": 8,
+        "val_hits": 0,
+        "val_misses": 4,
+    }
+    assert len(list(cache_dir.rglob("*.npy"))) == 12
     assert "apcer_at_1pct_bpcer" in metrics
     assert list(predictions.columns) == ["id", "image_path", "local_path", "type", "y_true", "fraud_score", "label"]

@@ -110,6 +110,8 @@ Fusion follow-up: added `scripts/fuse_freuid_scores.py` and grid-searched valida
 
 Interpretation: the two-branch rank fusion keeps the photometric low-BPCER operating point and substantially improves its AuDET proxy and calibration. The four-branch search gives zero weight to the extra logreg branches, so the current FREUID conventional ensemble should stay focused on photometric + `combined_v3_hgb` until the data slice is larger.
 
+Feature-cache follow-up: `scripts/run_freuid_feature_baseline.py` now supports `--feature-cache-dir`. On the 160/80 photometric slice, the warm run populated 240 cached vectors and the repeat run reported 160 train hits / 80 validation hits with identical metrics. This removes repeated JPEG/feature extraction as the main blocker for larger conventional sweeps.
+
 Run the same baseline after downloading a larger split:
 
 ```powershell

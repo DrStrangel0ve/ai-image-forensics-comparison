@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import sys
 from pathlib import Path
 
@@ -55,6 +56,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--max-train-samples", type=int, default=0)
     parser.add_argument("--max-val-samples", type=int, default=0)
+    parser.add_argument(
+        "--feature-cache-dir",
+        default=None,
+        help="Optional directory for cached per-image feature vectors keyed by path/stat/feature-set/image-size.",
+    )
     parser.add_argument("--skip-errors", action="store_true")
     return parser.parse_args()
 
@@ -90,6 +96,38 @@ def _limit_frame(frame: pd.DataFrame, max_samples: int, seed: int) -> pd.DataFra
     return limited.head(max_samples).reset_index(drop=True)
 
 
+def _cache_path(cache_dir: Path, local_path: Path, feature_set: str, image_size: int) -> Path:
+    stat = local_path.stat()
+    key = "|".join(
+        [
+            str(local_path.resolve()),
+            str(stat.st_size),
+            str(stat.st_mtime_ns),
+            feature_set,
+            str(image_size),
+        ]
+    )
+    digest = hashlib.sha1(key.encode("utf-8")).hexdigest()
+    return cache_dir / feature_set / str(image_size) / f"{digest}.npy"
+
+
+def _extract_or_load_feature(
+    local_path: Path,
+    image_size: int,
+    feature_set: str,
+    cache_dir: Path | None,
+) -> tuple[np.ndarray, str]:
+    if cache_dir is not None:
+        path = _cache_path(cache_dir, local_path, feature_set, image_size)
+        if path.exists():
+            return np.load(path), "hit"
+    vector = extract_feature_set(local_path, image_size=image_size, feature_set=feature_set)
+    if cache_dir is not None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        np.save(path, vector.astype(np.float32))
+    return vector, "miss"
+
+
 def _extract_matrix(
     frame: pd.DataFrame,
     image_root: Path,
@@ -97,15 +135,18 @@ def _extract_matrix(
     image_size: int,
     desc: str,
     skip_errors: bool,
-) -> tuple[np.ndarray, np.ndarray, list[dict[str, object]], list[dict[str, str]]]:
+    cache_dir: Path | None,
+) -> tuple[np.ndarray, np.ndarray, list[dict[str, object]], list[dict[str, str]], dict[str, int]]:
     features = []
     labels = []
     rows = []
     skipped = []
+    cache_stats = {"hits": 0, "misses": 0}
     for row in tqdm(frame.to_dict("records"), desc=desc):
         try:
             local_path = _resolve_image_path(image_root, row["image_path"])
-            vector = extract_feature_set(local_path, image_size=image_size, feature_set=feature_set)
+            vector, cache_status = _extract_or_load_feature(local_path, image_size, feature_set, cache_dir)
+            cache_stats["hits" if cache_status == "hit" else "misses"] += 1
         except Exception as exc:
             if not skip_errors:
                 raise
@@ -124,7 +165,7 @@ def _extract_matrix(
         )
     if not features:
         raise ValueError(f"No usable rows extracted for {desc}")
-    return np.vstack(features), np.asarray(labels, dtype=int), rows, skipped
+    return np.vstack(features), np.asarray(labels, dtype=int), rows, skipped, cache_stats
 
 
 def _classifier(name: str, seed: int):
@@ -159,14 +200,15 @@ def run_baseline(args: argparse.Namespace) -> dict[str, object]:
     seed_everything(args.seed)
     output_dir = ensure_dir(args.output_dir)
     image_root = Path(args.image_root)
+    cache_dir = Path(args.feature_cache_dir) if args.feature_cache_dir else None
     train_frame = _limit_frame(pd.read_csv(args.train_csv), args.max_train_samples, args.seed)
     val_frame = _limit_frame(pd.read_csv(args.val_csv), args.max_val_samples, args.seed + 1)
 
-    x_train, y_train, _train_rows, train_skipped = _extract_matrix(
-        train_frame, image_root, args.feature_set, args.image_size, "freuid/train", args.skip_errors
+    x_train, y_train, _train_rows, train_skipped, train_cache = _extract_matrix(
+        train_frame, image_root, args.feature_set, args.image_size, "freuid/train", args.skip_errors, cache_dir
     )
-    x_val, y_val, val_rows, val_skipped = _extract_matrix(
-        val_frame, image_root, args.feature_set, args.image_size, "freuid/val", args.skip_errors
+    x_val, y_val, val_rows, val_skipped, val_cache = _extract_matrix(
+        val_frame, image_root, args.feature_set, args.image_size, "freuid/val", args.skip_errors, cache_dir
     )
 
     model = _classifier(args.classifier, args.seed)
@@ -187,6 +229,13 @@ def run_baseline(args: argparse.Namespace) -> dict[str, object]:
             "n_val": int(len(y_val)),
             "n_train_skipped": int(len(train_skipped)),
             "n_val_skipped": int(len(val_skipped)),
+            "feature_cache_dir": str(cache_dir) if cache_dir is not None else None,
+            "feature_cache": {
+                "train_hits": int(train_cache["hits"]),
+                "train_misses": int(train_cache["misses"]),
+                "val_hits": int(val_cache["hits"]),
+                "val_misses": int(val_cache["misses"]),
+            },
             "feature_names": feature_names(args.feature_set),
             "threshold_for_1pct_bpcer": float(operating_point.threshold),
         }
