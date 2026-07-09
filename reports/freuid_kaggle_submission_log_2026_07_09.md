@@ -119,3 +119,27 @@ The submitted file preserves full Kaggle sample order and row count:
 - Public score: `0.38042`.
 
 Operational note: the installed local Torch build is CPU-only, so the ConvNeXt branch was run on CPU despite the desktop having a 3060 Ti. Installing a CUDA-enabled Torch build should make the next neural/foundation iterations faster, but it is not required for correctness.
+
+## 2026-07-10 Larger Conventional Submission
+
+The full local train set was split with seed 37 using type+label stratification, then capped to a type+label-balanced `12,000` train / `4,000` validation run for fast iteration. All public-test image IDs were scored from the extracted official archive.
+
+| Branch | Accuracy | AUC | APCER @ 1% BPCER | AuDET proxy |
+| --- | ---: | ---: | ---: | ---: |
+| `combined_v3` + HGB | 0.8678 | 0.9407 | 0.2670 | 0.0595 |
+| Photometric logistic baseline | 0.8130 | 0.8880 | 0.3935 | 0.1121 |
+| `combined_v4` + HGB | 0.8850 | 0.9584 | 0.2385 | 0.0417 |
+| Coarse three-way fusion, 0.20 `combined_v3` / 0.10 photometric / 0.70 `combined_v4` | 0.8848 | 0.9568 | 0.2380 | 0.0434 |
+
+Because the three-way fusion only improved APCER by `0.0005` while worsening AuDET proxy and AUC, the submitted candidate used the single `combined_v4` image score branch plus the prior metadata fallback.
+
+Submitted file:
+
+- Rows: `142,818`.
+- Public image IDs replaced by `combined_v4` image scores: `7,821`.
+- Remaining IDs filled with the prior best metadata-score fallback: `134,997`.
+- Lint: `scripts/lint_freuid_submission.py --allow-score-labels` passed.
+- Kaggle submission ref: `54505114`.
+- Public score: `0.39303`.
+
+This did not beat the current best `0.38042` from submission `54503265`. The larger local split improved validation metrics but transferred worse to the public leaderboard, so the next useful direction is source/domain-robust validation and fusion rather than simply increasing conventional-feature training rows.
