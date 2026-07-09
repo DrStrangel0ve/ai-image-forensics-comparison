@@ -158,6 +158,8 @@ Public-test fusion packaging follow-up: `scripts/apply_freuid_fusion.py` now fre
 
 First-release kernel follow-up: local public-test image access is still the submission blocker, so the repo now includes `kaggle\freuid_photometric_submission`. This private Kaggle script kernel avoids local per-file downloads by using the competition data mounted inside Kaggle. It clones the public repo, prepares a type/label-stratified split, trains a 640-sample photometric logistic baseline, scores the full sample submission, packages `submission.csv`, and runs the FREUID linter before exposing the output. This is a conservative first leaderboard release path; it is not expected to match the local fusion candidate, but it should produce a real official score once the remote run completes.
 
+Kernel-source blocker: Kaggle API pushes for both `arnavmalani/freuid-photometric-first-submission` and `arnavmalani/freuid-photometric-offline-submission` accepted the script, but the server-side metadata stripped `competition_sources` to `[]`, leaving `/kaggle/input` empty. The offline kernel is now self-contained and submit-eligible if the competition data is attached manually in Kaggle UI, but API-only kernel launch is not yet producing mounted FREUID data.
+
 Balanced 640-train follow-up: completed and materialized a larger 640-image training slice, exactly balanced across the five document types and both labels, with 64 rows per type/label cell. A matching 320-validation download was started but Kaggle returned HTTP 429 rate-limit responses after 164 usable rows, so that partial validation manifest should not be used for model selection.
 
 Using the clean existing 160-validation slice, larger training alone did not beat the 320-trained fusion:
@@ -244,7 +246,7 @@ Apply the frozen local fusion recipe once unlabeled public-test branch predictio
   --out-predictions outputs\freuid_2026\public_fused_predictions.csv
 ```
 
-Run the first-release Kaggle kernel:
+Run the first-release Kaggle kernel after verifying the competition source is attached:
 
 ```powershell
 .\.venv\Scripts\python.exe -m kaggle kernels push `
