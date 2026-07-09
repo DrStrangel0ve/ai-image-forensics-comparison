@@ -193,7 +193,7 @@ def main() -> None:
                 consecutive_failures = 0
                 rows.append({"competition_path": competition_path, "status": status})
                 print(f"[{index}/{len(plan)}] {status} {competition_path}")
-                if args.sleep_seconds > 0:
+                if status == "downloaded" and args.sleep_seconds > 0:
                     time.sleep(args.sleep_seconds)
             if args.checkpoint_every > 0 and len(rows) % args.checkpoint_every == 0:
                 write_json(_manifest_summary(args, out_dir, plan, rows), manifest_out)

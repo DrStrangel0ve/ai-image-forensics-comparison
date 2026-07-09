@@ -158,6 +158,8 @@ Interpretation: the 640-trained fusion recovers the same APCER@1%BPCER as the 32
 
 Downloader-safety follow-up: after a cooldown retry of the same 320-validation plan, local availability remained 164/320 usable images and the slow retry timed out before writing a new manifest. `scripts/download_freuid_images.py` now checkpoints manifests during acquisition and supports `--stop-after-failures` so rate-limited runs preserve partial progress and can stop before spending long windows on repeated HTTP 429 bursts.
 
+Checkpointed retry follow-up: a bounded retry of the 320-validation plan wrote `outputs/freuid_2026/balanced320_val_download_manifest_retry_checkpoint.json`, skipped 163 already-local files, then stopped after 8 consecutive HTTP 429 failures. No new validation images were acquired. The downloader now avoids sleeping on local skips so future top-up attempts reach the first real download request quickly while still honoring `--sleep-seconds` after successful network downloads.
+
 Run the same baseline after downloading a larger split:
 
 ```powershell
