@@ -43,6 +43,8 @@ def test_download_freuid_images_dry_run_builds_plan(tmp_path: Path) -> None:
     report = json.loads(manifest.read_text(encoding="utf-8"))
     planned = {row["competition_path"] for row in report["rows"]}
     assert report["n_planned"] == 2
+    assert report["n_completed"] == 2
+    assert report["stopped_early"] is False
     assert report["status_counts"] == {"dry_run": 2}
     assert planned == {"public_test/public_test/a.jpeg", "public_test/public_test/b.jpeg"}
 
@@ -78,6 +80,8 @@ def test_download_freuid_images_dry_run_balances_limit_by_columns(tmp_path: Path
     report = json.loads(manifest.read_text(encoding="utf-8"))
     planned_ids = [Path(row["competition_path"]).stem for row in report["rows"]]
     assert report["n_planned"] == 4
+    assert report["n_completed"] == 4
+    assert report["stopped_early"] is False
     assert report["balance_columns"] == ["label"]
     assert sum(value.startswith("0_") for value in planned_ids) == 2
     assert sum(value.startswith("1_") for value in planned_ids) == 2

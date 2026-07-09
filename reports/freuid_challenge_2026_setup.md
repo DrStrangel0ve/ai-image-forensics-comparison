@@ -156,6 +156,8 @@ Using the clean existing 160-validation slice, larger training alone did not bea
 
 Interpretation: the 640-trained fusion recovers the same APCER@1%BPCER as the 320-trained best, but its AuDET/AUC are worse. The current best local candidate remains the 320-trained four-branch rank fusion. Next acquisition should wait/retry the 320-validation manifest rather than keep increasing train size against the same small holdout.
 
+Downloader-safety follow-up: after a cooldown retry of the same 320-validation plan, local availability remained 164/320 usable images and the slow retry timed out before writing a new manifest. `scripts/download_freuid_images.py` now checkpoints manifests during acquisition and supports `--stop-after-failures` so rate-limited runs preserve partial progress and can stop before spending long windows on repeated HTTP 429 bursts.
+
 Run the same baseline after downloading a larger split:
 
 ```powershell

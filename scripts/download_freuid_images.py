@@ -39,6 +39,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--retries", type=int, default=2)
     parser.add_argument("--sleep-seconds", type=float, default=0.2)
+    parser.add_argument(
+        "--checkpoint-every",
+        type=int,
+        default=1,
+        help="Write the manifest after this many completed rows; 0 only writes at the end.",
+    )
+    parser.add_argument(
+        "--stop-after-failures",
+        type=int,
+        default=0,
+        help="Stop early after this many consecutive failed downloads; 0 disables early stopping.",
+    )
     return parser.parse_args()
 
 
@@ -123,6 +135,23 @@ def _download_one(api, competition: str, competition_path: str, out_dir: Path, f
     raise RuntimeError(f"Failed to download {competition_path}: {last_error}") from last_error
 
 
+def _manifest_summary(args: argparse.Namespace, out_dir: Path, plan: list[str], rows: list[dict[str, object]]) -> dict[str, object]:
+    return {
+        "metadata_csv": str(args.metadata_csv),
+        "out_dir": str(out_dir),
+        "competition": args.competition,
+        "dry_run": bool(args.dry_run),
+        "n_planned": int(len(plan)),
+        "n_completed": int(len(rows)),
+        "limit": int(args.limit),
+        "balance_columns": list(args.balance_columns),
+        "status_counts": pd.Series([row["status"] for row in rows]).value_counts().sort_index().to_dict()
+        if rows
+        else {},
+        "rows": rows[:1000],
+    }
+
+
 def main() -> None:
     args = parse_args()
     out_dir = Path(args.out_dir)
@@ -138,6 +167,7 @@ def main() -> None:
     )
 
     rows: list[dict[str, object]] = []
+    stopped_early = False
     if args.dry_run:
         rows = [{"competition_path": path, "status": "dry_run"} for path in plan]
     else:
@@ -145,6 +175,7 @@ def main() -> None:
 
         api = KaggleApi()
         api.authenticate()
+        consecutive_failures = 0
         for index, competition_path in enumerate(plan, start=1):
             try:
                 status = _download_one(api, args.competition, competition_path, out_dir, args.force, args.retries)
@@ -152,25 +183,23 @@ def main() -> None:
                 status = "failed"
                 rows.append({"competition_path": competition_path, "status": status, "error": str(exc)})
                 print(f"[{index}/{len(plan)}] failed {competition_path}: {exc}")
-                continue
-            rows.append({"competition_path": competition_path, "status": status})
-            print(f"[{index}/{len(plan)}] {status} {competition_path}")
-            if args.sleep_seconds > 0:
-                time.sleep(args.sleep_seconds)
+                consecutive_failures += 1
+                if args.stop_after_failures > 0 and consecutive_failures >= args.stop_after_failures:
+                    stopped_early = True
+                    print(f"Stopping after {consecutive_failures} consecutive failures")
+                    write_json(_manifest_summary(args, out_dir, plan, rows), manifest_out)
+                    break
+            else:
+                consecutive_failures = 0
+                rows.append({"competition_path": competition_path, "status": status})
+                print(f"[{index}/{len(plan)}] {status} {competition_path}")
+                if args.sleep_seconds > 0:
+                    time.sleep(args.sleep_seconds)
+            if args.checkpoint_every > 0 and len(rows) % args.checkpoint_every == 0:
+                write_json(_manifest_summary(args, out_dir, plan, rows), manifest_out)
 
-    summary = {
-        "metadata_csv": str(args.metadata_csv),
-        "out_dir": str(out_dir),
-        "competition": args.competition,
-        "dry_run": bool(args.dry_run),
-        "n_planned": int(len(plan)),
-        "limit": int(args.limit),
-        "balance_columns": list(args.balance_columns),
-        "status_counts": pd.Series([row["status"] for row in rows]).value_counts().sort_index().to_dict()
-        if rows
-        else {},
-        "rows": rows[:1000],
-    }
+    summary = _manifest_summary(args, out_dir, plan, rows)
+    summary["stopped_early"] = bool(stopped_early)
     write_json(summary, manifest_out)
     print(manifest_out.resolve())
     if any(row["status"] == "failed" for row in rows):
