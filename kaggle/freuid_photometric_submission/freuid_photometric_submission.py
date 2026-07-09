@@ -18,26 +18,58 @@ def run(command: list[str], cwd: Path | None = None) -> None:
     subprocess.run(command, cwd=str(cwd) if cwd is not None else None, check=True)
 
 
-def first_existing(candidates: list[Path]) -> Path:
-    for candidate in candidates:
+def describe_input_tree() -> None:
+    root = Path("/kaggle/input")
+    print("kaggle_input_tree", flush=True)
+    for source in sorted(root.glob("*")):
+        print(f"- {source}", flush=True)
+        try:
+            for child in sorted(source.iterdir())[:30]:
+                print(f"  - {child.name}", flush=True)
+        except NotADirectoryError:
+            pass
+
+
+def find_input_file(filename: str, direct_candidates: list[Path]) -> Path:
+    for candidate in direct_candidates:
         if candidate.exists():
             return candidate
-    raise FileNotFoundError(f"None of these paths exist: {[str(candidate) for candidate in candidates]}")
+    matches = sorted(Path("/kaggle/input").glob(f"**/{filename}"), key=lambda path: (len(path.parts), str(path)))
+    if matches:
+        return matches[0]
+    describe_input_tree()
+    raise FileNotFoundError(f"Could not find {filename} under /kaggle/input")
+
+
+def infer_image_root(train_labels: Path) -> Path:
+    candidates = [train_labels.parent, *train_labels.parents]
+    candidates.extend(sorted(Path("/kaggle/input").glob("*")))
+    for candidate in candidates:
+        if (candidate / "train").exists() and (candidate / "public_test").exists():
+            return candidate
+    describe_input_tree()
+    raise FileNotFoundError("Could not infer FREUID image root containing train/ and public_test/")
 
 
 def main() -> None:
-    train_labels = first_existing(
+    train_labels = find_input_file(
+        "train_labels.csv",
         [
             INPUT_DIR / "train_labels.csv",
             INPUT_DIR / "small_files" / "train_labels.csv",
-        ]
+        ],
     )
-    sample_submission = first_existing(
+    sample_submission = find_input_file(
+        "sample_submission.csv",
         [
             INPUT_DIR / "sample_submission.csv",
             INPUT_DIR / "small_files" / "sample_submission.csv",
-        ]
+        ],
     )
+    image_root = infer_image_root(train_labels)
+    print(f"train_labels={train_labels}", flush=True)
+    print(f"sample_submission={sample_submission}", flush=True)
+    print(f"image_root={image_root}", flush=True)
 
     if not REPO_DIR.exists():
         run(["git", "clone", "--depth", "1", REPO_URL, str(REPO_DIR)])
@@ -83,7 +115,7 @@ def main() -> None:
             "--test-csv",
             str(sample_submission),
             "--image-root",
-            str(INPUT_DIR),
+            str(image_root),
             "--output-dir",
             str(output_dir),
             "--feature-set",
