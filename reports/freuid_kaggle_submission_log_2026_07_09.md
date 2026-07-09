@@ -62,3 +62,16 @@ Validation results on that fuller local split:
 | Rank fusion, 0.65 `combined_v3` / 0.35 ConvNeXt | 0.8716 | 0.9419 | 0.2868 | 0.0608 |
 
 The takeaway is that local document fraud signal is real, but the leaderboard remains metadata-only until public-test images can be acquired or the Kaggle notebook data source attaches successfully.
+
+## 2026-07-09 Two-Hour Follow-Up
+
+After another cooldown, both the full-archive endpoint and public-test image access remained `429`-blocked, so no additional leaderboard candidate was submitted.
+
+The local split was extended with the physics branch:
+
+| Method | Accuracy | AUC | APCER @ 1% BPCER | AuDET proxy |
+| --- | ---: | ---: | ---: | ---: |
+| Photometric logistic baseline | 0.7821 | 0.8593 | 0.4419 | 0.1428 |
+| Rank fusion, 0.65 `combined_v3` / 0.30 ConvNeXt / 0.05 photometric | 0.8599 | 0.9412 | 0.2481 | 0.0614 |
+
+The small photometric weight does not improve ranking, but it improves the low-BPCER fraud operating point. This is useful for the next image-based public-test candidate once Kaggle data access recovers.
