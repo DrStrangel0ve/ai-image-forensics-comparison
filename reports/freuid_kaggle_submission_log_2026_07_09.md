@@ -176,3 +176,24 @@ Kaggle upload attempt:
 - No new submission ref appeared in `kaggle competitions submissions`.
 
 This candidate is ready to retry when the Kaggle submission limit/window clears or when the server-side cause of the `400` can be inspected. Current leaderboard best remains `54503265` with public score `0.38042`.
+
+## 2026-07-10 Submission Guard Follow-Up
+
+The Kaggle competition rules page states that the standard daily limit is anticipated to be up to `5` submissions per team per day. A dry run with `scripts/submit_freuid_candidate.py` at `2026-07-09T23:10:55Z` found `5 / 5` submissions for July 9 UTC, matching the earlier `400 Bad Request` failure pattern.
+
+The guarded helper now:
+
+- lints score-valued `id,label` submissions before upload;
+- estimates same-day Kaggle submissions from structured Kaggle API timestamps;
+- blocks by default when the estimated daily limit is exhausted;
+- submits and polls for ref/status/public score when a slot is available.
+
+Use it to retry the best candidate after the UTC day rolls over:
+
+```powershell
+python scripts\submit_freuid_candidate.py `
+  --sample-submission data\raw\freuid_2026\small_files\sample_submission.csv `
+  --submission outputs\freuid_2026\public_12k_fourway_fusion_submission_packaged\submission.csv `
+  --message "12k four-way fusion v3: combined_v4 plus CUDA ConvNeXt with metadata fallback" `
+  --manifest-out outputs\freuid_2026\public_12k_fourway_fusion_submission_packaged\submit_manifest.json
+```
