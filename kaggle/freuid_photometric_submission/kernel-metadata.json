@@ -1,0 +1,17 @@
+{
+  "id": "arnavmalani/freuid-photometric-first-submission",
+  "title": "FREUID Photometric First Submission",
+  "code_file": "freuid_photometric_submission.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "false",
+  "enable_tpu": "false",
+  "enable_internet": "true",
+  "dataset_sources": [],
+  "competition_sources": [
+    "the-freuid-challenge-2026-ijcai-ecai"
+  ],
+  "kernel_sources": [],
+  "model_sources": []
+}

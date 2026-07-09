@@ -44,8 +44,10 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run a conventional FREUID baseline from CSV metadata.")
     parser.add_argument("--train-csv", required=True)
     parser.add_argument("--val-csv", required=True)
+    parser.add_argument("--test-csv", default=None, help="Optional unlabeled/sample-submission CSV to score after training.")
     parser.add_argument("--image-root", default="data/raw/freuid_2026/images")
     parser.add_argument("--output-dir", default="runs/freuid_feature_baseline")
+    parser.add_argument("--test-predictions-out", default=None, help="Optional output path for test predictions.")
     parser.add_argument("--feature-set", choices=FEATURE_SETS, default="combined_v3")
     parser.add_argument(
         "--classifier",
@@ -56,6 +58,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--max-train-samples", type=int, default=0)
     parser.add_argument("--max-val-samples", type=int, default=0)
+    parser.add_argument("--max-test-samples", type=int, default=0)
+    parser.add_argument(
+        "--limit-balance-columns",
+        nargs="+",
+        default=[],
+        help="Optional columns used to balance --max-*-samples, e.g. type label.",
+    )
     parser.add_argument(
         "--feature-cache-dir",
         default=None,
@@ -77,23 +86,50 @@ def _resolve_image_path(image_root: Path, image_path: object) -> Path:
     raise FileNotFoundError(f"Could not find FREUID image for {raw}; tried {candidates}")
 
 
-def _limit_frame(frame: pd.DataFrame, max_samples: int, seed: int) -> pd.DataFrame:
+def _limit_frame(frame: pd.DataFrame, max_samples: int, seed: int, balance_columns: list[str] | None = None) -> pd.DataFrame:
     if max_samples <= 0 or max_samples >= len(frame):
         return frame
-    rows = []
-    per_label = max(1, max_samples // max(1, frame["label"].nunique()))
-    for label, group in frame.groupby("label", sort=True):
-        ordered = group.assign(_score=group["id"].astype(str).map(lambda value: stable_path_score(value, seed)))
-        rows.append(ordered.sort_values(["_score", "id"]).head(per_label).drop(columns=["_score"]))
-    limited = pd.concat(rows, ignore_index=True)
-    if len(limited) < max_samples:
-        remaining = frame[~frame["id"].isin(set(limited["id"]))].copy()
-        remaining["_score"] = remaining["id"].astype(str).map(lambda value: stable_path_score(value, seed + 17))
-        limited = pd.concat(
-            [limited, remaining.sort_values(["_score", "id"]).head(max_samples - len(limited)).drop(columns=["_score"])],
-            ignore_index=True,
-        )
-    return limited.head(max_samples).reset_index(drop=True)
+    balance_columns = list(balance_columns or [])
+    scored = frame.copy()
+    scored["_score"] = scored["id"].astype(str).map(lambda value: stable_path_score(value, seed))
+    if not balance_columns:
+        balance_columns = ["label"]
+    missing = [column for column in balance_columns if column not in scored.columns]
+    if missing:
+        raise ValueError(f"Balance columns are missing from FREUID metadata: {missing}")
+    groups = [group.sort_values(["_score", "id"], kind="mergesort") for _key, group in scored.groupby(balance_columns, sort=True)]
+    selected_indices: list[int] = []
+    cursor = 0
+    while len(selected_indices) < max_samples:
+        progressed = False
+        for group in groups:
+            if cursor < len(group):
+                selected_indices.append(int(group.index[cursor]))
+                progressed = True
+                if len(selected_indices) >= max_samples:
+                    break
+        if not progressed:
+            break
+        cursor += 1
+    return scored.loc[selected_indices].drop(columns=["_score"]).reset_index(drop=True)
+
+
+def _limit_unlabeled_frame(frame: pd.DataFrame, max_samples: int, seed: int) -> pd.DataFrame:
+    if max_samples <= 0 or max_samples >= len(frame):
+        return frame.reset_index(drop=True)
+    ordered = frame.copy()
+    ordered["_score"] = ordered["id"].astype(str).map(lambda value: stable_path_score(value, seed))
+    return ordered.sort_values(["_score", "id"], kind="mergesort").head(max_samples).drop(columns=["_score"]).reset_index(drop=True)
+
+
+def _public_frame_from_ids(frame: pd.DataFrame) -> pd.DataFrame:
+    if "id" not in frame.columns:
+        raise ValueError("Unlabeled FREUID test CSV must contain an id column")
+    frame = frame.copy()
+    frame["id"] = frame["id"].astype(str)
+    if "image_path" not in frame.columns:
+        frame["image_path"] = frame["id"].map(lambda value: f"public_test/{value}.jpeg")
+    return frame
 
 
 def _cache_path(cache_dir: Path, local_path: Path, feature_set: str, image_size: int) -> Path:
@@ -168,6 +204,43 @@ def _extract_matrix(
     return np.vstack(features), np.asarray(labels, dtype=int), rows, skipped, cache_stats
 
 
+def _extract_unlabeled_matrix(
+    frame: pd.DataFrame,
+    image_root: Path,
+    feature_set: str,
+    image_size: int,
+    desc: str,
+    skip_errors: bool,
+    cache_dir: Path | None,
+) -> tuple[np.ndarray, list[dict[str, object]], list[dict[str, str]], dict[str, int]]:
+    features = []
+    rows = []
+    skipped = []
+    cache_stats = {"hits": 0, "misses": 0}
+    for row in tqdm(frame.to_dict("records"), desc=desc):
+        try:
+            local_path = _resolve_image_path(image_root, row["image_path"])
+            vector, cache_status = _extract_or_load_feature(local_path, image_size, feature_set, cache_dir)
+            cache_stats["hits" if cache_status == "hit" else "misses"] += 1
+        except Exception as exc:
+            if not skip_errors:
+                raise
+            skipped.append({"id": str(row.get("id", "")), "image_path": str(row.get("image_path", "")), "error": repr(exc)})
+            continue
+        features.append(vector)
+        rows.append(
+            {
+                "id": str(row["id"]),
+                "image_path": str(row["image_path"]),
+                "local_path": str(local_path),
+                "type": str(row.get("type", "")),
+            }
+        )
+    if not features:
+        raise ValueError(f"No usable rows extracted for {desc}")
+    return np.vstack(features), rows, skipped, cache_stats
+
+
 def _classifier(name: str, seed: int):
     if name == "logistic_regression":
         return Pipeline(
@@ -201,8 +274,8 @@ def run_baseline(args: argparse.Namespace) -> dict[str, object]:
     output_dir = ensure_dir(args.output_dir)
     image_root = Path(args.image_root)
     cache_dir = Path(args.feature_cache_dir) if args.feature_cache_dir else None
-    train_frame = _limit_frame(pd.read_csv(args.train_csv), args.max_train_samples, args.seed)
-    val_frame = _limit_frame(pd.read_csv(args.val_csv), args.max_val_samples, args.seed + 1)
+    train_frame = _limit_frame(pd.read_csv(args.train_csv), args.max_train_samples, args.seed, list(args.limit_balance_columns))
+    val_frame = _limit_frame(pd.read_csv(args.val_csv), args.max_val_samples, args.seed + 1, list(args.limit_balance_columns))
 
     x_train, y_train, _train_rows, train_skipped, train_cache = _extract_matrix(
         train_frame, image_root, args.feature_set, args.image_size, "freuid/train", args.skip_errors, cache_dir
@@ -240,7 +313,6 @@ def run_baseline(args: argparse.Namespace) -> dict[str, object]:
             "threshold_for_1pct_bpcer": float(operating_point.threshold),
         }
     )
-    write_json(metrics, output_dir / "metrics.json")
     write_json({"train": train_skipped, "val": val_skipped}, output_dir / "skipped.json")
     joblib.dump(model, output_dir / "classifier.joblib")
     np.savez_compressed(
@@ -258,6 +330,40 @@ def run_baseline(args: argparse.Namespace) -> dict[str, object]:
         writer.writeheader()
         for row, score, label in zip(val_rows, scores, labels):
             writer.writerow({**row, "fraud_score": float(score), "label": int(label)})
+
+    if args.test_csv:
+        test_frame = _limit_unlabeled_frame(_public_frame_from_ids(pd.read_csv(args.test_csv)), args.max_test_samples, args.seed + 2)
+        x_test, test_rows, test_skipped, test_cache = _extract_unlabeled_matrix(
+            test_frame, image_root, args.feature_set, args.image_size, "freuid/test", args.skip_errors, cache_dir
+        )
+        test_scores = _scores(model, x_test)
+        test_predictions_path = Path(args.test_predictions_out) if args.test_predictions_out else output_dir / "test_predictions.csv"
+        test_predictions_path.parent.mkdir(parents=True, exist_ok=True)
+        with test_predictions_path.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(
+                handle,
+                fieldnames=["id", "image_path", "local_path", "type", "fraud_score"],
+            )
+            writer.writeheader()
+            for row, score in zip(test_rows, test_scores):
+                writer.writerow({**row, "fraud_score": float(score)})
+        skipped = {"train": train_skipped, "val": val_skipped, "test": test_skipped}
+        write_json(skipped, output_dir / "skipped.json")
+        metrics.update(
+            {
+                "test_csv": str(args.test_csv),
+                "test_predictions_path": str(test_predictions_path),
+                "n_test": int(len(test_rows)),
+                "n_test_skipped": int(len(test_skipped)),
+            }
+        )
+        metrics["feature_cache"].update(
+            {
+                "test_hits": int(test_cache["hits"]),
+                "test_misses": int(test_cache["misses"]),
+            }
+        )
+    write_json(metrics, output_dir / "metrics.json")
     return metrics
 
 

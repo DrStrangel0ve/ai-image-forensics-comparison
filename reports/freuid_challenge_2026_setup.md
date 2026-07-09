@@ -67,6 +67,9 @@ Smoke verification: `scripts/download_freuid_images.py` successfully downloaded 
 - `scripts/select_freuid_threshold.py`
   - Selects a reproducible FREUID operating threshold from validation scores at a bounded BPCER target.
   - Writes a threshold/metric manifest plus optional thresholded validation predictions for later public-test packaging.
+- `kaggle/freuid_photometric_submission/`
+  - Kaggle kernel scaffold for the first leaderboard release path.
+  - Runs inside Kaggle against mounted competition data, trains a type/label-balanced photometric baseline, writes `submission.csv`, and lints it before output.
 
 Generated local canary artifact:
 
@@ -153,6 +156,8 @@ Threshold-selection follow-up: `scripts/select_freuid_threshold.py` selected a r
 
 Public-test fusion packaging follow-up: `scripts/apply_freuid_fusion.py` now freezes the best local fusion recipe for unlabeled public-test branch scores. It expects prediction names in the saved `source_names` order from `runs\freuid_balanced320_160_fusion_conventional_convnext_resnet18\fusion_summary.json` (`photometric_logreg`, `combined_v3_hgb`, `convnext_tiny_logreg`, `resnet18_logreg`), applies rank normalization with weights 0.0/0.4/0.5/0.1, and thresholds with the selected 0.64125 operating point. The resulting `id,fraud_score,label` file can then be passed through `scripts/package_freuid_submission.py` and `scripts/lint_freuid_submission.py` before any Kaggle upload.
 
+First-release kernel follow-up: local public-test image access is still the submission blocker, so the repo now includes `kaggle\freuid_photometric_submission`. This private Kaggle script kernel avoids local per-file downloads by using the competition data mounted inside Kaggle. It clones the public repo, prepares a type/label-stratified split, trains a 640-sample photometric logistic baseline, scores the full sample submission, packages `submission.csv`, and runs the FREUID linter before exposing the output. This is a conservative first leaderboard release path; it is not expected to match the local fusion candidate, but it should produce a real official score once the remote run completes.
+
 Balanced 640-train follow-up: completed and materialized a larger 640-image training slice, exactly balanced across the five document types and both labels, with 64 rows per type/label cell. A matching 320-validation download was started but Kaggle returned HTTP 429 rate-limit responses after 164 usable rows, so that partial validation manifest should not be used for model selection.
 
 Using the clean existing 160-validation slice, larger training alone did not beat the 320-trained fusion:
@@ -237,4 +242,24 @@ Apply the frozen local fusion recipe once unlabeled public-test branch predictio
   --fusion-summary runs\freuid_balanced320_160_fusion_conventional_convnext_resnet18\fusion_summary.json `
   --threshold-json outputs\freuid_2026\best_local_fusion_threshold_manifest.json `
   --out-predictions outputs\freuid_2026\public_fused_predictions.csv
+```
+
+Run the first-release Kaggle kernel:
+
+```powershell
+.\.venv\Scripts\python.exe -m kaggle kernels push `
+  -p kaggle\freuid_photometric_submission `
+  --timeout 43200
+```
+
+After the remote run completes, download and submit the linted output:
+
+```powershell
+.\.venv\Scripts\python.exe -m kaggle kernels output arnavmalani/freuid-photometric-first-submission `
+  -p outputs\freuid_2026\kaggle_photometric_kernel
+
+.\.venv\Scripts\python.exe -m kaggle competitions submit `
+  -c the-freuid-challenge-2026-ijcai-ecai `
+  -f outputs\freuid_2026\kaggle_photometric_kernel\submission.csv `
+  -m "Photometric balanced 640 first release"
 ```
