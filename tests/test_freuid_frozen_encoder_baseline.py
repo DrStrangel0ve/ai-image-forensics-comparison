@@ -35,13 +35,18 @@ def test_run_freuid_frozen_encoder_baseline_writes_predictions(tmp_path: Path) -
     image_root = tmp_path / "images"
     train_ids = ["train_real_0", "train_fake_0", "train_real_1", "train_fake_1"]
     val_ids = ["val_real_0", "val_fake_0", "val_real_1", "val_fake_1"]
+    test_ids = ["public_realish_0", "public_fakeish_0"]
     for image_id, label in zip(train_ids + val_ids, [0, 1, 0, 1, 0, 1, 0, 1]):
         _image(image_root / "train" / "train" / f"{image_id}.jpeg", 32 if label == 0 else 220)
+    for image_id, value in zip(test_ids, [64, 200]):
+        _image(image_root / "public_test" / "public_test" / f"{image_id}.jpeg", value)
 
     train_csv = tmp_path / "train.csv"
     val_csv = tmp_path / "val.csv"
+    test_csv = tmp_path / "sample_submission.csv"
     _metadata(train_ids, [0, 1, 0, 1]).to_csv(train_csv, index=False)
     _metadata(val_ids, [0, 1, 0, 1]).to_csv(val_csv, index=False)
+    pd.DataFrame({"id": test_ids, "label": [0, 0]}).to_csv(test_csv, index=False)
     out_dir = tmp_path / "freuid_frozen"
     cache_dir = tmp_path / "embedding_cache"
 
@@ -53,6 +58,8 @@ def test_run_freuid_frozen_encoder_baseline_writes_predictions(tmp_path: Path) -
             str(train_csv),
             "--val-csv",
             str(val_csv),
+            "--test-csv",
+            str(test_csv),
             "--image-root",
             str(image_root),
             "--output-dir",
@@ -74,14 +81,19 @@ def test_run_freuid_frozen_encoder_baseline_writes_predictions(tmp_path: Path) -
 
     metrics = json.loads((out_dir / "metrics.json").read_text(encoding="utf-8"))
     predictions = pd.read_csv(out_dir / "val_predictions.csv")
+    test_predictions = pd.read_csv(out_dir / "test_predictions.csv")
     assert metrics["method"] == "freuid_frozen_encoder_tiny_cnn_logistic_regression"
     assert metrics["embedding_dim"] == 128
     assert metrics["n_train"] == 4
     assert metrics["n_val"] == 4
+    assert metrics["n_test"] == 2
     assert metrics["embedding_cache"]["train_misses"] == 4
+    assert metrics["embedding_cache"]["test_misses"] == 2
     assert set(["id", "image_path", "local_path", "type", "y_true", "fraud_score", "label"]).issubset(
         predictions.columns
     )
+    assert set(["id", "image_path", "local_path", "type", "fraud_score"]).issubset(test_predictions.columns)
+    assert test_predictions["id"].tolist() == test_ids
     assert (out_dir / "classifier.joblib").exists()
     assert (out_dir / "encoder.json").exists()
     assert (out_dir / "embeddings.npz").exists()

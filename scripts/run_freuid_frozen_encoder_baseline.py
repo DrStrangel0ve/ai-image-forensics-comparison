@@ -39,8 +39,10 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run a frozen image-encoder baseline on FREUID CSV metadata.")
     parser.add_argument("--train-csv", required=True)
     parser.add_argument("--val-csv", required=True)
+    parser.add_argument("--test-csv", default=None, help="Optional unlabeled/sample-submission CSV to score after training.")
     parser.add_argument("--image-root", default="data/raw/freuid_2026/images")
     parser.add_argument("--output-dir", default="runs/freuid_frozen_encoder")
+    parser.add_argument("--test-predictions-out", default=None, help="Optional output path for test predictions.")
     parser.add_argument("--encoder", choices=ENCODERS, default="convnext_tiny")
     parser.add_argument("--pretrained", action="store_true", help="Use public pretrained encoder weights.")
     parser.add_argument(
@@ -53,6 +55,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--max-train-samples", type=int, default=0)
     parser.add_argument("--max-val-samples", type=int, default=0)
+    parser.add_argument("--max-test-samples", type=int, default=0)
     parser.add_argument(
         "--embedding-cache-dir",
         default=None,
@@ -93,6 +96,24 @@ def _limit_frame(frame: pd.DataFrame, max_samples: int, seed: int) -> pd.DataFra
     return limited.head(max_samples).reset_index(drop=True)
 
 
+def _limit_unlabeled_frame(frame: pd.DataFrame, max_samples: int, seed: int) -> pd.DataFrame:
+    if max_samples <= 0 or max_samples >= len(frame):
+        return frame.reset_index(drop=True)
+    ordered = frame.copy()
+    ordered["_score"] = ordered["id"].astype(str).map(lambda value: stable_path_score(value, seed))
+    return ordered.sort_values(["_score", "id"], kind="mergesort").head(max_samples).drop(columns=["_score"]).reset_index(drop=True)
+
+
+def _public_frame_from_ids(frame: pd.DataFrame) -> pd.DataFrame:
+    if "id" not in frame.columns:
+        raise ValueError("Unlabeled FREUID test CSV must contain an id column")
+    frame = frame.copy()
+    frame["id"] = frame["id"].astype(str)
+    if "image_path" not in frame.columns:
+        frame["image_path"] = frame["id"].map(lambda value: f"public_test/{value}.jpeg")
+    return frame
+
+
 def _prepare_rows(
     frame: pd.DataFrame,
     image_root: Path,
@@ -128,6 +149,40 @@ def _prepare_rows(
     return rows, skipped
 
 
+def _prepare_unlabeled_rows(
+    frame: pd.DataFrame,
+    image_root: Path,
+    max_samples: int,
+    seed: int,
+    skip_errors: bool,
+) -> tuple[list[dict[str, object]], list[dict[str, str]]]:
+    frame = _limit_unlabeled_frame(_public_frame_from_ids(frame), max_samples, seed)
+    rows: list[dict[str, object]] = []
+    skipped: list[dict[str, str]] = []
+    for row in frame.to_dict("records"):
+        try:
+            local_path = _resolve_image_path(image_root, row["image_path"])
+            if skip_errors:
+                with Image.open(local_path) as image:
+                    image.verify()
+        except Exception as exc:
+            if not skip_errors:
+                raise
+            skipped.append({"id": str(row.get("id", "")), "image_path": str(row.get("image_path", "")), "error": repr(exc)})
+            continue
+        rows.append(
+            {
+                "id": str(row["id"]),
+                "image_path": str(row["image_path"]),
+                "local_path": str(local_path),
+                "type": str(row.get("type", "")),
+            }
+        )
+    if not rows:
+        raise ValueError("No usable FREUID test rows after resolving image paths")
+    return rows, skipped
+
+
 def _embedding_cache_path(
     cache_dir: Path,
     local_path: Path,
@@ -156,7 +211,7 @@ def _load_image_tensor(path: Path, transform) -> torch.Tensor:
 
 
 @torch.no_grad()
-def _embedding_matrix(
+def _embedding_features(
     rows: list[dict[str, object]],
     encoder,
     transform,
@@ -220,11 +275,34 @@ def _embedding_matrix(
     missing = [index for index, feature in enumerate(features) if feature is None]
     if missing:
         raise RuntimeError(f"Failed to encode {len(missing)} rows; first missing index is {missing[0]}")
-    return (
-        np.vstack([np.asarray(feature, dtype=np.float32) for feature in features if feature is not None]),
-        np.asarray([int(row["y_true"]) for row in rows], dtype=int),
-        cache_stats,
+    return np.vstack([np.asarray(feature, dtype=np.float32) for feature in features if feature is not None]), cache_stats
+
+
+def _embedding_matrix(
+    rows: list[dict[str, object]],
+    encoder,
+    transform,
+    encoder_name: str,
+    weights: str | None,
+    image_size: int,
+    batch_size: int,
+    device: torch.device,
+    cache_dir: Path | None,
+    desc: str,
+) -> tuple[np.ndarray, np.ndarray, dict[str, int]]:
+    features, cache_stats = _embedding_features(
+        rows,
+        encoder,
+        transform,
+        encoder_name,
+        weights,
+        image_size,
+        batch_size,
+        device,
+        cache_dir,
+        desc,
     )
+    return features, np.asarray([int(row["y_true"]) for row in rows], dtype=int), cache_stats
 
 
 def _classifier(name: str, seed: int):
@@ -364,6 +442,50 @@ def run_baseline(args: argparse.Namespace) -> dict[str, object]:
         writer.writeheader()
         for row, score, label in zip(val_rows, scores, labels):
             writer.writerow({**row, "fraud_score": float(score), "label": int(label)})
+
+    if args.test_csv:
+        test_rows, test_skipped = _prepare_unlabeled_rows(
+            pd.read_csv(args.test_csv), image_root, args.max_test_samples, args.seed + 2, args.skip_errors
+        )
+        x_test, test_cache = _embedding_features(
+            test_rows,
+            spec.model,
+            transform,
+            args.encoder,
+            spec.weights,
+            spec.image_size,
+            args.batch_size,
+            device,
+            cache_dir,
+            "freuid/embeddings/test",
+        )
+        test_scores = _scores(model, x_test)
+        test_predictions_path = Path(args.test_predictions_out) if args.test_predictions_out else output_dir / "test_predictions.csv"
+        test_predictions_path.parent.mkdir(parents=True, exist_ok=True)
+        with test_predictions_path.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(
+                handle,
+                fieldnames=["id", "image_path", "local_path", "type", "fraud_score"],
+            )
+            writer.writeheader()
+            for row, score in zip(test_rows, test_scores):
+                writer.writerow({**row, "fraud_score": float(score)})
+        write_json({"train": train_skipped, "val": val_skipped, "test": test_skipped}, output_dir / "skipped.json")
+        metrics.update(
+            {
+                "test_csv": str(args.test_csv),
+                "test_predictions_path": str(test_predictions_path),
+                "n_test": int(len(test_rows)),
+                "n_test_skipped": int(len(test_skipped)),
+            }
+        )
+        metrics["embedding_cache"].update(
+            {
+                "test_hits": int(test_cache["hits"]),
+                "test_misses": int(test_cache["misses"]),
+            }
+        )
+        write_json(metrics, output_dir / "metrics.json")
     return metrics
 
 
