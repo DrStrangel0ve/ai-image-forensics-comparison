@@ -19,12 +19,13 @@ This corrected the earlier local assumption that `label` had to be binary.
 | 54481645 | metadata size baseline v1: released public sizes, conservative fallback | 1.00000 | Binary labels; valid upload but wrong output semantics for this metric. |
 | 54481898 | metadata size score baseline v2: continuous fraud scores | 0.98832 | Correct score-valued format; weak metadata-only ranking. |
 | 54481939 | metadata size score baseline v3: inverted direction check | 0.97578 | Inversion improved slightly, suggesting metadata direction/domain shift is weak but not enough. |
+| 54503265 | image four-way fusion v1: 1276 local split rank fusion with metadata fallback | 0.38042 | First pixel-based public-test submission; replaces 7,821 public image IDs with rank-fused image scores and keeps metadata-score fallback for hidden/sample-only IDs. |
 
 ## Current Best
 
-Best public score so far: `0.97578` from submission `54481939`.
+Best public score so far: `0.38042` from submission `54503265`.
 
-This is not competitive yet. The public leaderboard top rows are near `0.0003`, so the next useful step is to acquire the official 17.58 GB image archive and run actual image-feature / neural scoring instead of metadata-only scoring.
+This is a large improvement over metadata-only scoring, but it is still not competitive with the public leaderboard top rows near `0.0003`. The next useful step is to train the same recipe on a larger official-image split now that the archive is local.
 
 ## Data Access Notes
 
@@ -88,3 +89,33 @@ The full local split was extended with `combined_v4` and a four-way fusion:
 | Rank fusion, 0.45 `combined_v3` / 0.20 ConvNeXt / 0.10 photometric / 0.25 `combined_v4` | 0.8599 | 0.9422 | 0.2403 | 0.0604 |
 
 The current local submission recipe is therefore a rank-normalized ensemble of conventional `combined_v3`, ConvNeXt, photometric, and `combined_v4` scores. It is ready to apply to public-test images once the archive finishes or Kaggle source attachment starts working.
+
+## 2026-07-10 First Image-Based Leaderboard Submission
+
+The official Kaggle archive completed after cooldown and was extracted locally.
+
+- Archive entries extracted under `data/raw/freuid_2026/images`: `77,186`.
+- Matched train images: `69,352`.
+- Matched public-test images: `7,821`.
+- Matched train-sample images: `13`.
+
+The first public-test candidate used the existing seed-37 local split (`1,019` train / `257` validation) to avoid introducing a new risky training protocol before confirming leaderboard flow. Public-test scoring branches:
+
+| Branch | Validation APCER @ 1% BPCER | Validation AuDET proxy | Public-test rows |
+| --- | ---: | ---: | ---: |
+| `combined_v3` + HGB | 0.3333 | 0.0742 | 7,821 |
+| Pretrained ConvNeXt-Tiny + logistic head | 0.4419 | 0.1000 | 7,821 |
+| Photometric logistic baseline | 0.4419 | 0.1427 | 7,821 |
+| `combined_v4` + HGB | 0.3643 | 0.0642 | 7,821 |
+| Four-way rank fusion | 0.2403 | 0.0604 | 7,821 |
+
+The submitted file preserves full Kaggle sample order and row count:
+
+- Rows: `142,818`.
+- Public image IDs replaced by four-way fusion scores: `7,821`.
+- Remaining IDs filled with the prior best metadata-score fallback: `134,997`.
+- Lint: `scripts/lint_freuid_submission.py --allow-score-labels` passed.
+- Kaggle submission ref: `54503265`.
+- Public score: `0.38042`.
+
+Operational note: the installed local Torch build is CPU-only, so the ConvNeXt branch was run on CPU despite the desktop having a 3060 Ti. Installing a CUDA-enabled Torch build should make the next neural/foundation iterations faster, but it is not required for correctness.
