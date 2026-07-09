@@ -1,6 +1,6 @@
 {
-  "id": "arnavmalani/freuid-photometric-first-submission",
-  "title": "FREUID Photometric First Submission",
+  "id": "arnavmalani/freuid-photometric-offline-submission",
+  "title": "FREUID Photometric Offline Submission",
   "code_file": "freuid_photometric_submission.py",
   "language": "python",
   "kernel_type": "script",

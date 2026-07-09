@@ -255,7 +255,7 @@ Run the first-release Kaggle kernel:
 After the remote run completes, download and submit the linted output:
 
 ```powershell
-.\.venv\Scripts\python.exe -m kaggle kernels output arnavmalani/freuid-photometric-first-submission `
+.\.venv\Scripts\python.exe -m kaggle kernels output arnavmalani/freuid-photometric-offline-submission `
   -p outputs\freuid_2026\kaggle_photometric_kernel
 
 .\.venv\Scripts\python.exe -m kaggle competitions submit `
