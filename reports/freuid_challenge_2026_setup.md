@@ -61,6 +61,9 @@ Smoke verification: `scripts/download_freuid_images.py` successfully downloaded 
 - `scripts/run_freuid_frozen_encoder_baseline.py`
   - Runs pretrained frozen image encoders on FREUID CSV metadata.
   - Writes FREUID metrics, cached embeddings, and validation predictions compatible with score fusion.
+- `scripts/select_freuid_threshold.py`
+  - Selects a reproducible FREUID operating threshold from validation scores at a bounded BPCER target.
+  - Writes a threshold/metric manifest plus optional thresholded validation predictions for later public-test packaging.
 
 Generated local canary artifact:
 
@@ -142,6 +145,8 @@ Frozen-encoder follow-up on the same 320/160 slice: added a CSV-native FREUID fr
 Interpretation: ConvNeXt adds useful complementary signal to the conventional branch; ResNet-18 is poor alone, but the coarse rank-fusion grid assigns it only 10% weight and slightly improves AuDET/AUC. The current best local validation candidate is the four-branch rank fusion, but this is still validation-only. Do not upload until we either validate on a larger holdout or train/package a matching public-test inference path.
 
 Embedding-cache proof: rerunning the ConvNeXt branch with `--embedding-cache-dir outputs\freuid_2026\embedding_cache` reported 320 train hits / 160 validation hits, zero misses, and unchanged metrics. Frozen neural sweeps can now be repeated without re-encoding the current 320/160 slice.
+
+Threshold-selection follow-up: `scripts/select_freuid_threshold.py` selected a reproducible threshold for the current best local validation file, `runs\freuid_balanced320_160_fusion_conventional_convnext_resnet18\fused_predictions.csv`. The selected threshold is 0.64125 at BPCER target 1%, with validation accuracy 0.8688, ROC AUC 0.9452, APCER 0.2625, BPCER 0.0000, AuDET proxy 0.0595, and thresholded label counts 101/59 for labels 0/1. The manifest is `outputs\freuid_2026\best_local_fusion_threshold_manifest.json`.
 
 Balanced 640-train follow-up: completed and materialized a larger 640-image training slice, exactly balanced across the five document types and both labels, with 64 rows per type/label cell. A matching 320-validation download was started but Kaggle returned HTTP 429 rate-limit responses after 164 usable rows, so that partial validation manifest should not be used for model selection.
 
