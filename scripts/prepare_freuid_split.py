@@ -16,6 +16,12 @@ from forensic_compare.utils import write_json
 REQUIRED_COLUMNS = ["id", "image_path", "label", "type"]
 
 
+def _json_scalar(value: object) -> object:
+    if hasattr(value, "item"):
+        return value.item()
+    return value
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build a type-and-label-stratified FREUID train/validation split.")
     parser.add_argument("--train-labels", required=True, help="Kaggle train_labels.csv.")
@@ -85,7 +91,7 @@ def build_freuid_split(
     stratum_summary = []
     for key, group in labels.drop(columns=["_split_score"]).groupby(strata_columns, sort=True):
         key_tuple = key if isinstance(key, tuple) else (key,)
-        key_dict = {column: value for column, value in zip(strata_columns, key_tuple)}
+        key_dict = {column: _json_scalar(value) for column, value in zip(strata_columns, key_tuple)}
         train_count = int(train_frame.merge(group[["id"]], on="id", how="inner").shape[0])
         val_count = int(val_frame.merge(group[["id"]], on="id", how="inner").shape[0])
         stratum_summary.append({**key_dict, "train": train_count, "val": val_count, "total": int(len(group))})

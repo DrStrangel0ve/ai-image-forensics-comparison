@@ -37,6 +37,28 @@ This is not competitive yet. The public leaderboard top rows are near `0.0003`, 
 
 - Score builder: `scripts/build_freuid_metadata_submission.py`
 - Corrected linter: `scripts/lint_freuid_submission.py --allow-score-labels`
+- Local-image materializer: `scripts/materialize_freuid_local_images.py`
 - Ignored generated outputs:
   - `outputs/freuid_2026/metadata_size_score_submission/`
   - `outputs/freuid_2026/metadata_size_score_inverted_submission/`
+
+## 2026-07-09 Cooldown Iteration
+
+The official archive and single-file Kaggle download endpoints are still returning `429 Too Many Requests`, so no image-based public-test candidate was submitted in this iteration.
+
+While waiting for the throttle to clear, the local train image set was materialized from disk:
+
+- Local train images matched: `1,276` of `69,352` train rows.
+- Labels: `635` bona fide / `641` fraud.
+- Types: `BENIN/DL 254`, `EGYPT/DL 257`, `GUINEA/DL 256`, `MAURITIUS/ID 257`, `MOZAMBIQUE/DL 252`.
+- Full local split, seed 37: `1,019` train / `257` validation, type+label stratified.
+
+Validation results on that fuller local split:
+
+| Method | Accuracy | AUC | APCER @ 1% BPCER | AuDET proxy |
+| --- | ---: | ---: | ---: | ---: |
+| `combined_v3` + HGB | 0.8327 | 0.9300 | 0.3023 | 0.0719 |
+| Pretrained ConvNeXt-Tiny + logistic head | 0.8093 | 0.9016 | 0.4419 | 0.0998 |
+| Rank fusion, 0.65 `combined_v3` / 0.35 ConvNeXt | 0.8716 | 0.9419 | 0.2868 | 0.0608 |
+
+The takeaway is that local document fraud signal is real, but the leaderboard remains metadata-only until public-test images can be acquired or the Kaggle notebook data source attaches successfully.
