@@ -4,6 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +26,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Allow an exact id set match even if row order differs from the sample submission.",
     )
+    parser.add_argument(
+        "--allow-score-labels",
+        action="store_true",
+        help="Allow numeric fraud scores in label instead of requiring binary 0/1 values.",
+    )
     return parser.parse_args()
 
 
@@ -41,6 +47,7 @@ def lint_freuid_submission(
     submission_path: Path,
     manifest_path: Path,
     allow_reordered_ids: bool = False,
+    allow_score_labels: bool = False,
 ) -> tuple[bool, dict[str, object]]:
     sample = pd.read_csv(sample_submission_path)
     submission = pd.read_csv(submission_path)
@@ -128,12 +135,18 @@ def lint_freuid_submission(
     )
 
     labels = pd.to_numeric(submission["label"], errors="coerce")
-    valid_labels = labels.notna().all() and set(labels.astype(int).unique()).issubset({0, 1})
+    finite_labels = labels.notna().all() and np.isfinite(labels.to_numpy(dtype=float)).all()
+    if allow_score_labels:
+        valid_labels = finite_labels and labels.between(0, 1).all()
+        label_detail = "all labels are finite fraud scores in [0, 1]" if valid_labels else "labels must be finite scores in [0, 1]"
+    else:
+        valid_labels = finite_labels and labels.isin([0, 1]).all()
+        label_detail = "all labels are binary 0/1" if valid_labels else "labels must be numeric binary values 0/1"
     checks.append(
         _check(
-            "binary_labels",
+            "label_values",
             bool(valid_labels),
-            "all labels are binary 0/1" if valid_labels else "labels must be numeric binary values 0/1",
+            label_detail,
         )
     )
 
@@ -153,6 +166,7 @@ def lint_freuid_submission(
         "missing_id_count": int(len(missing_ids)),
         "extra_id_count": int(len(extra_ids)),
         "allow_reordered_ids": allow_reordered_ids,
+        "allow_score_labels": allow_score_labels,
         "checks": checks,
     }
     write_json(report, manifest_path)
@@ -168,6 +182,7 @@ def main() -> None:
         submission_path=submission_path,
         manifest_path=manifest_path,
         allow_reordered_ids=args.allow_reordered_ids,
+        allow_score_labels=args.allow_score_labels,
     )
     print(manifest_path.resolve())
     if not passed:
