@@ -143,3 +143,36 @@ Submitted file:
 - Public score: `0.39303`.
 
 This did not beat the current best `0.38042` from submission `54503265`. The larger local split improved validation metrics but transferred worse to the public leaderboard, so the next useful direction is source/domain-robust validation and fusion rather than simply increasing conventional-feature training rows.
+
+## 2026-07-10 CUDA ConvNeXt Fusion Candidate
+
+The global Python install is CPU-only (`torch 2.7.1+cpu`), but the repo `.venv` has CUDA Torch (`torch 2.11.0+cu128`) and sees the local RTX 3080 Ti. The larger ConvNeXt branch should therefore run through `.venv\Scripts\python.exe`, not the global interpreter.
+
+An aligned type+label-balanced `12,000` train / `4,000` validation split was materialized so the ConvNeXt branch uses the same validation IDs as the conventional branches:
+
+- Train CSV: `outputs/freuid_2026/local_train_full_seed37_train_balanced_type_label_12000.csv`.
+- Validation CSV: `outputs/freuid_2026/local_train_full_seed38_val_balanced_type_label_4000.csv`.
+- Validation overlap with the conventional `combined_v4` run: `4,000 / 4,000`.
+
+Validation results:
+
+| Branch | Accuracy | AUC | APCER @ 1% BPCER | AuDET proxy |
+| --- | ---: | ---: | ---: | ---: |
+| Aligned pretrained ConvNeXt-Tiny + logistic head | 0.8628 | 0.9457 | 0.2985 | 0.0550 |
+| Four-way fusion, 0.00 `combined_v3` / 0.30 ConvNeXt / 0.00 photometric / 0.70 `combined_v4` | n/a | 0.9661 | 0.2135 | 0.0341 |
+
+The fusion is the best local FREUID validation candidate so far by a large margin. The score-valued submission package was regenerated with `scripts/package_freuid_score_submission.py` and linted with `--allow-score-labels`:
+
+- Rows: `142,818`.
+- Public image IDs replaced by four-way fusion scores: `7,821`.
+- Remaining IDs filled with the prior best metadata-score fallback: `134,997`.
+- Candidate path: `outputs/freuid_2026/public_12k_fourway_fusion_submission_packaged/submission.csv`.
+- Lint: passed.
+
+Kaggle upload attempt:
+
+- Message: `12k four-way fusion v3: combined_v4 plus CUDA ConvNeXt with metadata fallback`.
+- Result: rejected after upload with `400 Client Error: Bad Request`.
+- No new submission ref appeared in `kaggle competitions submissions`.
+
+This candidate is ready to retry when the Kaggle submission limit/window clears or when the server-side cause of the `400` can be inspected. Current leaderboard best remains `54503265` with public score `0.38042`.
