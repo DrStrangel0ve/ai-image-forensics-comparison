@@ -75,3 +75,16 @@ The local split was extended with the physics branch:
 | Rank fusion, 0.65 `combined_v3` / 0.30 ConvNeXt / 0.05 photometric | 0.8599 | 0.9412 | 0.2481 | 0.0614 |
 
 The small photometric weight does not improve ranking, but it improves the low-BPCER fraud operating point. This is useful for the next image-based public-test candidate once Kaggle data access recovers.
+
+## 2026-07-09 Archive-Stall Follow-Up
+
+The cooldown retry progressed past the immediate `429` failure and wrote a partial archive, but then stalled at `131,072,000` bytes for roughly ten minutes. The hung Kaggle download process was stopped so it would not linger. The partial file remains at `data/raw/freuid_2026/archive/the-freuid-challenge-2026-ijcai-ecai.zip` as evidence that the endpoint is intermittently available but not yet completing.
+
+The full local split was extended with `combined_v4` and a four-way fusion:
+
+| Method | Accuracy | AUC | APCER @ 1% BPCER | AuDET proxy |
+| --- | ---: | ---: | ---: | ---: |
+| `combined_v4` + HGB | 0.8444 | 0.9378 | 0.3643 | 0.0642 |
+| Rank fusion, 0.45 `combined_v3` / 0.20 ConvNeXt / 0.10 photometric / 0.25 `combined_v4` | 0.8599 | 0.9422 | 0.2403 | 0.0604 |
+
+The current local submission recipe is therefore a rank-normalized ensemble of conventional `combined_v3`, ConvNeXt, photometric, and `combined_v4` scores. It is ready to apply to public-test images once the archive finishes or Kaggle source attachment starts working.
