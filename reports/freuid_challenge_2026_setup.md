@@ -256,6 +256,14 @@ Run the first-release Kaggle kernel after verifying the competition source is at
   --timeout 43200
 ```
 
+Check whether the pushed kernel and local candidate are actually release-ready:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\check_freuid_release_state.py `
+  --kernel-source-required `
+  --manifest-out outputs\freuid_2026\release_state_manifest.json
+```
+
 After the remote run completes, download and submit the linted output:
 
 ```powershell
@@ -267,3 +275,11 @@ After the remote run completes, download and submit the linted output:
   -f outputs\freuid_2026\kaggle_photometric_kernel\submission.csv `
   -m "Photometric balanced 640 first release"
 ```
+
+## 2026-07-09 Release-State Audit
+
+- The competition file-list API is reachable and returns public-test file names, but actual file downloads are still blocked by HTTP 429 rate limits.
+- The latest pushed notebook is private, internet-disabled, and syntactically valid, but the pulled server metadata still shows `competition_sources: []`.
+- Remote notebook status is `ERROR` because `/kaggle/input` is empty and `train_labels.csv` is absent.
+- There are still zero official submissions. The project should not submit the all-zero canary unless we explicitly want a format-only test.
+- The next practical step is to attach the competition data in the Kaggle web UI, rerun the offline kernel, download `submission.csv`, then lint it before upload.
