@@ -79,6 +79,7 @@ Frozen runtime artifact release:
 - Tag: `freuid-freeze-2026-07-10`
 - URL: `https://github.com/DrStrangel0ve/ai-image-forensics-comparison/releases/tag/freuid-freeze-2026-07-10`
 - Asset: `freuid_frozen_stack_2026_07_10.zip`
+- Report asset: `freuid_short_report_draft_2026_07_10.pdf`
 - Paired code commit: `46b57a2`
 
 Smoke-test output:
