@@ -71,6 +71,12 @@ The checker does not submit anything. It records competition entry/submission st
 - Keep `54511333` as the best official submission unless a new candidate beats it under local validation and score-aware linting.
 - Keep the repo public and pushed before the July 13, 2026 code freeze.
 - Keep the runtime release asset aligned with the repo commit and Dockerfile.
+- Verify the final-package draft after any packaging change:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\verify_freuid_final_package.py
+```
+
 - Build and smoke-test `docker/freuid/Dockerfile` once Docker Desktop's Linux engine is available.
 - Current Docker blocker: WSL2 reports that virtualization / Virtual Machine Platform is not enabled (`HCS_E_HYPERV_NOT_INSTALLED`), so Docker Desktop cannot start the `docker-desktop` WSL distro.
 - Docker blocker resolution note: `reports/freuid_docker_blocker_resolution_2026_07_10.md`.
