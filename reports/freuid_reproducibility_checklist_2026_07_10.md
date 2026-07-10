@@ -53,6 +53,36 @@ The container must run with no network, keep weights inside the image, and write
 
 ## Next Practical Work
 
-- Freeze the four-way fusion stack from submission `54511333` as the current reproducible candidate unless a clearly better validated candidate emerges before code freeze.
-- Build a no-network Docker inference path for the frozen conventional + ConvNeXt fusion stack.
+- Freeze the four-way fusion stack from submission `54511333` as the current reproducible candidate unless a clearly better validated candidate emerges before code freeze. Status: two nonzero branches are now captured as a runtime recipe.
+- Build a no-network Docker inference path for the frozen conventional + ConvNeXt fusion stack. Status: scaffold added and 5-image smoke test passed; image build blocked locally because Docker Desktop's Linux engine is not running.
 - Add a short report section describing public-score history, validation mismatch, and why the final candidate uses source/feature fusion rather than `combined_v4` alone.
+
+## Runtime Recipe
+
+The current submitted stack is reproducible as:
+
+```text
+fraud_score = 0.7 * combined_v4_hgb(image) + 0.3 * convnext_tiny_logreg(image)
+```
+
+The original four-way fusion search also included `combined_v3_hgb` and `photometric`, but their selected weights were zero. The Docker path therefore computes only the two nonzero branches while preserving the submitted score formula.
+
+Added freeze helpers:
+
+- `scripts/infer_freuid_frozen_stack.py`
+- `scripts/freeze_freuid_submission_artifacts.py`
+- `docker/freuid/Dockerfile`
+- `artifacts/freuid_2026/README.md`
+
+Smoke-test output:
+
+- Command: `python scripts/infer_freuid_frozen_stack.py --max-images 5 ...`
+- Output: `outputs/freuid_2026/smoke_frozen_stack_submission.csv`
+- Rows: `5`
+- Mean score: `0.132092`
+- Max absolute difference versus the previously materialized public fusion scores on the same 5 IDs: `0.000337`
+
+Docker build attempt:
+
+- Command: `docker build -f docker/freuid/Dockerfile -t freuid-frozen-stack:local .`
+- Result: blocked before build start; Docker daemon pipe `dockerDesktopLinuxEngine` was unavailable.

@@ -1,0 +1,23 @@
+.git
+.venv
+__pycache__
+.pytest_cache
+.mypy_cache
+.ruff_cache
+
+data
+runs
+outputs
+models
+work
+
+kaggle.json
+*.pt
+*.pth
+*.ckpt
+*.npz
+*.csv
+
+# Keep frozen FREUID runtime assets in the Docker context.
+!artifacts/freuid_2026/
+!artifacts/freuid_2026/**

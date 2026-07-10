@@ -15,6 +15,7 @@ work/
 *.pth
 *.ckpt
 *.joblib
+artifacts/freuid_2026/freeze_manifest.json
 
 # Kaggle credentials should stay in the user profile, not the repo.
 kaggle.json
