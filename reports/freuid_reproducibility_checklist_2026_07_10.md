@@ -4,11 +4,12 @@ This checklist records competition requirements pulled from the Kaggle competiti
 
 ## Current Leaderboard State
 
-- Current best submitted ref: `54503265`.
-- Current best public score: `0.38042`.
-- Best ready candidate not yet accepted by Kaggle: `outputs/freuid_2026/public_12k_fourway_fusion_submission_packaged/submission.csv`.
+- Current best submitted ref: `54511333`.
+- Current best public score: `0.37009`.
+- Current best candidate artifact: `outputs/freuid_2026/public_12k_fourway_fusion_submission_packaged/submission.csv`.
 - Candidate validation: four-way fusion AuDET proxy `0.0341`, APCER @ 1% BPCER `0.2135`, AUC `0.9661`.
-- Last upload attempt for that candidate failed with Kaggle `400 Bad Request`, likely because the July 9 UTC submission count was already `5 / 5`.
+- The first upload attempt for that candidate failed with Kaggle `400 Bad Request`, likely because the July 9 UTC submission count was already `5 / 5`.
+- The retry after UTC reset succeeded as submission `54511333`.
 
 ## Submission Guard
 
@@ -52,7 +53,6 @@ The container must run with no network, keep weights inside the image, and write
 
 ## Next Practical Work
 
-- Retry the four-way fusion candidate after the daily submission window resets.
-- If accepted and better, freeze that scoring stack as the current reproducible candidate.
+- Freeze the four-way fusion stack from submission `54511333` as the current reproducible candidate unless a clearly better validated candidate emerges before code freeze.
 - Build a no-network Docker inference path for the frozen conventional + ConvNeXt fusion stack.
 - Add a short report section describing public-score history, validation mismatch, and why the final candidate uses source/feature fusion rather than `combined_v4` alone.

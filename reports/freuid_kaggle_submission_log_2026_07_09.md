@@ -197,3 +197,18 @@ python scripts\submit_freuid_candidate.py `
   --message "12k four-way fusion v3: combined_v4 plus CUDA ConvNeXt with metadata fallback" `
   --manifest-out outputs\freuid_2026\public_12k_fourway_fusion_submission_packaged\submit_manifest.json
 ```
+
+## 2026-07-10 Accepted CUDA ConvNeXt Fusion Submission
+
+After the UTC daily submission window reset, the guarded helper successfully uploaded the best local candidate.
+
+- Kaggle submission ref: `54511333`.
+- Message: `12k four-way fusion v3: combined_v4 plus CUDA ConvNeXt with metadata fallback`.
+- Status: complete.
+- Public score: `0.37009`.
+- Previous best: `54503265` at `0.38042`.
+- Absolute improvement: `0.01033` lower FREUID score.
+- Candidate path: `outputs/freuid_2026/public_12k_fourway_fusion_submission_packaged/submission.csv`.
+- Submit manifest: `outputs/freuid_2026/public_12k_fourway_fusion_submission_packaged/submit_manifest.json`.
+
+Current best public leaderboard submission is now `54511333`.
