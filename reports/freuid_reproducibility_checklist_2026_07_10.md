@@ -74,6 +74,13 @@ Added freeze helpers:
 - `docker/freuid/Dockerfile`
 - `artifacts/freuid_2026/README.md`
 
+Frozen runtime artifact release:
+
+- Tag: `freuid-freeze-2026-07-10`
+- URL: `https://github.com/DrStrangel0ve/ai-image-forensics-comparison/releases/tag/freuid-freeze-2026-07-10`
+- Asset: `freuid_frozen_stack_2026_07_10.zip`
+- Paired code commit: `46b57a2`
+
 Smoke-test output:
 
 - Command: `python scripts/infer_freuid_frozen_stack.py --max-images 5 ...`
