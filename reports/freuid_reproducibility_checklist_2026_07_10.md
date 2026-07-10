@@ -80,6 +80,7 @@ Frozen runtime artifact release:
 - URL: `https://github.com/DrStrangel0ve/ai-image-forensics-comparison/releases/tag/freuid-freeze-2026-07-10`
 - Asset: `freuid_frozen_stack_2026_07_10.zip`
 - Report asset: `freuid_short_report_draft_2026_07_10.pdf`
+- Final-package draft asset: `freuid_final_package_draft_2026_07_10.zip`
 - Paired code commit: `46b57a2`
 
 Smoke-test output:
@@ -100,3 +101,15 @@ Follow-up Docker startup attempt:
 - Command: start Docker Desktop, then poll `docker version` and `docker info`.
 - Result: Docker client was reachable, but the Linux engine kept returning HTTP 500 on the `dockerDesktopLinuxEngine` API pipe for several minutes.
 - Added smoke harness: `scripts/smoke_test_freuid_docker.py`.
+
+Second Docker diagnostic:
+
+- `wsl.exe -l -v` showed `docker-desktop` stopped.
+- `wsl.exe -d docker-desktop -- echo ...` failed because WSL2 could not start without virtualization / Virtual Machine Platform.
+- Error code included `HCS_E_HYPERV_NOT_INSTALLED`.
+
+Final-package draft release:
+
+- Asset: `freuid_final_package_draft_2026_07_10.zip`
+- SHA256: `6ff5fff838e242012647e42552e7e4b15aaac6542dbca13b1bece519f0257442`
+- Contents: submitted Kaggle CSV, lint/submit manifests, short report PDF/Markdown, pinned discussion reply draft, runbook, reproducibility checklist.

@@ -12,6 +12,7 @@ This note tracks the current path from local validation to a real Kaggle leaderb
 - Current frozen public-test candidate: `outputs/freuid_2026/public_12k_fourway_fusion_submission_packaged/submission.csv`
 - Current frozen runtime release: `https://github.com/DrStrangel0ve/ai-image-forensics-comparison/releases/tag/freuid-freeze-2026-07-10`
 - Current report PDF asset: `freuid_short_report_draft_2026_07_10.pdf` on the same release
+- Current final-package draft asset: `freuid_final_package_draft_2026_07_10.zip` on the same release
 - Best local validation candidate: raw score fusion, `0.9661` AUC, `0.2135` APCER at 1% BPCER, `0.0341` AuDET proxy
 - Selected fusion formula: `0.7 * combined_v4_hgb + 0.3 * convnext_tiny_logreg`
 
@@ -71,6 +72,7 @@ The checker does not submit anything. It records competition entry/submission st
 - Keep the repo public and pushed before the July 13, 2026 code freeze.
 - Keep the runtime release asset aligned with the repo commit and Dockerfile.
 - Build and smoke-test `docker/freuid/Dockerfile` once Docker Desktop's Linux engine is available.
+- Current Docker blocker: WSL2 reports that virtualization / Virtual Machine Platform is not enabled (`HCS_E_HYPERV_NOT_INSTALLED`), so Docker Desktop cannot start the `docker-desktop` WSL distro.
 - One-command smoke test once Docker is ready:
 
 ```powershell
