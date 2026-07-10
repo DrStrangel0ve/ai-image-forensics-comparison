@@ -94,3 +94,9 @@ Docker build attempt:
 
 - Command: `docker build -f docker/freuid/Dockerfile -t freuid-frozen-stack:local .`
 - Result: blocked before build start; Docker daemon pipe `dockerDesktopLinuxEngine` was unavailable.
+
+Follow-up Docker startup attempt:
+
+- Command: start Docker Desktop, then poll `docker version` and `docker info`.
+- Result: Docker client was reachable, but the Linux engine kept returning HTTP 500 on the `dockerDesktopLinuxEngine` API pipe for several minutes.
+- Added smoke harness: `scripts/smoke_test_freuid_docker.py`.

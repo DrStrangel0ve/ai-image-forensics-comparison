@@ -71,5 +71,12 @@ The checker does not submit anything. It records competition entry/submission st
 - Keep the repo public and pushed before the July 13, 2026 code freeze.
 - Keep the runtime release asset aligned with the repo commit and Dockerfile.
 - Build and smoke-test `docker/freuid/Dockerfile` once Docker Desktop's Linux engine is available.
+- One-command smoke test once Docker is ready:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\smoke_test_freuid_docker.py
+```
+
+This stages five public-test images, builds `freuid-frozen-stack:local`, runs the container with `--network none`, and verifies `/submissions/submission.csv`.
 - Review/exported short report PDF: `output/pdf/freuid_short_report_draft_2026_07_10.pdf`.
 - Post exactly one reply from `reports/freuid_pinned_discussion_reply_draft_2026_07_10.md` on the pinned Kaggle discussion thread when the organizers open/confirm it.
