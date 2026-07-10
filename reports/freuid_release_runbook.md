@@ -73,6 +73,7 @@ The checker does not submit anything. It records competition entry/submission st
 - Keep the runtime release asset aligned with the repo commit and Dockerfile.
 - Build and smoke-test `docker/freuid/Dockerfile` once Docker Desktop's Linux engine is available.
 - Current Docker blocker: WSL2 reports that virtualization / Virtual Machine Platform is not enabled (`HCS_E_HYPERV_NOT_INSTALLED`), so Docker Desktop cannot start the `docker-desktop` WSL distro.
+- Docker blocker resolution note: `reports/freuid_docker_blocker_resolution_2026_07_10.md`.
 - One-command smoke test once Docker is ready:
 
 ```powershell

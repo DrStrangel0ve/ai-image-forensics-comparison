@@ -107,6 +107,7 @@ Second Docker diagnostic:
 - `wsl.exe -l -v` showed `docker-desktop` stopped.
 - `wsl.exe -d docker-desktop -- echo ...` failed because WSL2 could not start without virtualization / Virtual Machine Platform.
 - Error code included `HCS_E_HYPERV_NOT_INSTALLED`.
+- Fix note added: `reports/freuid_docker_blocker_resolution_2026_07_10.md`.
 
 Final-package draft release:
 
