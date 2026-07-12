@@ -114,3 +114,7 @@ Final-package draft release:
 - Asset: `freuid_final_package_draft_2026_07_10.zip`
 - SHA256: `6ff5fff838e242012647e42552e7e4b15aaac6542dbca13b1bece519f0257442`
 - Contents: submitted Kaggle CSV, lint/submit manifests, short report PDF/Markdown, pinned discussion reply draft, runbook, reproducibility checklist.
+
+Code-freeze day note:
+
+- `reports/freuid_code_freeze_status_2026_07_13.md`

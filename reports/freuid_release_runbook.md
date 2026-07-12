@@ -13,6 +13,7 @@ This note tracks the current path from local validation to a real Kaggle leaderb
 - Current frozen runtime release: `https://github.com/DrStrangel0ve/ai-image-forensics-comparison/releases/tag/freuid-freeze-2026-07-10`
 - Current report PDF asset: `freuid_short_report_draft_2026_07_10.pdf` on the same release
 - Current final-package draft asset: `freuid_final_package_draft_2026_07_10.zip` on the same release
+- Current code-freeze status note: `reports/freuid_code_freeze_status_2026_07_13.md`
 - Best local validation candidate: raw score fusion, `0.9661` AUC, `0.2135` APCER at 1% BPCER, `0.0341` AuDET proxy
 - Selected fusion formula: `0.7 * combined_v4_hgb + 0.3 * convnext_tiny_logreg`
 
