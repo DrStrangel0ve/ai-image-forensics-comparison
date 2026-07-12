@@ -27,6 +27,7 @@ from forensic_compare.utils import ensure_dir, seed_everything, write_json
 
 FEATURE_SETS = [
     "photometric",
+    "file_metadata",
     "noise",
     "noise_v2",
     "noise_v3",
@@ -37,6 +38,7 @@ FEATURE_SETS = [
     "combined_v2",
     "combined_v3",
     "combined_v4",
+    "combined_v5",
 ]
 
 

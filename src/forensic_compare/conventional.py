@@ -156,11 +156,136 @@ RECONSTRUCTION_V2_EXTRA_FEATURE_NAMES = [
 
 RECONSTRUCTION_V2_FEATURE_NAMES = RECONSTRUCTION_LITE_FEATURE_NAMES + RECONSTRUCTION_V2_EXTRA_FEATURE_NAMES
 
+FILE_METADATA_FEATURE_NAMES = [
+    "source_width",
+    "source_height",
+    "source_log_width",
+    "source_log_height",
+    "source_aspect_ratio",
+    "source_megapixels",
+    "source_log_file_size",
+    "source_bytes_per_pixel",
+    "source_exif_count",
+    "source_icc_profile_log_length",
+    "source_dpi_x",
+    "source_dpi_y",
+    "jpeg_qtable_count",
+    "jpeg_qtable_mean",
+    "jpeg_qtable_std",
+    "jpeg_qtable_min",
+    "jpeg_qtable_max",
+    "jpeg_qtable_0_mean",
+    "jpeg_qtable_0_std",
+    "jpeg_qtable_1_mean",
+    "jpeg_qtable_1_std",
+    "jpeg_layer_count",
+    "jpeg_h_sampling_mean",
+    "jpeg_v_sampling_mean",
+    "jpeg_h_sampling_max",
+    "jpeg_v_sampling_max",
+    "source_is_rgb",
+    "source_is_grayscale",
+]
+
 
 def _load_rgb(path: str | Path, image_size: int) -> np.ndarray:
     with Image.open(path) as image:
         image = image.convert("RGB").resize((image_size, image_size), Image.Resampling.BILINEAR)
         return np.asarray(image, dtype=np.float32) / 255.0
+
+
+def _safe_pair(value: object) -> tuple[float, float]:
+    if isinstance(value, (tuple, list)) and len(value) >= 2:
+        try:
+            return float(value[0]), float(value[1])
+        except (TypeError, ValueError):
+            return 0.0, 0.0
+    try:
+        scalar = float(value)
+    except (TypeError, ValueError):
+        return 0.0, 0.0
+    return scalar, scalar
+
+
+def _table_stats(table: object) -> tuple[float, float]:
+    if table is None:
+        return 0.0, 0.0
+    values = np.asarray(table, dtype=np.float32).reshape(-1)
+    if values.size == 0:
+        return 0.0, 0.0
+    return float(values.mean()), float(values.std())
+
+
+def extract_file_metadata_features(path: str | Path, image_size: int = 0) -> np.ndarray:
+    """Extract source-file signals that would otherwise be lost by image resizing."""
+
+    del image_size
+    source_path = Path(path)
+    file_size = float(source_path.stat().st_size)
+    with Image.open(source_path) as image:
+        width, height = image.size
+        pixels = float(max(1, width * height))
+        dpi_x, dpi_y = _safe_pair(image.info.get("dpi", (0.0, 0.0)))
+        icc_profile = image.info.get("icc_profile", b"")
+        icc_length = len(icc_profile) if isinstance(icc_profile, (bytes, bytearray, str)) else 0
+        try:
+            exif_count = len(image.getexif())
+        except (AttributeError, TypeError, ValueError):
+            exif_count = 0
+
+        quantization = getattr(image, "quantization", None) or {}
+        quantization_tables = [
+            np.asarray(table, dtype=np.float32).reshape(-1)
+            for _key, table in sorted(quantization.items())
+            if table is not None
+        ]
+        all_quantization = (
+            np.concatenate(quantization_tables)
+            if quantization_tables
+            else np.zeros(0, dtype=np.float32)
+        )
+        q0_mean, q0_std = _table_stats(quantization.get(0))
+        q1_mean, q1_std = _table_stats(quantization.get(1))
+
+        layers = getattr(image, "layer", None) or []
+        h_sampling = []
+        v_sampling = []
+        for layer in layers:
+            if isinstance(layer, (tuple, list)) and len(layer) >= 3:
+                h_sampling.append(float(layer[1]))
+                v_sampling.append(float(layer[2]))
+
+        values = {
+            "source_width": float(width),
+            "source_height": float(height),
+            "source_log_width": float(np.log1p(width)),
+            "source_log_height": float(np.log1p(height)),
+            "source_aspect_ratio": float(width / max(1, height)),
+            "source_megapixels": pixels / 1_000_000.0,
+            "source_log_file_size": float(np.log1p(file_size)),
+            "source_bytes_per_pixel": file_size / pixels,
+            "source_exif_count": float(exif_count),
+            "source_icc_profile_log_length": float(np.log1p(icc_length)),
+            "source_dpi_x": dpi_x,
+            "source_dpi_y": dpi_y,
+            "jpeg_qtable_count": float(len(quantization_tables)),
+            "jpeg_qtable_mean": float(all_quantization.mean()) if all_quantization.size else 0.0,
+            "jpeg_qtable_std": float(all_quantization.std()) if all_quantization.size else 0.0,
+            "jpeg_qtable_min": float(all_quantization.min()) if all_quantization.size else 0.0,
+            "jpeg_qtable_max": float(all_quantization.max()) if all_quantization.size else 0.0,
+            "jpeg_qtable_0_mean": q0_mean,
+            "jpeg_qtable_0_std": q0_std,
+            "jpeg_qtable_1_mean": q1_mean,
+            "jpeg_qtable_1_std": q1_std,
+            "jpeg_layer_count": float(len(layers)),
+            "jpeg_h_sampling_mean": float(np.mean(h_sampling)) if h_sampling else 0.0,
+            "jpeg_v_sampling_mean": float(np.mean(v_sampling)) if v_sampling else 0.0,
+            "jpeg_h_sampling_max": float(np.max(h_sampling)) if h_sampling else 0.0,
+            "jpeg_v_sampling_max": float(np.max(v_sampling)) if v_sampling else 0.0,
+            "source_is_rgb": float(image.mode == "RGB"),
+            "source_is_grayscale": float(image.mode in {"1", "L", "I", "F"}),
+        }
+    return np.asarray([values[name] for name in FILE_METADATA_FEATURE_NAMES], dtype=np.float32)
 
 
 def _gray(rgb: np.ndarray) -> np.ndarray:
@@ -745,6 +870,8 @@ def feature_names(feature_set: str) -> list[str]:
         return list(RECONSTRUCTION_LITE_FEATURE_NAMES)
     if feature_set == "reconstruction_v2":
         return list(RECONSTRUCTION_V2_FEATURE_NAMES)
+    if feature_set == "file_metadata":
+        return list(FILE_METADATA_FEATURE_NAMES)
     if feature_set == "combined":
         return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_FEATURE_NAMES)
     if feature_set == "combined_v2":
@@ -753,6 +880,12 @@ def feature_names(feature_set: str) -> list[str]:
         return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_V3_FEATURE_NAMES)
     if feature_set == "combined_v4":
         return list(PHOTOMETRIC_FEATURE_NAMES) + list(NOISE_V4_FEATURE_NAMES)
+    if feature_set == "combined_v5":
+        return (
+            list(PHOTOMETRIC_FEATURE_NAMES)
+            + list(NOISE_V4_FEATURE_NAMES)
+            + list(FILE_METADATA_FEATURE_NAMES)
+        )
     raise ValueError(f"Unsupported feature set: {feature_set}")
 
 
@@ -771,6 +904,8 @@ def extract_feature_set(path: str | Path, image_size: int, feature_set: str) -> 
         return extract_reconstruction_lite_features(path, image_size=image_size)
     if feature_set == "reconstruction_v2":
         return extract_reconstruction_v2_features(path, image_size=image_size)
+    if feature_set == "file_metadata":
+        return extract_file_metadata_features(path, image_size=image_size)
     if feature_set == "combined":
         return np.concatenate(
             [
@@ -797,6 +932,14 @@ def extract_feature_set(path: str | Path, image_size: int, feature_set: str) -> 
             [
                 extract_photometric_features(path, image_size=image_size),
                 extract_noise_v4_features(path, image_size=image_size),
+            ]
+        )
+    if feature_set == "combined_v5":
+        return np.concatenate(
+            [
+                extract_photometric_features(path, image_size=image_size),
+                extract_noise_v4_features(path, image_size=image_size),
+                extract_file_metadata_features(path, image_size=image_size),
             ]
         )
     raise ValueError(f"Unsupported feature set: {feature_set}")

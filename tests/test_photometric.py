@@ -47,10 +47,12 @@ def test_conventional_feature_sets_are_finite(tmp_path: Path) -> None:
         "noise_v4",
         "reconstruction_lite",
         "reconstruction_v2",
+        "file_metadata",
         "combined",
         "combined_v2",
         "combined_v3",
         "combined_v4",
+        "combined_v5",
     ]:
         features = extract_feature_set(path, image_size=32, feature_set=feature_set)
         assert features.shape == (len(feature_names(feature_set)),)
@@ -63,6 +65,8 @@ def test_conventional_feature_sets_are_finite(tmp_path: Path) -> None:
     assert len(feature_names("combined_v2")) > len(feature_names("combined"))
     assert len(feature_names("combined_v3")) > len(feature_names("combined_v2"))
     assert len(feature_names("combined_v4")) > len(feature_names("combined_v3"))
+    assert len(feature_names("combined_v5")) > len(feature_names("combined_v4"))
+    assert set(feature_names("file_metadata")).issubset(feature_names("combined_v5"))
 
 
 def test_reconstruction_lite_is_a_standalone_ablation() -> None:
