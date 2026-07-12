@@ -26,6 +26,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--manifest-out", default=None, help="Optional JSON manifest; defaults to <out-predictions>.manifest.json.")
     parser.add_argument("--threshold-json", default=None, help="Threshold manifest from scripts/select_freuid_threshold.py.")
     parser.add_argument("--threshold", type=float, default=None, help="Manual threshold override.")
+    parser.add_argument(
+        "--weights",
+        nargs="+",
+        type=float,
+        default=None,
+        help="Optional inference-time weight override in source-name order; values are normalized to sum to one.",
+    )
+    parser.add_argument(
+        "--normalization",
+        choices=["raw", "minmax", "rank"],
+        default=None,
+        help="Optional normalization override for an explicit inference probe.",
+    )
     parser.add_argument("--id-column", default=None)
     parser.add_argument("--score-column", default=None)
     return parser.parse_args()
@@ -127,6 +140,8 @@ def apply_freuid_fusion(
     names: list[str] | None = None,
     threshold_json: Path | None = None,
     threshold: float | None = None,
+    weights_override: list[float] | None = None,
+    normalization_override: str | None = None,
     id_column: str | None = None,
     score_column: str | None = None,
 ) -> dict[str, object]:
@@ -135,10 +150,13 @@ def apply_freuid_fusion(
     if not isinstance(best, dict):
         raise ValueError(f"{fusion_summary_path} is missing best fusion settings")
     expected_names = list(fusion_summary.get("source_names", []))
-    weights = np.asarray(best.get("weights", []), dtype=float)
-    normalization = str(best.get("normalization", "raw"))
+    weights = np.asarray(weights_override if weights_override is not None else best.get("weights", []), dtype=float)
+    normalization = str(normalization_override or best.get("normalization", "raw"))
     if len(expected_names) != len(weights):
         raise ValueError("fusion_summary source_names and best.weights lengths differ")
+    if not np.isfinite(weights).all() or np.any(weights < 0.0) or float(weights.sum()) <= 0.0:
+        raise ValueError("Fusion weights must be finite, non-negative, and sum to a positive value")
+    weights = weights / float(weights.sum())
 
     frame, source_names = _load_prediction_frames(prediction_paths, names, id_column, score_column)
     if source_names != expected_names:
@@ -179,6 +197,8 @@ def main() -> None:
         manifest_path=manifest_path,
         threshold_json=Path(args.threshold_json) if args.threshold_json else None,
         threshold=args.threshold,
+        weights_override=list(args.weights) if args.weights else None,
+        normalization_override=args.normalization,
         id_column=args.id_column,
         score_column=args.score_column,
     )

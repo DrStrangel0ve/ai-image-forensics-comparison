@@ -49,6 +49,11 @@ def test_apply_freuid_fusion_writes_thresholded_unlabeled_predictions(tmp_path: 
             str(fusion_summary),
             "--threshold-json",
             str(threshold_manifest),
+            "--weights",
+            "0.8",
+            "0.2",
+            "--normalization",
+            "raw",
             "--out-predictions",
             str(predictions),
             "--manifest-out",
@@ -62,10 +67,10 @@ def test_apply_freuid_fusion_writes_thresholded_unlabeled_predictions(tmp_path: 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert list(frame.columns) == ["id", "fraud_score", "label"]
     assert list(frame["id"]) == ["x", "y", "z"]
-    assert frame["fraud_score"].round(4).tolist() == [0.3333, 0.6667, 1.0]
+    assert frame["fraud_score"].round(4).tolist() == [0.12, 0.56, 0.88]
     assert frame["label"].tolist() == [0, 0, 1]
-    assert manifest["normalization"] == "rank"
-    assert manifest["weights"] == [0.25, 0.75]
+    assert manifest["normalization"] == "raw"
+    assert manifest["weights"] == [0.8, 0.2]
     assert manifest["threshold"] == 0.7
     assert manifest["label_counts"] == {"0": 2, "1": 1}
 
