@@ -46,15 +46,20 @@ def test_locate_competition_root_uses_kagglehub_fallback(
 ) -> None:
     input_root = tmp_path / "empty_input"
     attached_root = make_competition_root(tmp_path / "shared_cache" / "freuid")
-    calls: list[str] = []
-    fake_kagglehub = SimpleNamespace(
-        competition_download=lambda slug: calls.append(slug) or str(attached_root)
-    )
+    calls: list[tuple[str, str]] = []
+
+    def fake_download(slug: str, *, output_dir: str) -> str:
+        calls.append((slug, output_dir))
+        return str(attached_root)
+
+    fake_kagglehub = SimpleNamespace(competition_download=fake_download)
     monkeypatch.setitem(sys.modules, "kagglehub", fake_kagglehub)
 
     root, labels, source = KERNEL.locate_competition_root(input_root)
 
-    assert calls == [KERNEL.COMPETITION_SLUG]
+    assert calls == [
+        (KERNEL.COMPETITION_SLUG, "/kaggle/temp/freuid-competition"),
+    ]
     assert root == attached_root
     assert labels == attached_root / "train_labels.csv"
-    assert source == "kagglehub_shared_cache"
+    assert source == "kagglehub_http_download"

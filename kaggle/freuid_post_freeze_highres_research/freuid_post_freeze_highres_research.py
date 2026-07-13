@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -12,7 +13,7 @@ import torch
 
 
 REPO_URL = "https://github.com/DrStrangel0ve/ai-image-forensics-comparison.git"
-REPO_REF = "post-freeze-highres-kaggle-v2"
+REPO_REF = "post-freeze-highres-kaggle-v3"
 COMPETITION_SLUG = "the-freuid-challenge-2026-ijcai-ecai"
 HOLDOUT_TYPE = "EGYPT/DL"
 MAX_TRAIN_SAMPLES = 12000
@@ -46,11 +47,28 @@ def locate_competition_root(input_root: Path | None = None) -> tuple[Path, Path,
     if not matches:
         import kagglehub
 
-        print("FREUID input is not mounted; attaching it through kagglehub", flush=True)
-        attached_root = Path(kagglehub.competition_download(COMPETITION_SLUG))
-        print(f"kagglehub competition path: {attached_root}", flush=True)
+        download_root = "/kaggle/temp/freuid-competition"
+        previous_cache_setting = os.environ.get("DISABLE_KAGGLE_CACHE")
+        os.environ["DISABLE_KAGGLE_CACHE"] = "1"
+        print(
+            f"FREUID input is not mounted; downloading it to Kaggle temp storage at {download_root}",
+            flush=True,
+        )
+        try:
+            attached_root = Path(
+                kagglehub.competition_download(
+                    COMPETITION_SLUG,
+                    output_dir=download_root,
+                )
+            )
+        finally:
+            if previous_cache_setting is None:
+                os.environ.pop("DISABLE_KAGGLE_CACHE", None)
+            else:
+                os.environ["DISABLE_KAGGLE_CACHE"] = previous_cache_setting
+        print(f"kagglehub HTTP download path: {attached_root}", flush=True)
         matches = find_train_labels([attached_root, preferred, input_root])
-        source = "kagglehub_shared_cache"
+        source = "kagglehub_http_download"
     if len(matches) != 1:
         raise FileNotFoundError(
             "Expected one FREUID train_labels.csv after mounted-input and kagglehub lookup, "
