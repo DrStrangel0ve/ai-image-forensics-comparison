@@ -137,8 +137,6 @@ def member_commands(
         "64",
         "--num-workers",
         "4",
-        "--device",
-        "cuda",
     ]
     return {
         "public_member": [

@@ -92,6 +92,8 @@ def test_member_commands_preserve_frozen_checkpoints(tmp_path: Path) -> None:
 
     public = commands["public_member"]
     forensic = commands["forensic_member"]
+    assert "--device" not in public
+    assert "--device" not in forensic
     assert public[public.index("--checkpoint") + 1].endswith("template_convnext224.pt")
     assert forensic[forensic.index("--checkpoint") + 1].endswith(
         "forensic_efficientnet384.pt"
