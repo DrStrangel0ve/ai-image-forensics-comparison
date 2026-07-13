@@ -100,3 +100,9 @@ No metric from the 20-image smoke test is scientific evidence. Its sole purpose 
 - DINOv2-B LoRA construction: 12 QKV adapters, 87,174,150 total parameters, 594,438 trainable (0.682%).
 - Five-crop end-to-end smoke: passed; epoch and best checkpoints were both emitted and reloaded for inference.
 - Full GPU experiment: pending. At verification time the RTX 3080 Ti had only 956 MiB free because unrelated desktop processes occupied the device; those processes were not interrupted.
+
+## Kaggle GPU execution
+
+The first full probe is configured as a private Kaggle script at `kaggle/freuid_post_freeze_highres_research`. It requests the `NvidiaTeslaT4` accelerator, mounts the official competition data, and never creates a competition submission. The run caches normalized DINOv2-B embeddings once, then compares fixed logistic probes over mean, mean-plus-max, and mean-plus-max-plus-standard-deviation crop statistics.
+
+The predeclared primary result is the `mean_max_std` probe on an `EGYPT/DL` leave-one-type-out fold, capped deterministically at 12,000 training and 4,000 validation documents. This makes the first remote run useful while staying within the available Kaggle GPU allocation. All outputs carry `post_freeze_research_only` eligibility metadata.
