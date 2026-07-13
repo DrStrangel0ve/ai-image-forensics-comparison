@@ -136,6 +136,18 @@ def inference_commands(
     }
 
 
+def execution_batches(variants: list[str], gpu_count: int) -> list[list[tuple[str, int]]]:
+    if gpu_count < 1:
+        raise ValueError("gpu_count must be positive")
+    return [
+        [
+            (variant, batch_index)
+            for batch_index, variant in enumerate(variants[start : start + gpu_count])
+        ]
+        for start in range(0, len(variants), gpu_count)
+    ]
+
+
 def main() -> None:
     started = time.time()
     input_root = Path("/kaggle/input")
@@ -184,18 +196,23 @@ def main() -> None:
             working,
         )
 
-        processes: dict[str, subprocess.Popen[str]] = {}
-        for gpu_index, (variant, command) in enumerate(commands.items()):
-            environment = os.environ.copy()
-            environment["CUDA_VISIBLE_DEVICES"] = str(gpu_index % max(1, len(gpus)))
-            print(f"[{variant}] + {' '.join(command)}", flush=True)
-            processes[variant] = subprocess.Popen(
-                command,
-                cwd=repo,
-                env=environment,
-                text=True,
+        return_codes: dict[str, int] = {}
+        for batch in execution_batches(list(commands), len(gpus)):
+            processes: dict[str, subprocess.Popen[str]] = {}
+            for variant, gpu_index in batch:
+                command = commands[variant]
+                environment = os.environ.copy()
+                environment["CUDA_VISIBLE_DEVICES"] = str(gpu_index)
+                print(f"[{variant}] + {' '.join(command)}", flush=True)
+                processes[variant] = subprocess.Popen(
+                    command,
+                    cwd=repo,
+                    env=environment,
+                    text=True,
+                )
+            return_codes.update(
+                {variant: process.wait() for variant, process in processes.items()}
             )
-        return_codes = {variant: process.wait() for variant, process in processes.items()}
         failures = {variant: code for variant, code in return_codes.items() if code != 0}
         if failures:
             raise RuntimeError(f"Frozen inference subprocess failures: {failures}")

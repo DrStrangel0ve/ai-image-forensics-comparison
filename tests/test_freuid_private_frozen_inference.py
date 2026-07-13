@@ -62,3 +62,15 @@ def test_inference_commands_preserve_frozen_variants(tmp_path: Path) -> None:
     assert ood[ood.index("--normalization") + 1] == "rank"
     weights = [ood[index + 1] for index, value in enumerate(ood) if value == "--weight"]
     assert weights == ["0.85", "0.15"]
+
+
+def test_execution_batches_run_in_parallel_with_two_gpus() -> None:
+    batches = KERNEL.execution_batches(["public_specialist", "ood_rank"], 2)
+
+    assert batches == [[("public_specialist", 0), ("ood_rank", 1)]]
+
+
+def test_execution_batches_run_sequentially_with_one_gpu() -> None:
+    batches = KERNEL.execution_batches(["public_specialist", "ood_rank"], 1)
+
+    assert batches == [[("public_specialist", 0)], [("ood_rank", 0)]]
