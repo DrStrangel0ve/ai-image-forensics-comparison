@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import importlib.util
+import tarfile
 from pathlib import Path
 
 import numpy as np
@@ -47,6 +48,22 @@ def test_find_private_image_root_rejects_non_private_images(tmp_path: Path) -> N
         assert "private-test" in str(exc)
     else:
         raise AssertionError("Expected private-test discovery to fail")
+
+
+def test_materialize_private_image_root_extracts_directory_archive(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    private_root = source / "private_test" / "private_test"
+    private_root.mkdir(parents=True)
+    (private_root / "a.jpeg").write_bytes(b"image")
+    input_root = tmp_path / "input"
+    input_root.mkdir()
+    with tarfile.open(input_root / "private_test.tar", mode="w") as archive:
+        archive.add(source / "private_test", arcname="private_test")
+
+    root, count = KERNEL.materialize_private_image_root(input_root, tmp_path / "scratch")
+
+    assert root == tmp_path / "scratch" / "private_test" / "private_test"
+    assert count == 1
 
 
 def test_validate_submission_checks_ids_and_probabilities(tmp_path: Path) -> None:

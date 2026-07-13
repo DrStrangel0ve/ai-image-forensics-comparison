@@ -9,6 +9,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tarfile
 import time
 from pathlib import Path
 from typing import Callable
@@ -57,6 +58,26 @@ def find_private_image_root(input_root: Path) -> tuple[Path, int]:
         raise FileNotFoundError(f"No private-test images found under {input_root}")
     count, root = max(private_candidates, key=lambda item: (item[0], str(item[1])))
     return root, count
+
+
+def materialize_private_image_root(input_root: Path, scratch_root: Path) -> tuple[Path, int]:
+    try:
+        return find_private_image_root(input_root)
+    except FileNotFoundError as original_error:
+        archives = sorted(path for path in input_root.rglob("private_test.tar") if path.is_file())
+        if len(archives) != 1:
+            raise original_error
+
+    scratch_root.mkdir(parents=True, exist_ok=True)
+    resolved_scratch = scratch_root.resolve()
+    with tarfile.open(archives[0], mode="r") as archive:
+        members = archive.getmembers()
+        for member in members:
+            target = (scratch_root / member.name).resolve()
+            if not target.is_relative_to(resolved_scratch) or member.issym() or member.islnk():
+                raise ValueError(f"Unsafe private-test TAR member: {member.name}")
+        archive.extractall(scratch_root, members=members)
+    return find_private_image_root(scratch_root)
 
 
 def sha256(path: Path) -> str:
@@ -264,7 +285,9 @@ def main() -> None:
         manifest["repo_commit"] = subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=repo, text=True
         ).strip()
-        image_root, image_count = find_private_image_root(input_root)
+        image_root, image_count = materialize_private_image_root(
+            input_root, Path("/tmp/freuid-private-input")
+        )
         expected_ids = {
             path.stem
             for path in image_root.iterdir()
