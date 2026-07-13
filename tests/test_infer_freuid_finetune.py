@@ -61,3 +61,51 @@ def test_finetuned_freuid_inference_writes_score_submission(tmp_path: Path) -> N
     assert list(frame["id"]) == ["sample_0", "sample_1", "sample_2"]
     assert frame["label"].between(0.0, 1.0).all()
     assert output.with_suffix(".manifest.json").exists()
+
+
+def test_multiview_freuid_inference_writes_score_submission(tmp_path: Path) -> None:
+    image_dir = tmp_path / "images"
+    image_dir.mkdir()
+    Image.fromarray(np.full((40, 64, 3), 90, dtype=np.uint8)).save(image_dir / "sample.jpeg")
+
+    model = build_freuid_model("tiny_cnn", num_types=2, pretrained=False, multi_view=True)
+    checkpoint = tmp_path / "model.pt"
+    torch.save(
+        {
+            "model_state": model.state_dict(),
+            "model": "tiny_cnn",
+            "multi_view": True,
+            "grid_rows": 2,
+            "grid_cols": 2,
+            "image_size": 64,
+            "type_to_idx": {"A/DL": 0, "B/ID": 1},
+            "threshold": 0.4,
+        },
+        checkpoint,
+    )
+    output = tmp_path / "submission.csv"
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "infer_freuid_finetune.py"),
+            "--input-dir",
+            str(image_dir),
+            "--checkpoint",
+            str(checkpoint),
+            "--output-csv",
+            str(output),
+            "--batch-size",
+            "1",
+            "--num-workers",
+            "0",
+            "--device",
+            "cpu",
+        ],
+        cwd=ROOT,
+        check=True,
+    )
+
+    frame = pd.read_csv(output)
+    assert frame.shape == (1, 2)
+    manifest = output.with_suffix(".manifest.json").read_text(encoding="utf-8")
+    assert '"multi_view": true' in manifest

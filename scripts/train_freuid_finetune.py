@@ -2,20 +2,18 @@ from __future__ import annotations
 
 import argparse
 import csv
-import io
 import math
-import random
 import sys
+from collections import Counter
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import torch
 import torch.nn.functional as F
-from PIL import Image, ImageOps
+from PIL import Image
 from torch import nn
-from torch.utils.data import DataLoader, Dataset
-from torchvision import transforms
+from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
 from tqdm import tqdm
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +22,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from forensic_compare.datasets import stable_path_score
 from forensic_compare.freuid import freuid_competition_path, freuid_metrics
 from forensic_compare.freuid_model import build_freuid_model, supported_freuid_models
+from forensic_compare.freuid_transforms import build_document_transforms
 from forensic_compare.metrics import binary_metrics
 from forensic_compare.utils import ensure_dir, resolve_device, seed_everything, write_json
 
@@ -54,40 +53,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-val-samples", type=int, default=0)
     parser.add_argument("--max-test-samples", type=int, default=0)
     parser.add_argument("--jpeg-augmentation-probability", type=float, default=0.25)
+    parser.add_argument("--capture-augmentation-strength", type=float, default=0.0)
+    parser.add_argument("--grid-rows", type=int, default=0)
+    parser.add_argument("--grid-cols", type=int, default=0)
+    parser.add_argument("--type-adversarial-weight", type=float, default=0.0)
+    parser.add_argument("--balanced-group-sampling", action="store_true")
+    parser.add_argument("--forensic-residual", action="store_true")
     parser.add_argument("--selection-apcer-weight", type=float, default=0.25)
     parser.add_argument("--skip-errors", action="store_true")
     return parser.parse_args()
-
-
-class Letterbox:
-    def __init__(self, size: int, fill: tuple[int, int, int] = (127, 127, 127)) -> None:
-        self.size = int(size)
-        self.fill = fill
-
-    def __call__(self, image: Image.Image) -> Image.Image:
-        return ImageOps.pad(
-            image,
-            (self.size, self.size),
-            method=Image.Resampling.BICUBIC,
-            color=self.fill,
-            centering=(0.5, 0.5),
-        )
-
-
-class RandomJpeg:
-    def __init__(self, probability: float, quality_range: tuple[int, int] = (55, 95)) -> None:
-        self.probability = float(probability)
-        self.quality_range = quality_range
-
-    def __call__(self, image: Image.Image) -> Image.Image:
-        if random.random() >= self.probability:
-            return image
-        buffer = io.BytesIO()
-        quality = random.randint(*self.quality_range)
-        image.convert("RGB").save(buffer, format="JPEG", quality=quality)
-        buffer.seek(0)
-        with Image.open(buffer) as encoded:
-            return encoded.convert("RGB").copy()
 
 
 def _resolve_path(image_root: Path, raw_path: object) -> Path:
@@ -202,32 +176,6 @@ class FreuidCsvDataset(Dataset):
         return tensor, torch.tensor(label, dtype=torch.float32), torch.tensor(type_idx), str(row["id"])
 
 
-def _transforms(image_size: int, jpeg_probability: float):
-    mean = (0.485, 0.456, 0.406)
-    std = (0.229, 0.224, 0.225)
-    train = transforms.Compose(
-        [
-            RandomJpeg(jpeg_probability),
-            transforms.RandomApply(
-                [transforms.ColorJitter(brightness=0.08, contrast=0.08, saturation=0.05, hue=0.01)],
-                p=0.35,
-            ),
-            transforms.RandomAffine(degrees=1.5, translate=(0.012, 0.012), scale=(0.98, 1.02), fill=127),
-            Letterbox(image_size),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=mean, std=std),
-        ]
-    )
-    evaluate = transforms.Compose(
-        [
-            Letterbox(image_size),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=mean, std=std),
-        ]
-    )
-    return train, evaluate
-
-
 def _fraud_loss(
     logits: torch.Tensor,
     labels: torch.Tensor,
@@ -265,6 +213,13 @@ def _load_frames(args: argparse.Namespace):
     if not type_names:
         type_names = [""]
     return train, val, test, {name: index for index, name in enumerate(type_names)}
+
+
+def _balanced_sampler(dataset: FreuidCsvDataset) -> WeightedRandomSampler:
+    group_keys = [(str(row["type"]), int(row["label"])) for row in dataset.rows]
+    counts = Counter(group_keys)
+    weights = torch.as_tensor([1.0 / counts[key] for key in group_keys], dtype=torch.double)
+    return WeightedRandomSampler(weights, num_samples=len(weights), replacement=True)
 
 
 @torch.no_grad()
@@ -331,7 +286,16 @@ def run(args: argparse.Namespace) -> dict[str, object]:
     output_dir = ensure_dir(args.output_dir)
     device = resolve_device(args.device)
     train_frame, val_frame, test_frame, type_to_idx = _load_frames(args)
-    train_transform, eval_transform = _transforms(args.image_size, args.jpeg_augmentation_probability)
+    if (args.grid_rows > 0) != (args.grid_cols > 0):
+        raise ValueError("--grid-rows and --grid-cols must either both be positive or both be zero")
+    multi_view = args.grid_rows > 0 and args.grid_cols > 0
+    train_transform, eval_transform = build_document_transforms(
+        args.image_size,
+        grid_rows=args.grid_rows,
+        grid_cols=args.grid_cols,
+        jpeg_probability=args.jpeg_augmentation_probability,
+        capture_strength=args.capture_augmentation_strength,
+    )
     image_root = Path(args.image_root)
     train_dataset = FreuidCsvDataset(train_frame, image_root, train_transform, type_to_idx, True, args.skip_errors)
     val_dataset = FreuidCsvDataset(val_frame, image_root, eval_transform, type_to_idx, True, args.skip_errors)
@@ -346,7 +310,14 @@ def run(args: argparse.Namespace) -> dict[str, object]:
         "pin_memory": device.type == "cuda",
         "persistent_workers": args.num_workers > 0,
     }
-    train_loader = DataLoader(train_dataset, shuffle=True, drop_last=True, **loader_kwargs)
+    train_sampler = _balanced_sampler(train_dataset) if args.balanced_group_sampling else None
+    train_loader = DataLoader(
+        train_dataset,
+        shuffle=train_sampler is None,
+        sampler=train_sampler,
+        drop_last=True,
+        **loader_kwargs,
+    )
     val_loader = DataLoader(val_dataset, shuffle=False, **loader_kwargs)
     test_loader = DataLoader(test_dataset, shuffle=False, **loader_kwargs) if test_dataset is not None else None
 
@@ -355,8 +326,10 @@ def run(args: argparse.Namespace) -> dict[str, object]:
         num_types=len(type_to_idx),
         pretrained=args.pretrained,
         dropout=args.dropout,
+        multi_view=multi_view,
+        forensic_residual=args.forensic_residual,
     ).to(device)
-    if device.type == "cuda":
+    if device.type == "cuda" and not multi_view:
         model = model.to(memory_format=torch.channels_last)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, args.epochs))
@@ -374,13 +347,16 @@ def run(args: argparse.Namespace) -> dict[str, object]:
         seen = 0
         for images, labels, type_indices, _ids in tqdm(train_loader, desc=f"freuid/train/{epoch}", leave=False):
             images = images.to(device, non_blocking=True)
-            if device.type == "cuda":
+            if device.type == "cuda" and images.ndim == 4:
                 images = images.to(memory_format=torch.channels_last)
             labels = labels.to(device, non_blocking=True)
             type_indices = type_indices.to(device, non_blocking=True)
             optimizer.zero_grad(set_to_none=True)
             with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=device.type == "cuda"):
-                fraud_logits, type_logits = model(images)
+                fraud_logits, type_logits = model(
+                    images,
+                    type_adversarial_scale=args.type_adversarial_weight,
+                )
                 fraud_loss = _fraud_loss(
                     fraud_logits,
                     labels,
@@ -419,7 +395,11 @@ def run(args: argparse.Namespace) -> dict[str, object]:
                 {
                     "model_state": model.state_dict(),
                     "model": args.model,
+                    "multi_view": multi_view,
+                    "forensic_residual": bool(args.forensic_residual),
                     "image_size": int(args.image_size),
+                    "grid_rows": int(args.grid_rows),
+                    "grid_cols": int(args.grid_cols),
                     "type_to_idx": type_to_idx,
                     "threshold": float(metrics["threshold_at_1pct_bpcer"]),
                     "metrics": metrics,
@@ -438,6 +418,11 @@ def run(args: argparse.Namespace) -> dict[str, object]:
             "model": args.model,
             "pretrained": bool(args.pretrained),
             "image_size": int(args.image_size),
+            "multi_view": multi_view,
+            "forensic_residual": bool(args.forensic_residual),
+            "n_views": 1 + max(0, int(args.grid_rows)) * max(0, int(args.grid_cols)),
+            "grid_rows": int(args.grid_rows),
+            "grid_cols": int(args.grid_cols),
             "device": str(device),
             "n_train": len(train_dataset),
             "n_val": len(val_dataset),
@@ -453,6 +438,10 @@ def run(args: argparse.Namespace) -> dict[str, object]:
                 "hard_example_fraction": float(args.hard_example_fraction),
                 "type_loss_weight": float(args.type_loss_weight),
                 "jpeg_augmentation_probability": float(args.jpeg_augmentation_probability),
+                "capture_augmentation_strength": float(args.capture_augmentation_strength),
+                "type_adversarial_weight": float(args.type_adversarial_weight),
+                "balanced_group_sampling": bool(args.balanced_group_sampling),
+                "forensic_residual": bool(args.forensic_residual),
             },
         }
     )

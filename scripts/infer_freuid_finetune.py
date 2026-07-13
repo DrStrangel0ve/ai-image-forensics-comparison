@@ -7,15 +7,15 @@ from collections import Counter
 from pathlib import Path
 
 import torch
-from PIL import Image, ImageOps
+from PIL import Image
 from torch.utils.data import DataLoader, Dataset
-from torchvision import transforms
 from tqdm import tqdm
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from forensic_compare.freuid_model import build_freuid_model
+from forensic_compare.freuid_transforms import DocumentViewTransform
 from forensic_compare.utils import resolve_device, write_json
 
 
@@ -36,32 +36,13 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-class Letterbox:
-    def __init__(self, size: int) -> None:
-        self.size = int(size)
-
-    def __call__(self, image: Image.Image) -> Image.Image:
-        return ImageOps.pad(
-            image,
-            (self.size, self.size),
-            method=Image.Resampling.BICUBIC,
-            color=(127, 127, 127),
-            centering=(0.5, 0.5),
-        )
-
-
 class ImagePathDataset(Dataset):
-    def __init__(self, paths: list[Path], image_size: int) -> None:
+    def __init__(self, paths: list[Path], image_size: int, grid_rows: int = 0, grid_cols: int = 0) -> None:
         self.paths = paths
-        self.transform = transforms.Compose(
-            [
-                Letterbox(image_size),
-                transforms.ToTensor(),
-                transforms.Normalize(
-                    mean=(0.485, 0.456, 0.406),
-                    std=(0.229, 0.224, 0.225),
-                ),
-            ]
+        self.transform = DocumentViewTransform(
+            image_size,
+            grid_rows=grid_rows,
+            grid_cols=grid_cols,
         )
 
     def __len__(self) -> int:
@@ -97,18 +78,29 @@ def run(args: argparse.Namespace) -> dict[str, object]:
     device = resolve_device(args.device)
     checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
     type_to_idx = dict(checkpoint["type_to_idx"])
+    multi_view = bool(checkpoint.get("multi_view", False))
+    grid_rows = int(checkpoint.get("grid_rows", 0))
+    grid_cols = int(checkpoint.get("grid_cols", 0))
+    forensic_residual = bool(checkpoint.get("forensic_residual", False))
     model = build_freuid_model(
         str(checkpoint["model"]),
         num_types=len(type_to_idx),
         pretrained=False,
+        multi_view=multi_view,
+        forensic_residual=forensic_residual,
     )
     model.load_state_dict(checkpoint["model_state"])
     model = model.to(device).eval()
-    if device.type == "cuda":
+    if device.type == "cuda" and not multi_view:
         model = model.to(memory_format=torch.channels_last)
 
     paths = _image_paths(input_dir, args.recursive, args.max_images)
-    dataset = ImagePathDataset(paths, image_size=int(checkpoint["image_size"]))
+    dataset = ImagePathDataset(
+        paths,
+        image_size=int(checkpoint["image_size"]),
+        grid_rows=grid_rows,
+        grid_cols=grid_cols,
+    )
     loader = DataLoader(
         dataset,
         batch_size=max(1, int(args.batch_size)),
@@ -120,7 +112,7 @@ def run(args: argparse.Namespace) -> dict[str, object]:
     scores: list[float] = []
     for images, batch_ids in tqdm(loader, desc="freuid/inference"):
         images = images.to(device, non_blocking=True)
-        if device.type == "cuda":
+        if device.type == "cuda" and images.ndim == 4:
             images = images.to(memory_format=torch.channels_last)
         fraud_logits, _type_logits = model(images)
         ids.extend(list(batch_ids))
@@ -137,6 +129,10 @@ def run(args: argparse.Namespace) -> dict[str, object]:
         "checkpoint": str(checkpoint_path),
         "model": str(checkpoint["model"]),
         "image_size": int(checkpoint["image_size"]),
+        "multi_view": multi_view,
+        "forensic_residual": forensic_residual,
+        "grid_rows": grid_rows,
+        "grid_cols": grid_cols,
         "input_dir": str(input_dir),
         "output_csv": str(output_csv),
         "device": str(device),
