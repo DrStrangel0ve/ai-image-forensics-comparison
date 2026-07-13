@@ -1,114 +1,56 @@
 # FREUID Code Freeze Status - 2026-07-13
 
-This note records the FREUID Challenge state at the start of code-freeze day in the local timezone.
+## Frozen Candidates
 
-## Frozen Candidate
+Two complementary submissions should be retained for final selection if Kaggle permits two:
 
-- Best Kaggle submission: `54511333`
-- Public score: `0.37009`
-- Submission message: `12k four-way fusion v3: combined_v4 plus CUDA ConvNeXt with metadata fallback`
-- Submitted candidate CSV: `outputs/freuid_2026/public_12k_fourway_fusion_submission_packaged/submission.csv`
-- Candidate rows: `142,818`
-- Lint state: pass, exact `id,label` sample order, finite score labels in `[0, 1]`
+| Submission | Public score | Role |
+| --- | ---: | --- |
+| `54624136` | 0.25470 | strongest known-layout public specialist |
+| `54627101` | 0.25799 | rank-fused unseen-type and capture candidate |
+
+The OOD candidate changes all `7,821` locally available image predictions and changes zero of the `134,997` unavailable-image fallback values. Its small `0.00329` public-score cost is therefore a clean model comparison despite the organizer-reported public scoring issue.
 
 ## Frozen Runtime
 
-The frozen scoring formula is:
+The no-network runtime uses two checkpoints sequentially:
 
 ```text
-fraud_score = 0.7 * combined_v4_hgb(image) + 0.3 * convnext_tiny_logreg(image)
+template_score = ConvNeXt-Tiny(image at 224 px)
+forensic_score = EfficientNet-B0(residual-adapted image at 384 px)
+fraud_score = 0.85 * rank(template_score) + 0.15 * rank(forensic_score)
 ```
 
-Frozen runtime release:
+The forensic branch was trained with capture augmentation, balanced type/label sampling, and gradient-reversal document-type suppression. It achieved `24.0%` type accuracy on five document types while retaining `0.998826` AUC on the all-type validation split, showing that it no longer solves fraud detection by simply identifying a known template.
 
-```text
-https://github.com/DrStrangel0ve/ai-image-forensics-comparison/releases/tag/freuid-freeze-2026-07-10
-```
+Runtime files:
 
-Release assets:
+- `scripts/infer_freuid_checkpoint_ensemble.py`
+- `scripts/infer_freuid_finetune.py`
+- `scripts/freeze_freuid_submission_artifacts.py`
+- `docker/freuid/Dockerfile`
+- `artifacts/freuid_2026/README.md`
 
-- `freuid_frozen_stack_2026_07_10.zip`
-- `freuid_short_report_draft_2026_07_10.pdf`
-- `freuid_final_package_draft_2026_07_10.zip`
+The artifact manifest records checkpoint byte sizes and SHA-256 hashes. A local five-image run from the frozen artifact copies completed successfully on CUDA and wrote exact `id,label` output. Docker execution remains blocked only by the host's unavailable WSL2 virtualization (`HCS_E_HYPERV_NOT_INSTALLED`).
 
-The runtime artifact release was created before code freeze and contains the frozen classifiers, ConvNeXt checkpoint cache, fusion summary, artifact manifest, and README.
+## Domain-Shift Evidence
 
-## Validation Snapshot
+Random type-balanced validation is nearly saturated and is not the selection criterion. On the hard leave-EGYPT-document-type-out split:
 
-Aligned `12,000` train / `4,000` validation split:
+| Evaluation | Method | APCER @ 1% BPCER | AuDET proxy | AUC |
+| --- | --- | ---: | ---: | ---: |
+| clean | global EfficientNet 384 | 0.404 | 0.171010 | 0.829248 |
+| clean | frozen 85/15 rank ensemble | **0.402** | **0.167956** | **0.832336** |
+| screenshot | global EfficientNet 384 | 0.422 | 0.171834 | 0.828460 |
+| screenshot | frozen 85/15 rank ensemble | 0.416 | **0.168740** | **0.831586** |
 
-| Method | Accuracy | AUC | APCER @ 1% BPCER | AuDET proxy |
-| --- | ---: | ---: | ---: | ---: |
-| `combined_v4_hgb` | 0.8850 | 0.9584 | 0.2385 | 0.0417 |
-| `convnext_tiny_logreg` | 0.8628 | 0.9457 | 0.2985 | 0.0550 |
-| frozen score fusion | 0.8938 | 0.9661 | 0.2135 | 0.0341 |
+The ensemble improves the ranking/AuDET objective under both clean and screenshot stress while preserving the strict low-BPCER operating point. Larger forensic weights improve average ranking further but increase APCER, so `0.15` is the conservative frozen weight.
 
-Public leaderboard history:
+## Freeze Rules
 
-| Submission | Public score | Note |
-| --- | ---: | --- |
-| `54503265` | 0.38042 | first image fusion with metadata fallback |
-| `54505114` | 0.39303 | larger `combined_v4` image score candidate |
-| `54511333` | 0.37009 | current best frozen score fusion |
+After the July 13 AoE code/model freeze, do not train, change checkpoints, alter preprocessing, or tune weights. Allowed work is documentation, packaging, Docker/orchestration repair, and inference with these frozen artifacts.
 
-## Package Verification
+Organizer clarifications used for this decision:
 
-Current verifier:
-
-```powershell
-.\.venv\Scripts\python.exe scripts\verify_freuid_final_package.py
-```
-
-Latest heartbeat result: `pass`.
-
-The verifier checks:
-
-- final package zip integrity and required entries;
-- submitted CSV lint against the official sample submission;
-- report PDF header;
-- pinned discussion draft content;
-- required GitHub release assets.
-
-## Docker Status
-
-Local no-network Docker execution is still blocked by machine configuration, not repo code.
-
-Observed blocker:
-
-```text
-HCS_E_HYPERV_NOT_INSTALLED
-```
-
-Meaning: WSL2 cannot start the `docker-desktop` distro because virtualization / Windows Virtual Machine Platform is unavailable.
-
-Resolution note:
-
-```text
-reports/freuid_docker_blocker_resolution_2026_07_10.md
-```
-
-Post-fix smoke command:
-
-```powershell
-.\.venv\Scripts\python.exe scripts\smoke_test_freuid_docker.py
-```
-
-## Freeze Rules Going Forward
-
-Allowed after this point:
-
-- documentation edits;
-- package assembly and upload logistics;
-- Docker build/orchestration fixes that do not change model weights, model architecture, feature extraction, thresholds, or fusion weights;
-- private-test inference using the frozen runtime.
-
-Not allowed after this point:
-
-- training or fine-tuning;
-- changing classifiers, checkpoints, feature sets, preprocessing, hyperparameters, thresholds, or fusion weights;
-- using private-test images for model updates;
-- replacing the frozen candidate unless the rules explicitly allow it and the change was finalized before freeze.
-
-## Current Next Action
-
-Wait for the external Docker/WSL2 virtualization blocker to be fixed, then run the no-network Docker smoke test. Until that changes, the non-Docker package state is verified and ready.
+- unseen private document types and additional capture conditions: <https://www.kaggle.com/competitions/the-freuid-challenge-2026-ijcai-ecai/discussion/704992>
+- public leaderboard scoring update: <https://www.kaggle.com/competitions/the-freuid-challenge-2026-ijcai-ecai/discussion/723604>

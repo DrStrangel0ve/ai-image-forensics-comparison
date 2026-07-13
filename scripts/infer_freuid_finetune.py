@@ -6,6 +6,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+import numpy as np
 import torch
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
@@ -14,9 +15,9 @@ from tqdm import tqdm
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forensic_compare.freuid_model import build_freuid_model
-from forensic_compare.freuid_transforms import DocumentViewTransform
-from forensic_compare.utils import resolve_device, write_json
+from forensic_compare.freuid_model import build_freuid_model  # noqa: E402
+from forensic_compare.freuid_transforms import DocumentViewTransform  # noqa: E402
+from forensic_compare.utils import resolve_device, write_json  # noqa: E402
 
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
@@ -70,12 +71,13 @@ def _image_paths(input_dir: Path, recursive: bool, max_images: int) -> list[Path
 
 
 @torch.no_grad()
-def run(args: argparse.Namespace) -> dict[str, object]:
-    input_dir = Path(args.input_dir)
-    output_csv = Path(args.output_csv)
-    manifest_out = Path(args.manifest_out) if args.manifest_out else output_csv.with_suffix(".manifest.json")
-    checkpoint_path = Path(args.checkpoint)
-    device = resolve_device(args.device)
+def score_checkpoint(
+    checkpoint_path: Path,
+    paths: list[Path],
+    device: torch.device,
+    batch_size: int = 64,
+    num_workers: int = 4,
+) -> tuple[list[str], np.ndarray, dict[str, object]]:
     checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
     type_to_idx = dict(checkpoint["type_to_idx"])
     multi_view = bool(checkpoint.get("multi_view", False))
@@ -94,7 +96,6 @@ def run(args: argparse.Namespace) -> dict[str, object]:
     if device.type == "cuda" and not multi_view:
         model = model.to(memory_format=torch.channels_last)
 
-    paths = _image_paths(input_dir, args.recursive, args.max_images)
     dataset = ImagePathDataset(
         paths,
         image_size=int(checkpoint["image_size"]),
@@ -103,9 +104,9 @@ def run(args: argparse.Namespace) -> dict[str, object]:
     )
     loader = DataLoader(
         dataset,
-        batch_size=max(1, int(args.batch_size)),
+        batch_size=max(1, int(batch_size)),
         shuffle=False,
-        num_workers=max(0, int(args.num_workers)),
+        num_workers=max(0, int(num_workers)),
         pin_memory=device.type == "cuda",
     )
     ids: list[str] = []
@@ -118,6 +119,40 @@ def run(args: argparse.Namespace) -> dict[str, object]:
         ids.extend(list(batch_ids))
         scores.extend(torch.sigmoid(fraud_logits).cpu().numpy().astype(float).tolist())
 
+    metadata = {
+        "checkpoint": str(checkpoint_path),
+        "model": str(checkpoint["model"]),
+        "image_size": int(checkpoint["image_size"]),
+        "multi_view": multi_view,
+        "forensic_residual": forensic_residual,
+        "grid_rows": grid_rows,
+        "grid_cols": grid_cols,
+        "threshold_at_1pct_bpcer": float(checkpoint.get("threshold", 0.5)),
+    }
+    del model
+    del checkpoint
+    if device.type == "cuda":
+        torch.cuda.empty_cache()
+    return ids, np.asarray(scores, dtype=float), metadata
+
+
+@torch.no_grad()
+def run(args: argparse.Namespace) -> dict[str, object]:
+    input_dir = Path(args.input_dir)
+    output_csv = Path(args.output_csv)
+    manifest_out = Path(args.manifest_out) if args.manifest_out else output_csv.with_suffix(".manifest.json")
+    checkpoint_path = Path(args.checkpoint)
+    device = resolve_device(args.device)
+    paths = _image_paths(input_dir, args.recursive, args.max_images)
+    ids, score_array, checkpoint_metadata = score_checkpoint(
+        checkpoint_path,
+        paths,
+        device=device,
+        batch_size=args.batch_size,
+        num_workers=args.num_workers,
+    )
+    scores = score_array.tolist()
+
     output_csv.parent.mkdir(parents=True, exist_ok=True)
     with output_csv.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=["id", "label"])
@@ -126,13 +161,7 @@ def run(args: argparse.Namespace) -> dict[str, object]:
             writer.writerow({"id": image_id, "label": f"{score:.10f}"})
 
     manifest = {
-        "checkpoint": str(checkpoint_path),
-        "model": str(checkpoint["model"]),
-        "image_size": int(checkpoint["image_size"]),
-        "multi_view": multi_view,
-        "forensic_residual": forensic_residual,
-        "grid_rows": grid_rows,
-        "grid_cols": grid_cols,
+        **checkpoint_metadata,
         "input_dir": str(input_dir),
         "output_csv": str(output_csv),
         "device": str(device),
@@ -140,7 +169,6 @@ def run(args: argparse.Namespace) -> dict[str, object]:
         "score_min": float(min(scores)),
         "score_max": float(max(scores)),
         "score_mean": float(sum(scores) / len(scores)),
-        "threshold_at_1pct_bpcer": float(checkpoint.get("threshold", 0.5)),
     }
     write_json(manifest, manifest_out)
     return manifest

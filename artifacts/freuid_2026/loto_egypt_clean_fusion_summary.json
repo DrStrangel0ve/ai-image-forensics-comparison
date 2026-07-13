@@ -1,0 +1,183 @@
+{
+  "best": {
+    "accuracy": 0.747,
+    "apcer_at_1pct_bpcer": 0.402,
+    "audet_proxy": 0.167956,
+    "bpcer_at_operating_point": 0.01,
+    "brier_score": 0.16576869058875002,
+    "expected_calibration_error": 0.14305050000000002,
+    "normalization": "rank",
+    "roc_auc": 0.8323360000000001,
+    "threshold_at_1pct_bpcer": 0.6984000000000002,
+    "weights": [
+      0.8500000000000001,
+      0.15000000000000002
+    ]
+  },
+  "n_rows": 1000,
+  "normalizations": [
+    "raw",
+    "rank"
+  ],
+  "prediction_paths": [
+    "runs\\freuid_global384_loto_egypt_joint_stress\\predictions_clean.csv",
+    "runs\\freuid_forensic384_loto_egypt_joint_stress\\predictions_clean.csv"
+  ],
+  "source_names": [
+    "global384",
+    "forensic384"
+  ],
+  "top_rows": [
+    {
+      "accuracy": 0.747,
+      "apcer_at_1pct_bpcer": 0.402,
+      "audet_proxy": 0.167956,
+      "bpcer_at_operating_point": 0.01,
+      "brier_score": 0.16576869058875002,
+      "expected_calibration_error": 0.14305050000000002,
+      "normalization": "rank",
+      "roc_auc": 0.8323360000000001,
+      "threshold_at_1pct_bpcer": 0.6984000000000002,
+      "weights": [
+        0.8500000000000001,
+        0.15000000000000002
+      ]
+    },
+    {
+      "accuracy": 0.749,
+      "apcer_at_1pct_bpcer": 0.404,
+      "audet_proxy": 0.166914,
+      "bpcer_at_operating_point": 0.01,
+      "brier_score": 0.16496217838000002,
+      "expected_calibration_error": 0.1385884,
+      "normalization": "rank",
+      "roc_auc": 0.8333980000000001,
+      "threshold_at_1pct_bpcer": 0.6984000000000001,
+      "weights": [
+        0.8,
+        0.2
+      ]
+    },
+    {
+      "accuracy": 0.515,
+      "apcer_at_1pct_bpcer": 0.404,
+      "audet_proxy": 0.16842400000000002,
+      "bpcer_at_operating_point": 0.01,
+      "brier_score": 0.31603781417756943,
+      "expected_calibration_error": 0.33117521682381623,
+      "normalization": "raw",
+      "roc_auc": 0.831856,
+      "threshold_at_1pct_bpcer": 0.9156676948070529,
+      "weights": [
+        0.9,
+        0.1
+      ]
+    },
+    {
+      "accuracy": 0.515,
+      "apcer_at_1pct_bpcer": 0.404,
+      "audet_proxy": 0.169734,
+      "bpcer_at_operating_point": 0.01,
+      "brier_score": 0.3148561958023239,
+      "expected_calibration_error": 0.3325569108039139,
+      "normalization": "raw",
+      "roc_auc": 0.830536,
+      "threshold_at_1pct_bpcer": 0.9129706531763079,
+      "weights": [
+        0.9500000000000001,
+        0.05
+      ]
+    },
+    {
+      "accuracy": 0.751,
+      "apcer_at_1pct_bpcer": 0.404,
+      "audet_proxy": 0.169854,
+      "bpcer_at_operating_point": 0.01,
+      "brier_score": 0.16764235139875,
+      "expected_calibration_error": 0.14006629999999995,
+      "normalization": "rank",
+      "roc_auc": 0.830394,
+      "threshold_at_1pct_bpcer": 0.6973500000000001,
+      "weights": [
+        0.9500000000000001,
+        0.05
+      ]
+    },
+    {
+      "accuracy": 0.515,
+      "apcer_at_1pct_bpcer": 0.404,
+      "audet_proxy": 0.17101,
+      "bpcer_at_operating_point": 0.01,
+      "brier_score": 0.31371377863745725,
+      "expected_calibration_error": 0.3301256786584854,
+      "normalization": "raw",
+      "roc_auc": 0.829248,
+      "threshold_at_1pct_bpcer": 0.910273611545563,
+      "weights": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "accuracy": 0.747,
+      "apcer_at_1pct_bpcer": 0.404,
+      "audet_proxy": 0.17101,
+      "bpcer_at_operating_point": 0.01,
+      "brier_score": 0.16870949999999998,
+      "expected_calibration_error": 0.13789999999999994,
+      "normalization": "rank",
+      "roc_auc": 0.829248,
+      "threshold_at_1pct_bpcer": 0.6970000000000001,
+      "weights": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "accuracy": 0.51,
+      "apcer_at_1pct_bpcer": 0.406,
+      "audet_proxy": 0.16406800000000002,
+      "bpcer_at_operating_point": 0.01,
+      "brier_score": 0.3211562997823405,
+      "expected_calibration_error": 0.3391696224212648,
+      "normalization": "raw",
+      "roc_auc": 0.836248,
+      "threshold_at_1pct_bpcer": 0.9264558613300327,
+      "weights": [
+        0.7000000000000001,
+        0.30000000000000004
+      ]
+    },
+    {
+      "accuracy": 0.51,
+      "apcer_at_1pct_bpcer": 0.406,
+      "audet_proxy": 0.165046,
+      "bpcer_at_operating_point": 0.01,
+      "brier_score": 0.31981787656557936,
+      "expected_calibration_error": 0.3371033345162869,
+      "normalization": "raw",
+      "roc_auc": 0.8352599999999999,
+      "threshold_at_1pct_bpcer": 0.9238100200891495,
+      "weights": [
+        0.75,
+        0.25
+      ]
+    },
+    {
+      "accuracy": 0.512,
+      "apcer_at_1pct_bpcer": 0.406,
+      "audet_proxy": 0.167206,
+      "bpcer_at_operating_point": 0.01,
+      "brier_score": 0.3172586337631939,
+      "expected_calibration_error": 0.33400294403135794,
+      "normalization": "raw",
+      "roc_auc": 0.8330799999999999,
+      "threshold_at_1pct_bpcer": 0.9183647364377979,
+      "weights": [
+        0.8500000000000001,
+        0.15000000000000002
+      ]
+    }
+  ],
+  "weight_step": 0.05
+}

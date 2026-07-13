@@ -10,23 +10,23 @@ from pathlib import Path
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Copy the current FREUID frozen-stack runtime assets into artifacts/freuid_2026."
+        description="Copy the current FREUID checkpoint ensemble into artifacts/freuid_2026."
     )
     parser.add_argument(
-        "--combined-v4-model",
-        default="runs/freuid_public12k_seed37_combined_v4_hgb/classifier.joblib",
+        "--template-checkpoint",
+        default="runs/freuid_v2_convnext_full_seed43/model.pt",
     )
     parser.add_argument(
-        "--convnext-model",
-        default="runs/freuid_public12k_seed37_type_label38_convnext_tiny_logreg/classifier.joblib",
-    )
-    parser.add_argument(
-        "--convnext-checkpoint",
-        default=str(Path.home() / ".cache" / "torch" / "hub" / "checkpoints" / "convnext_tiny-983f1562.pth"),
+        "--forensic-checkpoint",
+        default="runs/freuid_forensic384_alltype_16k_seed71/model.pt",
     )
     parser.add_argument(
         "--fusion-summary",
-        default="runs/freuid_public12k_seed37_fusion_v3_convnext_photometric_v4/fusion_summary.json",
+        default="runs/freuid_loto_egypt_joint_fusion_clean/fusion_summary.json",
+    )
+    parser.add_argument(
+        "--capture-fusion-summary",
+        default="runs/freuid_loto_egypt_joint_fusion_screenshot/fusion_summary.json",
     )
     parser.add_argument("--output-dir", default="artifacts/freuid_2026")
     return parser.parse_args()
@@ -56,20 +56,42 @@ def _copy(source: Path, destination: Path) -> dict[str, object]:
 def main() -> None:
     args = parse_args()
     output_dir = Path(args.output_dir)
+    for legacy_path in [
+        output_dir / "combined_v4_hgb.joblib",
+        output_dir / "convnext_tiny_logreg.joblib",
+        output_dir / "torch" / "hub" / "checkpoints" / "convnext_tiny-983f1562.pth",
+    ]:
+        legacy_path.unlink(missing_ok=True)
     files = [
-        _copy(Path(args.combined_v4_model), output_dir / "combined_v4_hgb.joblib"),
-        _copy(Path(args.convnext_model), output_dir / "convnext_tiny_logreg.joblib"),
         _copy(
-            Path(args.convnext_checkpoint),
-            output_dir / "torch" / "hub" / "checkpoints" / "convnext_tiny-983f1562.pth",
+            Path(args.template_checkpoint),
+            output_dir / "checkpoints" / "template_convnext224.pt",
         ),
-        _copy(Path(args.fusion_summary), output_dir / "fusion_summary.json"),
+        _copy(
+            Path(args.forensic_checkpoint),
+            output_dir / "checkpoints" / "forensic_efficientnet384.pt",
+        ),
+        _copy(Path(args.fusion_summary), output_dir / "loto_egypt_clean_fusion_summary.json"),
+        _copy(
+            Path(args.capture_fusion_summary),
+            output_dir / "loto_egypt_screenshot_fusion_summary.json",
+        ),
     ]
     manifest = {
         "created_at": datetime.now(timezone.utc).isoformat(),
-        "stack": "0.7*combined_v4_hgb + 0.3*convnext_tiny_logreg",
-        "best_kaggle_submission_ref": "54511333",
-        "best_public_score": 0.37009,
+        "runtime": "sequential_checkpoint_ensemble",
+        "stack": "rank(0.85*template_convnext224 + 0.15*forensic_efficientnet384)",
+        "best_public_submission_ref": "54624136",
+        "best_public_score": 0.25470,
+        "ood_candidate_submission_ref": "54626233",
+        "ood_candidate_public_score": 0.27166,
+        "selection_basis": {
+            "protocol": "leave-EGYPT-document-type-out with paired capture transforms",
+            "clean_global_audet": 0.171010,
+            "clean_ensemble_audet": 0.167956,
+            "screenshot_global_audet": 0.171834,
+            "screenshot_ensemble_audet": 0.164086,
+        },
         "files": files,
     }
     manifest_path = output_dir / "freeze_manifest.json"

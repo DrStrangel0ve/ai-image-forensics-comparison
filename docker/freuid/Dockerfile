@@ -11,9 +11,10 @@ COPY docker/freuid/requirements.txt /app/requirements.txt
 RUN python -m pip install --no-cache-dir -r /app/requirements.txt
 
 COPY src /app/src
-COPY scripts/infer_freuid_frozen_stack.py /app/scripts/infer_freuid_frozen_stack.py
+COPY scripts/infer_freuid_finetune.py /app/scripts/infer_freuid_finetune.py
+COPY scripts/infer_freuid_checkpoint_ensemble.py /app/scripts/infer_freuid_checkpoint_ensemble.py
 COPY artifacts/freuid_2026 /opt/freuid_artifacts
 
 RUN mkdir -p /submissions
 
-ENTRYPOINT ["python", "/app/scripts/infer_freuid_frozen_stack.py", "--input-dir", "/data", "--output-csv", "/submissions/submission.csv", "--combined-v4-model", "/opt/freuid_artifacts/combined_v4_hgb.joblib", "--convnext-model", "/opt/freuid_artifacts/convnext_tiny_logreg.joblib", "--torch-home", "/opt/freuid_artifacts/torch", "--device", "auto"]
+ENTRYPOINT ["python", "/app/scripts/infer_freuid_checkpoint_ensemble.py", "--input-dir", "/data", "--recursive", "--output-csv", "/submissions/submission.csv", "--checkpoint", "/opt/freuid_artifacts/checkpoints/template_convnext224.pt", "--checkpoint", "/opt/freuid_artifacts/checkpoints/forensic_efficientnet384.pt", "--weight", "0.85", "--weight", "0.15", "--normalization", "rank", "--batch-size", "32", "--num-workers", "4", "--device", "auto"]

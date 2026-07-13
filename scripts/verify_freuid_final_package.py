@@ -12,8 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from forensic_compare.utils import write_json
-from lint_freuid_submission import lint_freuid_submission
+from forensic_compare.utils import write_json  # noqa: E402
+from lint_freuid_submission import lint_freuid_submission  # noqa: E402
 
 
 REQUIRED_PACKAGE_ENTRIES = [
@@ -22,36 +22,40 @@ REQUIRED_PACKAGE_ENTRIES = [
     "kaggle_submission/submission.csv",
     "kaggle_submission/submission_lint.json",
     "kaggle_submission/submit_manifest.json",
-    "report/freuid_short_report_draft_2026_07_10.pdf",
-    "report/freuid_short_report_draft_2026_07_10.md",
-    "discussion/freuid_pinned_discussion_reply_draft_2026_07_10.md",
-    "docs/freuid_release_runbook.md",
-    "docs/freuid_reproducibility_checklist_2026_07_10.md",
+    "kaggle_submission/public_specialist_submission.csv",
+    "report/freuid_short_report_2026_07_13.pdf",
+    "report/freuid_short_report_2026_07_13.md",
+    "discussion/freuid_pinned_discussion_reply_2026_07_13.md",
+    "docs/freuid_code_freeze_status_2026_07_13.md",
+    "docs/freuid_reproducibility_checklist_2026_07_13.md",
+    "runtime/docker/freuid/Dockerfile",
+    "runtime/artifacts/freuid_2026/checkpoints/template_convnext224.pt",
+    "runtime/artifacts/freuid_2026/checkpoints/forensic_efficientnet384.pt",
 ]
 
 REQUIRED_RELEASE_ASSETS = [
-    "freuid_final_package_draft_2026_07_10.zip",
-    "freuid_frozen_stack_2026_07_10.zip",
-    "freuid_short_report_draft_2026_07_10.pdf",
+    "freuid_final_package_2026_07_13.zip",
+    "freuid_frozen_stack_v3_2026_07_13.zip",
+    "freuid_short_report_2026_07_13.pdf",
 ]
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Verify FREUID final-package draft readiness.")
-    parser.add_argument("--package-zip", default="work/freuid_final_package_draft_2026_07_10.zip")
+    parser.add_argument("--package-zip", default="work/freuid_final_package_2026_07_13.zip")
     parser.add_argument("--sample-submission", default="data/raw/freuid_2026/small_files/sample_submission.csv")
     parser.add_argument(
         "--submission",
-        default="outputs/freuid_2026/public_12k_fourway_fusion_submission_packaged/submission.csv",
+        default="outputs/freuid_2026/v3_v2_forensic_rank85_15_submission/submission.csv",
     )
-    parser.add_argument("--report-pdf", default="output/pdf/freuid_short_report_draft_2026_07_10.pdf")
+    parser.add_argument("--report-pdf", default="output/pdf/freuid_short_report_2026_07_13.pdf")
     parser.add_argument(
         "--discussion-draft",
-        default="reports/freuid_pinned_discussion_reply_draft_2026_07_10.md",
+        default="reports/freuid_pinned_discussion_reply_2026_07_13.md",
     )
-    parser.add_argument("--release-tag", default="freuid-freeze-2026-07-10")
-    parser.add_argument("--expected-submission-ref", default="54511333")
-    parser.add_argument("--expected-public-score", default="0.37009")
+    parser.add_argument("--release-tag", default="freuid-freeze-v3-2026-07-13")
+    parser.add_argument("--expected-submission-ref", default="54627101")
+    parser.add_argument("--expected-public-score", default="0.25799")
     parser.add_argument(
         "--manifest-out",
         default="outputs/freuid_2026/final_package_verification_manifest.json",
@@ -121,7 +125,7 @@ def _verify_discussion_draft(path: Path, expected_submission_ref: str, expected_
     text = path.read_text(encoding="utf-8")
     required_snippets = [
         "https://github.com/DrStrangel0ve/ai-image-forensics-comparison",
-        "freuid-freeze-2026-07-10",
+        "freuid-freeze-v3-2026-07-13",
         expected_submission_ref,
         expected_public_score,
     ]
