@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
+IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff"}
 
 
 def parse_args() -> argparse.Namespace:
@@ -23,6 +23,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--image-count", type=int, default=5)
     parser.add_argument("--output-dir", default="outputs/freuid_2026/docker_smoke")
     parser.add_argument("--skip-build", action="store_true")
+    parser.add_argument("--variant", choices=["ood_rank", "public_specialist"], default="ood_rank")
     parser.add_argument("--manifest-out", default=None)
     parser.add_argument("--readiness-timeout-seconds", type=int, default=60)
     parser.add_argument("--build-timeout-seconds", type=int, default=1800)
@@ -135,6 +136,8 @@ def main() -> None:
             f"{smoke_data_dir.resolve()}:/data:ro",
             "-v",
             f"{submission_dir.resolve()}:/submissions",
+            "-e",
+            f"FREUID_VARIANT={args.variant}",
             args.tag,
         ],
         root,
@@ -152,6 +155,7 @@ def main() -> None:
         "image_count": args.image_count,
         "output_dir": str(output_dir),
         "skip_build": bool(args.skip_build),
+        "variant": args.variant,
         "validation": validation,
     }
     manifest_path = Path(args.manifest_out) if args.manifest_out else output_dir / "docker_smoke_manifest.json"

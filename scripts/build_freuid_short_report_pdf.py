@@ -14,7 +14,6 @@ from reportlab.platypus import (
     BaseDocTemplate,
     Frame,
     KeepTogether,
-    PageBreak,
     PageTemplate,
     Paragraph,
     Preformatted,
@@ -85,8 +84,8 @@ def _styles():
             "Body",
             parent=base["BodyText"],
             fontName="Helvetica",
-            fontSize=9.1,
-            leading=12.4,
+            fontSize=8.7,
+            leading=11.7,
             textColor=INK,
             spaceAfter=2.2 * mm,
         ),
@@ -94,8 +93,8 @@ def _styles():
             "Bullet",
             parent=base["BodyText"],
             fontName="Helvetica",
-            fontSize=8.9,
-            leading=12,
+            fontSize=8.6,
+            leading=11.5,
             textColor=INK,
             leftIndent=5 * mm,
             firstLineIndent=-3.5 * mm,
@@ -105,8 +104,8 @@ def _styles():
             "Code",
             parent=base["Code"],
             fontName="Courier",
-            fontSize=7.8,
-            leading=10.2,
+            fontSize=7.5,
+            leading=9.8,
             textColor=INK,
             leftIndent=3 * mm,
             rightIndent=3 * mm,
@@ -197,8 +196,6 @@ def _story(markdown: str, available_width: float):
         if line.startswith("## "):
             flush_paragraph()
             section_title = line[3:]
-            if section_title == "Results":
-                story.append(PageBreak())
             story.append(Paragraph(_inline_markup(section_title), styles["h2"]))
             index += 1
             continue
@@ -230,8 +227,8 @@ def _story(markdown: str, available_width: float):
 def build_pdf(markdown_path: Path, output_path: Path) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     left = right = 18 * mm
-    top = 18 * mm
-    bottom = 17 * mm
+    top = 16 * mm
+    bottom = 15 * mm
     page_width, page_height = A4
     frame = Frame(left, bottom, page_width - left - right, page_height - top - bottom, id="content")
 

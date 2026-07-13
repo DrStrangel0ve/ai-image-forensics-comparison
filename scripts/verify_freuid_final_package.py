@@ -29,6 +29,7 @@ REQUIRED_PACKAGE_ENTRIES = [
     "docs/freuid_code_freeze_status_2026_07_13.md",
     "docs/freuid_reproducibility_checklist_2026_07_13.md",
     "runtime/docker/freuid/Dockerfile",
+    "runtime/docker/freuid/entrypoint.sh",
     "runtime/artifacts/freuid_2026/checkpoints/template_convnext224.pt",
     "runtime/artifacts/freuid_2026/checkpoints/forensic_efficientnet384.pt",
 ]
@@ -53,7 +54,7 @@ def parse_args() -> argparse.Namespace:
         "--discussion-draft",
         default="reports/freuid_pinned_discussion_reply_2026_07_13.md",
     )
-    parser.add_argument("--release-tag", default="freuid-freeze-v3-2026-07-13")
+    parser.add_argument("--release-tag", default="freuid-final-2026-07-13")
     parser.add_argument("--expected-submission-ref", default="54627101")
     parser.add_argument("--expected-public-score", default="0.25799")
     parser.add_argument(
@@ -125,13 +126,13 @@ def _verify_discussion_draft(path: Path, expected_submission_ref: str, expected_
     text = path.read_text(encoding="utf-8")
     required_snippets = [
         "https://github.com/DrStrangel0ve/ai-image-forensics-comparison",
-        "freuid-freeze-v3-2026-07-13",
+        "freuid-final-2026-07-13",
+        "54624136",
         expected_submission_ref,
-        expected_public_score,
     ]
     missing = [snippet for snippet in required_snippets if snippet not in text]
     return not missing, {
-        "detail": "discussion draft contains repo, release, submission ref, and score"
+        "detail": "discussion draft contains repo, release, and both selected submission refs"
         if not missing
         else f"missing snippets: {missing}",
         "required_snippets": required_snippets,

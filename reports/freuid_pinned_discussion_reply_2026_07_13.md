@@ -1,14 +1,18 @@
-Our final public code and frozen FREUID runtime are available here:
+---
+FREUID Challenge 2026 - Reproducibility Package
+---
 
-<https://github.com/DrStrangel0ve/ai-image-forensics-comparison>
+Team name: Arnav Malani
+Kaggle usernames: arnavmalani
+Final Kaggle submission(s):
+- Pick 1 - `v2 full-data ConvNeXt multitask pre-freeze: 0.000171 local AuDET` / `2026-07-12 22:49:39 UTC` / ref `54624136` / `FREUID_VARIANT=public_specialist` / CSV SHA-256 `35454097181d7430ea0e322e5c3dd8a73b2db3519a5215fc472b7c105000bae0`
+- Pick 2 - `v3 OOD rank85: ConvNeXt template plus type-adversarial 384 residual` / `2026-07-13 00:50:51 UTC` / ref `54627101` / `FREUID_VARIANT=ood_rank` / CSV SHA-256 `cbc3e6c0fbb0bbd9d35e7f4e1d33fc21835afa3f5f0b6f33b17824393fcf700d`
 
-Frozen release:
+Repository (public git repository): <https://github.com/DrStrangel0ve/ai-image-forensics-comparison>
+Commit SHA: `PENDING_FINAL_PACKAGING_COMMIT`
+Technical report (PDF): <https://github.com/DrStrangel0ve/ai-image-forensics-comparison/releases/download/freuid-final-2026-07-13/freuid_short_report_2026_07_13.pdf>
 
-<https://github.com/DrStrangel0ve/ai-image-forensics-comparison/releases/tag/freuid-freeze-v3-2026-07-13>
+We confirm this repository at the stated commit reproduces our selected final submissions and complies with the competition rules.
 
-Selected submissions:
-
-- `54624136`: public-layout specialist, public score `0.25470`
-- `54627101`: type-adversarial rank ensemble, public score `0.25799`
-
-The final no-network runtime sequentially fuses a ConvNeXt-Tiny 224-pixel detector with a 384-pixel residual EfficientNet-B0 trained using capture augmentation and gradient-reversal document-type suppression. We selected the conservative 85/15 percentage-rank blend on leave-one-document-type-out validation, not on the public leaderboard. The release includes checkpoint hashes, validation summaries, Docker source, and the short technical report.
+Signed (team captain): arnavmalani
+Date (UTC): 2026-07-13

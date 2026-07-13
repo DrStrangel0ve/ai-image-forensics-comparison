@@ -20,7 +20,7 @@ from forensic_compare.freuid_transforms import DocumentViewTransform  # noqa: E4
 from forensic_compare.utils import resolve_device, write_json  # noqa: E402
 
 
-IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
+IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff"}
 
 
 def parse_args() -> argparse.Namespace:

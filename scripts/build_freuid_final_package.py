@@ -11,6 +11,7 @@ from pathlib import Path
 RUNTIME_FILES = {
     "docker/freuid/Dockerfile": "runtime/docker/freuid/Dockerfile",
     "docker/freuid/requirements.txt": "runtime/docker/freuid/requirements.txt",
+    "docker/freuid/entrypoint.sh": "runtime/docker/freuid/entrypoint.sh",
     "scripts/infer_freuid_checkpoint_ensemble.py": "runtime/scripts/infer_freuid_checkpoint_ensemble.py",
     "scripts/infer_freuid_finetune.py": "runtime/scripts/infer_freuid_finetune.py",
     "scripts/freeze_freuid_submission_artifacts.py": "runtime/scripts/freeze_freuid_submission_artifacts.py",
@@ -106,6 +107,16 @@ def main() -> None:
         "created_at": created_at,
         "runtime": "0.85*rank(template_convnext224) + 0.15*rank(forensic_efficientnet384)",
         "kaggle_refs": ["54624136", "54627101"],
+        "variants": {
+            "public_specialist": {
+                "kaggle_ref": "54624136",
+                "submission_sha256": "35454097181d7430ea0e322e5c3dd8a73b2db3519a5215fc472b7c105000bae0",
+            },
+            "ood_rank": {
+                "kaggle_ref": "54627101",
+                "submission_sha256": "cbc3e6c0fbb0bbd9d35e7f4e1d33fc21835afa3f5f0b6f33b17824393fcf700d",
+            },
+        },
         "files": runtime_entries,
     }
     runtime_readme = (
@@ -113,6 +124,7 @@ def main() -> None:
         "Build from the repository root:\n"
         "  docker build -f runtime/docker/freuid/Dockerfile -t freuid-v3 runtime\n\n"
         "The challenge image expects /data and writes /submissions/submission.csv.\n"
+        "Set FREUID_VARIANT=ood_rank (default) or FREUID_VARIANT=public_specialist.\n"
         "See runtime/artifacts/freuid_2026/freeze_manifest.json for checkpoint hashes.\n"
     )
     _write_archive(

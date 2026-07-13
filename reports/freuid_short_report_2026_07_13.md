@@ -1,6 +1,6 @@
 # Type-Adversarial High-Resolution Forensics for FREUID 2026
 
-## Summary
+## Introduction
 
 We detect fraudulent identity documents with a complementary two-network ensemble. A ConvNeXt-Tiny branch captures strong visual evidence on known document layouts. A 384-pixel EfficientNet-B0 branch is explicitly regularized against document-template shortcuts using a trainable high-pass residual adapter, capture augmentation, balanced type/label sampling, and a gradient-reversal document-type objective. The frozen detector fuses percentage ranks rather than raw probabilities:
 
@@ -12,7 +12,7 @@ The submitted OOD candidate is Kaggle ref `54627101` with public score `0.25799`
 
 ## Data and Protocol
 
-The official archive contains `69,352` locally matched training images. The released public image set contains `7,821` files, while `sample_submission.csv` contains `142,818` IDs. Full submissions therefore preserve an identical organizer/sample-derived fallback for the `134,997` rows whose images are not locally released.
+The official archive contains `69,352` locally matched training images. The released public image set contains `7,821` files, while `sample_submission.csv` contains `142,818` IDs. Full submissions therefore preserve an identical organizer/sample-derived fallback for the `134,997` rows whose images are not locally released. No external document images are used. Both neural encoders start from public ImageNet-1K torchvision weights; all subsequent optimization uses only official FREUID training images.
 
 Random type/label-stratified validation is reported only as a training sanity check because image appearance and document layout overlap strongly. Model selection instead uses leave-one-document-type-out (LOTO) validation plus paired JPEG, blur, resize, noise, screenshot, and social-media transforms. EGYPT/DL is the hardest observed LOTO domain and drives the conservative fusion choice.
 
@@ -27,6 +27,21 @@ The public specialist fine-tunes ImageNet ConvNeXt-Tiny at `224 x 224` on the fu
 The OOD branch uses EfficientNet-B0 at `384 x 384`. A learnable `1 x 1` adapter mixes normalized RGB with a local high-pass residual (`image - 5x5 local mean`) and is initialized as an exact RGB identity. Capture augmentation includes JPEG recompression, perspective/affine changes, blur, resampling, color variation, and sensor-like noise.
 
 During training, a gradient-reversal layer makes the shared representation uninformative about the five known document types. Training uses balanced type/label batches and stops after one epoch because longer LOTO runs reduced strict low-BPCER generalization. On its all-type random validation set, the frozen branch obtains `0.998826` AUC and `24.0%` document-type accuracy, close to the `20%` chance level.
+
+## Inference
+
+The public specialist loads only ConvNeXt-Tiny. The OOD variant sequentially loads ConvNeXt-Tiny and EfficientNet-B0, releases each model after scoring, converts each complete score vector to percentage ranks, and applies the frozen `0.85/0.15` blend. Sequential loading keeps peak memory practical on the development RTX 3080 Ti 12GB and comfortably below the organizer's A100 40GB limit.
+
+One Docker image reproduces both selected final picks through an inference-only environment variable:
+
+```text
+FREUID_VARIANT=public_specialist -> ref 54624136
+FREUID_VARIANT=ood_rank          -> ref 54627101 (default)
+```
+
+The container recursively discovers supported images under `/data`, derives each ID from the filename stem, and writes one finite fraud score per image to `/submissions/submission.csv`. It performs no network access and writes nowhere else. The selected CSV SHA-256 values are `354540...0bae0` for the public specialist and `cbc3e6...f700d` for the OOD rank candidate.
+
+The exact OOD path scores `1,000` images in `211.4 s` on the development RTX 3080 Ti at batch size `32` with four workers. This includes two checkpoint loads, two CUDA initializations, and Windows worker startup. The corresponding naive local projection is `8.39 h`; organizer verification instead uses an A100 40GB with 24 CPUs, so the Docker defaults to batch size `96` and `12` workers. Six-hour compliance remains an organizer-hardware verification item rather than a claimed local measurement.
 
 ## Results
 
@@ -66,8 +81,4 @@ Format: id,label where id is the filename stem and label is a score in [0,1]
 Network: disabled during inference
 ```
 
-The runtime loads one checkpoint at a time to remain practical on an RTX 3060 Ti. `freeze_manifest.json` records the exact model hashes, sizes, fusion rule, validation basis, and Kaggle references. Unit tests cover legacy and new checkpoints, residual/multi-view construction, rank ties, output format, and hash manifests.
-
-## Limitations
-
-Only five training document types and the small released public image subset are available. LOTO is a proxy for the two organizer-announced unseen private types, not a direct estimate of private score. The high-pass adapter is a single-image forensic cue, not classical multi-illumination photometric stereo. Docker image execution has not been completed locally because Windows virtualization is unavailable, although direct no-network-equivalent inference from the frozen artifacts passes.
+Build and run commands are documented in `artifacts/freuid_2026/README.md`. The runtime loads one checkpoint at a time to remain practical on an RTX 3080 Ti. `freeze_manifest.json` records the exact model hashes, sizes, fusion rule, validation basis, and Kaggle references. Unit tests cover legacy and new checkpoints, residual/multi-view construction, rank ties, output format, and hash manifests. The development environment is Windows 11, Python 3.11, PyTorch/torchvision, and an NVIDIA RTX 3080 Ti 12GB; organizer verification targets one A100 40GB and 24 CPUs with a six-hour limit. **Limitations:** only five training document types and the small released public image subset are available. LOTO is a proxy for two organizer-announced unseen private types, not a direct estimate of private score. The high-pass adapter is a single-image cue, not classical multi-illumination photometric stereo. Docker execution remains locally blocked by unavailable Windows virtualization, although direct no-network-equivalent inference from the frozen artifacts passes.

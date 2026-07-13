@@ -2,12 +2,14 @@
 
 ## Frozen Candidates
 
-Two complementary submissions should be retained for final selection if Kaggle permits two:
+Two complementary submissions are retained for final selection:
 
 | Submission | Public score | Role |
 | --- | ---: | --- |
 | `54624136` | 0.25470 | strongest known-layout public specialist |
 | `54627101` | 0.25799 | rank-fused unseen-type and capture candidate |
+
+Both are explicitly selected in Kaggle (`2/2`) rather than left to automatic selection.
 
 The OOD candidate changes all `7,821` locally available image predictions and changes zero of the `134,997` unavailable-image fallback values. Its small `0.00329` public-score cost is therefore a clean model comparison despite the organizer-reported public scoring issue.
 
@@ -31,7 +33,11 @@ Runtime files:
 - `docker/freuid/Dockerfile`
 - `artifacts/freuid_2026/README.md`
 
+The same frozen image supports `FREUID_VARIANT=public_specialist` for ref `54624136` and `FREUID_VARIANT=ood_rank` for ref `54627101`. This is inference orchestration only; checkpoints, model code, preprocessing, and weights are unchanged from model-freeze commit `a0802299603c05917008009a52fcad235aa4ea4d`.
+
 The artifact manifest records checkpoint byte sizes and SHA-256 hashes. A local five-image run from the frozen artifact copies completed successfully on CUDA and wrote exact `id,label` output. Docker execution remains blocked only by the host's unavailable WSL2 virtualization (`HCS_E_HYPERV_NOT_INSTALLED`).
+
+Organizer verification allows at most six hours on one A100 40GB with 24 CPUs. The exact frozen OOD path scored `1,000` images in `211.4 s` on an RTX 3080 Ti at local-safe batch size `32`; this includes substantial one-time Windows/model startup. The A100 container defaults to batch size `96` and `12` workers. Final compliance remains to be confirmed on organizer hardware.
 
 ## Domain-Shift Evidence
 
