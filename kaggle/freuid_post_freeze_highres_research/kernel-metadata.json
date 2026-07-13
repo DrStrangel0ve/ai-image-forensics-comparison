@@ -1,5 +1,6 @@
 {
-  "id": "arnavmalani/freuid-post-freeze-highres-research",
+  "id": "arnavmalani/freuid-post-freeze-high-resolution-research",
+  "id_no": 126909528,
   "title": "FREUID Post-freeze High-resolution Research",
   "code_file": "freuid_post_freeze_highres_research.py",
   "language": "python",
@@ -8,10 +9,9 @@
   "enable_gpu": "true",
   "enable_tpu": "false",
   "enable_internet": "true",
+  "machine_shape": "NvidiaTeslaT4",
   "dataset_sources": [],
-  "competition_sources": [
-    "the-freuid-challenge-2026-ijcai-ecai"
-  ],
+  "competition_sources": [],
   "kernel_sources": [],
   "model_sources": []
 }

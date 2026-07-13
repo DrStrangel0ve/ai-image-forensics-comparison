@@ -12,7 +12,7 @@ import torch
 
 
 REPO_URL = "https://github.com/DrStrangel0ve/ai-image-forensics-comparison.git"
-REPO_REF = "post-freeze-highres-kaggle-v1"
+REPO_REF = "post-freeze-highres-kaggle-v2"
 COMPETITION_SLUG = "the-freuid-challenge-2026-ijcai-ecai"
 HOLDOUT_TYPE = "EGYPT/DL"
 MAX_TRAIN_SAMPLES = 12000
@@ -24,19 +24,43 @@ def run(command: list[str], cwd: Path | None = None) -> None:
     subprocess.run(command, cwd=cwd, check=True)
 
 
-def locate_competition_root() -> tuple[Path, Path]:
-    input_root = Path("/kaggle/input")
+def find_train_labels(search_roots: list[Path]) -> list[Path]:
+    matches: dict[str, Path] = {}
+    for root in search_roots:
+        if root.is_file() and root.name == "train_labels.csv":
+            candidates = [root]
+        elif root.exists():
+            candidates = list(root.rglob("train_labels.csv"))
+        else:
+            candidates = []
+        for candidate in candidates:
+            matches[str(candidate.resolve())] = candidate
+    return sorted(matches.values(), key=lambda path: str(path))
+
+
+def locate_competition_root(input_root: Path | None = None) -> tuple[Path, Path, str]:
+    input_root = input_root or Path("/kaggle/input")
     preferred = input_root / COMPETITION_SLUG
-    matches = list(preferred.rglob("train_labels.csv")) if preferred.exists() else []
+    matches = find_train_labels([preferred, input_root])
+    source = "attached_input"
     if not matches:
-        matches = list(input_root.rglob("train_labels.csv"))
+        import kagglehub
+
+        print("FREUID input is not mounted; attaching it through kagglehub", flush=True)
+        attached_root = Path(kagglehub.competition_download(COMPETITION_SLUG))
+        print(f"kagglehub competition path: {attached_root}", flush=True)
+        matches = find_train_labels([attached_root, preferred, input_root])
+        source = "kagglehub_shared_cache"
     if len(matches) != 1:
-        raise FileNotFoundError(f"Expected one train_labels.csv under /kaggle/input, found {matches}")
+        raise FileNotFoundError(
+            "Expected one FREUID train_labels.csv after mounted-input and kagglehub lookup, "
+            f"found {matches}"
+        )
     labels = matches[0]
     root = labels.parent
     if not (root / "train").exists():
         raise FileNotFoundError(f"Expected mounted train images under {root / 'train'}")
-    return root, labels
+    return root, labels, source
 
 
 def choose_holdout(labels_path: Path) -> str:
@@ -92,7 +116,8 @@ def main() -> None:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
         manifest["repo_commit"] = commit
 
-        competition_root, labels_path = locate_competition_root()
+        competition_root, labels_path, data_source = locate_competition_root()
+        manifest["data_source"] = data_source
         holdout_type = choose_holdout(labels_path)
         split_dir = working / "post_freeze_loto_split"
         split_dir.mkdir(parents=True, exist_ok=True)
