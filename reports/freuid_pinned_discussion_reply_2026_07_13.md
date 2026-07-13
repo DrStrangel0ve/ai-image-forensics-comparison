@@ -9,7 +9,7 @@ Final Kaggle submission(s):
 - Pick 2 - `v3 OOD rank85: ConvNeXt template plus type-adversarial 384 residual` / `2026-07-13 00:50:51 UTC` / ref `54627101` / `FREUID_VARIANT=ood_rank` / CSV SHA-256 `cbc3e6c0fbb0bbd9d35e7f4e1d33fc21835afa3f5f0b6f33b17824393fcf700d`
 
 Repository (public git repository): <https://github.com/DrStrangel0ve/ai-image-forensics-comparison>
-Commit SHA: `PENDING_FINAL_PACKAGING_COMMIT`
+Commit SHA: `fbe1fd910766c2702e052f6c46c9702580d92e69`
 Technical report (PDF): <https://github.com/DrStrangel0ve/ai-image-forensics-comparison/releases/download/freuid-final-2026-07-13/freuid_short_report_2026_07_13.pdf>
 
 We confirm this repository at the stated commit reproduces our selected final submissions and complies with the competition rules.
