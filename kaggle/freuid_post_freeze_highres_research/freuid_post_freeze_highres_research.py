@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import sys
 import time
+import zipfile
 from pathlib import Path
 
 import pandas as pd
@@ -13,11 +14,12 @@ import torch
 
 
 REPO_URL = "https://github.com/DrStrangel0ve/ai-image-forensics-comparison.git"
-REPO_REF = "post-freeze-highres-kaggle-v3"
+REPO_REF = "post-freeze-highres-kaggle-v4"
 COMPETITION_SLUG = "the-freuid-challenge-2026-ijcai-ecai"
 HOLDOUT_TYPE = "EGYPT/DL"
 MAX_TRAIN_SAMPLES = 12000
 MAX_VAL_SAMPLES = 4000
+SUBSET_ARCHIVE_NAME = "freuid_highres_subset.zip"
 
 
 def run(command: list[str], cwd: Path | None = None) -> None:
@@ -39,11 +41,41 @@ def find_train_labels(search_roots: list[Path]) -> list[Path]:
     return sorted(matches.values(), key=lambda path: str(path))
 
 
-def locate_competition_root(input_root: Path | None = None) -> tuple[Path, Path, str]:
+def extract_private_subset(input_root: Path, working_root: Path) -> Path | None:
+    archives = sorted(input_root.rglob(SUBSET_ARCHIVE_NAME)) if input_root.exists() else []
+    if not archives:
+        return None
+    if len(archives) != 1:
+        raise FileNotFoundError(f"Expected at most one {SUBSET_ARCHIVE_NAME}, found {archives}")
+
+    destination = working_root / "freuid-highres-subset"
+    if destination.exists():
+        shutil.rmtree(destination)
+    destination.mkdir(parents=True)
+    destination_resolved = destination.resolve()
+    with zipfile.ZipFile(archives[0]) as handle:
+        for member in handle.infolist():
+            target = (destination / member.filename).resolve()
+            if target != destination_resolved and destination_resolved not in target.parents:
+                raise ValueError(f"Unsafe path in {archives[0]}: {member.filename}")
+        handle.extractall(destination)
+    return destination
+
+
+def locate_competition_root(
+    input_root: Path | None = None,
+    working_root: Path | None = None,
+) -> tuple[Path, Path, str]:
     input_root = input_root or Path("/kaggle/input")
+    working_root = working_root or Path("/kaggle/working")
     preferred = input_root / COMPETITION_SLUG
     matches = find_train_labels([preferred, input_root])
     source = "attached_input"
+    if not matches:
+        extracted_root = extract_private_subset(input_root, working_root)
+        if extracted_root is not None:
+            matches = find_train_labels([extracted_root])
+            source = "private_subset_archive"
     if not matches:
         import kagglehub
 

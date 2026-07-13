@@ -4,6 +4,7 @@ import importlib.util
 import sys
 from pathlib import Path
 from types import SimpleNamespace
+from zipfile import ZipFile
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -63,3 +64,35 @@ def test_locate_competition_root_uses_kagglehub_fallback(
     assert root == attached_root
     assert labels == attached_root / "train_labels.csv"
     assert source == "kagglehub_http_download"
+
+
+def test_locate_competition_root_extracts_private_subset(tmp_path: Path) -> None:
+    input_root = tmp_path / "input"
+    dataset_root = input_root / "private-subset"
+    dataset_root.mkdir(parents=True)
+    archive = dataset_root / KERNEL.SUBSET_ARCHIVE_NAME
+    with ZipFile(archive, "w") as handle:
+        handle.writestr("train_labels.csv", "id,image_path,label,is_digital,type\n")
+        handle.writestr("train/.keep", "")
+
+    root, labels, source = KERNEL.locate_competition_root(input_root, tmp_path / "working")
+
+    assert root == tmp_path / "working" / "freuid-highres-subset"
+    assert labels == root / "train_labels.csv"
+    assert source == "private_subset_archive"
+
+
+def test_private_subset_rejects_zip_traversal(tmp_path: Path) -> None:
+    input_root = tmp_path / "input"
+    dataset_root = input_root / "private-subset"
+    dataset_root.mkdir(parents=True)
+    archive = dataset_root / KERNEL.SUBSET_ARCHIVE_NAME
+    with ZipFile(archive, "w") as handle:
+        handle.writestr("../outside.txt", "unsafe")
+
+    try:
+        KERNEL.locate_competition_root(input_root, tmp_path / "working")
+    except ValueError as exc:
+        assert "Unsafe path" in str(exc)
+    else:
+        raise AssertionError("Expected unsafe archive path to be rejected")
