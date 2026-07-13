@@ -43,9 +43,14 @@ def find_private_image_root(input_root: Path) -> tuple[Path, int]:
         )
         if count:
             candidates.append((count, directory))
-    if not candidates:
+    private_candidates = [
+        (count, directory)
+        for count, directory in candidates
+        if "private_test" in {part.lower() for part in directory.parts}
+    ]
+    if not private_candidates:
         raise FileNotFoundError(f"No private-test images found under {input_root}")
-    count, root = max(candidates, key=lambda item: (item[0], str(item[1])))
+    count, root = max(private_candidates, key=lambda item: (item[0], str(item[1])))
     return root, count
 
 

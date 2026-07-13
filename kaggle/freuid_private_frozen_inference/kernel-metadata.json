@@ -10,10 +10,11 @@
   "enable_internet": "true",
   "machine_shape": "NvidiaTeslaT4",
   "dataset_sources": [
-    "arnavmalani/freuid-frozen-final-inference-artifacts",
-    "arnavmalani/freuid-private-test-final"
+    "arnavmalani/freuid-frozen-final-inference-artifacts"
   ],
-  "competition_sources": [],
+  "competition_sources": [
+    "the-freuid-challenge-2026-ijcai-ecai"
+  ],
   "kernel_sources": [],
   "model_sources": []
 }

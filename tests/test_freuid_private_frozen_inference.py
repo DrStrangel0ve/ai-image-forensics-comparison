@@ -23,12 +23,28 @@ def test_find_private_image_root_prefers_populated_leaf(tmp_path: Path) -> None:
     private_root.mkdir(parents=True)
     for image_id in ("a", "b", "c"):
         (private_root / f"{image_id}.jpeg").write_bytes(b"image")
-    (tmp_path / "other.png").write_bytes(b"other")
+    train_root = tmp_path / "dataset" / "train"
+    train_root.mkdir()
+    for index in range(10):
+        (train_root / f"train_{index}.png").write_bytes(b"other")
 
     root, count = KERNEL.find_private_image_root(tmp_path)
 
     assert root == private_root
     assert count == 3
+
+
+def test_find_private_image_root_rejects_non_private_images(tmp_path: Path) -> None:
+    train_root = tmp_path / "dataset" / "train"
+    train_root.mkdir(parents=True)
+    (train_root / "train.png").write_bytes(b"other")
+
+    try:
+        KERNEL.find_private_image_root(tmp_path)
+    except FileNotFoundError as exc:
+        assert "private-test" in str(exc)
+    else:
+        raise AssertionError("Expected private-test discovery to fail")
 
 
 def test_validate_submission_checks_ids_and_probabilities(tmp_path: Path) -> None:
