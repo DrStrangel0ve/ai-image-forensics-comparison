@@ -258,11 +258,15 @@ def build_freuid_model(
             import timm
         except ImportError as exc:
             raise ImportError("timm is required for MaxViT and DINOv2 FREUID encoders") from exc
+        # DINOv2 checkpoints are trained with the CLS-token norm. Requesting
+        # average pooling makes recent timm releases replace it with fc_norm,
+        # which is incompatible with the published checkpoint state dict.
+        global_pool = "token" if normalized.startswith("dinov2_") else "avg"
         encoder = timm.create_model(
             TIMM_FREUID_MODELS[normalized],
             pretrained=pretrained,
             num_classes=0,
-            global_pool="avg",
+            global_pool=global_pool,
         )
         embedding_dim = int(encoder.num_features)
     else:

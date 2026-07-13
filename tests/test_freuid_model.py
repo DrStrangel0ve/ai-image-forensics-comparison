@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import sys
+from types import SimpleNamespace
+
 import torch
 from torch import nn
 
@@ -92,3 +95,34 @@ def test_qkv_lora_freezes_base_and_trains_only_adapters() -> None:
     trainable = [name for name, parameter in encoder.named_parameters() if parameter.requires_grad]
     assert trainable == ["0.attn.qkv.lora_a.weight", "0.attn.qkv.lora_b.weight"]
     assert encoder(torch.randn(3, 8)).shape == (3, 24)
+
+
+def test_dinov2_uses_checkpoint_compatible_token_pooling(monkeypatch) -> None:
+    calls: list[dict[str, object]] = []
+
+    class FakeEncoder(nn.Module):
+        num_features = 8
+
+        def __init__(self) -> None:
+            super().__init__()
+            self.projection = nn.Linear(8, 8)
+
+        def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+            return self.projection(inputs)
+
+    def fake_create_model(name: str, **kwargs: object) -> FakeEncoder:
+        calls.append({"name": name, **kwargs})
+        return FakeEncoder()
+
+    monkeypatch.setitem(sys.modules, "timm", SimpleNamespace(create_model=fake_create_model))
+
+    build_freuid_model("dinov2_base_518", num_types=2, pretrained=True, freeze_encoder=True)
+
+    assert calls == [
+        {
+            "name": "vit_base_patch14_dinov2.lvd142m",
+            "pretrained": True,
+            "num_classes": 0,
+            "global_pool": "token",
+        }
+    ]

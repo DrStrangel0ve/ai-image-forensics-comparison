@@ -14,7 +14,7 @@ import torch
 
 
 REPO_URL = "https://github.com/DrStrangel0ve/ai-image-forensics-comparison.git"
-REPO_REF = "post-freeze-highres-kaggle-v4"
+REPO_REF = "post-freeze-highres-kaggle-v5"
 COMPETITION_SLUG = "the-freuid-challenge-2026-ijcai-ecai"
 HOLDOUT_TYPE = "EGYPT/DL"
 MAX_TRAIN_SAMPLES = 12000
