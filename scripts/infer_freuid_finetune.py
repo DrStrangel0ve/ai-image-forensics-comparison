@@ -38,12 +38,22 @@ def parse_args() -> argparse.Namespace:
 
 
 class ImagePathDataset(Dataset):
-    def __init__(self, paths: list[Path], image_size: int, grid_rows: int = 0, grid_cols: int = 0) -> None:
+    def __init__(
+        self,
+        paths: list[Path],
+        image_size: int,
+        grid_rows: int = 0,
+        grid_cols: int = 0,
+        view_mode: str = "auto",
+        five_crop_zoom: float = 1.15,
+    ) -> None:
         self.paths = paths
         self.transform = DocumentViewTransform(
             image_size,
             grid_rows=grid_rows,
             grid_cols=grid_cols,
+            view_mode=view_mode,
+            five_crop_zoom=five_crop_zoom,
         )
 
     def __len__(self) -> int:
@@ -83,13 +93,25 @@ def score_checkpoint(
     multi_view = bool(checkpoint.get("multi_view", False))
     grid_rows = int(checkpoint.get("grid_rows", 0))
     grid_cols = int(checkpoint.get("grid_cols", 0))
+    view_mode = str(checkpoint.get("view_mode", "auto"))
+    view_pooling = str(checkpoint.get("view_pooling", "attention"))
+    view_chunk_size = int(checkpoint.get("view_chunk_size", 0))
+    five_crop_zoom = float(checkpoint.get("five_crop_zoom", 1.15))
     forensic_residual = bool(checkpoint.get("forensic_residual", False))
+    freeze_encoder = bool(checkpoint.get("freeze_encoder", False))
+    lora_rank = int(checkpoint.get("lora_rank", 0))
+    lora_alpha = float(checkpoint.get("lora_alpha", 16.0))
     model = build_freuid_model(
         str(checkpoint["model"]),
         num_types=len(type_to_idx),
         pretrained=False,
         multi_view=multi_view,
         forensic_residual=forensic_residual,
+        view_pooling=view_pooling,
+        freeze_encoder=freeze_encoder,
+        lora_rank=lora_rank,
+        lora_alpha=lora_alpha,
+        view_chunk_size=view_chunk_size,
     )
     model.load_state_dict(checkpoint["model_state"])
     model = model.to(device).eval()
@@ -101,6 +123,8 @@ def score_checkpoint(
         image_size=int(checkpoint["image_size"]),
         grid_rows=grid_rows,
         grid_cols=grid_cols,
+        view_mode=view_mode,
+        five_crop_zoom=five_crop_zoom,
     )
     loader = DataLoader(
         dataset,
@@ -120,11 +144,20 @@ def score_checkpoint(
         scores.extend(torch.sigmoid(fraud_logits).cpu().numpy().astype(float).tolist())
 
     metadata = {
+        "research_track": checkpoint.get("research_track"),
+        "competition_eligibility": checkpoint.get("competition_eligibility"),
         "checkpoint": str(checkpoint_path),
         "model": str(checkpoint["model"]),
         "image_size": int(checkpoint["image_size"]),
         "multi_view": multi_view,
         "forensic_residual": forensic_residual,
+        "view_mode": view_mode,
+        "view_pooling": view_pooling,
+        "view_chunk_size": view_chunk_size,
+        "five_crop_zoom": five_crop_zoom,
+        "freeze_encoder": freeze_encoder,
+        "lora_rank": lora_rank,
+        "lora_alpha": lora_alpha,
         "grid_rows": grid_rows,
         "grid_cols": grid_cols,
         "threshold_at_1pct_bpcer": float(checkpoint.get("threshold", 0.5)),

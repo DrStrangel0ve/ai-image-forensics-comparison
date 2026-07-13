@@ -120,6 +120,11 @@ def run(args: argparse.Namespace) -> dict[str, object]:
         pretrained=False,
         multi_view=multi_view,
         forensic_residual=forensic_residual,
+        view_pooling=str(checkpoint.get("view_pooling", "attention")),
+        freeze_encoder=bool(checkpoint.get("freeze_encoder", False)),
+        lora_rank=int(checkpoint.get("lora_rank", 0)),
+        lora_alpha=float(checkpoint.get("lora_alpha", 16.0)),
+        view_chunk_size=int(checkpoint.get("view_chunk_size", 0)),
     )
     model.load_state_dict(checkpoint["model_state"])
     model = model.to(device).eval()
@@ -130,6 +135,8 @@ def run(args: argparse.Namespace) -> dict[str, object]:
         int(checkpoint["image_size"]),
         grid_rows=int(checkpoint.get("grid_rows", 0)),
         grid_cols=int(checkpoint.get("grid_cols", 0)),
+        view_mode=str(checkpoint.get("view_mode", "auto")),
+        five_crop_zoom=float(checkpoint.get("five_crop_zoom", 1.15)),
     )
     frame = _limited_frame(Path(args.data_csv), args.max_samples, args.seed)
     metric_rows: list[dict[str, object]] = []

@@ -1,5 +1,7 @@
 # AI Image Forensics Comparison
 
+> **Post-freeze research:** the high-resolution DINOv2/MaxViT, five-crop, QKV-LoRA, and snapshot-rank track is documented in [reports/post_freeze_highres_research_2026_07_13.md](reports/post_freeze_highres_research_2026_07_13.md). It is intentionally separate from the frozen FREUID competition release.
+
 This project compares two ways to detect generated images:
 
 1. A standard neural network classifier, defaulting to ResNet-18.

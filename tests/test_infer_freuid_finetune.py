@@ -109,3 +109,61 @@ def test_multiview_freuid_inference_writes_score_submission(tmp_path: Path) -> N
     assert frame.shape == (1, 2)
     manifest = output.with_suffix(".manifest.json").read_text(encoding="utf-8")
     assert '"multi_view": true' in manifest
+
+
+def test_five_crop_mean_logit_checkpoint_rebuilds_at_inference(tmp_path: Path) -> None:
+    image_dir = tmp_path / "images"
+    image_dir.mkdir()
+    Image.fromarray(np.full((40, 64, 3), 90, dtype=np.uint8)).save(image_dir / "sample.jpeg")
+
+    model = build_freuid_model(
+        "tiny_cnn",
+        num_types=2,
+        pretrained=False,
+        multi_view=True,
+        view_pooling="mean_logits",
+        view_chunk_size=2,
+    )
+    checkpoint = tmp_path / "model.pt"
+    torch.save(
+        {
+            "model_state": model.state_dict(),
+            "model": "tiny_cnn",
+            "multi_view": True,
+            "view_mode": "five_crop",
+            "view_pooling": "mean_logits",
+            "view_chunk_size": 2,
+            "five_crop_zoom": 1.15,
+            "image_size": 64,
+            "type_to_idx": {"A/DL": 0, "B/ID": 1},
+            "threshold": 0.4,
+        },
+        checkpoint,
+    )
+    output = tmp_path / "submission.csv"
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "infer_freuid_finetune.py"),
+            "--input-dir",
+            str(image_dir),
+            "--checkpoint",
+            str(checkpoint),
+            "--output-csv",
+            str(output),
+            "--batch-size",
+            "1",
+            "--num-workers",
+            "0",
+            "--device",
+            "cpu",
+        ],
+        cwd=ROOT,
+        check=True,
+    )
+
+    frame = pd.read_csv(output)
+    assert frame.shape == (1, 2)
+    manifest = output.with_suffix(".manifest.json").read_text(encoding="utf-8")
+    assert '"view_mode": "five_crop"' in manifest
+    assert '"view_pooling": "mean_logits"' in manifest

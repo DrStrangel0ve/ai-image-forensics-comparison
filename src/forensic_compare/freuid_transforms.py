@@ -71,7 +71,7 @@ class RandomTensorNoise:
 
 
 class DocumentViewTransform:
-    """Create one global view plus overlapping full-resolution grid tiles."""
+    """Create a single, global-plus-grid, or zoomed five-crop document view."""
 
     def __init__(
         self,
@@ -79,6 +79,8 @@ class DocumentViewTransform:
         grid_rows: int = 0,
         grid_cols: int = 0,
         overlap: float = 0.08,
+        view_mode: str = "auto",
+        five_crop_zoom: float = 1.15,
         shared_transform=None,
         tensor_transform=None,
     ) -> None:
@@ -86,6 +88,17 @@ class DocumentViewTransform:
         self.grid_rows = max(0, int(grid_rows))
         self.grid_cols = max(0, int(grid_cols))
         self.overlap = max(0.0, min(float(overlap), 0.45))
+        normalized_mode = view_mode.lower().replace("-", "_")
+        if normalized_mode == "auto":
+            normalized_mode = "grid" if self.grid_rows > 0 and self.grid_cols > 0 else "single"
+        if normalized_mode not in {"single", "grid", "five_crop"}:
+            raise ValueError(f"Unsupported document view mode: {view_mode}")
+        if normalized_mode == "grid" and (self.grid_rows <= 0 or self.grid_cols <= 0):
+            raise ValueError("Grid view mode requires positive grid_rows and grid_cols")
+        if five_crop_zoom < 1.0:
+            raise ValueError("five_crop_zoom must be at least 1.0")
+        self.view_mode = normalized_mode
+        self.five_crop_zoom = float(five_crop_zoom)
         self.shared_transform = shared_transform
         self.tensor_transform = tensor_transform or transforms.Compose(
             [
@@ -112,12 +125,36 @@ class DocumentViewTransform:
                 tiles.append(image.crop((left, top, right, bottom)))
         return tiles
 
+    def _five_crops(self, image: Image.Image) -> list[Image.Image]:
+        base = self.letterbox(image)
+        zoom_size = max(self.size, round(self.size * self.five_crop_zoom))
+        zoomed = base.resize((zoom_size, zoom_size), Image.Resampling.BICUBIC)
+        extent = zoom_size - self.size
+        center = extent // 2
+        offsets = [
+            (0, 0),
+            (extent, 0),
+            (center, center),
+            (0, extent),
+            (extent, extent),
+        ]
+        return [
+            zoomed.crop((left, top, left + self.size, top + self.size))
+            for left, top in offsets
+        ]
+
     def __call__(self, image: Image.Image) -> torch.Tensor:
         image = image.convert("RGB")
         if self.shared_transform is not None:
             image = self.shared_transform(image)
-        views = [image, *self._tiles(image)]
-        tensors = [self.tensor_transform(self.letterbox(view)) for view in views]
+        if self.view_mode == "five_crop":
+            views = self._five_crops(image)
+            tensors = [self.tensor_transform(view) for view in views]
+        elif self.view_mode == "grid":
+            views = [image, *self._tiles(image)]
+            tensors = [self.tensor_transform(self.letterbox(view)) for view in views]
+        else:
+            tensors = [self.tensor_transform(self.letterbox(image))]
         if len(tensors) == 1:
             return tensors[0]
         return torch.stack(tensors, dim=0)
@@ -129,6 +166,8 @@ def build_document_transforms(
     grid_cols: int = 0,
     jpeg_probability: float = 0.25,
     capture_strength: float = 0.0,
+    view_mode: str = "auto",
+    five_crop_zoom: float = 1.15,
 ) -> tuple[DocumentViewTransform, DocumentViewTransform]:
     strength = max(0.0, min(float(capture_strength), 1.0))
     train_shared = transforms.Compose(
@@ -174,8 +213,16 @@ def build_document_transforms(
         image_size,
         grid_rows=grid_rows,
         grid_cols=grid_cols,
+        view_mode=view_mode,
+        five_crop_zoom=five_crop_zoom,
         shared_transform=train_shared,
         tensor_transform=tensor_transform,
     )
-    evaluate = DocumentViewTransform(image_size, grid_rows=grid_rows, grid_cols=grid_cols)
+    evaluate = DocumentViewTransform(
+        image_size,
+        grid_rows=grid_rows,
+        grid_cols=grid_cols,
+        view_mode=view_mode,
+        five_crop_zoom=five_crop_zoom,
+    )
     return train, evaluate

@@ -21,3 +21,12 @@ def test_single_document_view_remains_chw_for_checkpoint_compatibility() -> None
 
     assert train(image).shape == (3, 32, 32)
     assert evaluate(image).shape == (3, 32, 32)
+
+
+def test_five_crop_document_view_has_fixed_corner_and_center_views() -> None:
+    image = Image.fromarray(np.full((80, 160, 3), 127, dtype=np.uint8))
+    transform = DocumentViewTransform(size=48, view_mode="five_crop", five_crop_zoom=1.15)
+
+    tensor = transform(image)
+
+    assert tensor.shape == (5, 3, 48, 48)
