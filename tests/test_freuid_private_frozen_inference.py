@@ -4,6 +4,8 @@ import csv
 import importlib.util
 from pathlib import Path
 
+import numpy as np
+
 
 ROOT = Path(__file__).resolve().parents[1]
 KERNEL_PATH = (
@@ -62,8 +64,8 @@ def test_validate_submission_checks_ids_and_probabilities(tmp_path: Path) -> Non
     assert len(str(result["sha256"])) == 64
 
 
-def test_inference_commands_preserve_frozen_variants(tmp_path: Path) -> None:
-    commands = KERNEL.inference_commands(
+def test_member_commands_preserve_frozen_checkpoints(tmp_path: Path) -> None:
+    commands = KERNEL.member_commands(
         tmp_path / "repo",
         tmp_path / "images",
         tmp_path / "template_convnext224.pt",
@@ -71,13 +73,30 @@ def test_inference_commands_preserve_frozen_variants(tmp_path: Path) -> None:
         tmp_path / "working",
     )
 
-    public = commands["public_specialist"]
-    ood = commands["ood_rank"]
-    assert "infer_freuid_finetune.py" in public[1]
-    assert "infer_freuid_checkpoint_ensemble.py" in ood[1]
-    assert ood[ood.index("--normalization") + 1] == "rank"
-    weights = [ood[index + 1] for index, value in enumerate(ood) if value == "--weight"]
-    assert weights == ["0.85", "0.15"]
+    public = commands["public_member"]
+    forensic = commands["forensic_member"]
+    assert public[public.index("--checkpoint") + 1].endswith("template_convnext224.pt")
+    assert forensic[forensic.index("--checkpoint") + 1].endswith(
+        "forensic_efficientnet384.pt"
+    )
+
+
+def test_fuse_ranked_scores_preserves_frozen_weights() -> None:
+    public = np.asarray([0.1, 0.5, 0.9])
+    forensic = np.asarray([0.9, 0.5, 0.1])
+
+    def ranker(values: np.ndarray) -> np.ndarray:
+        order = np.argsort(values)
+        ranks = np.empty(values.size, dtype=float)
+        ranks[order] = np.arange(1, values.size + 1) / values.size
+        return ranks
+
+    fused = KERNEL.fuse_ranked_scores(public, forensic, ranker)
+
+    expected = 0.85 * np.asarray([1 / 3, 2 / 3, 1.0]) + 0.15 * np.asarray(
+        [1.0, 2 / 3, 1 / 3]
+    )
+    np.testing.assert_allclose(fused, expected)
 
 
 def test_execution_batches_run_in_parallel_with_two_gpus() -> None:

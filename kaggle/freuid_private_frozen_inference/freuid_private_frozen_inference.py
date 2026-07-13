@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import csv
 import hashlib
 import json
@@ -10,7 +11,9 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from typing import Callable
 
+import numpy as np
 import torch
 
 
@@ -19,6 +22,8 @@ REPO_REF = "freuid-final-2026-07-13"
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff"}
 PUBLIC_CHECKPOINT = "template_convnext224.pt"
 OOD_CHECKPOINT = "forensic_efficientnet384.pt"
+PUBLIC_WEIGHT = 0.85
+FORENSIC_WEIGHT = 0.15
 
 
 def run(command: list[str], cwd: Path | None = None) -> None:
@@ -89,7 +94,7 @@ def validate_submission(path: Path, expected_ids: set[str]) -> dict[str, object]
     }
 
 
-def inference_commands(
+def member_commands(
     repo: Path,
     image_root: Path,
     public_checkpoint: Path,
@@ -97,8 +102,15 @@ def inference_commands(
     working: Path,
 ) -> dict[str, list[str]]:
     common = [
+        sys.executable,
+        str(Path(__file__).resolve()),
+        "--score-member",
+        "--repo",
+        str(repo),
         "--input-dir",
         str(image_root),
+        "--output-dir",
+        str(working),
         "--recursive",
         "--batch-size",
         "64",
@@ -108,37 +120,104 @@ def inference_commands(
         "cuda",
     ]
     return {
-        "public_specialist": [
-            sys.executable,
-            str(repo / "scripts" / "infer_freuid_finetune.py"),
-            "--checkpoint",
-            str(public_checkpoint),
-            "--output-csv",
-            str(working / "private_public_specialist.csv"),
-            "--manifest-out",
-            str(working / "private_public_specialist.manifest.json"),
+        "public_member": [
             *common,
-        ],
-        "ood_rank": [
-            sys.executable,
-            str(repo / "scripts" / "infer_freuid_checkpoint_ensemble.py"),
+            "--member-name",
+            "public_member",
             "--checkpoint",
             str(public_checkpoint),
+        ],
+        "forensic_member": [
+            *common,
+            "--member-name",
+            "forensic_member",
             "--checkpoint",
             str(ood_checkpoint),
-            "--weight",
-            "0.85",
-            "--weight",
-            "0.15",
-            "--normalization",
-            "rank",
-            "--output-csv",
-            str(working / "private_ood_rank.csv"),
-            "--manifest-out",
-            str(working / "private_ood_rank.manifest.json"),
-            *common,
         ],
     }
+
+
+def load_member_scores(path: Path) -> tuple[list[str], np.ndarray]:
+    with np.load(path, allow_pickle=False) as payload:
+        ids = payload["ids"].astype(str).tolist()
+        scores = np.asarray(payload["scores"], dtype=float)
+    if scores.ndim != 1 or len(ids) != scores.size:
+        raise ValueError(f"Invalid member score payload: {path}")
+    if not np.isfinite(scores).all() or not ((0.0 <= scores) & (scores <= 1.0)).all():
+        raise ValueError(f"Invalid member scores: {path}")
+    return ids, scores
+
+
+def fuse_ranked_scores(
+    public_scores: np.ndarray,
+    forensic_scores: np.ndarray,
+    ranker: Callable[[np.ndarray], np.ndarray],
+) -> np.ndarray:
+    if public_scores.shape != forensic_scores.shape:
+        raise ValueError("Frozen member score vectors must have the same shape")
+    ranked_public = ranker(public_scores)
+    ranked_forensic = ranker(forensic_scores)
+    return PUBLIC_WEIGHT * ranked_public + FORENSIC_WEIGHT * ranked_forensic
+
+
+def write_score_csv(path: Path, ids: list[str], scores: np.ndarray) -> None:
+    if len(ids) != scores.size:
+        raise ValueError("Score CSV ids and scores must have the same length")
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["id", "label"])
+        writer.writeheader()
+        for image_id, score in zip(ids, scores):
+            writer.writerow({"id": image_id, "label": f"{score:.10f}"})
+
+
+def score_member_main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--score-member", action="store_true", required=True)
+    parser.add_argument("--repo", required=True)
+    parser.add_argument("--input-dir", required=True)
+    parser.add_argument("--output-dir", required=True)
+    parser.add_argument("--member-name", required=True)
+    parser.add_argument("--checkpoint", required=True)
+    parser.add_argument("--batch-size", type=int, required=True)
+    parser.add_argument("--num-workers", type=int, required=True)
+    parser.add_argument("--recursive", action="store_true")
+    args = parser.parse_args()
+
+    repo = Path(args.repo)
+    sys.path.insert(0, str(repo / "src"))
+    sys.path.insert(0, str(repo / "scripts"))
+    from forensic_compare.utils import resolve_device
+    from infer_freuid_finetune import _image_paths, score_checkpoint
+
+    checkpoint = Path(args.checkpoint)
+    paths = _image_paths(Path(args.input_dir), args.recursive, 0)
+    ids, scores, metadata = score_checkpoint(
+        checkpoint,
+        paths,
+        device=resolve_device("cuda"),
+        batch_size=args.batch_size,
+        num_workers=args.num_workers,
+    )
+    output_dir = Path(args.output_dir)
+    npz_path = output_dir / f"{args.member_name}.npz"
+    manifest_path = output_dir / f"{args.member_name}.manifest.json"
+    np.savez(npz_path, ids=np.asarray(ids, dtype=str), scores=np.asarray(scores, dtype=float))
+    member_manifest = {
+        **metadata,
+        "checkpoint": str(checkpoint),
+        "checkpoint_sha256": sha256(checkpoint),
+        "member_name": args.member_name,
+        "n_images": len(ids),
+        "score_min": float(np.min(scores)),
+        "score_max": float(np.max(scores)),
+        "score_mean": float(np.mean(scores)),
+        "score_payload": str(npz_path),
+    }
+    manifest_path.write_text(
+        json.dumps(member_manifest, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    print(json.dumps(member_manifest, indent=2, sort_keys=True), flush=True)
 
 
 def execution_batches(variants: list[str], gpu_count: int) -> list[list[tuple[str, int]]]:
@@ -193,7 +272,7 @@ def main() -> None:
         }
         public_checkpoint = find_unique_file(input_root, PUBLIC_CHECKPOINT)
         ood_checkpoint = find_unique_file(input_root, OOD_CHECKPOINT)
-        commands = inference_commands(
+        commands = member_commands(
             repo,
             image_root,
             public_checkpoint,
@@ -222,17 +301,62 @@ def main() -> None:
         if failures:
             raise RuntimeError(f"Frozen inference subprocess failures: {failures}")
 
+        public_ids, public_scores = load_member_scores(working / "public_member.npz")
+        forensic_ids, forensic_scores = load_member_scores(working / "forensic_member.npz")
+        if public_ids != forensic_ids:
+            raise ValueError("Frozen member score payloads returned a different id order")
+        if set(public_ids) != expected_ids:
+            raise ValueError("Frozen member score payload ids do not match private images")
+        sys.path.insert(0, str(repo / "scripts"))
+        from infer_freuid_checkpoint_ensemble import rank_percentiles
+
+        ood_scores = fuse_ranked_scores(public_scores, forensic_scores, rank_percentiles)
+        public_output = working / "private_public_specialist.csv"
+        ood_output = working / "private_ood_rank.csv"
+        write_score_csv(public_output, public_ids, public_scores)
+        write_score_csv(ood_output, public_ids, ood_scores)
+        (working / "private_public_specialist.manifest.json").write_text(
+            json.dumps(
+                {
+                    "runtime": "shared_frozen_member_scores",
+                    "member": "public_member",
+                    "n_images": len(public_ids),
+                    "output_csv": str(public_output),
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        (working / "private_ood_rank.manifest.json").write_text(
+            json.dumps(
+                {
+                    "runtime": "shared_frozen_member_scores",
+                    "normalization": "rank",
+                    "members": ["public_member", "forensic_member"],
+                    "weights": [PUBLIC_WEIGHT, FORENSIC_WEIGHT],
+                    "n_images": len(public_ids),
+                    "output_csv": str(ood_output),
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
         outputs = {
-            "public_specialist": validate_submission(
-                working / "private_public_specialist.csv", expected_ids
-            ),
-            "ood_rank": validate_submission(working / "private_ood_rank.csv", expected_ids),
+            "public_specialist": validate_submission(public_output, expected_ids),
+            "ood_rank": validate_submission(ood_output, expected_ids),
         }
         manifest.update(
             {
                 "status": "complete",
                 "image_root": str(image_root),
                 "image_count": image_count,
+                "inference_runtime": "shared_frozen_member_scores",
+                "fusion_weights": [PUBLIC_WEIGHT, FORENSIC_WEIGHT],
                 "outputs": outputs,
                 "checkpoints": {
                     "public_specialist": {
@@ -259,4 +383,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    if "--score-member" in sys.argv:
+        score_member_main()
+    else:
+        main()
