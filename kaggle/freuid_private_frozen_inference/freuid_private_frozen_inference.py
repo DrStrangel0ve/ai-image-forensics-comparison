@@ -157,7 +157,7 @@ def main() -> None:
     started = time.time()
     input_root = Path("/kaggle/input")
     working = Path("/kaggle/working")
-    repo = working / "ai-image-forensics-comparison"
+    repo = Path("/tmp/ai-image-forensics-comparison")
     run_manifest_path = working / "private_frozen_inference_manifest.json"
     manifest: dict[str, object] = {
         "competition_eligibility": "frozen_final_inference_only",
