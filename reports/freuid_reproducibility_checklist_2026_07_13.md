@@ -5,6 +5,10 @@
 - [x] Public specialist submitted as `54624136` (`0.25470`).
 - [x] OOD rank ensemble submitted as `54627101` (`0.25799`).
 - [x] Both candidates explicitly selected in Kaggle (`2/2`).
+- [x] Private-test inference completed over all `134,997` released private images with the frozen runtime.
+- [x] Private-complete public specialist submitted as `54673713` (`0.25470` public score; CSV SHA-256 `f2a873...68b2`).
+- [x] Private-complete OOD rank ensemble submitted as `54673732` (`0.25799` public score; CSV SHA-256 `5ce966...df07`).
+- [ ] Replace the two pre-private final selections with `54673713` and `54673732`, then verify Kaggle reports `2/2` selected.
 - [x] Submission has exact `142,818`-row `id,label` format and passes score-aware lint.
 - [x] OOD candidate changes zero hidden fallback rows relative to the public specialist.
 - [x] ConvNeXt-224 and residual EfficientNet-384 checkpoints copied into the artifact staging directory.
