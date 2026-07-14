@@ -44,9 +44,8 @@ Both final CSVs contain `142,818` rows and pass score-aware checks for exact
 The unchanged public scores confirm that the preserved public rows match the
 pre-private submissions.
 
-## Remaining Action
+## Final Selection
 
-At the time of this report, Kaggle still has the pre-private refs `54624136`
-and `54627101` selected. Replace those two selections with `54673713` and
-`54673732`, then verify that Kaggle reports exactly `2/2` selected before the
-deadline.
+On 2026-07-14, the two pre-private selections were replaced in Kaggle. The
+final-selection panel reports exactly `2/2`, with only refs `54673713` and
+`54673732` checked. Refs `54624136` and `54627101` are no longer selected.

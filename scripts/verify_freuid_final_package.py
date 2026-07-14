@@ -22,12 +22,17 @@ REQUIRED_PACKAGE_ENTRIES = [
     "kaggle_submission/submission.csv",
     "kaggle_submission/submission_lint.json",
     "kaggle_submission/submit_manifest.json",
+    "kaggle_submission/private_merge_manifest.json",
     "kaggle_submission/public_specialist_submission.csv",
+    "kaggle_submission/public_specialist_submission_lint.json",
+    "kaggle_submission/public_specialist_submit_manifest.json",
+    "kaggle_submission/public_specialist_private_merge_manifest.json",
     "report/freuid_short_report_2026_07_13.pdf",
     "report/freuid_short_report_2026_07_13.md",
     "discussion/freuid_pinned_discussion_reply_2026_07_13.md",
     "docs/freuid_code_freeze_status_2026_07_13.md",
     "docs/freuid_reproducibility_checklist_2026_07_13.md",
+    "docs/freuid_private_final_inference_2026_07_14.md",
     "runtime/docker/freuid/Dockerfile",
     "runtime/docker/freuid/entrypoint.sh",
     "runtime/artifacts/freuid_2026/checkpoints/template_convnext224.pt",
@@ -47,7 +52,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--sample-submission", default="data/raw/freuid_2026/small_files/sample_submission.csv")
     parser.add_argument(
         "--submission",
-        default="outputs/freuid_2026/v3_v2_forensic_rank85_15_submission/submission.csv",
+        default="work/freuid_private_final_submissions_2026_07_14/submission_private_ood_rank.csv",
     )
     parser.add_argument("--report-pdf", default="output/pdf/freuid_short_report_2026_07_13.pdf")
     parser.add_argument(
@@ -55,7 +60,7 @@ def parse_args() -> argparse.Namespace:
         default="reports/freuid_pinned_discussion_reply_2026_07_13.md",
     )
     parser.add_argument("--release-tag", default="freuid-final-2026-07-13")
-    parser.add_argument("--expected-submission-ref", default="54627101")
+    parser.add_argument("--expected-submission-ref", default="54673732")
     parser.add_argument("--expected-public-score", default="0.25799")
     parser.add_argument(
         "--manifest-out",
@@ -127,8 +132,9 @@ def _verify_discussion_draft(path: Path, expected_submission_ref: str, expected_
     required_snippets = [
         "https://github.com/DrStrangel0ve/ai-image-forensics-comparison",
         "freuid-final-2026-07-13",
-        "54624136",
+        "54673713",
         expected_submission_ref,
+        expected_public_score,
     ]
     missing = [snippet for snippet in required_snippets if snippet not in text]
     return not missing, {

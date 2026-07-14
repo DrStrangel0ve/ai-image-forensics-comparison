@@ -33,17 +33,29 @@ RUNTIME_FILES = {
 }
 
 PACKAGE_FILES = {
-    "outputs/freuid_2026/v3_v2_forensic_rank85_15_submission/submission.csv": (
+    "work/freuid_private_final_submissions_2026_07_14/submission_private_ood_rank.csv": (
         "kaggle_submission/submission.csv"
     ),
-    "outputs/freuid_2026/v3_v2_forensic_rank85_15_submission/submission_lint.json": (
+    "work/freuid_private_final_submissions_2026_07_14/submission_private_ood_rank.lint.json": (
         "kaggle_submission/submission_lint.json"
     ),
-    "outputs/freuid_2026/v3_v2_forensic_rank85_15_submission/submit_manifest.json": (
+    "work/freuid_private_final_submissions_2026_07_14/submission_private_ood_rank.submit.json": (
         "kaggle_submission/submit_manifest.json"
     ),
-    "outputs/freuid_2026/v2_convnext_full_seed43_submission/submission.csv": (
+    "work/freuid_private_final_submissions_2026_07_14/submission_private_ood_rank.manifest.json": (
+        "kaggle_submission/private_merge_manifest.json"
+    ),
+    "work/freuid_private_final_submissions_2026_07_14/submission_private_public_specialist.csv": (
         "kaggle_submission/public_specialist_submission.csv"
+    ),
+    "work/freuid_private_final_submissions_2026_07_14/submission_private_public_specialist.lint.json": (
+        "kaggle_submission/public_specialist_submission_lint.json"
+    ),
+    "work/freuid_private_final_submissions_2026_07_14/submission_private_public_specialist.submit.json": (
+        "kaggle_submission/public_specialist_submit_manifest.json"
+    ),
+    "work/freuid_private_final_submissions_2026_07_14/submission_private_public_specialist.manifest.json": (
+        "kaggle_submission/public_specialist_private_merge_manifest.json"
     ),
     "reports/freuid_short_report_2026_07_13.md": "report/freuid_short_report_2026_07_13.md",
     "output/pdf/freuid_short_report_2026_07_13.pdf": "report/freuid_short_report_2026_07_13.pdf",
@@ -53,6 +65,9 @@ PACKAGE_FILES = {
     "reports/freuid_code_freeze_status_2026_07_13.md": "docs/freuid_code_freeze_status_2026_07_13.md",
     "reports/freuid_reproducibility_checklist_2026_07_13.md": (
         "docs/freuid_reproducibility_checklist_2026_07_13.md"
+    ),
+    "reports/freuid_private_final_inference_2026_07_14.md": (
+        "docs/freuid_private_final_inference_2026_07_14.md"
     ),
     "LICENSE": "LICENSE",
 }
@@ -106,15 +121,15 @@ def main() -> None:
     runtime_manifest = {
         "created_at": created_at,
         "runtime": "0.85*rank(template_convnext224) + 0.15*rank(forensic_efficientnet384)",
-        "kaggle_refs": ["54624136", "54627101"],
+        "kaggle_refs": ["54673713", "54673732"],
         "variants": {
             "public_specialist": {
-                "kaggle_ref": "54624136",
-                "submission_sha256": "35454097181d7430ea0e322e5c3dd8a73b2db3519a5215fc472b7c105000bae0",
+                "kaggle_ref": "54673713",
+                "submission_sha256": "f2a8737665672f2638ef88b7cdab71c00168402b21076e9383cb5c22d6ca68b2",
             },
             "ood_rank": {
-                "kaggle_ref": "54627101",
-                "submission_sha256": "cbc3e6c0fbb0bbd9d35e7f4e1d33fc21835afa3f5f0b6f33b17824393fcf700d",
+                "kaggle_ref": "54673732",
+                "submission_sha256": "5ce9667137ba83def3d9c139f4cd55e1d961a92c6bf42224020ec5b27b66df07",
             },
         },
         "files": runtime_entries,
@@ -140,16 +155,16 @@ def main() -> None:
     package_manifest = {
         "created_at": created_at,
         "competition": "the-freuid-challenge-2026-ijcai-ecai",
-        "selected_submission_ref": "54627101",
-        "public_specialist_ref": "54624136",
-        "public_scores": {"54627101": 0.25799, "54624136": 0.25470},
+        "selected_submission_ref": "54673732",
+        "public_specialist_ref": "54673713",
+        "public_scores": {"54673732": 0.25799, "54673713": 0.25470},
         "runtime": runtime_manifest["runtime"],
         "files": package_entries,
     }
     package_readme = (
         "FREUID Challenge 2026 final package\n\n"
-        "Selected OOD submission: 54627101 (public score 0.25799)\n"
-        "Public specialist: 54624136 (public score 0.25470)\n\n"
+        "Selected OOD submission: 54673732 (public score 0.25799)\n"
+        "Public specialist: 54673713 (public score 0.25470)\n\n"
         "The package contains both Kaggle CSVs, the technical report, public-source runtime, "
         "checkpoint weights, validation summaries, and Docker recipe.\n"
     )
