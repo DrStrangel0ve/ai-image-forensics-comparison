@@ -49,3 +49,8 @@ pre-private submissions.
 On 2026-07-14, the two pre-private selections were replaced in Kaggle. The
 final-selection panel reports exactly `2/2`, with only refs `54673713` and
 `54673732` checked. Refs `54624136` and `54627101` are no longer selected.
+
+After confirming that no prior `arnavmalani` top-level reply existed, the
+required reproducibility reply was posted exactly once on Kaggle thread
+`718637` on 2026-07-14. The published reply records both final refs, timestamps,
+CSV digests, frozen commit, public repository, and technical-report link.
