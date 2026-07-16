@@ -1,0 +1,99 @@
+name: Verify FREUID frozen Docker runtime
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/post-freeze-highres-2026-07-13
+    paths:
+      - .github/workflows/verify-freuid-frozen-docker.yml
+
+permissions:
+  contents: read
+
+jobs:
+  frozen-runtime-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Download frozen release runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive=freuid_frozen_stack_v3_2026_07_13.zip
+          curl --fail --location --retry 3 \
+            --output "${archive}" \
+            "https://github.com/DrStrangel0ve/ai-image-forensics-comparison/releases/download/freuid-final-2026-07-13/${archive}"
+          echo "5cd9c9c643eef8e2f6aadb9670fa8b9f4294a89dbaab0005845c2e146337f5c9  ${archive}" | sha256sum --check
+          unzip -q "${archive}" -d frozen-release
+
+      - name: Build exact frozen image
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker build \
+            --file frozen-release/runtime/docker/freuid/Dockerfile \
+            --tag freuid-frozen-stack:verification \
+            frozen-release/runtime
+
+      - name: Create deterministic image fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p smoke/data smoke/public_specialist smoke/ood_rank
+          python - <<'PY'
+          import struct
+          import zlib
+          from pathlib import Path
+
+          def chunk(kind: bytes, payload: bytes) -> bytes:
+              body = kind + payload
+              return struct.pack(">I", len(payload)) + body + struct.pack(">I", zlib.crc32(body))
+
+          def write_png(path: Path, rgb: tuple[int, int, int]) -> None:
+              width = height = 64
+              scanline = b"\x00" + bytes(rgb) * width
+              payload = b"\x89PNG\r\n\x1a\n"
+              payload += chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0))
+              payload += chunk(b"IDAT", zlib.compress(scanline * height, level=9))
+              payload += chunk(b"IEND", b"")
+              path.write_bytes(payload)
+
+          write_png(Path("smoke/data/document_001.png"), (32, 96, 160))
+          write_png(Path("smoke/data/document_002.png"), (192, 128, 64))
+          PY
+
+      - name: Run both variants without network access
+        shell: bash
+        run: |
+          set -euo pipefail
+          for variant in public_specialist ood_rank; do
+            docker run --rm --network none \
+              --env "FREUID_VARIANT=${variant}" \
+              --env FREUID_BATCH_SIZE=1 \
+              --env FREUID_NUM_WORKERS=0 \
+              --volume "${PWD}/smoke/data:/data:ro" \
+              --volume "${PWD}/smoke/${variant}:/submissions" \
+              freuid-frozen-stack:verification
+          done
+
+      - name: Validate generated submissions
+        shell: python
+        run: |
+          import csv
+          import math
+          from pathlib import Path
+
+          expected_ids = {"document_001", "document_002"}
+          for variant in ("public_specialist", "ood_rank"):
+              path = Path("smoke") / variant / "submission.csv"
+              assert path.is_file(), f"missing output: {path}"
+              with path.open(newline="", encoding="utf-8") as handle:
+                  rows = list(csv.DictReader(handle))
+              assert len(rows) == 2, (variant, len(rows))
+              assert set(rows[0]) == {"id", "label"}, (variant, rows[0])
+              assert {row["id"] for row in rows} == expected_ids, (variant, rows)
+              scores = [float(row["label"]) for row in rows]
+              assert all(math.isfinite(score) and 0.0 <= score <= 1.0 for score in scores), (variant, scores)
+              print(variant, scores)
