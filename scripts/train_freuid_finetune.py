@@ -7,7 +7,6 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 import torch
 import torch.nn.functional as F
@@ -21,10 +20,17 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from forensic_compare.datasets import stable_path_score
 from forensic_compare.freuid import freuid_competition_path, freuid_metrics
-from forensic_compare.freuid_model import build_freuid_model, supported_freuid_models
+from forensic_compare.freuid_model import (
+    build_freuid_model,
+    required_freuid_input_size,
+    supported_freuid_models,
+)
 from forensic_compare.freuid_transforms import build_document_transforms
 from forensic_compare.metrics import binary_metrics
 from forensic_compare.utils import ensure_dir, resolve_device, seed_everything, write_json
+
+
+RESEARCH_TRACK = "post_freeze_highres_2026_07_13"
 
 
 def parse_args() -> argparse.Namespace:
@@ -56,6 +62,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--capture-augmentation-strength", type=float, default=0.0)
     parser.add_argument("--grid-rows", type=int, default=0)
     parser.add_argument("--grid-cols", type=int, default=0)
+    parser.add_argument("--view-mode", choices=("auto", "single", "grid", "five_crop"), default="auto")
+    parser.add_argument("--five-crop-zoom", type=float, default=1.15)
+    parser.add_argument("--view-pooling", choices=("attention", "mean_logits"), default="attention")
+    parser.add_argument("--view-chunk-size", type=int, default=0)
+    parser.add_argument("--freeze-encoder", action="store_true")
+    parser.add_argument("--lora-rank", type=int, default=0)
+    parser.add_argument("--lora-alpha", type=float, default=16.0)
+    parser.add_argument("--gradient-checkpointing", action="store_true")
+    parser.add_argument("--gradient-accumulation-steps", type=int, default=1)
+    parser.add_argument("--save-every-epoch", action="store_true")
     parser.add_argument("--type-adversarial-weight", type=float, default=0.0)
     parser.add_argument("--balanced-group-sampling", action="store_true")
     parser.add_argument("--forensic-residual", action="store_true")
@@ -281,20 +297,93 @@ def _write_csv(path: Path, rows: list[dict[str, object]], fieldnames: list[str])
         writer.writerows(rows)
 
 
+def _resolve_view_mode(args: argparse.Namespace) -> str:
+    has_grid = args.grid_rows > 0 and args.grid_cols > 0
+    if (args.grid_rows > 0) != (args.grid_cols > 0):
+        raise ValueError("--grid-rows and --grid-cols must either both be positive or both be zero")
+    mode = str(args.view_mode)
+    if mode == "auto":
+        return "grid" if has_grid else "single"
+    if mode == "grid" and not has_grid:
+        raise ValueError("--view-mode grid requires positive --grid-rows and --grid-cols")
+    if mode != "grid" and has_grid:
+        raise ValueError("Grid dimensions may only be used with --view-mode grid or auto")
+    return mode
+
+
+def _view_count(view_mode: str, grid_rows: int, grid_cols: int) -> int:
+    if view_mode == "five_crop":
+        return 5
+    if view_mode == "grid":
+        return 1 + grid_rows * grid_cols
+    return 1
+
+
+def _checkpoint_payload(
+    model: nn.Module,
+    args: argparse.Namespace,
+    metrics: dict[str, object],
+    type_to_idx: dict[str, int],
+    view_mode: str,
+    multi_view: bool,
+) -> dict[str, object]:
+    return {
+        "research_track": RESEARCH_TRACK,
+        "competition_eligibility": "post_freeze_research_only",
+        "model_state": model.state_dict(),
+        "model": args.model,
+        "multi_view": multi_view,
+        "forensic_residual": bool(args.forensic_residual),
+        "image_size": int(args.image_size),
+        "view_mode": view_mode,
+        "view_pooling": str(args.view_pooling),
+        "view_chunk_size": int(args.view_chunk_size),
+        "five_crop_zoom": float(args.five_crop_zoom),
+        "grid_rows": int(args.grid_rows),
+        "grid_cols": int(args.grid_cols),
+        "freeze_encoder": bool(args.freeze_encoder),
+        "lora_rank": int(args.lora_rank),
+        "lora_alpha": float(args.lora_alpha),
+        "type_to_idx": type_to_idx,
+        "threshold": float(metrics["threshold_at_1pct_bpcer"]),
+        "metrics": metrics,
+    }
+
+
+def _enable_gradient_checkpointing(model: nn.Module) -> None:
+    encoder = model.encoder
+    if isinstance(encoder, nn.Sequential) and isinstance(encoder[0], nn.Module):
+        candidates = list(encoder.children())[::-1]
+    else:
+        candidates = [encoder]
+    for candidate in candidates:
+        setter = getattr(candidate, "set_grad_checkpointing", None)
+        if callable(setter):
+            setter(True)
+            return
+    raise ValueError("The selected encoder does not expose timm gradient checkpointing")
+
+
 def run(args: argparse.Namespace) -> dict[str, object]:
     seed_everything(args.seed)
     output_dir = ensure_dir(args.output_dir)
     device = resolve_device(args.device)
     train_frame, val_frame, test_frame, type_to_idx = _load_frames(args)
-    if (args.grid_rows > 0) != (args.grid_cols > 0):
-        raise ValueError("--grid-rows and --grid-cols must either both be positive or both be zero")
-    multi_view = args.grid_rows > 0 and args.grid_cols > 0
+    if args.gradient_accumulation_steps <= 0:
+        raise ValueError("--gradient-accumulation-steps must be positive")
+    required_size = required_freuid_input_size(args.model)
+    if required_size is not None and args.image_size != required_size:
+        raise ValueError(f"{args.model} requires --image-size {required_size}")
+    view_mode = _resolve_view_mode(args)
+    multi_view = view_mode != "single"
     train_transform, eval_transform = build_document_transforms(
         args.image_size,
         grid_rows=args.grid_rows,
         grid_cols=args.grid_cols,
         jpeg_probability=args.jpeg_augmentation_probability,
         capture_strength=args.capture_augmentation_strength,
+        view_mode=view_mode,
+        five_crop_zoom=args.five_crop_zoom,
     )
     image_root = Path(args.image_root)
     train_dataset = FreuidCsvDataset(train_frame, image_root, train_transform, type_to_idx, True, args.skip_errors)
@@ -328,10 +417,20 @@ def run(args: argparse.Namespace) -> dict[str, object]:
         dropout=args.dropout,
         multi_view=multi_view,
         forensic_residual=args.forensic_residual,
+        view_pooling=args.view_pooling,
+        freeze_encoder=args.freeze_encoder,
+        lora_rank=args.lora_rank,
+        lora_alpha=args.lora_alpha,
+        view_chunk_size=args.view_chunk_size,
     ).to(device)
+    if args.gradient_checkpointing:
+        _enable_gradient_checkpointing(model)
     if device.type == "cuda" and not multi_view:
         model = model.to(memory_format=torch.channels_last)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    trainable_parameters = [parameter for parameter in model.parameters() if parameter.requires_grad]
+    if not trainable_parameters:
+        raise ValueError("The model has no trainable parameters")
+    optimizer = torch.optim.AdamW(trainable_parameters, lr=args.lr, weight_decay=args.weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, args.epochs))
     scaler = torch.amp.GradScaler("cuda", enabled=device.type == "cuda")
     positives = float(train_frame["label"].sum())
@@ -343,15 +442,19 @@ def run(args: argparse.Namespace) -> dict[str, object]:
     checkpoint_path = output_dir / "model.pt"
     for epoch in range(1, args.epochs + 1):
         model.train()
+        if args.freeze_encoder or args.lora_rank > 0:
+            model.encoder.eval()
         running_loss = 0.0
         seen = 0
-        for images, labels, type_indices, _ids in tqdm(train_loader, desc=f"freuid/train/{epoch}", leave=False):
+        optimizer.zero_grad(set_to_none=True)
+        for batch_index, (images, labels, type_indices, _ids) in enumerate(
+            tqdm(train_loader, desc=f"freuid/train/{epoch}", leave=False)
+        ):
             images = images.to(device, non_blocking=True)
             if device.type == "cuda" and images.ndim == 4:
                 images = images.to(memory_format=torch.channels_last)
             labels = labels.to(device, non_blocking=True)
             type_indices = type_indices.to(device, non_blocking=True)
-            optimizer.zero_grad(set_to_none=True)
             with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=device.type == "cuda"):
                 fraud_logits, type_logits = model(
                     images,
@@ -366,11 +469,20 @@ def run(args: argparse.Namespace) -> dict[str, object]:
                 )
                 type_loss = F.cross_entropy(type_logits, type_indices)
                 loss = fraud_loss + args.type_loss_weight * type_loss
-            scaler.scale(loss).backward()
-            scaler.unscale_(optimizer)
-            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=5.0)
-            scaler.step(optimizer)
-            scaler.update()
+            group_start = (batch_index // args.gradient_accumulation_steps) * args.gradient_accumulation_steps
+            group_size = min(args.gradient_accumulation_steps, len(train_loader) - group_start)
+            scaled_loss = loss / group_size
+            scaler.scale(scaled_loss).backward()
+            should_step = (
+                (batch_index + 1) % args.gradient_accumulation_steps == 0
+                or batch_index + 1 == len(train_loader)
+            )
+            if should_step:
+                scaler.unscale_(optimizer)
+                torch.nn.utils.clip_grad_norm_(trainable_parameters, max_norm=5.0)
+                scaler.step(optimizer)
+                scaler.update()
+                optimizer.zero_grad(set_to_none=True)
             running_loss += float(loss.item()) * len(labels)
             seen += len(labels)
         metrics, rows = evaluate(model, val_loader, device)
@@ -389,23 +501,12 @@ def run(args: argparse.Namespace) -> dict[str, object]:
             f"audet={metrics['audet_proxy']:.6f} apcer={metrics['apcer_at_1pct_bpcer']:.6f} "
             f"auc={metrics['roc_auc']:.6f}"
         )
+        payload = _checkpoint_payload(model, args, metrics, type_to_idx, view_mode, multi_view)
+        if args.save_every_epoch:
+            torch.save(payload, output_dir / f"model_epoch{epoch}.pt")
         if metrics["selection_objective"] < best_objective:
             best_objective = float(metrics["selection_objective"])
-            torch.save(
-                {
-                    "model_state": model.state_dict(),
-                    "model": args.model,
-                    "multi_view": multi_view,
-                    "forensic_residual": bool(args.forensic_residual),
-                    "image_size": int(args.image_size),
-                    "grid_rows": int(args.grid_rows),
-                    "grid_cols": int(args.grid_cols),
-                    "type_to_idx": type_to_idx,
-                    "threshold": float(metrics["threshold_at_1pct_bpcer"]),
-                    "metrics": metrics,
-                },
-                checkpoint_path,
-            )
+            torch.save(payload, checkpoint_path)
         scheduler.step()
 
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
@@ -414,15 +515,25 @@ def run(args: argparse.Namespace) -> dict[str, object]:
     best_metrics["selection_objective"] = _selection_objective(best_metrics, args.selection_apcer_weight)
     best_metrics.update(
         {
+            "research_track": RESEARCH_TRACK,
+            "competition_eligibility": "post_freeze_research_only",
             "method": f"freuid_finetune_{args.model}_multitask",
             "model": args.model,
             "pretrained": bool(args.pretrained),
             "image_size": int(args.image_size),
             "multi_view": multi_view,
             "forensic_residual": bool(args.forensic_residual),
-            "n_views": 1 + max(0, int(args.grid_rows)) * max(0, int(args.grid_cols)),
+            "view_mode": view_mode,
+            "view_pooling": str(args.view_pooling),
+            "view_chunk_size": int(args.view_chunk_size),
+            "five_crop_zoom": float(args.five_crop_zoom),
+            "n_views": _view_count(view_mode, int(args.grid_rows), int(args.grid_cols)),
             "grid_rows": int(args.grid_rows),
             "grid_cols": int(args.grid_cols),
+            "parameters": {
+                "total": int(sum(parameter.numel() for parameter in model.parameters())),
+                "trainable": int(sum(parameter.numel() for parameter in trainable_parameters)),
+            },
             "device": str(device),
             "n_train": len(train_dataset),
             "n_val": len(val_dataset),
@@ -442,6 +553,12 @@ def run(args: argparse.Namespace) -> dict[str, object]:
                 "type_adversarial_weight": float(args.type_adversarial_weight),
                 "balanced_group_sampling": bool(args.balanced_group_sampling),
                 "forensic_residual": bool(args.forensic_residual),
+                "freeze_encoder": bool(args.freeze_encoder),
+                "lora_rank": int(args.lora_rank),
+                "lora_alpha": float(args.lora_alpha),
+                "gradient_checkpointing": bool(args.gradient_checkpointing),
+                "gradient_accumulation_steps": int(args.gradient_accumulation_steps),
+                "save_every_epoch": bool(args.save_every_epoch),
             },
         }
     )

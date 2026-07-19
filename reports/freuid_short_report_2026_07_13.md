@@ -8,11 +8,11 @@ We detect fraudulent identity documents with a complementary two-network ensembl
 score = 0.85 * rank(ConvNeXt-Tiny-224) + 0.15 * rank(residual EfficientNet-B0-384)
 ```
 
-The submitted OOD candidate is Kaggle ref `54627101` with public score `0.25799`. The pure public specialist is ref `54624136` with score `0.25470`. Lower is better.
+The private-complete OOD candidate is Kaggle ref `54673732` with public score `0.25799`. The private-complete public specialist is ref `54673713` with score `0.25470`. Lower is better.
 
 ## Data and Protocol
 
-The official archive contains `69,352` locally matched training images. The released public image set contains `7,821` files, while `sample_submission.csv` contains `142,818` IDs. Full submissions therefore preserve an identical organizer/sample-derived fallback for the `134,997` rows whose images are not locally released. No external document images are used. Both neural encoders start from public ImageNet-1K torchvision weights; all subsequent optimization uses only official FREUID training images.
+The official archive contains `69,352` locally matched training images. The public image set contains `7,821` files, while the final private release contains the remaining `134,997` images from the `142,818` submission IDs. Frozen private inference replaced exactly those `134,997` rows and preserved the `7,821` public rows. No external document images are used. Both neural encoders start from public ImageNet-1K torchvision weights; all subsequent optimization uses only official FREUID training images.
 
 Random type/label-stratified validation is reported only as a training sanity check because image appearance and document layout overlap strongly. Model selection instead uses leave-one-document-type-out (LOTO) validation plus paired JPEG, blur, resize, noise, screenshot, and social-media transforms. EGYPT/DL is the hardest observed LOTO domain and drives the conservative fusion choice.
 
@@ -35,11 +35,13 @@ The public specialist loads only ConvNeXt-Tiny. The OOD variant sequentially loa
 One Docker image reproduces both selected final picks through an inference-only environment variable:
 
 ```text
-FREUID_VARIANT=public_specialist -> ref 54624136
-FREUID_VARIANT=ood_rank          -> ref 54627101 (default)
+FREUID_VARIANT=public_specialist -> ref 54673713
+FREUID_VARIANT=ood_rank          -> ref 54673732 (default)
 ```
 
-The container recursively discovers supported images under `/data`, derives each ID from the filename stem, and writes one finite fraud score per image to `/submissions/submission.csv`. It performs no network access and writes nowhere else. The selected CSV SHA-256 values are `354540...0bae0` for the public specialist and `cbc3e6...f700d` for the OOD rank candidate.
+The container recursively discovers supported images under `/data`, derives each ID from the filename stem, and writes one finite fraud score per image to `/submissions/submission.csv`. It performs no network access and writes nowhere else. The selected final CSV SHA-256 values are `f2a873...68b2` for the public specialist and `5ce966...df07` for the OOD rank candidate.
+
+The unchanged frozen models scored all `134,997` private images in Kaggle kernel version 4. The two-T4 inference run completed in `3,415.81 s`; parallel worker scheduling changed only orchestration, not model behavior or fusion.
 
 The exact OOD path scores `1,000` images in `211.4 s` on the development RTX 3080 Ti at batch size `32` with four workers. This includes two checkpoint loads, two CUDA initializations, and Windows worker startup. The corresponding naive local projection is `8.39 h`; organizer verification instead uses an A100 40GB with 24 CPUs, so the Docker defaults to batch size `96` and `12` workers. Six-hour compliance remains an organizer-hardware verification item rather than a claimed local measurement.
 
@@ -62,9 +64,9 @@ The standalone forensic branch gives the best average ranking but sacrifices APC
 | Ref | Method | Public score |
 | --- | --- | ---: |
 | `54511333` | conventional + frozen-feature baseline | 0.37009 |
-| `54624136` | full-data ConvNeXt public specialist | **0.25470** |
+| `54673713` | private-complete ConvNeXt public specialist | **0.25470** |
 | `54626233` | raw 65/35 neural fusion | 0.27166 |
-| `54627101` | frozen 85/15 rank OOD ensemble | 0.25799 |
+| `54673732` | private-complete frozen 85/15 rank OOD ensemble | 0.25799 |
 
 Rank fusion recovers most of the public specialist's performance while retaining the unseen-type branch. The OOD candidate is only `0.00329` behind the specialist on known public layouts and is selected as the reproducible private-test runtime.
 

@@ -2,11 +2,13 @@
 
 ## Candidate and Artifacts
 
-- [x] Public specialist submitted as `54624136` (`0.25470`).
-- [x] OOD rank ensemble submitted as `54627101` (`0.25799`).
-- [x] Both candidates explicitly selected in Kaggle (`2/2`).
+- [x] Pre-private public specialist `54624136` and OOD rank ensemble `54627101` recorded and superseded after private inference.
+- [x] Private-test inference completed over all `134,997` released private images with the frozen runtime.
+- [x] Private-complete public specialist submitted as `54673713` (`0.25470` public score; CSV SHA-256 `f2a873...68b2`).
+- [x] Private-complete OOD rank ensemble submitted as `54673732` (`0.25799` public score; CSV SHA-256 `5ce966...df07`).
+- [x] Final refs `54673713` and `54673732` explicitly selected in Kaggle (`2/2`); both pre-private refs are unselected.
 - [x] Submission has exact `142,818`-row `id,label` format and passes score-aware lint.
-- [x] OOD candidate changes zero hidden fallback rows relative to the public specialist.
+- [x] Final merge replaces exactly `134,997` private rows and preserves exactly `7,821` frozen public rows in each candidate.
 - [x] ConvNeXt-224 and residual EfficientNet-384 checkpoints copied into the artifact staging directory.
 - [x] SHA-256 and byte size recorded for every frozen model and validation summary.
 - [x] Five-image CUDA inference completed from the staged artifact copies.
@@ -36,7 +38,7 @@
 ## Freeze
 
 - [x] Training, model architecture, preprocessing, and weights finalized before July 13 AoE.
-- [ ] Push final code commit and publish the v3 artifact release.
+- [x] Push frozen runtime commit and publish the final artifact release `freuid-final-2026-07-13`.
 - [x] Export and visually verify the updated two-page short-report PDF.
 - [x] Build the final package zip and pass every non-release verifier check.
-- [ ] Post exactly one official-template reply by July 15, 23:59 AoE after private inference/final packaging.
+- [x] Post exactly one official-template top-level reply on Kaggle thread `718637` on 2026-07-14 after confirming no prior `arnavmalani` reply existed.

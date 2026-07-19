@@ -1,0 +1,19 @@
+{
+  "id": "arnavmalani/freuid-private-frozen-inference",
+  "title": "FREUID Private Frozen Inference",
+  "code_file": "freuid_private_frozen_inference.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_tpu": "false",
+  "enable_internet": "true",
+  "machine_shape": "NvidiaTeslaT4",
+  "dataset_sources": [
+    "arnavmalani/freuid-frozen-final-inference-artifacts",
+    "arnavmalani/freuid-private-test-final"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

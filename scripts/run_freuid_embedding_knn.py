@@ -229,6 +229,13 @@ def run(args: argparse.Namespace) -> dict[str, object]:
         str(checkpoint["model"]),
         num_types=len(type_to_idx),
         pretrained=False,
+        multi_view=bool(checkpoint.get("multi_view", False)),
+        forensic_residual=bool(checkpoint.get("forensic_residual", False)),
+        view_pooling=str(checkpoint.get("view_pooling", "attention")),
+        freeze_encoder=bool(checkpoint.get("freeze_encoder", False)),
+        lora_rank=int(checkpoint.get("lora_rank", 0)),
+        lora_alpha=float(checkpoint.get("lora_alpha", 16.0)),
+        view_chunk_size=int(checkpoint.get("view_chunk_size", 0)),
     )
     model.load_state_dict(checkpoint["model_state"])
     model = model.to(device).eval()
