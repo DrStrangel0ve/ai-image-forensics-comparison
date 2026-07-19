@@ -1,5 +1,7 @@
 # AI Image Forensics Comparison
 
+> **FREUID 2026 concluded:** the final private leaderboard score is `0.73118` (lower is better), placing the team 46th. The complete paper-style closeout, including method comparisons, negative results, limitations, and reproducibility links, is available in [reports/freuid_final_research_report_2026_07_19.md](reports/freuid_final_research_report_2026_07_19.md). The frozen competition package remains available in the [FREUID final reproducibility release](https://github.com/DrStrangel0ve/ai-image-forensics-comparison/releases/tag/freuid-final-2026-07-13). The FREUID track is closed; no further model selection is planned.
+
 > **Post-freeze research:** the high-resolution DINOv2/MaxViT, five-crop, QKV-LoRA, and snapshot-rank track is documented in [reports/post_freeze_highres_research_2026_07_13.md](reports/post_freeze_highres_research_2026_07_13.md). It is intentionally separate from the frozen FREUID competition release.
 
 This project compares two ways to detect generated images:

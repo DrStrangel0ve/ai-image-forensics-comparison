@@ -1,0 +1,16 @@
+track,evaluation,method,accuracy,roc_auc,apcer_at_1pct_bpcer,audet_proxy,public_score,private_score,final_rank,eligibility,notes
+local_development,balanced_320_160,photometric_logreg,0.8063,0.8709,0.4875,0.1323,,,,development_only,small balanced local slice
+local_development,balanced_320_160,combined_v3_hgb,0.8063,0.9198,0.3375,0.0843,,,,development_only,small balanced local slice
+local_development,balanced_320_160,conventional_rank_fusion,0.8313,0.9135,0.3125,0.0908,,,,development_only,photometric plus combined_v3
+local_development,balanced_320_160,convnext_tiny_logreg,0.8500,0.9227,0.3500,0.0814,,,,development_only,frozen encoder probe
+local_development,balanced_320_160,four_branch_rank_fusion,0.8688,0.9452,0.2625,0.0595,,,,development_only,photometric plus combined_v3 plus ConvNeXt plus ResNet-18
+frozen_validation,clean_egypt_loto,global_efficientnet_384,,0.829248,0.404,0.171010,,,,competition_eligible,global branch
+frozen_validation,clean_egypt_loto,residual_type_adversarial_efficientnet,,0.838920,0.442,0.161552,,,,competition_eligible,forensic branch
+frozen_validation,clean_egypt_loto,rank_ensemble_85_15,,0.832336,0.402,0.167956,,,,competition_eligible,frozen final blend
+frozen_validation,screenshot_egypt_loto,global_efficientnet_384,,0.828460,0.422,0.171834,,,,competition_eligible,capture stress
+frozen_validation,screenshot_egypt_loto,rank_ensemble_85_15,,0.831586,0.416,0.168740,,,,competition_eligible,capture stress
+official_leaderboard,complete_public_and_private,convnext_public_specialist,,,,,0.25470,0.74443,,final_submission,submission ref 54673713
+official_leaderboard,complete_public_and_private,type_adversarial_rank_ensemble_85_15,,,,,0.25799,0.73118,46,final_submission,submission ref 54673732 and selected team result
+post_freeze_research,egypt_loto_dinov2_five_crop,dinov2_mean,0.5000,0.8585,0.6005,0.1415,,,,research_only,plain mean crop embedding
+post_freeze_research,egypt_loto_dinov2_five_crop,dinov2_mean_max,0.5000,0.8428,0.6495,0.1572,,,,research_only,mean plus max crop statistics
+post_freeze_research,egypt_loto_dinov2_five_crop,dinov2_mean_max_std,0.5000,0.7998,0.8350,0.2002,,,,research_only,predeclared primary but worst measured aggregation
